@@ -20,17 +20,32 @@
 
 * { box-sizing: border-box; }
 
-html, body {
-  min-height: 100%;
-  height: auto;       /* ganti dari 100% */
+/* Reset biar semua elemen ikut aturan box-sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* cegah horizontal scroll */
-  overflow-y: auto;   /* biar bisa scroll ke bawah */
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+.foto-grid, .comments {
+  flex-wrap: wrap;
+}
+
+/* Biar body gak bisa overflow ke kanan */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
-  font-size: 1rem; /* default = 16px */
+  font-size: 14px; /* default = 16px */
   font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
   background: var(--bg);
   color: #1f2937;
@@ -94,9 +109,16 @@ header {
 .hamburger div::before{top:-6px} .hamburger div::after{top:6px}
 
 /* ===== Layout ===== */
-main{max-width:1100px; margin:18px auto 90px; padding:0 16px}
+main{max-width:1100px; margin:18px auto 90px; padding:0 0px}
 .grid{display:grid; gap:16px}
 @media(min-width:840px){.grid{grid-template-columns:1.4fr .9fr}}
+
+
+
+
+
+
+
 
 .card{
   background:var(--card);
@@ -182,7 +204,7 @@ input:focus,select:focus,textarea:focus{
   display: flex;
   justify-content: space-between; /* kiri - tengah - kanan */
   align-items: center;
-  padding: 8px 11px;
+  padding: 2px 5px;
 }
 
 .navbtn {
@@ -193,8 +215,8 @@ input:focus,select:focus,textarea:focus{
 }
 
 .navbtn .nav-icon {
-  width: 34px;  /* atur ukuran sesuai kebutuhan */
-  height: 34px;
+  width: 20px;  /* atur ukuran sesuai kebutuhan */
+  height: 20px;
   margin-bottom: 4px; /* jarak antara icon dan teks */
   filter: invert(1) brightness(1.2);
 }
@@ -297,13 +319,13 @@ input:focus,select:focus,textarea:focus{
 
 /* Perbesar semua isi form daftar */
 #form-daftar {
-  font-size: 20px; /* default teks dalam form */
+  font-size: 10px; /* default teks dalam form */
   line-height: 1.6;
 }
 
 /* Label */
 #form-daftar label {
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 600;
   display: block;
   margin: 12px 0 6px;
@@ -312,24 +334,25 @@ input:focus,select:focus,textarea:focus{
 /* Input, Select, File */
 #form-daftar input,
 #form-daftar select {
-  font-size: 18px;
-  padding: 14px 16px;
+  font-size: 10px;
+  padding: 10px 13px;
   border-radius: 10px;
   border: 1px solid #aaa;
   width: 100%;
-  margin-bottom: 12px;
+  margin-bottom: -10px;
   box-sizing: border-box;
 }
 
 /* Tombol */
 #form-daftar .btn {
-  font-size: 20px;
-  padding: 14px 20px;
+  font-size: 9px;
+  padding: 10px 14px;
   border-radius: 12px;
   font-weight: 700;
   background: var(--primary);
   color: #fff;
   cursor: pointer;
+  gap: 6px;
 }
 
 #form-daftar .btn:hover {
@@ -385,7 +408,7 @@ input:focus,select:focus,textarea:focus{
 
 .title {
   text-align: center;
-  font-size: 24px;
+  font-size: 14px;
   font-weight: bold;
 }
 
@@ -660,7 +683,7 @@ button[onclick="prosesTarik()"] {
 #hamburgerBtn {
   font-size: 28px;
   cursor: pointer;
-  padding: 10px 14px;
+  padding: 1px 6px;
   user-select: none;
   background: #040081;
   color: #fff;
@@ -1216,43 +1239,29 @@ button[onclick="prosesTarik()"] {
 /* Grid foto */
 .foto-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(4, 1fr); /* selalu 4 kolom */
   gap: 12px;
-}
-
-.foto-box {
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.foto-box:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
-.foto-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.foto-grid {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
   margin: 20px 0;
 }
+
+/* Box foto */
 .foto-box {
-  width: 120px;
-  height: 120px;
+  width: 100%; /* biar ikut grid */
+  aspect-ratio: 1 / 1; /* kotak */
   border: 2px solid #ddd;
   border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
-  transition: 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.foto-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.foto-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .foto-box:hover { transform: scale(1.05); }
 .foto-box img { width: 100%; height: 100%; border-radius: 30px; object-fit: cover; }
