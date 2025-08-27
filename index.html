@@ -1,0 +1,3162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>PT. AGENCY TIGOHOST INDONESIA</title>
+ 
+  <style>
+:root{
+  --primary:#7c3aed;       /* ungu utama */
+  --primary-dark:#6d28d9;  /* ungu lebih tua */
+  --bg:#f9fafb;            /* putih abu-abu terang */
+  --card:#ffffff;          /* putih bersih untuk card */
+  --muted:#6b7280;         /* abu-abu teks */
+  --success:#16a34a;       /* hijau sukses */
+  --warning:#f59e0b;
+  --danger:#ef4444;
+  --ring:rgba(124,58,237,.35); /* bayangan ungu */
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  min-height: 100%;
+  height: auto;       /* ganti dari 100% */
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* cegah horizontal scroll */
+  overflow-y: auto;   /* biar bisa scroll ke bawah */
+}
+
+body {
+  font-size: 20px; /* ukuran font besar */
+  font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  background: var(--bg);
+  color: #1f2937;
+  padding-bottom: 70px; /* sesuaikan tinggi nav fixed di bawah */
+  margin: 0;
+  padding-top: 70px;
+}
+/* ===== Header (beku / sticky) ===== */
+header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+  background: var(--primary);
+  border-radius:12px;
+}
+
+
+
+.hdr{
+  max-width:1100px; margin:0 auto;
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px;
+}
+
+
+
+.apps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 kolom */
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.logo{
+  width:34px;height:34px;border-radius:8px;
+  background:linear-gradient(135deg,var(--primary),#16a34a);
+  box-shadow:0 0 0 3px rgba(124,58,237,.25) inset
+}
+.title{font-weight:800; letter-spacing:.3px}
+.badge{
+  font-size:11px; color:#00ffd9;
+  background:rgba(22,163,74,.15);
+  padding:4px 8px; border-radius:999px; margin-left:6px
+}
+.hamburger{margin-left:auto; width:34px;height:34px;border-radius:10px;
+  border:1px solid rgba(255,255,255,.15); display:grid; place-items:center; cursor:pointer}
+.hamburger div{width:18px;height:2px;background:#fff; position:relative}
+.hamburger div::before,.hamburger div::after{content:"";position:absolute;left:0;width:100%;height:2px;background:#fff}
+.hamburger div::before{top:-6px} .hamburger div::after{top:6px}
+
+/* ===== Layout ===== */
+main{max-width:1100px; margin:18px auto 90px; padding:0 16px}
+.grid{display:grid; gap:16px}
+@media(min-width:840px){.grid{grid-template-columns:1.4fr .9fr}}
+
+.card{
+  background:var(--card);
+  border:1px solid rgba(124,58,237,.2);
+  border-radius:18px; padding:16px;
+  box-shadow:0 8px 24px rgba(124,58,237,.15)
+}
+.card h2{margin:4px 0 12px; font-size:18px; color:var(--primary)}
+.muted{color:var(--muted); font-size:14px}
+
+/* ===== Forms ===== */
+label{font-size:20px; color:var(--primary-dark); display:block; margin:12px 0 6px}
+input,select,textarea{
+  width:100%; padding:12px 12px; border-radius:12px; outline:none;
+  border:1px solid rgba(124,58,237,.25);
+  background:#fff; color:#1f2937;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 4px var(--ring)
+}
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:12px 14px; border-radius:12px;
+  border:none;
+  background:var(--primary); color:#fff;
+  font-weight:700; cursor:pointer
+}
+.btn:hover{background:var(--primary-dark)}
+.btn.secondary{background:#16a34a; color:#fff}
+
+/* ===== Comments ===== */
+.comment-box {
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 20px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.comment-box h2 {
+  margin-top: 0;
+  color: #333;
+}
+.comment-box p.muted {
+  color: #666;
+  font-size: 14px;
+}
+
+.comments{display:grid; gap:12px}
+.comment{
+  display:flex; gap:12px;
+  background:#f3f4f6;
+  border:1px solid rgba(124,58,237,.2);
+  padding:12px; border-radius:16px
+}
+.avatar{width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,var(--primary),#16a34a)}
+.cname{font-weight:700; color:var(--primary-dark)}
+.vbadge{
+  font-size:11px; color:#fff;
+  background:var(--success);
+  padding:2px 6px; border-radius:999px; margin-left:6px
+}
+.cdate{font-size:12px; color:var(--muted)}
+
+.nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999; /* pastikan paling atas */
+  backdrop-filter: blur(8px);
+  background: var(--primary);
+  border-top: 3px solid var(--primary-dark);
+}
+
+/* kasih padding bawah ke konten supaya nav tidak ketiban */
+.content {
+  padding-bottom: 70px; /* sesuaikan tinggi nav */
+}
+.navwrap {
+  display: flex;
+  justify-content: space-between; /* kiri - tengah - kanan */
+  align-items: center;
+  padding: 8px 11px;
+}
+
+.navbtn {
+  display: flex;
+  flex-direction: column; /* biar icon di atas teks */
+  align-items: center;
+  justify-content: center;
+}
+
+.navbtn .nav-icon {
+  width: 34px;  /* atur ukuran sesuai kebutuhan */
+  height: 34px;
+  margin-bottom: 4px; /* jarak antara icon dan teks */
+  filter: invert(1) brightness(1.2);
+}
+
+.navbtn.active {
+  font-weight: bold;
+  color: rgb(255, 153, 0); /* contoh warna active */
+}
+
+/* ===== Fullscreen Coins Modal ===== */
+/* Modal lebih besar */
+#coinsModal .inner {
+  max-height: 90vh;       /* maksimal tinggi modal */
+  overflow-y: auto;       /* scroll vertikal jika konten melebihi */
+  padding: 16px;
+}
+
+/* Judul */
+#coinsModal h2 {
+  font-size: 28px;
+  font-weight: 800;
+}
+
+#coinsModal h3 {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+/* Label */
+#coinsModal label {
+  font-size: 20px;
+  font-weight: 600;
+  display: block;
+  margin: 12px 0 6px;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(124,58,237,.9);
+  backdrop-filter: blur(8px);
+  display: none;
+  z-index: 60;
+
+  overflow-y: auto;       /* penting: aktifkan scroll vertical */
+  -webkit-overflow-scrolling: touch; /* smooth scroll di mobile */
+}
+
+.modal .inner {
+  max-width: 1000px;
+  margin: 70px auto; /* beri top & bottom spacing */
+  background: #fff;
+  border: 2px solid var(--primary);
+  border-radius: 18px;
+  padding: 16px;
+  color: #1f2937;
+
+  box-sizing: border-box;
+}
+
+
+/* Select & Input */
+#coinsModal select,
+#coinsModal input {
+  font-size: 18px;
+  padding: 12px 14px;
+  width: 100%;
+  margin: 8px 0;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  box-sizing: border-box;
+  
+}
+
+/* Tombol */
+#coinsModal button {
+  font-size: 20px;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+
+.modal{position:fixed; inset:0; background:rgba(124,58,237,.9); backdrop-filter:blur(8px); display:none; z-index:60}
+.modal .inner{
+  max-width:1000px; margin:0px auto;
+  background:#fff; border:2px solid var(--primary);
+  border-radius:18px; padding:16px; color:#1f2937
+}
+.closeX{float:right; cursor:pointer; font-weight:700; color:var(--primary)}
+.app{
+  background:#f9fafb;
+  border:1px solid var(--primary);
+  border-radius:14px; padding:12px;
+  text-align:center; cursor:pointer; color:#1f2937
+}
+.app:hover{background:#ede9fe}
+
+
+
+/* Perbesar semua isi form daftar */
+#form-daftar {
+  font-size: 20px; /* default teks dalam form */
+  line-height: 1.6;
+}
+
+/* Label */
+#form-daftar label {
+  font-size: 20px;
+  font-weight: 600;
+  display: block;
+  margin: 12px 0 6px;
+}
+
+/* Input, Select, File */
+#form-daftar input,
+#form-daftar select {
+  font-size: 18px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid #aaa;
+  width: 100%;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+}
+
+/* Tombol */
+#form-daftar .btn {
+  font-size: 20px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  background: var(--primary);
+  color: #fff;
+  cursor: pointer;
+}
+
+#form-daftar .btn:hover {
+  background: var(--primary-dark);
+}
+
+/* Status text */
+#status-daftar {
+  margin-top: 12px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Help text */
+#form-daftar .help {
+  font-size: 16px;
+  color: #666;
+  margin-top: 12px;
+}
+
+/* Fullscreen Modal */
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  display: none; /* default hidden */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Isi konten modal */
+.modal-content {
+  background: #fff;
+  width: 100%;
+  height: 100%;
+  padding: 40px 20px;
+  border-radius: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  animation: slideUp .3s ease;
+}
+
+.closeX {
+  position: absolute;
+  top: 15px; right: 20px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.muted {
+  text-align: center;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.btn-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 350px;
+  margin: auto;
+}
+
+.auth-form h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.btn {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn.primary {
+  background: #007bff;
+  color: white;
+}
+
+.btn.secondary {
+  background: #28a745;
+  color: white;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+
+
+  .status-box {
+    background: #e6ffed;          /* hijau muda */
+    border: 1px solid #28a745;    /* hijau */
+    color: #155724;               /* teks hijau tua */
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-weight: 500;
+    text-align: center;
+  }
+
+
+
+
+
+.profile-header {
+      display: flex;
+      align-items: center;
+      background: #fff;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .profile-pic {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-right: 15px;
+    }
+    .profile-info h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .profile-info p {
+      margin: 3px 0 0;
+      color: gray;
+      font-size: 14px;
+    }
+    .btn-tarik {
+      margin-left: auto;
+      background: green;
+      color: #fff;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .menu-list {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .menu-item {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .menu-item:last-child {
+      border-bottom: none;
+    }
+    .menu-icon {
+      font-size: 20px;
+      margin-right: 10px;
+    }
+    .menu-item:hover {
+      background: #f9f9f9;
+    }
+
+     #loginPage {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      background: #007bff;
+      color: #fff;
+    }
+
+    #loginPage input {
+      margin: 5px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      width: 200px;
+    }
+
+    #loginPage button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background: #fff;
+      color: #007bff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .login-title {
+     color: #fff;  /* putih */
+    }
+
+
+
+    .custom-select {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #a8c4d5;
+  padding: 10px;
+  width: 520px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #333;
+  cursor: pointer;
+}
+
+.option:last-child {
+  border-bottom: none;
+}
+
+.coin-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 8px;
+}
+
+.coin {
+  color: yellow; /* jumlah coin & nama coin */
+  font-weight: bold;
+  margin-right: 6px;
+}
+
+.discount {
+  color: red; /* diskon merah */
+  margin-left: auto;
+  font-weight: bold;
+}
+
+
+
+
+.saldo-box {
+    background: #f1f1f1;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-top: 5px;
+    font-weight: bold;
+    color: #333;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+
+.riwayat-box {
+background:#fafafa;
+padding:10px;
+margin-top:20px;
+border-radius:8px;}
+
+  .btn-approve {
+    background-color: yellow;
+    color: black;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+/* Tombol Tarik Sekarang */
+button[onclick="prosesTarik()"] {
+  background: linear-gradient(135deg, #4CAF50, #2E7D32);
+  color: white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Tombol Batal */
+.close-btn {
+  background: linear-gradient(135deg, #FF5252, #D32F2F);
+  color: white;
+  margin-left: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.content {
+    flex: 1; /* isi layar penuh */
+    overflow-y: auto; /* kalau konten panjang bisa scroll */
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+.btn-kembali {
+  background: #f44336;
+  color: white;
+}
+
+
+/* tombol hamburger */
+#hamburgerBtn {
+  font-size: 28px;
+  cursor: pointer;
+  padding: 10px 14px;
+  user-select: none;
+  background: #040081;
+  color: #fff;
+  border-radius: 6px;
+  display: inline-block;
+  z-index: 10000;
+}
+
+/* popup utama */
+.menuu-popup {
+  position: fixed;
+  top: 85px;
+  right: 100%;
+  width: 100%; /* setengah layar */
+  height: 500%;
+  background: #610acc;
+  box-shadow: -4px 0 12px rgba(0,0,0,0.25);
+  transition: right 0.3s ease;
+  z-index: 9999;
+  font-family: Arial, sans-serif;
+  color: #fff;
+  overflow-y: auto;
+  border-radius: 10px;
+}
+
+/* aktif */
+.menuu-popup.active {
+  right: 0;
+}
+
+/* konten */
+.menu-content {
+  padding: 10px;
+}
+
+.closee-bttn {
+  font-size: 22px;
+  cursor: pointer;
+  float: right;
+  color: #fff;
+}
+
+.menu-liist {
+  list-style: none;
+  padding: 0;
+  margin-top: 50px;
+}
+
+.menu-liist > li {
+  margin-bottom: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.menu-liist ul {
+  list-style: none;
+  padding-left: 16px;
+  margin: 6px 0 12px;
+}
+
+.menu-liist ul li {
+  background: #180e0ef0; /* transparan putih */
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: normal;
+  font-size: 18px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  color: #ddd;
+  transition: color 0.2s;
+}
+
+.menu-liist ul li:hover {
+  color: #8700cb; /* hover kuning */
+}
+
+
+#offlineBanner {
+  margin: 15px 0;
+  text-align: center;
+}
+
+#offlineBanner img {
+  width: 100%;
+  max-width: 380px; /* biar nggak kepanjangan */
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+
+ #postWidget { font-family: Arial, sans-serif; border:1px solid #e5e5e5; border-radius:12px; padding:16px; background:#fff; }
+  #postTitle { margin:0 0 12px; }
+
+  #postList { display:flex; flex-direction:column; gap:10px; }
+
+  .post-card { display:flex; gap:12px; border:1px solid #eee; border-radius:12px; padding:12px; }
+  .post-avatar { width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid #f0f0f0; }
+  .post-body { flex:1; }
+  .post-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .post-name { font-weight:700; color:#333; }
+  .post-time { font-size:12px; color:#888; }
+  .post-text { color:#444; white-space:pre-wrap; }
+
+
+#kontakPopup {
+  display: none; /* sembunyi default */
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 99999;
+}
+
+.kontak-box {
+  background: #fff;
+  color: #333;
+  width: 90%;
+  max-width: 400px;
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  font-family: Arial, sans-serif;
+}
+
+.kontak-box h2 {
+  margin-top: 0;
+  color: #040081;
+}
+
+.kontak-box a {
+  color: #040081;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.kontak-close {
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: #555;
+}
+
+
+
+
+
+/* Latar popup */
+#syaratPopup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 99999;
+  overflow-y: auto;
+}
+
+/* Box setengah layar dari atas */
+.syarat-box {
+  background: #fff;
+  color: #333;
+  width: 100%;
+  max-height: 70%; /* setengah layar */
+  margin: 0 auto;
+  border-radius: 0 0 12px 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transform: translateY(-100%);
+  transition: transform 0.4s ease;
+  font-family: Arial, sans-serif;
+  overflow-y: auto;
+}
+
+/* ketika aktif */
+#syaratPopup.active .syarat-box {
+  transform: translateY(0);
+}
+
+
+.syarat-close {
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: #555;
+  margin-right: 50px; /* geser ke kiri, tambah nilainya sesuai kebutuhan */
+}
+
+
+/* Latar popup */
+#hostPopup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 99999;
+  overflow-y: auto;
+}
+
+/* Box setengah layar dari atas */
+.host-box {
+  background: #fff;
+  color: #333;
+  width: 100%;
+  max-height: 70%; /* setengah layar */
+  margin: 0 auto;
+  border-radius: 0 0 12px 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transform: translateY(-100%);
+  transition: transform 0.4s ease;
+  font-family: Arial, sans-serif;
+  overflow-y: auto;
+}
+
+/* kalau aktif */
+#hostPopup.active .host-box {
+  transform: translateY(0);
+}
+
+.host-close {
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: #555;
+  margin-right: 50px;
+}
+
+
+/* Latar popup */
+#agencyPopup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 99999;
+  overflow-y: auto;
+}
+
+/* Box setengah layar */
+.agency-box {
+  background: #fff;
+  color: #333;
+  width: 100%;
+  max-height: 70%;
+  margin: 0 auto;
+  border-radius: 0 0 12px 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transform: translateY(-100%);
+  transition: transform 0.4s ease;
+  font-family: Arial, sans-serif;
+  overflow-y: auto;
+}
+
+/* kalau aktif */
+#agencyPopup.active .agency-box {
+  transform: translateY(0);
+}
+
+.agency-close {
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: #555;
+  margin-right: 50px;
+}
+
+
+/* Latar popup */
+#topupPopup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 99999;
+  overflow-y: auto;
+}
+
+/* Box setengah layar */
+.topup-box {
+  background: #fff;
+  color: #333;
+  width: 100%;
+  max-height: 70%;
+  margin: 0 auto;
+  border-radius: 0 0 12px 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transform: translateY(-100%);
+  transition: transform 0.4s ease;
+  font-family: Arial, sans-serif;
+  overflow-y: auto;
+}
+
+/* kalau aktif */
+#topupPopup.active .topup-box {
+  transform: translateY(0);
+}
+
+.option.disabled-option {
+  opacity: 0.5;
+  pointer-events: none; /* tidak bisa diklik */
+  position: relative;
+}
+
+.option .soldout {
+  color: red;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.topup-close {
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: #555;
+  margin-right: 90px;
+}
+
+/* Latar popup */
+#appPopup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 99999;
+  overflow-y: auto;
+}
+
+/* Box setengah layar */
+.app-box {
+  background: #fff;
+  color: #333;
+  width: 100%;
+  max-height: 70%;
+  margin: 0 auto;
+  border-radius: 0 0 12px 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transform: translateY(-100%);
+  transition: transform 0.4s ease;
+  font-family: Arial, sans-serif;
+  overflow-y: auto;
+}
+
+/* kalau aktif */
+#appPopup.active .app-box {
+  transform: translateY(0);
+}
+
+.app-close {
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: #555;
+  margin-right: 90px;
+}
+
+
+/* Latar belakang popup */
+#caraTopupPopup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 99999;
+  overflow-y: auto;
+}
+
+/* Box isi popup */
+#caraTopupPopup .popup-box {
+  background: #fff;
+  color: #333;
+  width: 100%;
+  max-height: 70%;
+  margin: 0 auto;
+  border-radius: 0 0 12px 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transform: translateY(-100%);
+  transition: transform 0.4s ease;
+  font-family: Arial, sans-serif;
+  overflow-y: auto;
+}
+
+/* Aktif turun dari atas */
+#caraTopupPopup.active .popup-box {
+  transform: translateY(0);
+}
+
+#caraTopupPopup .popup-close {
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: #555;
+  margin-right: 90px;
+}
+
+/* Latar belakang popup */
+#gabungAgencyPopup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 99999;
+  overflow-y: auto;
+}
+
+/* Box isi popup */
+#gabungAgencyPopup .popup-box {
+  background: #fff;
+  color: #333;
+  width: 100%;
+  max-height: 70%;
+  margin: 0 auto;
+  border-radius: 0 0 12px 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transform: translateY(-100%);
+  transition: transform 0.4s ease;
+  font-family: Arial, sans-serif;
+  overflow-y: auto;
+}
+
+/* Aktif turun dari atas */
+#gabungAgencyPopup.active .popup-box {
+  transform: translateY(0);
+}
+
+#gabungAgencyPopup .popup-close {
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: #555;
+  margin-right: 90px;
+}
+
+
+/* Latar belakang popup */
+#laporAgencyPopup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 99999;
+  overflow-y: auto;
+}
+
+/* Box isi popup */
+#laporAgencyPopup .popup-box {
+  background: #fff;
+  color: #333;
+  width: 100%;
+  max-height: 70%;
+  margin: 0 auto;
+  border-radius: 0 0 12px 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transform: translateY(-100%);
+  transition: transform 0.4s ease;
+  font-family: Arial, sans-serif;
+  overflow-y: auto;
+}
+
+/* Aktif turun dari atas */
+#laporAgencyPopup.active .popup-box {
+  transform: translateY(0);
+}
+
+#laporAgencyPopup .popup-close {
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: #555;
+  margin-right: 90px;
+}
+
+/* Latar belakang popup */
+#refundCoinPopup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 99999;
+  overflow-y: auto;
+}
+
+/* Box isi popup */
+#refundCoinPopup .popup-box {
+  background: #fff;
+  color: #333;
+  width: 100%;
+  max-height: 70%;
+  margin: 0 auto;
+  border-radius: 0 0 12px 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  transform: translateY(-100%);
+  transition: transform 0.4s ease;
+  font-family: Arial, sans-serif;
+  overflow-y: auto;
+}
+
+/* Aktif turun dari atas */
+#refundCoinPopup.active .popup-box {
+  transform: translateY(0);
+}
+
+#refundCoinPopup .popup-close {
+  float: right;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  color: #555;
+  margin-right: 90px;
+}
+
+.host-box {
+  border: 2px solid #6A0DAD; /* ungu */
+  background: #f9f9ff;       /* abu keunguan */
+  padding: 15px;
+  border-radius: 12px;
+  margin: 20px 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.host-box h3 {
+  text-align: center;
+  color: #6A0DAD;
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+/* Grid foto */
+.foto-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.foto-box {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.foto-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.foto-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.foto-grid {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin: 20px 0;
+}
+.foto-box {
+  width: 120px;
+  height: 120px;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.foto-box:hover { transform: scale(1.05); }
+.foto-box img { width: 100%; height: 100%; border-radius: 30px; object-fit: cover; }
+
+/* Popup */
+.popup {
+  position: fixed;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 26%;
+  background: #fff;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+  transition: top 0.4s ease;
+  z-index: 9999;
+}
+.popup.active { top: 0; }
+.popup-content { padding: 0px; font-family: Arial, sans-serif; }
+.close-btn { float: right; font-size: 20px; cursor: pointer; }
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #e3e2e2;
+}
+.profile-pic {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+}
+.host-logo {
+  margin-left: auto;
+  width: 50px;
+  border-radius: 17px;
+}
+.action-icon {
+  width: 60px;
+  cursor: pointer;
+  filter: invert(27%) sepia(77%) saturate(7475%) hue-rotate(267deg) brightness(95%) contrast(101%);
+}
+
+.level { color: #ff0000; font-size: 14px; }
+
+.gift-box {
+  background: #a948c2; /* warna box */
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  margin: 15px 0;
+  text-align: center;
+}
+
+.gift-section {
+  display: flex;
+  justify-content: center;
+  gap: 15px; /* jarak antar gift */
+  flex-wrap: wrap;
+}
+
+.gift-section img {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.gift-section img:hover {
+  transform: scale(1.15);
+}
+
+.action-btns {
+  display: flex;
+  gap: 70px;
+  justify-content: center;
+  margin-top: 20px;
+  background: #cf2af8;
+}
+
+.icon-box {
+  background: #ffffff;   /* ungu */
+  padding: 12px;
+  border-radius: 12px;   /* sudut rounded */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s;
+}
+
+
+
+.icon-box:hover {
+  background: #8a2be2;   /* ungu lebih terang saat hover */
+  transform: scale(1.05);
+}
+
+.action-icon {
+  width: 48px;
+  height: 48px;
+  filter: invert(27%) sepia(77%) saturate(7475%) hue-rotate(267deg) brightness(95%) contrast(101%);
+}
+
+
+
+
+.notif-popup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Box Notifikasi */
+.notif-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 320px;
+  width: 90%;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  animation: slideDown 0.3s ease;
+}
+
+/* Animasi muncul */
+@keyframes slideDown {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.notif-box h3 {
+  margin-bottom: 10px;
+  color: #7b2cbf; /* ungu */
+}
+
+.notif-box p {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.notif-box button {
+  background: #7b2cbf;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.notif-box button:hover {
+  background: #5a189a;
+}
+
+
+
+.qris-logo {
+  width: 700px;
+  height: auto;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+
+  </style>
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <header>
+    <div class="hdr">
+      <img src="agencylogo.png" alt="Logo" class="logo" style="width:44px; height:44px; border-radius:12px;">
+      <div class="title">PT. AGENCY TIGOHOST INDONESIA <span class="badge">Official</span></div>
+      <!-- HAMBURGER -->
+<!-- Tombol hamburger -->
+<div id="hamburgerBtn">☰</div>
+
+<!-- Popup Menu -->
+<div id="menuuPopup" class="menuu-popup">
+  <div class="menu-content">
+    <span class="closee-bttn" onclick="toggleMenu()">✕</span>
+    <h3>Menu</h3>
+    <ul class="menu-liist">
+      <li><b>Tentang</b>
+        <ul>
+          <!-- MENU -->
+<ul class="menu-liist">
+  <li onclick="openKontak()">Kontak</li>
+</ul>
+
+<!-- POPUP KONTAK -->
+<div id="kontakPopup" class="kontak-popup">
+  <div class="kontak-box">
+    <span class="kontak-close" onclick="closeKontak()">✕</span>
+    <h2>Kontak Kami</h2>
+    <p><b>Alamat:</b> BATAM CENTER. KOTA BATAM NO3 KEPULAUAN RIAU</p>
+    <p><b>Email:</b> Tigohost@tigohost.co.id</p>
+    <p><b>WhatsApp:</b> <a href="https://wa.me/6283166927107" target="_blank">+6283166927107</a></p>
+    <p><b>Call:</b> <a href="tel:+6283166927107">+8923677</a></p>
+  </div>
+</div>
+          <ul class="menu-liist">
+  <li onclick="openSyarat()">Syarat & Ketentuan</li>
+</ul>
+
+<!-- POPUP SYARAT & KETENTUAN -->
+<div id="syaratPopup" class="syarat-popup">
+  <div class="syarat-box">
+    <span class="syarat-close" onclick="closeSyarat()">✕</span>
+    <h2>Syarat & Ketentuan</h2>
+    <div class="syarat-content">
+      <p>
+        Kami hanya akan menggunakan data pribadi Anda yang diizinkan oleh hukum setempat. Umumnya, kami akan menggunakan data pribadi Anda dalam situasi berikut:
+      </p>
+      <p>
+        Bagaimana Anda dapat menghubungi kami?<br>
+
+Layanan Tigo dioperasikan oleh<br>
+
+Perusahaan Teknologi Junyue, Terbatas<br>
+
+2-60-8-201, HIGASHIIKEBUKURO<br>
+
+TOSHIMA-KU JP<br>
+
+Jika Anda memiliki pertanyaan atau komentar tentang Kebijakan ini, Anda dapat mengirim email ke info@tigo.chat
+
+<br><br>Cara Menghapus Akun Anda<br><br>
+
+Demi keamanan pengelolaan akun Anda, kami menyediakan fitur hapus akun cepat di Aplikasi. Anda dapat mengeklik Pengaturan Akun di Pengaturan Aplikasi untuk melihat opsi Hapus Akun. Setelah mengeklik, Anda dapat mengikuti petunjuk yang memandu pengguna untuk menghapus akun. Demi keamanan akun Anda, setelah Anda mengonfirmasi penghapusan informasi akun, Anda akan keluar dan kami akan menyimpan akun Anda selama 7 hari. Dalam 7 hari, Anda dapat masuk kembali kapan saja untuk memulihkan akun dan menyimpan semua informasi akun. Setelah lebih dari tujuh hari, kami akan menghapus semua data akun Anda dan tidak dapat dipulihkan dengan cara apa pun. Jika Anda telah menghapus aplikasi, Anda dapat mengisi informasi yang relevan dan mengirimkan aplikasi.
+      </p>
+      <p>
+        Kebijakan Privasi Junyue Technology Co., Limited (“Tigo”, “kami” atau “milik kami”) menjelaskan bagaimana dan mengapa kami mengumpulkan, menyimpan, menggunakan dan/atau membagikan (“Memproses”) informasi pribadi Anda saat Anda menggunakan layanan kami (“Layanan”).<br>
+        Jika Anda tidak setuju dengan kebijakan dan praktik kami, mohon jangan gunakan Layanan kami. Jika Anda masih memiliki pertanyaan atau kekhawatiran, silakan hubungi kami melalui <br>
+         Kami mengumpulkan informasi pribadi yang Anda berikan untuk mendaftar Layanan, menyatakan minat untuk mendapatkan informasi tentang kami atau produk dan layanan kami, saat Anda berpartisipasi dalam aktivitas Layanan, atau saat Anda menghubungi kami.<br>
+         o Nomor telepon<br>
+         o Alamat email<br>
+         o Nomor Penggunaan<br>
+         o Informasi pembayaran<br>
+         o Kata Sandi<br>
+         o Ulang Tahun<br>
+          Pengguna dapat memberikan informasi pribadi Anda saat menggunakan Layanan kami, misalnya saat berinteraksi dengan Anda atau mengirimkan laporan yang melibatkan Anda.
+      </p>
+    </div>
+  </div>
+</div>
+          <ul class="menu-liist">
+  <li onclick="openHost()">Tentang Host</li>
+</ul>
+
+<!-- POPUP TENTANG HOST -->
+<div id="hostPopup" class="host-popup">
+  <div class="host-box">
+    <span class="host-close" onclick="closeHost()">✕</span>
+    <h2>Tentang Host</h2>
+    <div class="host-content">
+      <p>
+Menjadi Host di Aplikasi Live 1 vs 1<br>
+
+Aplikasi live 1 vs 1 kini semakin populer sebagai tempat hiburan sekaligus peluang penghasilan. Konsepnya sederhana: host melakukan siaran langsung dan berinteraksi dengan penonton secara pribadi melalui video call satu lawan satu.
+
+<br>Apa itu Host Live 1 vs 1?<br>
+
+–Host adalah seseorang yang mendaftar di aplikasi untuk melakukan siaran atau panggilan langsung. Tugasnya menghibur, berbicara, atau sekadar menemani penonton dalam sesi live 1 vs 1.
+
+<br>Keuntungan Menjadi Host<br>
+
+Fleksibel<br>
+– bisa siaran dari mana saja dan kapan saja.
+– kewajiban target dalam harian yaitu 1 jam dalam 1 hari , jika melebihi dari target maka hasil akan bertambah sesuai dengan jam tayang.
+–batas umur wajib di atas dari 20+
+
+–Interaksi Lebih Dekat<br>
+ – host berbicara langsung dengan penonton, membuat suasana lebih akrab.
+ – mendapatkan lebih banyak gift jika penonton puas dengan anda
+
+<br><br>Penghasilan Tambahan<br> 
+– host bisa mendapatkan hadiah virtual atau komisi dari setiap sesi.selain itu host juga bisa mendapatkan komisi dari hasil gaji mingguan melalui masing masing agency yang sudah berkerja sama dengan pihak aplikasi aplikasi tertentu.<br>
+
+<br>Syarat Umum Menjadi Host<br>
+
+–Memiliki akun terdaftar di aplikasi.<br>
+–Mengisi data diri dengan benar (nama, kontak, rekening).<br>
+–Memiliki perangkat dengan kamera dan koneksi internet stabil.<br>
+–Umur sesuai ketentuan aplikasi (biasanya 18+).<br>
+
+<br>Tips Agar Sukses Jadi Host<br>
+
+–Tampil percaya diri dan ramah.<br>
+–Buat suasana interaktif agar penonton betah.<br>
+–Konsisten online agar peluang mendapatkan panggilan lebih besar.<br>
+–Jaga kualitas gambar dan suara.<br>      </p>
+      <p>
+        <br><br>SYARAT & LARANGAN HOST<br><br>
+
+Aktif Minimal 1 Jam per Hari<br>
+– Host wajib melakukan siaran/panggilan minimal 1 jam setiap harinya. Jika lebih, penghasilan mingguan akan semakin besar.
+
+<br>Data Pribadi Lengkap<br>
+– Menyediakan nama lengkap, nama rekening, nomor rekening, dan nama bank untuk keperluan pencairan hasil.
+
+<br>Membaca Syarat & Ketentuan<br>
+– Host wajib memahami aturan agar tidak terjadi kesalahan saat menjalankan tugas.
+
+<br>Deposit Awal<br>
+– Setelah diterima, host diwajibkan membayar biaya deposit sebesar Rp 500.000. Biaya ini akan masuk ke saldo akun host dan bisa ditarik kembali ke rekening.
+
+<br>Tujuan Rekening yang Valid<br>
+– Pastikan data rekening benar agar pencairan hasil tidak mengalami keterlambatan.
+
+<br><br><br>LARANGAN BAGI HOST<br><br><br>
+
+– Dilarang Merekam Layar saat panggilan video. Jika terdeteksi, akun otomatis BANNED dan saldo hangus.<br>
+– Tidak Boleh Dekat Anak-Anak, hanya diperbolehkan untuk usia 18+,Percakapan Kotor Dilarang. <br>
+– host wajib menjaga etika dalam setiap sesi.<br>
+– Dilarang Curang (Cheat) pada akun, pelanggaran akan berakibat BANNED.<br>
+– Pergantian Rekening wajib melalui konfirmasi admin terlebih dahulu.<br>
+– Tidak Boleh Memaksa User untuk melakukan hal yang tidak nyaman.<br>
+– Tidak Boleh Menggunakan Kamera Hitam saat siaran.<br>
+      </p>
+    </div>
+  </div>
+</div>
+          <!-- MENU -->
+<ul class="menu-liist">
+  <li onclick="openAgency()">Tentang Agency</li>
+</ul>
+
+<!-- POPUP TENTANG AGENCY -->
+<div id="agencyPopup" class="agency-popup">
+  <div class="agency-box">
+    <span class="agency-close" onclick="closeAgency()">✕</span>
+    <h2>Tentang Agency</h2>
+    <div class="agency-content">
+      <p>
+        Artikel panjang tentang Agency bisa kamu isi di sini.
+      </p>
+      <p>
+        Aplikasi Live 1 vs 1: Hiburan Digital Modern
+
+Aplikasi live 1 vs 1 kini menjadi salah satu bentuk hiburan digital paling diminati. Melalui layanan ini, pengguna bisa melakukan panggilan video satu lawan satu dengan host secara langsung, menciptakan interaksi yang lebih pribadi, akrab, dan eksklusif.
+
+Apa itu Aplikasi Live 1 vs 1?
+
+Aplikasi ini adalah platform interaksi digital yang mempertemukan pengguna dengan host melalui video call privat. Tidak seperti live streaming biasa yang melibatkan banyak penonton, konsep 1 vs 1 menghadirkan pengalaman lebih intim, fokus, dan personal.
+
+Fitur Utama
+
+Video Call Privat 
+– komunikasi langsung antara host dan pengguna.
+
+–Sistem Koin, pengguna membeli koin untuk menikmati layanan dan memberikan hadiah virtual.<br>
+Hadiah Virtual <br>
+– bentuk apresiasi dari pengguna kepada host.<br>
+– Event Khusus <br>
+– aktivitas rutin yang menambah keseruan dalam aplikasi.<br>
+– Gaji mingguan bagi host yang aktif sesuai jam tayang.<br>
+
+<br><br>Peran Agency dalam Aplikasi Live 1 vs 1<br><br>
+
+Untuk mendukung kelancaran dan profesionalitas host, aplikasi bekerja sama dengan agency resmi. Agency berfungsi sebagai:
+<br>
+– Perekrut Host Baru (bonus harian)<br>
+– membantu proses pendaftaran agar lebih mudah diterima aplikasi Pendamping Host<br> 
+– memberi arahan cara live yang baik, menjaga etika, dan meningkatkan kualitas interaksi,
+Penghubung Resmi<br>
+– menjadi perantara komunikasi antara host dan aplikasi.
+Pengelola Penghasilan <br>
+– memastikan pembayaran gaji dan bonus berjalan lancar serta transparan.
+Agency Tigohost Indonesia<br>
+
+<br><br>Sejak 2016, PT. Agency Tigohost Indonesia telah menjalin kerja sama dengan berbagai aplikasi hiburan live 1 vs 1. Agency ini membantu ribuan host untuk berkembang, mendapatkan penghasilan, dan menjaga profesionalitas dalam dunia hiburan digital.
+      </p>
+      <p>
+        Dengan adanya agency, host dapat memperoleh dukungan manajemen, 
+        pelatihan, dan bimbingan agar lebih profesional dalam memberikan 
+        layanan. Agency juga bertanggung jawab menjaga kualitas host dan 
+        memberikan laporan rutin sesuai ketentuan.
+      </p>
+    </div>
+  </div>
+</div>
+          <!-- MENU -->
+<ul class="menu-liist">
+  <li onclick="openTopup()">Tentang Top Up</li>
+</ul>
+
+<!-- POPUP TENTANG TOP UP -->
+<div id="topupPopup" class="topup-popup">
+  <div class="topup-box">
+    <span class="topup-close" onclick="closeTopup()">✕</span>
+    <h2>Tentang Top Up</h2>
+    <div class="topup-content">
+      <p>
+        Artikel panjang tentang Top Up bisa kamu isi di sini.
+      </p>
+      <p>
+        Contoh isi:
+        Top Up adalah proses pengisian saldo dalam bentuk koin atau kredit 
+        yang digunakan untuk menikmati layanan aplikasi, seperti panggilan 
+        video privat, hadiah virtual, hingga akses eksklusif tertentu.
+      </p>
+      <p>
+        Dengan melakukan top up, pengguna dapat mendukung host favorit, 
+        bergabung dalam event khusus, serta memperoleh pengalaman interaksi 
+        yang lebih seru dan eksklusif. 
+      </p>
+      <p>
+        <br>Dukungan Agency<br>
+
+Sejak 2016, PT. Agency Tigohost Indonesia telah bekerja sama dengan berbagai aplikasi hiburan digital untuk mendukung para host dan pengguna. Melalui sistem pendaftaran resmi, agency memastikan:
+<br>
+-- rekrutmen host yang profesional<br>
+
+--Pendampingan penuh untuk host baru<br>
+
+--Jaminan keamanan transaksi & pencairan hasil<br>
+
+--Transparansi kerja sama dengan aplikasi partner<br>
+
+<br><br>Komitmen Kami<br><br>
+
+PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna, mendukung kreativitas host, serta menghadirkan pengalaman hiburan yang menyenangkan, aman, dan bernilai.
+      </p>
+    </div>
+  </div>
+</div>
+         <ul class="menu-liist">
+  <li onclick="openApp()">Tentang Aplikasi</li>
+</ul>
+
+<!-- POPUP TENTANG APLIKASI -->
+<div id="appPopup" class="app-popup">
+  <div class="app-box">
+    <span class="app-close" onclick="closeApp()">✕</span>
+    <h2>Tentang Aplikasi</h2>
+    <div class="app-content">
+      <p>
+        Aplikasi top up coin privat hadir sebagai solusi praktis untuk mendukung kebutuhan hiburan digital, khususnya pada layanan panggilan video privat. Dengan sistem berbasis koin, pengguna dapat membeli coin sesuai kebutuhan mereka, lalu menukarkannya untuk menikmati layanan eksklusif tanpa batas.
+
+Keunggulan utama aplikasi ini adalah transaksi cepat, aman, dan transparan, sehingga setiap pembelian coin langsung tercatat dan bisa digunakan secara real-time. Selain itu, aplikasi top up coin privat juga memberikan fleksibilitas dalam memilih jumlah coin sesuai anggaran pengguna.
+      </p>
+      <p>
+        Contoh isi:
+        Aplikasi ini dirancang untuk memberikan pengalaman interaksi digital 
+        yang lebih seru dan aman. Melalui sistem top up koin, pengguna dapat 
+        menikmati berbagai fitur seperti panggilan video privat, hadiah 
+        virtual, hingga event khusus.
+      </p>
+      <p>
+        Keunggulan aplikasi ini adalah kemudahan dalam penggunaan, kecepatan 
+        dalam transaksi, serta keamanan yang selalu dijaga. 
+      </p>
+      <p>
+                <br><br>Dukungan Agency<br><br>
+
+Sejak 2016, PT. Agency Tigohost Indonesia telah bekerja sama dengan berbagai aplikasi hiburan digital untuk mendukung para host dan pengguna. Melalui sistem pendaftaran resmi, agency memastikan:
+<br>
+-- rekrutmen host yang profesional<br>
+
+--Pendampingan penuh untuk host baru<br>
+
+--Jaminan keamanan transaksi & pencairan hasil<br>
+
+--Transparansi kerja sama dengan aplikasi partner<br>
+
+<br><br>Komitmen Kami<br><br>
+
+PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna, mendukung kreativitas host, serta menghadirkan pengalaman hiburan yang menyenangkan, aman, dan bernilai.
+      </p>
+    </div>
+  </div>
+</div>
+        </ul>
+      </li>
+      <li><b>Tutorial</b>
+        <ul>
+          <ul class="menu-liist">
+  <li onclick="openCaraTopup()">Cara Top Up</li>
+</ul>
+
+<!-- POPUP CARA TOP UP -->
+<div id="caraTopupPopup" class="popup-topup">
+  <div class="popup-box">
+    <span class="popup-close" onclick="closeCaraTopup()">✕</span>
+    <h2>Cara Top Up Coin</h2>
+    <div class="popup-content">
+      <p>
+        Untuk melakukan top up coin, ikuti langkah-langkah berikut:
+      </p>
+      <ol>
+        <li>Buka aplikasi resmi yang sudah bekerja sama dengan PT. Agency Tigohost Indonesia.</li>
+        <li>Pilih menu <b>Top Up</b> pada halaman utama.</li>
+        <li>Masukkan jumlah coin yang ingin dibeli.</li>
+        <li>Isi data pembelian dengan benar: <br> 
+            - Nama Akun <br>
+            - ID Akun <br>
+            - Nomor WhatsApp aktif</li>
+        <li>Pilih metode pembayaran (Transfer Bank, E-Wallet, dll).</li>
+        <li>Setelah pembayaran berhasil, coin akan otomatis masuk ke akun Anda.</li>
+      </ol>
+      <p>
+        Keuntungan top up melalui <b>PT. Agency Tigohost Indonesia</b> adalah harga lebih murah, tanpa potongan, dan pelayanan yang cepat.
+      </p>
+    </div>
+  </div>
+</div>
+          <ul class="menu-liist">
+  <li onclick="openGabungAgency()">Cara Gabung Agency</li>
+</ul>
+
+<!-- POPUP CARA GABUNG AGENCY -->
+<div id="gabungAgencyPopup" class="popup-gabung">
+  <div class="popup-box">
+    <span class="popup-close" onclick="closeGabungAgency()">✕</span>
+    <h2>Cara Gabung Agency</h2>
+    <div class="popup-content">
+      <p>
+        Bergabung dengan agency resmi PT. Agency Tigohost Indonesia adalah langkah terbaik untuk mendapatkan dukungan profesional, akses event eksklusif, serta peluang penghasilan tambahan. 
+      </p>
+      <ol>
+        <li>Hubungi admin resmi agency melalui WhatsApp atau email yang tersedia.</li>
+        <li>Lengkapi data pendaftaran seperti: <br>
+            - Nama Lengkap <br>
+            - Nomor WhatsApp aktif <br>
+            - ID Akun / Username aplikasi <br>
+            - Kota Domisili</li>
+        <li>Tunggu proses verifikasi dari tim agency (1x24 jam kerja).</li>
+        <li>Jika lolos verifikasi, Anda akan diundang ke grup resmi agency.</li>
+        <li>Setelah resmi tergabung, Anda akan mendapatkan panduan & pelatihan agar bisa berkembang maksimal.</li>
+      </ol>
+      <p>
+        Dengan bergabung bersama <b>PT. Agency Tigohost Indonesia</b>, Anda tidak hanya menjadi bagian dari komunitas besar, tetapi juga mendapatkan dukungan penuh untuk meningkatkan performa di dunia hiburan digital.
+      </p>
+    </div>
+  </div>
+</div>
+          <ul class="menu-liist">
+  <li onclick="openLaporAgency()">Cara Lapor Agency</li>
+</ul>
+
+<!-- POPUP CARA LAPOR AGENCY -->
+<div id="laporAgencyPopup" class="popup-lapor">
+  <div class="popup-box">
+    <span class="popup-close" onclick="closeLaporAgency()">✕</span>
+    <h2>Cara Lapor Agency</h2>
+    <div class="popup-content">
+      <p>
+        Melaporkan agency yang bermasalah atau melanggar aturan sangat penting agar ekosistem hiburan digital tetap sehat. 
+        PT. Agency Tigohost Indonesia menyediakan jalur laporan resmi yang aman dan terverifikasi.
+      </p>
+
+      <ol>
+        <li>Buka menu <b>Kontak Resmi Agency</b> di website/aplikasi.</li>
+        <li>Kirim laporan melalui <b>Email</b> atau <b>WhatsApp Call</b> yang telah disediakan.</li>
+        <li>Cantumkan detail laporan seperti: <br>
+            - Nama Agency yang dilaporkan <br>
+            - ID Akun / Username yang terkait <br>
+            - Bukti pendukung (screenshot, rekaman, dll)</li>
+        <li>Tunggu respon tim verifikasi (maksimal 2x24 jam kerja).</li>
+        <li>Jika laporan valid, tim akan melakukan tindakan sesuai kebijakan & ketentuan yang berlaku.</li>
+      </ol>
+
+      <p>
+        Semua laporan dijamin <b>rahasia</b> dan hanya diproses oleh tim internal resmi. 
+        Dengan melaporkan, Anda ikut menjaga kepercayaan dan kenyamanan seluruh pengguna.
+      </p>
+    </div>
+  </div>
+</div>
+          <ul class="menu-liist">
+  <li onclick="openRefundCoin()">Cara Refund Coin</li>
+</ul>
+
+<!-- POPUP CARA REFUND COIN -->
+<div id="refundCoinPopup" class="popup-refund">
+  <div class="popup-box">
+    <span class="popup-close" onclick="closeRefundCoin()">✕</span>
+    <h2>Cara Refund Coin</h2>
+    <div class="popup-content">
+      <p>
+        Refund coin adalah proses pengembalian koin yang sudah dibeli apabila terjadi kesalahan 
+        transaksi atau masalah teknis lainnya. PT. Agency Tigohost Indonesia menyediakan layanan refund 
+        resmi dan transparan agar pengguna tetap merasa aman.
+      </p>
+
+      <h3>Langkah-langkah Refund Coin:</h3>
+      <ol>
+        <li>Hubungi layanan <b>Customer Support</b> melalui WhatsApp atau Email resmi.</li>
+        <li>Siapkan data transaksi yang ingin direfund, meliputi: <br>
+            - ID Akun <br>
+            - Nama Akun <br>
+            - Bukti pembayaran <br>
+            - Jumlah coin yang dibeli</li>
+        <li>Kirimkan bukti transaksi (screenshot atau invoice pembayaran).</li>
+        <li>Tunggu proses verifikasi dari tim kami (maksimal 2x24 jam kerja).</li>
+        <li>Jika disetujui, coin akan dikembalikan dalam bentuk saldo aplikasi atau transfer sesuai ketentuan.</li>
+      </ol>
+
+      <p>
+        Refund hanya berlaku untuk transaksi yang <b>valid dan resmi</b> melalui 
+        PT. Agency Tigohost Indonesia. Pastikan Anda melakukan pembelian melalui jalur resmi 
+        agar hak refund dapat diproses tanpa hambatan.
+      </p>
+    </div>
+  </div>
+</div>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
+
+       
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid">
+      <!-- ===== Left: Registration Card (default visible on DAFTAR) ===== -->
+      <section class="card" id="section-daftar">
+        <h2>Form Pendaftaran Host Agency</h2>
+        <p class="muted">Lengkapi data berikut untuk mendaftar sebagai Host Agency TIGOHOST. Setelah mengirim, status akan muncul otomatis.</p>
+
+<form id="form-daftar">          <label>Nama Lengkap</label>
+          <input type="text" name="nama" required placeholder="Nama lengkap sesuai rekening" />
+
+          <div class="row">
+            <div style="flex:1">
+              <label>Umur</label>
+              <input type="number" name="umur" required min="15" max="65" placeholder="20+" />
+            </div>
+            <div style="flex:1">
+              <label>Jenis Kelamin</label>
+              <select name="jk" required>
+                <option value="">- Pilih -</option>
+                <option>Laki-laki</option>
+                <option>Perempuan</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div style="flex:1">
+              <label>WhatsApp</label>
+              <input type="tel" name="wa" required placeholder="08xxxxxxxxxx" />
+            </div>
+            <div style="flex:1">
+              <label>Email Aktif</label>
+              <input type="email" name="email" required placeholder="nama@email.com" />
+            </div>
+          </div>
+
+          <label>Nama Aplikasi</label>
+          <input type="text" name="app" required placeholder="Contoh: Tigo / Meego / dll" />
+
+          <label>Bank</label>
+          <select id="bankSelect" name="bank">
+            <option value="BRI">BRI</option>
+            <option value="MANDIRI">MANDIRI</option>
+            <option value="BCA">BCA</option>
+            <option value="BSI">BSI</option>
+            <option value="BNI">BNI</option>
+            <option value="DANA">DANA</option>
+            <option value="GOPAY">GOPAY</option>
+            <option value="OVO">OVO</option>
+            <option value="LINKAJA">Linkaja</option>
+            <option value="SUPERBANK">SUPERBANK</option>
+            <option value="BANKGAJO">BANKGAJO</option>
+            <option value="LAINNYA">Lainnya (ketik manual)</option>
+          </select>
+          <div id="bankLainWrap" class="hidden">
+            <label>Nama Bank (ketik manual)</label>
+            <input type="text" name="bank_custom" placeholder="Nama bank/e-wallet lainnya" />
+          </div>
+
+          <div class="row">
+            <div style="flex:1">
+              <label>Nama Rekening</label>
+              <input type="text" name="nama_rek" required placeholder="Nama pemilik rekening" />
+            </div>
+            <div style="flex:1">
+              <label>Nomor Rekening</label>
+              <input type="text" name="no_rek" required placeholder="1234 5678 9012" />
+            </div>
+          </div>
+
+          <label>(Kosongkan Terlebih dahulu)</label>
+          <input type="file" name="profil" accept="image/*" />
+
+<button class="btn" type="submit">Daftar Sekarang</button>
+<div id="status-daftar" class="status-box"></div>
+          <p class="help">Dengan menekan tombol di atas, Anda menyetujui syarat & ketentuan Agency.</p>
+        </form>
+
+<!-- GRID FOTO -->
+<div class="foto-grid">
+  <div class="foto-box" onclick="openProfile(0)">
+    <img src="cewek10.jpeg" alt="Host 1">
+  </div>
+  <div class="foto-box" onclick="openProfile(1)">
+    <img src="cewek11.jpeg" alt="Host 2">
+  </div>
+  <div class="foto-box" onclick="openProfile(2)">
+    <img src="cewek12.jpg" alt="Host 3">
+  </div>
+  <div class="foto-box" onclick="openProfile(3)">
+    <img src="athia.jpeg" alt="Host 4">
+  </div>
+
+</div>
+
+
+
+
+<!-- POPUP PROFIL -->
+<div id="profilePopup" class="popup">
+  <div class="popup-content">
+    <span class="close-btn" onclick="closeProfile()">✕</span>
+    
+    <div class="profile-header">
+      <img id="popupAvatar" src="" class="profile-pic">
+      <div>
+        <h3 id="popupName"></h3>
+        <p id="popupLevel" class="level"></p>
+      </div>
+      <img src="agencylogo.png" class="host-logo" alt="Host Logo">
+    </div>
+
+<div class="gift-box">
+  <div class="gift-section">
+    <img src="giftring.png" alt="Gift 1">
+    <img src="giftkiss.png" alt="Gift 2">
+    <img src="giftbear.png" alt="Gift 3">
+    <img src="gift_103.png" alt="Gift 4">
+    <img src="gift_14.png" alt="Gift 5">
+    <img src="giftlambor.png" alt="Gift 6">
+    <img src="gift_58.png" alt="Gift 7">
+    <img src="gift_77.png" alt="Gift 8">
+  </div>
+</div>
+
+<div class="action-btns">
+  <div class="icon-box" onclick="showLoginAlert()">
+    <img src="pesanlogo.png" class="action-icon" alt="Chat">
+  </div>
+  <div class="icon-box" onclick="showLoginAlert()">
+    <img src="vudeo.png" class="action-icon" alt="Video Call">
+  </div>
+</div>
+  </div>
+</div>
+<div id="notifPopup" class="notif-popup">
+  <div class="notif-box">
+    <h3>⚠️ Login Diperlukan</h3>
+    <p>Silakan login akun host untuk menggunakan fitur ini.</p>
+    <button onclick="closeNotif()">Tutup</button>
+  </div>
+</div>
+
+<div class="comment-box">
+  <div class="divider"></div>
+  <h2>Komentar (Publik Khusus Host)</h2>
+  <p class="muted">Umpan balik dari komunitas. Ditampilkan untuk semua pengunjung.</p>
+  <div class="comments" id="comments"></div>
+</div>
+
+      </section>
+
+<!-- ====== POSTINGAN: HTML ====== -->
+<div id="postWidget">
+  <h3 id="postTitle">Postingan Terbaru</h3>
+  <div id="postList"></div>
+</div>
+      
+<!-- ===== Bottom Navigation ===== -->
+<nav class="nav">
+  <div class="navwrap">
+    <div class="navbtn" id="nav-coin" onclick="openCoins()">
+      <img src="wallet.png" alt="icon" class="nav-icon">
+      <span>Coin</span>
+    </div>
+
+    <div class="navbtn active" id="nav-daftar" onclick="showDaftar()">
+      <img src="order-history.png" alt="icon" class="nav-icon">
+      <span>Daftar</span>
+    </div>
+
+<div class="navbtn" id="nav-Logiin" onclick="showLogiin()">
+  <img src="account.png" alt="icon" class="nav-icon">
+  <span>Saya</span>
+</div>
+  </div>
+</nav>
+
+<!-- Popup Login -->
+<!-- POPUP LOGIN -->
+<div id="loginPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgb(165, 163, 163); justify-content:center; align-items:center;">
+  <div style="background:#b534d8cb; padding:20px; border-radius:10px; width:300px; text-align:center;">
+    <h2 class="login-title">Login Akun Host</h2>
+    <input type="text" id="loginEmail" placeholder="Email" style="width:100%; padding:10px; margin:10px 0;">
+    <input type="text" id="loginWA" placeholder="Nomor WhatsApp" style="width:100%; padding:10px; margin:10px 0;">
+    <button onclick="prosesLogin()" style="width:100%; padding:10px; background:#007bff; color:#fff; border:none; border-radius:5px;">Login</button>
+    <div id="loginStatus" style="color:red; margin-bottom:10px;"></div>
+
+    <br><br>
+    <button onclick="closeLogin()" style="background:red; color:#fff; padding:5px 10px; border:none; border-radius:5px;">Tutup</button>
+  </div>
+</div>
+
+<!-- POPUP PIN -->
+<div id="pinPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
+  <div style="background:#fff; padding:20px; border-radius:10px; width:300px; text-align:center;">
+    <h2>Masukkan PIN</h2>
+    <input type="password" id="loginPIN" maxlength="6" placeholder="PIN 6 digit" style="width:100%; padding:10px; margin:10px 0; text-align:center; font-size:20px; letter-spacing:5px;">
+    <button onclick="prosesPIN()" style="width:100%; padding:10px; background:green; color:#fff; border:none; border-radius:5px;">Verifikasi PIN</button>
+    <div id="pinStatus" style="color:red; margin-bottom:10px;"></div>
+  </div>
+</div>
+
+  <!-- MAIN APP (hidden dulu) -->
+  <div id="mainApp" style="display:none; height:100%;">
+    
+    <!-- Beranda -->
+    <div id="pageBeranda" class="content active">
+      <h2>Ini Beranda</h2>
+      <p>Selamat datang di aplikasi!</p>
+    </div>
+
+    <!-- Saya -->
+    <div id="pageSaya" class="content">
+      <div class="profile-header">
+        <img src="tigogambar.webp" alt="Profil" class="profile-pic">
+        <div class="profile-info">
+          <h3>IZUNA WINATTA</h3>
+
+<!-- Saldo Box -->
+<div class="saldo-box" id="saldoBox">
+  <p id="saldoText">
+  <img src="wallet.png" alt="Offline" style="width:20px; height:20px; vertical-align:middle; margin-right:4px;">
+  Rp <span id="saldoNominal">7000000</span>
+</p>
+</div>
+<button class="btn-tarik" onclick="openWithdraw()">Tarik</button>
+<button class="btn-kembali" onclick="kembalikanSaldo()">Kembalikan Saldo</button>
+
+<!-- Popup Withdraw -->
+<div id="withdrawPopup" class="popup">
+  <div class="popup-content">
+    <h3>Form Penarikan</h3>
+    <label>Nama Bank</label>
+    <select id="bank">
+      <option value="">-- Pilih Bank --</option>
+      <option>BRI</option>
+      <option>BCA</option>
+      <option>Mandiri</option>
+      <option>DANA</option>
+      <option>GoPay</option>
+      <option>OVO</option>
+      <option>LinkAja</option>
+      <option>BSI</option>
+    </select>
+
+    <label>Nomor Rekening</label>
+    <input type="text" id="norek" placeholder="Masukkan No Rekening">
+
+    <label>Nama Rekening</label>
+    <input type="text" id="namarek" placeholder="Masukkan Nama Rekening">
+
+    <label>Jumlah Penarikan</label>
+    <input type="number" id="jumlah" placeholder="Masukkan jumlah saldo">
+
+    <button onclick="prosesTarik()">Tarik Sekarang</button>
+    <button onclick="closeWithdraw()" class="close-btn">Batal</button>
+  </div>
+</div>
+  </div>
+      </div>
+<!-- RIWAYAT PENARIKAN -->
+<div class="riwayat-box">
+  <h3>Riwayat Penarikan</h3>
+  <ul id="riwayatList"></ul>
+</div>
+      <div class="menu-list">
+        <div class="menu-item"><span class="menu-icon">👤</span> Saldo Saya</div>
+        <div class="menu-item"><span class="menu-icon">💬</span> Stelan Obrolan</div>
+        <div class="menu-item"><span class="menu-icon">⭐</span> Level Saya</div>
+        <div class="menu-item"><span class="menu-icon">📊</span> Rating Saya</div>
+        <div class="menu-item"><span class="menu-icon">👑</span> Menjadi VIP</div>
+        <div class="menu-item"><span class="menu-icon">💸</span> Undang Untuk Mendapatkan Uang</div>
+        <div class="menu-item"><span class="menu-icon">⚙️</span> Stelan Aplikasi</div>
+      </div>
+    </div>
+
+    <!-- Navigasi -->
+    <div class="bottom-nav">
+      <button id="btnBeranda" class="active" onclick="showPage('pageBeranda', this)">WELCOME</button>
+      <button id="btnSaya" onclick="showPage('pageSaya', this)">AKUN SAYA</button>
+    </div>
+  </div>
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal" id="coinsModal">
+  <div class="inner">
+    <span class="closeX" onclick="closeCoins()">Tutup ✕</span>
+    <h2>MENU COIN APLIKASI</h2>
+    <p class="muted">
+      Pilih aplikasi untuk membuka menu koin & form pembelian WhatsApp, ID Akun, 
+      Nama Akun, Nama Aplikasi, dan Pembayaran.
+    </p>
+
+    <!-- 🔹 Banner Offline -->
+    <div id="offlineBanner">
+      <img src="bannercoin.jpg" alt="Banner Offline" />
+    </div>
+
+    <!-- Grid logo aplikasi -->
+    <div class="apps" id="appsGrid"></div>
+    <div class="divider"></div>
+
+<div id="coinWrap" class="hidden">
+  <h3 id="coinAppTitle"></h3>
+  
+<div class="custom-select" onclick="toggleOptions()">
+  <div id="selectedOption" class="selected">
+    <img src="coin.png" class="coin-icon">
+    <span class="coin">- Pilih Paket -</span>
+  </div>
+  <div id="options" class="options">
+
+<div class="option disabled-option">
+  <img src="coin.png" class="coin-icon">
+  <span class="coin">880 Coin</span> - Rp 33.000 
+  <span class="soldout">Habis Terjual</span>
+</div>
+
+
+    <div class="option" onclick="selectOption('1080 Coin', 'Rp 130.000', 'Diskon 10%')">
+      <img src="coin.png" class="coin-icon">
+      <span class="coin">1080 Coin</span> - Rp 130.000 
+      <span class="discount">Diskon 10%</span>
+    </div>
+    <div class="option" onclick="selectOption('2500 Coin', 'Rp 250.000', 'Diskon 40%')">
+      <img src="coin.png" class="coin-icon">
+      <span class="coin">2500 Coin</span> - Rp 250.000 
+      <span class="discount">Diskon 40%</span>
+    </div>
+    <div class="option" onclick="selectOption('6500 Coin', 'Rp 600.000', 'Diskon 30%')">
+      <img src="coin.png" class="coin-icon">
+      <span class="coin">6500 Coin</span> - Rp 600.000 
+      <span class="discount">Diskon 30%</span>
+    </div>
+    <div class="option" onclick="selectOption('13000 Coin', 'Rp 1.100.000', 'Diskon 40%')">
+      <img src="coin.png" class="coin-icon">
+      <span class="coin">13000 Coin</span> - Rp 1.100.000 
+      <span class="discount">Diskon 40%</span>
+    </div>
+    <div class="option" onclick="selectOption('20000 Coin', 'Rp 1.900.000', 'Diskon 70%')">
+      <img src="coin.png" class="coin-icon">
+      <span class="coin">20000 Coin</span> - Rp 1.900.000 
+      <span class="discount">Diskon 70%</span>
+    </div>
+        <div class="option" onclick="selectOption('30000 Coin', 'Rp 2.500.000', 'Diskon 79%')">
+      <img src="coin.png" class="coin-icon">
+      <span class="coin">30000 Coin</span> - Rp 2.500.000 
+      <span class="discount">Diskon 79%</span>
+    </div>
+
+  </div>
+</div>
+
+  <div id="detailHarga" style="margin:10px 0; font-size: 17px; font-weight:600; color:var(--primary-dark)"></div>
+
+<form onsubmit="handleCoinPurchase(event)">
+  <input type="text" name="id_app" placeholder="ID Aplikasi" required><br>
+  <input type="text" name="nama_app" placeholder="Nama Aplikasi" required><br>
+  <input type="text" name="wa" placeholder="Nomor WhatsApp" required><br>
+
+  <!-- paket dipilih disimpan di sini -->
+<input type="hidden" name="paketSelect" id="paketSelect">
+
+<select name="pay" id="pay" required onchange="showPayment(this.value)">
+  <option value="">-- Pilih Metode Pembayaran --</option>
+  <option value="bca">Bank BCA (SEDANG MAINTENANCE)</option>
+  <option value="bri">Bank BRI</option>
+  <option value="ovo">OVO</option>
+  <option value="gopay">GoPay (SEDANG MAINTENANCE)</option>
+  <option value="qris">QRIS</option>
+</select><br>
+
+<!-- Tempat tampil gambar -->
+<div id="paymentLogo" style="margin-top:10px;"></div>
+
+
+  <button type="submit" style="background-color:#6A0DAD; color:white; padding:10px 16px; border:none; border-radius:6px; cursor:pointer;">
+    Beli Koin
+  </button>
+  <div id="pembayaran"></div>
+</form>
+
+<div id="status-coin" style="display:none; margin-top:15px; padding:10px; border:1px solid #ccc; border-radius:8px;"></div>
+
+
+
+ 
+<script>
+// ===== Data =====
+const APLIKASI = [
+  {
+    nama: "Tigo",
+    logo: "tigogambar.webp",
+    paket: [
+      { nama:"50 Coin", desc:"Paket kecil", harga:"Rp 10.000" },
+      { nama:"100 Coin", desc:"Paket hemat", harga:"Rp 18.000" }
+    ]
+  },
+    {
+    nama: "Bling",
+    logo: "Blinglogo.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+    {
+    nama: "Ti.Live",
+    logo: "ti.livelogo.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+    {
+    nama: "Ayar",
+    logo: "ayarlogo.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+    {
+    nama: "TenderU",
+    logo: "TenderUlogo.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+  {
+    nama: "Weelive",
+    logo: "weelivelogo.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+  {
+    nama: "Meego",
+    logo: "meegologo.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+    {
+    nama: "Mako",
+    logo: "makologo.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+  {
+    nama: "Chato",
+    logo: "chatologo.webp",
+    paket: [
+      { nama:"80 Coin", desc:"Paket standar", harga:"Rp 15.000" },
+      { nama:"160 Coin", desc:"Double Value", harga:"Rp 28.000" }
+    ]
+  }
+  
+];
+
+const KOMENTAR_DEFAULT = [
+  {nama:"Della Anjani", tanggal:"12 Agu 2025", teks:"lumayan sih,Pelayanan cepat, verifikasi juga aman,gaji juga masi di berikan.", verified:true, avatar:"cewek10.jpeg"},
+  {nama:"Rafli Pratama", tanggal:"13 Agu 2025", teks:"heran sih , awalnya saya kira ribet ,ternyata semudah ini untuk dapatkan akun host nya.", verified:true, avatar:"cowok2.webp"},
+  {nama:"Salsa Putri", tanggal:"14 Agu 2025", teks:"dah jalan 1 tahun di agency ini masih dibayar juga alhamdulilah.", verified:true, avatar:"cewek11.jpeg"},
+  {nama:"Arga Saputra", tanggal:"15 Agu 2025", teks:"harga deposit menyesuaikan lah dengan hasil harian sama mingguannya.", verified:true, avatar:"cowok4.png"},
+  {nama:"Nadia Siregar", tanggal:"16 Agu 2025", teks:"cs nya kadang lambat respon nya , walaupun respon nya memuaskan, tapi its oke sih untuk pelayanan virtual,terimakasih pt agency.", verified:true, avatar:"cewek12.jpg"},
+  {nama:"Hansen Leo", tanggal:"17 Agu 2025", teks:"oke mantap lah untuk host yang ga terlalu banyak target", verified:true, avatar:"rahmad.jpg"},
+  {nama:"Maya Zahra", tanggal:"18 Agu 2025", teks:"kenapa depositnya besar sekarang ya dari pada dulu dudu.", verified:true, avatar:"cewek13.jpeg"},
+  {nama:"Marliaa Salsa", tanggal:"19 Agu 2025", teks:"2x daftar di tolak , yang ke 3x nya baru diterima,terimakasih.", verified:true, avatar:"cewek14.jpeg"},
+  {nama:"Kirana Dewi", tanggal:"20 Agu 2025", teks:"Rekomendasi untuk host baru.", verified:true, avatar:"cewek15.jpeg"},
+  {nama:"Farel N", tanggal:"21 Agu 2025", teks:"Navigasi mudah dipahami.", verified:true, avatar:"alan juno.jpg"}
+];
+
+// ===== Init =====
+document.addEventListener('DOMContentLoaded', () => {
+  renderApps();
+  renderComments();
+  document.getElementById('bankSelect').addEventListener('change', handleBankChange);
+});
+
+// ===== Render Apps =====
+function renderApps(){
+  const grid = document.getElementById('appsGrid');
+  grid.innerHTML = '';
+  APLIKASI.forEach((app, i) => {
+    const el = document.createElement('div');
+    el.className = 'app';
+    el.innerHTML = `
+      <img src="${app.logo}" alt="${app.nama}" style="width:50px;height:50px;border-radius:12px"><br>
+      <span style="font-weight:700">${app.nama}</span>`;
+    el.onclick = ()=>openAppCoins(i);
+    grid.appendChild(el);
+  });
+}
+
+// ===== Buka detail coins =====
+function openAppCoins(index){
+  const app = APLIKASI[index];
+  document.getElementById("coinWrap").classList.remove("hidden");
+  document.getElementById("coinAppTitle").innerHTML = `
+    <img src="${app.logo}" id="coinAppLogo" style="width:32px;height:32px;border-radius:8px;vertical-align:middle;margin-right:8px">
+    ${app.nama}`;
+  document.getElementById("nama_app_input").value = app.nama;
+
+  // isi tabel harga
+  const tbody = document.getElementById("coinTable");
+  tbody.innerHTML = "";
+  app.paket.forEach(p => {
+    tbody.innerHTML += `<tr>
+      <td style="font-weight:700">${p.nama}</td>
+      <td>${p.desc}</td>
+      <td style="color:green">${p.harga}</td>
+    </tr>`;
+  });
+
+  document.getElementById("status-coin").style.display = "none";
+}
+
+// ===== Handle coin purchase =====
+function handleCoinPurchase(e){
+  e.preventDefault();
+  const form = e.target;
+  const data = Object.fromEntries(new FormData(form).entries());
+  const box = document.getElementById('status-coin');
+}
+
+  // daftar tujuan pembayaran sesuai metode
+const tujuanPembayaran = {
+  bca: "SEDANG MAINTENANCE",
+  bri: `
+    <div>
+      <p>No. Rekening: <b>530101021385505</b><br>
+      A/n <b>NURMALA BRI</b></p>
+      <small style="color:#d00; font-style:italic;">
+        (Silakan transfer pada rekening tujuan dan kirim bukti transaksi ke CS jika coin tidak masuk)
+      </small>
+    </div>
+  `,
+  ovo: `
+    <div>
+      <p>No. OVO: <b>0822 7515 3933</b><br>
+      A/n <b>MAHESA DIRTA PERDANA</b></p>
+      <small style="color:#d00; font-style:italic;">
+        (Silakan transfer pada rekening tujuan dan kirim bukti transaksi ke CS jika coin tidak masuk)
+      </small>
+    </div>
+  `,
+  gopay: "SEDANG MAINTENANCE",
+  qris: `
+    <div>
+      <img src="qris.jpg" alt="QRIS" style="width:200px; height:auto; border:1px solid #ccc; border-radius:10px;">
+      <br>
+      <small style="color:#d00; font-style:italic;">
+        (Silakan transfer pada rekening tujuan dan kirim bukti transaksi ke CS jika coin tidak masuk)
+      </small>
+    </div>
+  `
+};
+
+const waAdmin = "6283166927107"; // nomor WA admin
+
+function handleCoinPurchase(e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const idApp = form.id_app.value;
+  const namaApp = form.nama_app.value;
+  const waUser = form.wa.value;
+  const paket = form.paketSelect?.value || document.getElementById("paketSelect").value;
+  const metode = form.pay.value;
+
+  // simpan data
+  const dataPembelian = { idApp, namaApp, waUser, paket };
+
+  // tampilkan metode pembayaran + tombol
+  renderPembayaran(metode, dataPembelian);
+}
+
+function renderPembayaran(metode, dataPembelian) {
+  const container = document.getElementById("pembayaran");
+  container.innerHTML = ""; // clear dulu
+
+  // buat blok pembayaran
+  const div = document.createElement("div");
+  div.style.border = "1px solid #ccc";
+  div.style.padding = "10px";
+  div.style.margin = "10px 0";
+  div.style.borderRadius = "8px";
+  div.innerHTML = `
+    <p><b>${metode.toUpperCase()}</b></p>
+    <p>${tujuanPembayaran[metode]}</p>
+    <button onclick='sudahBayar("${metode}", ${JSON.stringify(dataPembelian)})'
+      style="background:#4CAF50;color:white;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;">
+      Sudah Bayar
+    </button>
+  `;
+  container.appendChild(div);
+}
+
+function sudahBayar(metode, dataPembelian) {
+  const pesan = `Halo Admin, saya sudah melakukan pembayaran.
+
+ID App: ${dataPembelian.idApp}
+Nama App: ${dataPembelian.namaApp}
+No. WA: ${dataPembelian.waUser}
+Paket: ${dataPembelian.paket}
+Metode: ${metode.toUpperCase()}`;
+
+  const url = `https://wa.me/${waAdmin}?text=${encodeURIComponent(pesan)}`;
+  window.open(url, "_blank");
+}
+
+function toggleOptions() {
+  document.getElementById("options").style.display =
+    document.getElementById("options").style.display === "block" ? "none" : "block";
+}
+
+function selectOption(coin, harga, diskon) {
+  document.getElementById("selectedOption").innerHTML =
+    `<img src="coin.png" class="coin-icon">
+     <span class="coin">${coin}</span> - ${harga} 
+     <span class="discount">${diskon}</span>`;
+
+  // simpan value ke hidden input agar ikut ke form
+  document.getElementById("paketSelect").value = `${coin} - ${harga} (${diskon})`;
+
+  // tampilkan harga detail (opsional)
+  document.getElementById("detailHarga").innerText = `${coin} | ${harga} | ${diskon}`;
+
+  document.getElementById("options").style.display = "none";
+}
+
+
+// ===== Render Komentar =====
+function renderComments(){
+  const wrap = document.getElementById('comments');
+  wrap.innerHTML = '';
+  KOMENTAR_DEFAULT.forEach(k => {
+    const item = document.createElement('div');
+    item.className = 'comment';
+    item.innerHTML = `
+      <img class="avatar" src="${k.avatar}" alt="${k.nama}">
+      <div class="cbody">
+        <div class="row" style="justify-content:space-between">
+          <div>
+            <span class="cname">${k.nama}</span>
+            ${k.verified?'<span class="vbadge">✔ Terverifikasi</span>':''}
+          </div>
+          <div class="cdate">${k.tanggal}</div>
+        </div>
+        <div style="margin-top:6px">${k.teks}</div>
+      </div>`;
+    wrap.appendChild(item);
+  });
+}
+
+renderComments();
+
+// ===== Bottom Nav =====
+function setActiveNav(id){
+  document.querySelectorAll('.navbtn').forEach(n=>n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function showDaftar(){
+  setActiveNav('nav-daftar');
+  document.getElementById('section-daftar').scrollIntoView({behavior:'smooth', block:'start'});
+}
+function openCoins(){
+  setActiveNav('nav-coin');
+  document.getElementById('coinsModal').style.display='block';
+}
+function closeCoins(){
+  document.getElementById('coinsModal').style.display='none';
+}
+
+
+// ===== Pendaftaran Host =====
+function handleBankChange(){
+  const select = document.getElementById('bankSelect');
+  const wrap = document.getElementById('bankLainWrap');
+  if(select.value === 'LAINNYA') wrap.classList.remove('hidden'); 
+  else wrap.classList.add('hidden');
+}
+
+function handleDaftar(e){
+  e.preventDefault();
+  const form = e.target;
+  const data = Object.fromEntries(new FormData(form).entries());
+  if(!data.nama || !data.umur || !data.jk || !data.wa || !data.email){
+    alert('Mohon lengkapi semua data penting.');
+    return;
+  }
+  const st = document.getElementById('status-daftar');
+st.innerHTML = '<div style="color:red; border:2px solid red; padding:10px; border-radius:8px; display:inline-block; background:#fff5f5;">Pendaftaran sedang ditinjau dalam maksimal <b>2 hari kerja</b> Hasil pendaftaran akan kami hubungi melalui Email maupun Whatsapp.</div>';
+  st.style.display = 'block';
+  form.reset();
+  document.getElementById('bankLainWrap').classList.add('hidden');
+}
+
+
+
+function showPage(pageId) {
+  // sembunyikan semua halaman
+  document.querySelectorAll('.content').forEach(function(page) {
+    page.classList.add('hidden');
+  });
+
+  // tampilkan halaman yg dipilih
+  document.getElementById(pageId).classList.remove('hidden');
+
+  // reset tombol
+  document.querySelectorAll('.bottom-nav button').forEach(function(btn) {
+    btn.classList.remove('active');
+  });
+
+  // aktifkan tombol sesuai page
+  let btnId = "btn" + pageId.replace("page", "");
+  let activeBtn = document.getElementById(btnId);
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+  }
+}
+
+
+
+
+
+
+
+
+
+
+ let saldo = parseInt(localStorage.getItem("saldo")) || 70000;
+  let riwayat = JSON.parse(localStorage.getItem("riwayat")) || [];
+
+  function updateSaldo() {
+    document.getElementById("saldoNominal").innerText = saldo;
+    localStorage.setItem("saldo", saldo); // simpan saldo permanen
+  }
+
+  function renderRiwayat() {
+    const riwayatList = document.getElementById("riwayatList");
+    riwayatList.innerHTML = "";
+    riwayat.forEach(item => {
+      const li = document.createElement("li");
+      li.innerHTML = `Tarik Rp ${item.jumlah} - 
+        <span class="status" style="color:${item.color}">${item.status}</span>`;
+      riwayatList.appendChild(li);
+    });
+    localStorage.setItem("riwayat", JSON.stringify(riwayat)); // simpan riwayat permanen
+  }
+
+  function prosesTarik() {
+    const jumlah = parseInt(document.getElementById("jumlah").value);
+    if (isNaN(jumlah) || jumlah <= 0 || jumlah > saldo) {
+      alert("Jumlah tidak valid atau saldo tidak cukup!");
+      return;
+    }
+
+    saldo -= jumlah;
+    riwayat.push({ jumlah, status: "Proses", color: "orange" });
+    updateSaldo();
+    renderRiwayat();
+    
+  }
+
+  function kembalikanSaldo() {
+    if (riwayat.length === 0) return;
+    const last = riwayat[riwayat.length - 1];
+    if (last.status !== "Proses") {
+      alert("Tidak ada penarikan yang bisa dibatalkan.");
+      return;
+    }
+
+    // kembalikan saldo
+    saldo += last.jumlah;
+    last.status = "Gagal (Saldo dikembalikan)";
+    last.color = "red";
+
+    // simpan ke localStorage
+    updateSaldo();
+    renderRiwayat();
+  }
+
+  window.onload = () => {
+    updateSaldo();
+    renderRiwayat();
+  };
+function closeWithdraw() {
+  document.getElementById("withdrawPopup").style.display = "none";
+}
+
+
+
+
+
+
+
+
+
+
+
+
+  const hamburgerBtn = document.getElementById("hamburgerBtn");
+  const menuuPopup = document.getElementById("menuuPopup");
+
+  function toggleMenu() {
+    menuuPopup.classList.toggle("active");
+  }
+
+  // buka menu klik hamburger
+  hamburgerBtn.addEventListener("click", toggleMenu);
+
+  // klik luar popup = tutup
+  window.addEventListener("click", (e) => {
+    if (e.target === menuuPopup) {
+      menuuPopup.classList.remove("active");
+    }
+  });
+
+
+
+
+
+
+
+
+(function(){
+  const postListEl = document.getElementById('postList');
+
+
+
+  // ====== DATA POSTINGAN MANUAL ======
+  const posts = [
+    { name:'ADMIN AGENCY', avatar:'agencylogo.png', content:'Coin adalah mata uang virtual dalam aplikasi yang digunakan untuk menikmati berbagai layanan premium. Salah satu layanan yang paling diminati adalah panggilan video privat dengan host atau partner pilihan Anda.', time: Date.now()-1000000 },
+    { name:'ADMIN AGENCY', avatar:'agencylogo.png', content:'Kenapa Harus Top Up Coin di PT. Agency Tigohost Indonesia? Top up coin bukan hanya soal membeli saldo untuk aplikasi, tapi juga soal keamanan, kenyamanan, dan kepercayaan. Itulah alasan banyak pengguna memilih melakukan pembelian coin melalui PT. Agency Tigohost Indonesia', time: Date.now()-500000 },
+    { name:'ADMIN AGENCY', avatar:'agencylogo.png', content:'Top up coin untuk video call privat sekarang lebih mudah dan murah. Bergabunglah dengan ribuan pengguna yang sudah percaya pada PT. Agency Tigohost Indonesia', time: Date.now()-100000 },
+    { name:'ADMIN AGENCY', avatar:'agencylogo.png', content:'Selamat datang di forum!', time: Date.now()-1000000 },
+    { name:'ADMIN AGENCY', avatar:'agencylogo.png', content:'Promo top up coin murah se-Indonesia sudah tersedia!', time: Date.now()-500000 },
+    { name:'ADMIN AGENCY', avatar:'agencylogo.png', content:'Jangan biarkan momen spesial Anda terlewat! Isi coin sekarang juga dengan harga terbaik hanya di Tigohost Agency', time: Date.now()-100000 },
+  
+
+];
+
+  function renderPosts(){
+    postListEl.innerHTML = '';
+    posts.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'post-card';
+
+      const img = document.createElement('img');
+      img.className = 'post-avatar';
+      img.src = p.avatar || DEFAULT_AVATAR;
+      img.alt = p.name;
+      img.onerror = ()=>{ img.src = DEFAULT_AVATAR; };
+
+      const body = document.createElement('div');
+      body.className = 'post-body';
+
+      const head = document.createElement('div');
+      head.className = 'post-head';
+
+      const name = document.createElement('div');
+      name.className = 'post-name';
+      name.textContent = p.name;
+
+      const time = document.createElement('div');
+      time.className = 'post-time';
+      time.textContent = formatTime(p.time);
+
+      const text = document.createElement('div');
+      text.className = 'post-text';
+      text.textContent = p.content;
+
+      head.appendChild(name);
+      head.appendChild(time);
+      body.appendChild(head);
+      body.appendChild(text);
+
+      card.appendChild(img);
+      card.appendChild(body);
+      postListEl.appendChild(card);
+    });
+  }
+
+  function formatTime(ts){
+    const d = new Date(ts);
+    const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    const pad = n => n.toString().padStart(2,'0');
+    return `${d.getDate()} ${bulan[d.getMonth()]} ${d.getFullYear()} • ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  // render pertama kali
+  renderPosts();
+
+  // contoh: tambah post baru manual
+  setTimeout(()=>{
+    posts.unshift({ name:'ADMIN AGENCY', avatar:'agencylogo.png', content:'Khusus hari ini ada promo 45% dari pembelian anda!.', time: Date.now() });
+    renderPosts();
+  }, 3000);
+
+})();
+
+
+
+
+
+function openKontak(){
+  document.getElementById("kontakPopup").style.display = "block";
+}
+function closeKontak(){
+  document.getElementById("kontakPopup").style.display = "none";
+}
+
+
+
+function openSyarat(){
+  const popup = document.getElementById("syaratPopup");
+  popup.style.display = "block";
+  setTimeout(()=>popup.classList.add("active"),10); 
+}
+
+function closeSyarat(){
+  const popup = document.getElementById("syaratPopup");
+  popup.classList.remove("active");
+  setTimeout(()=>popup.style.display = "none",400);
+}
+
+
+function openHost(){
+  const popup = document.getElementById("hostPopup");
+  popup.style.display = "block";
+  setTimeout(()=>popup.classList.add("active"),10); 
+}
+
+function closeHost(){
+  const popup = document.getElementById("hostPopup");
+  popup.classList.remove("active");
+  setTimeout(()=>popup.style.display = "none",400);
+}
+
+
+
+function openAgency(){
+  const popup = document.getElementById("agencyPopup");
+  popup.style.display = "block";
+  setTimeout(()=>popup.classList.add("active"),10); 
+}
+
+function closeAgency(){
+  const popup = document.getElementById("agencyPopup");
+  popup.classList.remove("active");
+  setTimeout(()=>popup.style.display = "none",400);
+}
+
+function openTopup(){
+  const popup = document.getElementById("topupPopup");
+  popup.style.display = "block";
+  setTimeout(()=>popup.classList.add("active"),10); 
+}
+
+function closeTopup(){
+  const popup = document.getElementById("topupPopup");
+  popup.classList.remove("active");
+  setTimeout(()=>popup.style.display = "none",400);
+}
+
+
+function openApp(){
+  const popup = document.getElementById("appPopup");
+  popup.style.display = "block";
+  setTimeout(()=>popup.classList.add("active"),10); 
+}
+
+function closeApp(){
+  const popup = document.getElementById("appPopup");
+  popup.classList.remove("active");
+  setTimeout(()=>popup.style.display = "none",400);
+}
+
+
+function openCaraTopup(){
+  const popup = document.getElementById("caraTopupPopup");
+  popup.style.display = "block";
+  setTimeout(()=>popup.classList.add("active"),10); 
+}
+
+function closeCaraTopup(){
+  const popup = document.getElementById("caraTopupPopup");
+  popup.classList.remove("active");
+  setTimeout(()=>popup.style.display = "none",400);
+}
+
+function openGabungAgency(){
+  const popup = document.getElementById("gabungAgencyPopup");
+  popup.style.display = "block";
+  setTimeout(()=>popup.classList.add("active"),10); 
+}
+
+function closeGabungAgency(){
+  const popup = document.getElementById("gabungAgencyPopup");
+  popup.classList.remove("active");
+  setTimeout(()=>popup.style.display = "none",400);
+}
+
+
+function openLaporAgency(){
+  const popup = document.getElementById("laporAgencyPopup");
+  popup.style.display = "block";
+  setTimeout(()=>popup.classList.add("active"),10); 
+}
+
+function closeLaporAgency(){
+  const popup = document.getElementById("laporAgencyPopup");
+  popup.classList.remove("active");
+  setTimeout(()=>popup.style.display = "none",400);
+}
+
+function openRefundCoin(){
+  const popup = document.getElementById("refundCoinPopup");
+  popup.style.display = "block";
+  setTimeout(()=>popup.classList.add("active"),10); 
+}
+
+function closeRefundCoin(){
+  const popup = document.getElementById("refundCoinPopup");
+  popup.classList.remove("active");
+  setTimeout(()=>popup.style.display = "none",400);
+}
+
+
+const profiles = [
+  {name:'Bella', level:'Level 3', avatar:'cewek10.jpeg'},
+  {name:'Angel winka', level:'Level 4', avatar:'cewek11.jpeg'},
+  {name:'Syila boes', level:'Level 2', avatar:'cewek12.jpg'},
+  {name:'Tylist', level:'Level 3', avatar:'athia.jpeg'},
+];
+
+function openProfile(i){
+  document.getElementById('popupAvatar').src = profiles[i].avatar;
+  document.getElementById('popupName').innerText = profiles[i].name;
+  document.getElementById('popupLevel').innerText = profiles[i].level;
+  document.getElementById('profilePopup').classList.add('active');
+}
+
+function closeProfile(){
+  document.getElementById('profilePopup').classList.remove('active');
+}
+
+
+function showLoginAlert() {
+  document.getElementById("notifPopup").style.display = "flex";
+}
+function closeNotif() {
+  document.getElementById("notifPopup").style.display = "none";
+}
+
+
+
+
+
+
+
+
+function showPayment(method) {
+  const paymentLogo = document.getElementById("paymentLogo");
+
+  // Reset isi dulu
+  paymentLogo.innerHTML = "";
+
+  if (method === "qris") {
+    paymentLogo.innerHTML = `
+      <div style="text-align:center;">
+        <img src="qris.jpg" alt="QRIS" style="width:200px; height:auto; border:1px solid #ccc; border-radius:10px;">
+        <br>
+        <button type="button" onclick="downloadQRIS()" 
+          style="margin-top:8px; padding:8px 12px; background:#6A0DAD; color:white; border:none; border-radius:6px; cursor:pointer;">
+          Download QRIS
+        </button>
+      </div>
+    `;
+  } 
+  else if (method === "bca") {
+    paymentLogo.innerHTML = `<img src="bca.png" alt="BCA" style="height:40px;">`;
+  }
+  else if (method === "bri") {
+    paymentLogo.innerHTML = `<img src="bri.png" alt="BRI" style="height:40px;">`;
+  }
+  else if (method === "ovo") {
+    paymentLogo.innerHTML = `<img src="ovo.png" alt="OVO" style="height:40px;">`;
+  }
+  else if (method === "gopay") {
+    paymentLogo.innerHTML = `<img src="gopay.png" alt="GoPay" style="height:40px;">`;
+  }
+}
+
+// fungsi download QRIS
+function downloadQRIS() {
+  const link = document.createElement("a");
+  link.href = "qris.jpg";  // path gambar
+  link.download = "qris.jpg";
+  link.click();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSy....",
+    authDomain: "users-96dc5.firebaseapp.com",
+    projectId: "users-96dc5",
+    storageBucket: "users-96dc5.appspot.com",
+    messagingSenderId: "483322415863",
+    appId: "1:483322415863:web:xxxxxx"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  async function handleDaftar(event) {
+    event.preventDefault();
+    const form = event.target;
+
+    const nama = form.nama.value;
+    const umur = form.umur.value;
+    const jk = form.jk.value;
+    const wa = form.wa.value;
+    const email = form.email.value;
+    const appName = form.app.value;
+    const bank = form.bank.value === "LAINNYA" ? form.bank_custom.value : form.bank.value;
+    const namaRek = form.nama_rek.value;
+    const noRek = form.no_rek.value;
+    const file = form.profil.files[0];
+
+    let fotoURL = "";
+    if (file) {
+      const storageRef = ref(storage, "profil/" + Date.now() + "-" + file.name);
+      await uploadBytes(storageRef, file);
+      fotoURL = await getDownloadURL(storageRef);
+    }
+
+    try {
+      await addDoc(collection(db, "pendaftaran"), {
+        nama, umur, jk, wa, email,
+        app: appName,
+        bank, namaRek, noRek,
+        fotoURL,
+        createdAt: new Date()
+      });
+
+      document.getElementById("status-daftar").innerText = "✅ Data berhasil dikirim!,untuk hasil akan kami hubungi melalui Whatsapp/Email dalam 2 hari kerja";
+      form.reset();
+    } catch (err) {
+      console.error("Error:", err);
+      document.getElementById("status-daftar").innerText = "❌ Gagal Mendaftar,(pendaftaran kami tolak)!";
+    }
+  }
+
+  // 🔥 aktifkan listener
+  document.getElementById("form-daftar").addEventListener("submit", handleDaftar);
+
+   // ✅ Popup kontrol
+  window.showLogiin = function() {
+    document.getElementById("loginPopup").style.display = "flex";
+  };
+  window.closeLogin = function() {
+    document.getElementById("loginPopup").style.display = "none";
+  };
+
+
+
+
+
+  // ✅ Proses Login
+  window.prosesLogin = async function() {
+    const email = document.getElementById("loginEmail").value.trim();
+    const wa = document.getElementById("loginWA").value.trim();
+    const status = document.getElementById("loginStatus");
+
+    if (!email || !wa) {
+      status.innerText = "Isi email dan nomor WA!";
+      return;
+    }
+
+    try {
+      const q = query(
+        collection(db, "pendaftaran"),
+        where("email", "==", email),
+        where("wa", "==", wa)
+      );
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        status.style.color = "green";
+        status.innerText = "✅ Login berhasil!";
+        
+        // ✅ Simpan user sementara (biar bisa dicek setelah PIN)
+        localStorage.setItem("loggedUser", email);
+
+        // ✅ Tampilkan popup PIN
+        document.getElementById("loginPopup").style.display = "none";
+        document.getElementById("pinPopup").style.display = "flex";
+
+      } else {
+        status.style.color = "blue";
+        status.innerText = "❌ Account host tidak terdaftar!";
+      }
+    } catch (e) {
+      console.error("Error login:", e);
+      status.innerText = "❌ Terjadi kesalahan!";
+    }
+  };
+
+ // ✅ Proses PIN
+window.prosesPIN = function() {
+  const pin = document.getElementById("loginPIN").value;
+  const correctPIN = "121212"; // default PIN
+
+  if (pin === correctPIN) {
+    alert("PIN benar! Selamat datang " + localStorage.getItem("loggedUser"));
+
+    // ✅ Sembunyikan popup PIN
+    document.getElementById("pinPopup").style.display = "none";
+
+    // ✅ Tampilkan MENU UTAMA
+    document.getElementById("mainApp").style.display = "block";
+
+    // Default buka halaman beranda
+    showPage('Beranda');
+  } else {
+    document.getElementById("pinStatus").innerText = "❌ PIN salah!";
+  }
+};
+
+</script>
+
+
+
+
+</body>
+</html>
