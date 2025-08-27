@@ -25,7 +25,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
-  margin: 0;
+  
   padding: 0;
 }
 
@@ -122,12 +122,20 @@ main{max-width:1100px; margin:18px auto 90px; padding:0 0px}
 
 .card{
   background:var(--card);
-  border:1px solid rgba(124,58,237,.2);
+  border:1px solid rgba(255, 255, 255, 0.2);
   border-radius:18px; padding:16px;
   box-shadow:0 8px 24px rgba(124,58,237,.15)
 }
-.card h2{margin:4px 0 12px; font-size:18px; color:var(--primary)}
-.muted{color:var(--muted); font-size:14px}
+.card h2 {
+  margin: 4px 0 12px;
+  font-size: 18px;
+  color: #ffffff;
+  text-align: center; /* bikin teks rata tengah */
+  background: #6b6b6b;
+  border-radius: 10px;
+
+
+}.muted{color:var(--muted); font-size:14px}
 
 /* ===== Forms ===== */
 label{font-size:20px; color:var(--primary-dark); display:block; margin:12px 0 6px}
@@ -156,15 +164,15 @@ input:focus,select:focus,textarea:focus{
   border-radius: 10px;
   padding: 15px;
   margin-top: 20px;
-  background: #fff;
+  background: #d1d1d1;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 .comment-box h2 {
   margin-top: 0;
-  color: #333;
+  color: #ffffff;
 }
 .comment-box p.muted {
-  color: #666;
+  color: #010101;
   font-size: 14px;
 }
 
@@ -215,8 +223,8 @@ input:focus,select:focus,textarea:focus{
 }
 
 .navbtn .nav-icon {
-  width: 20px;  /* atur ukuran sesuai kebutuhan */
-  height: 20px;
+  width: 40px;  /* atur ukuran sesuai kebutuhan */
+  height: 40px;
   margin-bottom: 4px; /* jarak antara icon dan teks */
   filter: invert(1) brightness(1.2);
 }
@@ -236,7 +244,7 @@ input:focus,select:focus,textarea:focus{
 
 /* Judul */
 #coinsModal h2 {
-  font-size: 28px;
+  font-size: 15px;
   font-weight: 800;
 }
 
@@ -281,8 +289,8 @@ input:focus,select:focus,textarea:focus{
 /* Select & Input */
 #coinsModal select,
 #coinsModal input {
-  font-size: 18px;
-  padding: 12px 14px;
+  font-size: 10px;
+  padding: 10px 10px;
   width: 100%;
   margin: 8px 0;
   border: 1px solid #aaa;
@@ -293,7 +301,7 @@ input:focus,select:focus,textarea:focus{
 
 /* Tombol */
 #coinsModal button {
-  font-size: 20px;
+  font-size: 10px;
   padding: 14px 20px;
   border-radius: 8px;
   font-weight: 600;
@@ -352,7 +360,7 @@ input:focus,select:focus,textarea:focus{
   background: var(--primary);
   color: #fff;
   cursor: pointer;
-  gap: 6px;
+  margin-top: 15px;
 }
 
 #form-daftar .btn:hover {
@@ -402,7 +410,7 @@ input:focus,select:focus,textarea:focus{
 .closeX {
   position: absolute;
   top: 15px; right: 20px;
-  font-size: 20px;
+  font-size: 10px;
   cursor: pointer;
 }
 
@@ -416,6 +424,14 @@ input:focus,select:focus,textarea:focus{
   text-align: center;
   color: #666;
   margin-bottom: 20px;
+  font-size: 10px;
+
+  /* tambahan untuk jadi box */
+  background: #f9f9f9;   /* warna latar */
+  border: 1px solid #ddd; /* garis kotak */
+  padding: 12px;          /* ruang dalam */
+  border-radius: 8px;     /* sudut melengkung */
+  display: inline-block;  /* supaya kotaknya pas dengan teks */
 }
 
 .btn-group {
@@ -585,17 +601,18 @@ input {
     .custom-select {
   border: 1px solid #ccc;
   border-radius: 6px;
-  background: #a8c4d5;
-  padding: 10px;
-  width: 520px;
+  background: #550973db;
+  padding: 1px;
+  width: 290px;
 }
 
 .option {
   display: flex;
   align-items: center;
-  padding: 8px;
+  padding: 5px;
   border-bottom: 1px solid #333;
   cursor: pointer;
+  color: #fff;
 }
 
 .option:last-child {
@@ -603,8 +620,8 @@ input {
 }
 
 .coin-icon {
-  width: 40px;
-  height: 40px;
+  width: 20px;
+  height: 20px;
   margin-right: 8px;
 }
 
@@ -643,7 +660,7 @@ border-radius:8px;}
 
   .btn-approve {
     background-color: yellow;
-    color: black;
+    color: rgb(136, 255, 0);
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
@@ -748,10 +765,10 @@ button[onclick="prosesTarik()"] {
 .menu-liist ul li {
   background: #180e0ef0; /* transparan putih */
   border-radius: 10px;
-  padding: 10px 14px;
+  padding: 7px 10px;
   font-weight: normal;
-  font-size: 18px;
-  margin-bottom: 6px;
+  font-size: 12px;
+  margin-bottom: 1px;
   cursor: pointer;
   color: #ddd;
   transition: color 0.2s;
@@ -1010,7 +1027,7 @@ button[onclick="prosesTarik()"] {
   font-size: 20px;
   font-weight: bold;
   color: #555;
-  margin-right: 90px;
+  margin-right: 40px;
 }
 
 /* Latar popup */
@@ -1051,7 +1068,7 @@ button[onclick="prosesTarik()"] {
   font-size: 20px;
   font-weight: bold;
   color: #555;
-  margin-right: 90px;
+  margin-right: 40px;
 }
 
 
@@ -1093,7 +1110,7 @@ button[onclick="prosesTarik()"] {
   font-size: 20px;
   font-weight: bold;
   color: #555;
-  margin-right: 90px;
+  margin-right: 40px;
 }
 
 /* Latar belakang popup */
@@ -1134,7 +1151,7 @@ button[onclick="prosesTarik()"] {
   font-size: 20px;
   font-weight: bold;
   color: #555;
-  margin-right: 90px;
+  margin-right: 40px;
 }
 
 
@@ -1176,7 +1193,7 @@ button[onclick="prosesTarik()"] {
   font-size: 20px;
   font-weight: bold;
   color: #555;
-  margin-right: 90px;
+  margin-right: 40px;
 }
 
 /* Latar belakang popup */
@@ -1217,7 +1234,7 @@ button[onclick="prosesTarik()"] {
   font-size: 20px;
   font-weight: bold;
   color: #555;
-  margin-right: 90px;
+  margin-right: 40px;
 }
 
 .host-box {
@@ -1246,7 +1263,7 @@ button[onclick="prosesTarik()"] {
 
 /* Box foto */
 .foto-box {
-  width: 100%; /* biar ikut grid */
+  width: 60%; /* biar ikut grid */
   aspect-ratio: 1 / 1; /* kotak */
   border: 2px solid #ddd;
   border-radius: 12px;
@@ -1273,13 +1290,15 @@ button[onclick="prosesTarik()"] {
   left: 0;
   width: 100%;
   height: 26%;
-  background: #fff;
+  background: #e7e7e7;
   box-shadow: 0 6px 16px rgba(0,0,0,0.3);
   transition: top 0.4s ease;
   z-index: 9999;
 }
 .popup.active { top: 0; }
-.popup-content { padding: 0px; font-family: Arial, sans-serif; }
+.popup-content { 
+  padding: 0px; 
+  font-family: Arial, sans-serif; }
 .close-btn { float: right; font-size: 20px; cursor: pointer; }
 
 .profile-header {
@@ -1323,8 +1342,8 @@ button[onclick="prosesTarik()"] {
 }
 
 .gift-section img {
-  width: 50px;
-  height: 50px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -1361,8 +1380,8 @@ button[onclick="prosesTarik()"] {
 }
 
 .action-icon {
-  width: 48px;
-  height: 48px;
+  width: 15px;
+  height: 15px;
   filter: invert(27%) sepia(77%) saturate(7475%) hue-rotate(267deg) brightness(95%) contrast(101%);
 }
 
@@ -1888,7 +1907,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <div class="grid">
       <!-- ===== Left: Registration Card (default visible on DAFTAR) ===== -->
       <section class="card" id="section-daftar">
-        <h2>Form Pendaftaran Host Agency</h2>
+        <h2>Form Pendaftaran Host</h2>
         <p class="muted">Lengkapi data berikut untuk mendaftar sebagai Host Agency TIGOHOST. Setelah mengirim, status akan muncul otomatis.</p>
 
 <form id="form-daftar">          <label>Nama Lengkap</label>
@@ -2179,8 +2198,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <span class="closeX" onclick="closeCoins()">Tutup ✕</span>
     <h2>MENU COIN APLIKASI</h2>
     <p class="muted">
-      Pilih aplikasi untuk membuka menu koin & form pembelian WhatsApp, ID Akun, 
-      Nama Akun, Nama Aplikasi, dan Pembayaran.
+      Coin dengan Diamond pada aplikasi tetap sama menjadi coin.
     </p>
 
     <!-- 🔹 Banner Offline -->
@@ -2383,7 +2401,7 @@ function renderApps(){
     const el = document.createElement('div');
     el.className = 'app';
     el.innerHTML = `
-      <img src="${app.logo}" alt="${app.nama}" style="width:50px;height:50px;border-radius:12px"><br>
+      <img src="${app.logo}" alt="${app.nama}" style="width:20px;height:20px;border-radius:12px"><br>
       <span style="font-weight:700">${app.nama}</span>`;
     el.onclick = ()=>openAppCoins(i);
     grid.appendChild(el);
