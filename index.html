@@ -69,7 +69,7 @@ header {
   width: 100%;
   z-index: 999;
   background: var(--primary);
-  border-radius:12px;
+  border-radius:3px;
 }
 
 
@@ -131,7 +131,7 @@ main{max-width:1100px; margin:18px auto 90px; padding:0 0px}
   font-size: 18px;
   color: #ffffff;
   text-align: center; /* bikin teks rata tengah */
-  background: #6b6b6b;
+  background: #b600ff;
   border-radius: 10px;
 
 
@@ -170,6 +170,9 @@ input:focus,select:focus,textarea:focus{
 .comment-box h2 {
   margin-top: 0;
   color: #ffffff;
+  text-align: center; /* bikin rata tengah */
+  background: #b600ff;
+  border-radius: 10px;
 }
 .comment-box p.muted {
   color: #010101;
@@ -231,7 +234,7 @@ input:focus,select:focus,textarea:focus{
 
 .navbtn.active {
   font-weight: bold;
-  color: rgb(255, 153, 0); /* contoh warna active */
+  color: rgb(255, 255, 255); /* contoh warna active */
 }
 
 /* ===== Fullscreen Coins Modal ===== */
@@ -327,8 +330,13 @@ input:focus,select:focus,textarea:focus{
 
 /* Perbesar semua isi form daftar */
 #form-daftar {
-  font-size: 10px; /* default teks dalam form */
-  line-height: 1.6;
+  background: #fff;           /* warna latar kotak */
+  border: 1px solid #ddd;     /* garis kotak */
+  padding: 20px;              /* ruang dalam */
+  border-radius: 12px;        /* sudut melengkung */
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* bayangan halus */
+  max-width: 500px;           /* lebar maksimal */
+  margin: -10px auto;          /* biar center di tengah */
 }
 
 /* Label */
@@ -376,7 +384,7 @@ input:focus,select:focus,textarea:focus{
 
 /* Help text */
 #form-daftar .help {
-  font-size: 16px;
+  font-size: 10px;
   color: #666;
   margin-top: 12px;
 }
@@ -418,6 +426,7 @@ input:focus,select:focus,textarea:focus{
   text-align: center;
   font-size: 14px;
   font-weight: bold;
+  color: rgb(255, 255, 255);
 }
 
 .muted {
@@ -825,6 +834,7 @@ button[onclick="prosesTarik()"] {
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.3);
   font-family: Arial, sans-serif;
+  font-size: 10px;
 }
 
 .kontak-box h2 {
@@ -875,6 +885,7 @@ button[onclick="prosesTarik()"] {
   transition: transform 0.4s ease;
   font-family: Arial, sans-serif;
   overflow-y: auto;
+  font-size: 10px;
 }
 
 /* ketika aktif */
@@ -918,6 +929,7 @@ button[onclick="prosesTarik()"] {
   transition: transform 0.4s ease;
   font-family: Arial, sans-serif;
   overflow-y: auto;
+  font-size: 10px;
 }
 
 /* kalau aktif */
@@ -960,6 +972,7 @@ button[onclick="prosesTarik()"] {
   transition: transform 0.4s ease;
   font-family: Arial, sans-serif;
   overflow-y: auto;
+  font-size: 10px;
 }
 
 /* kalau aktif */
@@ -1002,6 +1015,7 @@ button[onclick="prosesTarik()"] {
   transition: transform 0.4s ease;
   font-family: Arial, sans-serif;
   overflow-y: auto;
+  font-size: 10px;
 }
 
 /* kalau aktif */
@@ -1055,6 +1069,7 @@ button[onclick="prosesTarik()"] {
   transition: transform 0.4s ease;
   font-family: Arial, sans-serif;
   overflow-y: auto;
+  font-size: 10px;
 }
 
 /* kalau aktif */
@@ -1097,6 +1112,7 @@ button[onclick="prosesTarik()"] {
   transition: transform 0.4s ease;
   font-family: Arial, sans-serif;
   overflow-y: auto;
+  font-size: 10px;
 }
 
 /* Aktif turun dari atas */
@@ -1138,6 +1154,7 @@ button[onclick="prosesTarik()"] {
   transition: transform 0.4s ease;
   font-family: Arial, sans-serif;
   overflow-y: auto;
+  font-size: 10px;
 }
 
 /* Aktif turun dari atas */
@@ -1180,6 +1197,7 @@ button[onclick="prosesTarik()"] {
   transition: transform 0.4s ease;
   font-family: Arial, sans-serif;
   overflow-y: auto;
+  font-size: 10px;
 }
 
 /* Aktif turun dari atas */
@@ -1221,6 +1239,7 @@ button[onclick="prosesTarik()"] {
   transition: transform 0.4s ease;
   font-family: Arial, sans-serif;
   overflow-y: auto;
+  font-size: 10px;
 }
 
 /* Aktif turun dari atas */
@@ -1263,8 +1282,7 @@ button[onclick="prosesTarik()"] {
 
 /* Box foto */
 .foto-box {
-  width: 60%; /* biar ikut grid */
-  aspect-ratio: 1 / 1; /* kotak */
+  aspect-ratio: 1 / 1;
   border: 2px solid #ddd;
   border-radius: 12px;
   overflow: hidden;
@@ -1314,7 +1332,7 @@ button[onclick="prosesTarik()"] {
 }
 .host-logo {
   margin-left: auto;
-  width: 50px;
+  width: 30px;
   border-radius: 17px;
 }
 .action-icon {
@@ -1323,7 +1341,25 @@ button[onclick="prosesTarik()"] {
   filter: invert(27%) sepia(77%) saturate(7475%) hue-rotate(267deg) brightness(95%) contrast(101%);
 }
 
-.level { color: #ff0000; font-size: 14px; }
+.level-wrap {
+  display: flex;
+  align-items: center;   /* biar sejajar vertikal */
+  gap: 6px;              /* jarak antara logo & teks level */
+  margin-top: 15px;
+}
+
+.level-logo {
+  width: 14px; 
+  height: 14px;
+  object-fit: contain;
+}
+
+.level {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0;
+  color: #444; /* bisa kamu sesuaikan */
+}
 
 .gift-box {
   background: #a948c2; /* warna box */
@@ -1449,6 +1485,55 @@ button[onclick="prosesTarik()"] {
   border-radius: 10px;
 }
 
+
+.offline-wrap {
+  display: flex;
+  align-items: center;   /* sejajarkan logo & teks di tengah */
+  gap: 6px;              /* jarak antara logo & teks */
+}
+
+.offline-logo {
+  width: 15px;           /* atur ukuran logo biar kecil */
+  height: 15px;
+  object-fit: contain;   /* biar proporsional */
+}
+
+.country {
+  font-size: 10px;
+  color: #000000;
+}
+
+.verify-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1px;      /* jarak antara logo & teks */
+  margin-top: -18px;
+  background: #9e9d9d;
+}
+
+.verify-logo {
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+}
+
+.verify {
+  font-size: 9px;
+  font-weight: 600;
+  color: rgb(255, 255, 255);
+}
+
+.age {
+  background: purple;
+  color: #fff;
+  padding: 1px 5px;
+  border-radius: 6px;
+  font-size: 8px;
+  display: inline-block;
+  margin: 0;
+  position: relative;
+  top: -6px; /* naik ke atas */
+}
 
   </style>
 </head>
@@ -1995,11 +2080,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
   <div class="foto-box" onclick="openProfile(3)">
     <img src="athia.jpeg" alt="Host 4">
   </div>
-
 </div>
-
-
-
 
 <!-- POPUP PROFIL -->
 <div id="profilePopup" class="popup">
@@ -2007,37 +2088,64 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <span class="close-btn" onclick="closeProfile()">✕</span>
     
     <div class="profile-header">
+      <!-- Foto profil -->
       <img id="popupAvatar" src="" class="profile-pic">
+      
+      <!-- Nama, umur, verifikasi -->
       <div>
         <h3 id="popupName"></h3>
-        <p id="popupLevel" class="level"></p>
+        <p id="popupAge" class="age"></p>
+        <div class="verify-wrap">
+          <div class="verify-wrap">
+  <span id="popupVerify" class="verify"></span>
+  <img src="verify_icon.png" class="verify-logo" alt="Offline">
+</div>
+        </div>
+        <div class="level-wrap">
+  <img src="level1.png" class="level-logo" alt="Offline">
+  <p id="popupLevel" class="level"></p>
+</div>
       </div>
-      <img src="agencylogo.png" class="host-logo" alt="Host Logo">
+
+      <!-- Logo host + offline + Indonesia -->
+      <div class="right-info">
+        <img src="agencylogo.png" class="host-logo" alt="Host Logo">
+        
+<div class="offline-wrap">
+  <img src="indonesialogo.png" class="offline-logo" alt="Offline">
+  <span class="country">Indonesia</span>
+</div>
+        </div>
+      </div>
     </div>
 
-<div class="gift-box">
-  <div class="gift-section">
-    <img src="giftring.png" alt="Gift 1">
-    <img src="giftkiss.png" alt="Gift 2">
-    <img src="giftbear.png" alt="Gift 3">
-    <img src="gift_103.png" alt="Gift 4">
-    <img src="gift_14.png" alt="Gift 5">
-    <img src="giftlambor.png" alt="Gift 6">
-    <img src="gift_58.png" alt="Gift 7">
-    <img src="gift_77.png" alt="Gift 8">
+    <!-- Gift -->
+    <div class="gift-box">
+      <div class="gift-section">
+        <img src="giftring.png" alt="Gift 1">
+        <img src="giftkiss.png" alt="Gift 2">
+        <img src="giftbear.png" alt="Gift 3">
+        <img src="gift_103.png" alt="Gift 4">
+        <img src="gift_14.png" alt="Gift 5">
+        <img src="giftlambor.png" alt="Gift 6">
+        <img src="gift_58.png" alt="Gift 7">
+        <img src="gift_77.png" alt="Gift 8">
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="action-btns">
+      <div class="icon-box" onclick="showLoginAlert()">
+        <img src="pesanlogo.png" class="action-icon" alt="Chat">
+      </div>
+      <div class="icon-box" onclick="showLoginAlert()">
+        <img src="vudeo.png" class="action-icon" alt="Video Call">
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="action-btns">
-  <div class="icon-box" onclick="showLoginAlert()">
-    <img src="pesanlogo.png" class="action-icon" alt="Chat">
-  </div>
-  <div class="icon-box" onclick="showLoginAlert()">
-    <img src="vudeo.png" class="action-icon" alt="Video Call">
-  </div>
-</div>
-  </div>
-</div>
+<!-- Notifikasi login -->
 <div id="notifPopup" class="notif-popup">
   <div class="notif-box">
     <h3>⚠️ Login Diperlukan</h3>
@@ -2261,7 +2369,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
   </div>
 </div>
 
-  <div id="detailHarga" style="margin:10px 0; font-size: 17px; font-weight:600; color:var(--primary-dark)"></div>
+  <div id="detailHarga" style="margin:10px 0; font-size: 10px; font-weight:600; color:var(--primary-dark)"></div>
 
 <form onsubmit="handleCoinPurchase(event)">
   <input type="text" name="id_app" placeholder="ID Aplikasi" required><br>
@@ -2308,7 +2416,7 @@ const APLIKASI = [
   },
     {
     nama: "Bling",
-    logo: "Blinglogo.webp",
+    logo: "bling.webp",
     paket: [
       { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
       { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
@@ -2945,16 +3053,28 @@ function closeRefundCoin(){
 
 
 const profiles = [
-  {name:'Bella', level:'Level 3', avatar:'cewek10.jpeg'},
-  {name:'Angel winka', level:'Level 4', avatar:'cewek11.jpeg'},
-  {name:'Syila boes', level:'Level 2', avatar:'cewek12.jpg'},
-  {name:'Tylist', level:'Level 3', avatar:'athia.jpeg'},
+  {name:'Bella', age:22, level:'Level 3', verified:true, avatar:'cewek10.jpeg'},
+  {name:'Angel winka', age:24, level:'Level 4', verified:false, avatar:'cewek11.jpeg'},
+  {name:'Syila boes', age:21, level:'Level 2', verified:true, avatar:'cewek12.jpg'},
+  {name:'Tylist', age:23, level:'Level 3', verified:false, avatar:'athia.jpeg'},
 ];
 
 function openProfile(i){
-  document.getElementById('popupAvatar').src = profiles[i].avatar;
-  document.getElementById('popupName').innerText = profiles[i].name;
-  document.getElementById('popupLevel').innerText = profiles[i].level;
+  const p = profiles[i];
+  document.getElementById('popupAvatar').src = p.avatar;
+  document.getElementById('popupName').innerText = p.name;
+  document.getElementById('popupAge').innerText = "Umur: " + p.age;
+  document.getElementById('popupLevel').innerText = p.level;
+
+const verifyEl = document.getElementById('popupVerify');
+if (p.verified) {
+  verifyEl.innerText = "Terverifikasi";
+  verifyEl.style.color = "black";
+} else {
+  verifyEl.innerText = "Terverifikasi";
+  verifyEl.style.color = "black";
+}
+
   document.getElementById('profilePopup').classList.add('active');
 }
 
@@ -2962,14 +3082,12 @@ function closeProfile(){
   document.getElementById('profilePopup').classList.remove('active');
 }
 
-
 function showLoginAlert() {
   document.getElementById("notifPopup").style.display = "flex";
 }
 function closeNotif() {
   document.getElementById("notifPopup").style.display = "none";
 }
-
 
 
 
