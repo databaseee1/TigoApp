@@ -2,7 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
   <title>PT. AGENCY TIGOHOST INDONESIA</title>
  
   <style>
@@ -50,8 +51,14 @@ body {
   background: var(--bg);
   color: #1f2937;
   padding-bottom: 70px; /* sesuaikan tinggi nav fixed di bawah */
-  margin: 0;
   padding-top: 70px;
+  margin: 0;
+
+  /* Nonaktifkan seleksi teks */
+  user-select: none;          
+  -webkit-user-select: none;  /* Chrome, Safari */
+  -moz-user-select: none;     /* Firefox */
+  -ms-user-select: none;      /* IE/Edge */
 }
 
 
@@ -190,7 +197,7 @@ input:focus,select:focus,textarea:focus{
   background:linear-gradient(135deg,var(--primary),#16a34a)}
 .cname{font-weight:700; color:var(--primary-dark)}
 .vbadge{
-  font-size:11px; color:#fff;
+  font-size:8px; color:#fff;
   background:var(--success);
   padding:2px 6px; border-radius:999px; margin-left:6px
 }
@@ -2416,7 +2423,7 @@ const APLIKASI = [
   },
     {
     nama: "Bling",
-    logo: "bling.webp",
+    logo: "bling.webpgit",
     paket: [
       { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
       { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
@@ -2667,7 +2674,7 @@ function renderComments(){
         <div class="row" style="justify-content:space-between">
           <div>
             <span class="cname">${k.nama}</span>
-            ${k.verified?'<span class="vbadge">✔ Terverifikasi</span>':''}
+            ${k.verified?'<span class="vbadge">Terverifikasi</span>':''}
           </div>
           <div class="cdate">${k.tanggal}</div>
         </div>
@@ -3136,6 +3143,17 @@ function downloadQRIS() {
 }
 
 
+
+
+// cegah klik kanan
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// cegah Ctrl+C, Ctrl+X, Ctrl+V
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && ['c','x','v','a'].includes(e.key.toLowerCase())) {
+    e.preventDefault();
+  }
+});
 
 
 
