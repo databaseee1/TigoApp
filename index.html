@@ -2189,118 +2189,15 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
       <span>Daftar</span>
     </div>
 
-<div class="navbtn" id="nav-Logiin" onclick="showLogiin()">
+<div class="navbtn" id="nav-Logiin" onclick="window.location.href='https://databaseee1.github.io/TigoApp/users/html.html';">
   <img src="account.png" alt="icon" class="nav-icon">
   <span>Saya</span>
 </div>
+
+
   </div>
 </nav>
 
-<!-- Popup Login -->
-<!-- POPUP LOGIN -->
-<div id="loginPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgb(165, 163, 163); justify-content:center; align-items:center;">
-  <div style="background:#b534d8cb; padding:20px; border-radius:10px; width:300px; text-align:center;">
-    <h2 class="login-title">Login Akun Host</h2>
-    <input type="text" id="loginEmail" placeholder="Email" style="width:100%; padding:10px; margin:10px 0;">
-    <input type="text" id="loginWA" placeholder="Nomor WhatsApp" style="width:100%; padding:10px; margin:10px 0;">
-    <button onclick="prosesLogin()" style="width:100%; padding:10px; background:#007bff; color:#fff; border:none; border-radius:5px;">Login</button>
-    <div id="loginStatus" style="color:red; margin-bottom:10px;"></div>
-
-    <br><br>
-    <button onclick="closeLogin()" style="background:red; color:#fff; padding:5px 10px; border:none; border-radius:5px;">Tutup</button>
-  </div>
-</div>
-
-<!-- POPUP PIN -->
-<div id="pinPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;">
-  <div style="background:#fff; padding:20px; border-radius:10px; width:300px; text-align:center;">
-    <h2>Masukkan PIN</h2>
-    <input type="password" id="loginPIN" maxlength="6" placeholder="PIN 6 digit" style="width:100%; padding:10px; margin:10px 0; text-align:center; font-size:20px; letter-spacing:5px;">
-    <button onclick="prosesPIN()" style="width:100%; padding:10px; background:green; color:#fff; border:none; border-radius:5px;">Verifikasi PIN</button>
-    <div id="pinStatus" style="color:red; margin-bottom:10px;"></div>
-  </div>
-</div>
-
-  <!-- MAIN APP (hidden dulu) -->
-  <div id="mainApp" style="display:none; height:100%;">
-    
-    <!-- Beranda -->
-    <div id="pageBeranda" class="content active">
-      <h2>Ini Beranda</h2>
-      <p>Selamat datang di aplikasi!</p>
-    </div>
-
-    <!-- Saya -->
-    <div id="pageSaya" class="content">
-      <div class="profile-header">
-        <img src="tigogambar.webp" alt="Profil" class="profile-pic">
-        <div class="profile-info">
-          <h3>IZUNA WINATTA</h3>
-
-<!-- Saldo Box -->
-<div class="saldo-box" id="saldoBox">
-  <p id="saldoText">
-  <img src="wallet.png" alt="Offline" style="width:20px; height:20px; vertical-align:middle; margin-right:4px;">
-  Rp <span id="saldoNominal">7000000</span>
-</p>
-</div>
-<button class="btn-tarik" onclick="openWithdraw()">Tarik</button>
-<button class="btn-kembali" onclick="kembalikanSaldo()">Kembalikan Saldo</button>
-
-<!-- Popup Withdraw -->
-<div id="withdrawPopup" class="popup">
-  <div class="popup-content">
-    <h3>Form Penarikan</h3>
-    <label>Nama Bank</label>
-    <select id="bank">
-      <option value="">-- Pilih Bank --</option>
-      <option>BRI</option>
-      <option>BCA</option>
-      <option>Mandiri</option>
-      <option>DANA</option>
-      <option>GoPay</option>
-      <option>OVO</option>
-      <option>LinkAja</option>
-      <option>BSI</option>
-    </select>
-
-    <label>Nomor Rekening</label>
-    <input type="text" id="norek" placeholder="Masukkan No Rekening">
-
-    <label>Nama Rekening</label>
-    <input type="text" id="namarek" placeholder="Masukkan Nama Rekening">
-
-    <label>Jumlah Penarikan</label>
-    <input type="number" id="jumlah" placeholder="Masukkan jumlah saldo">
-
-    <button onclick="prosesTarik()">Tarik Sekarang</button>
-    <button onclick="closeWithdraw()" class="close-btn">Batal</button>
-  </div>
-</div>
-  </div>
-      </div>
-<!-- RIWAYAT PENARIKAN -->
-<div class="riwayat-box">
-  <h3>Riwayat Penarikan</h3>
-  <ul id="riwayatList"></ul>
-</div>
-      <div class="menu-list">
-        <div class="menu-item"><span class="menu-icon">👤</span> Saldo Saya</div>
-        <div class="menu-item"><span class="menu-icon">💬</span> Stelan Obrolan</div>
-        <div class="menu-item"><span class="menu-icon">⭐</span> Level Saya</div>
-        <div class="menu-item"><span class="menu-icon">📊</span> Rating Saya</div>
-        <div class="menu-item"><span class="menu-icon">👑</span> Menjadi VIP</div>
-        <div class="menu-item"><span class="menu-icon">💸</span> Undang Untuk Mendapatkan Uang</div>
-        <div class="menu-item"><span class="menu-icon">⚙️</span> Stelan Aplikasi</div>
-      </div>
-    </div>
-
-    <!-- Navigasi -->
-    <div class="bottom-nav">
-      <button id="btnBeranda" class="active" onclick="showPage('pageBeranda', this)">WELCOME</button>
-      <button id="btnSaya" onclick="showPage('pageSaya', this)">AKUN SAYA</button>
-    </div>
-  </div>
 
 
 
@@ -3298,67 +3195,7 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstati
 
 
 
-  // ✅ Proses Login
-  window.prosesLogin = async function() {
-    const email = document.getElementById("loginEmail").value.trim();
-    const wa = document.getElementById("loginWA").value.trim();
-    const status = document.getElementById("loginStatus");
-
-    if (!email || !wa) {
-      status.innerText = "Isi email dan nomor WA!";
-      return;
-    }
-
-    try {
-      const q = query(
-        collection(db, "pendaftaran"),
-        where("email", "==", email),
-        where("wa", "==", wa)
-      );
-      const querySnapshot = await getDocs(q);
-
-      if (!querySnapshot.empty) {
-        status.style.color = "green";
-        status.innerText = "✅ Login berhasil!";
-        
-        // ✅ Simpan user sementara (biar bisa dicek setelah PIN)
-        localStorage.setItem("loggedUser", email);
-
-        // ✅ Tampilkan popup PIN
-        document.getElementById("loginPopup").style.display = "none";
-        document.getElementById("pinPopup").style.display = "flex";
-
-      } else {
-        status.style.color = "blue";
-        status.innerText = "❌ Account host tidak terdaftar!";
-      }
-    } catch (e) {
-      console.error("Error login:", e);
-      status.innerText = "❌ Terjadi kesalahan!";
-    }
-  };
-
- // ✅ Proses PIN
-window.prosesPIN = function() {
-  const pin = document.getElementById("loginPIN").value;
-  const correctPIN = "121212"; // default PIN
-
-  if (pin === correctPIN) {
-    alert("PIN benar! Selamat datang " + localStorage.getItem("loggedUser"));
-
-    // ✅ Sembunyikan popup PIN
-    document.getElementById("pinPopup").style.display = "none";
-
-    // ✅ Tampilkan MENU UTAMA
-    document.getElementById("mainApp").style.display = "block";
-
-    // Default buka halaman beranda
-    showPage('Beranda');
-  } else {
-    document.getElementById("pinStatus").innerText = "❌ PIN salah!";
-  }
-};
-
+ 
 </script>
 
 
