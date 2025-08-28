@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Panel - TigoHost</title>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSy....",
+  authDomain: "users-96dc5.firebaseapp.com",
+  projectId: "users-96dc5",
+  storageBucket: "users-96dc5.appspot.com",
+  messagingSenderId: "483322415863",
+  appId: "1:483322415863:web:xxxxxx"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ===== LOGIN USER =====
+window.loginUser = async function() {
+  const email = document.getElementById("loginEmail").value.trim();
+  const wa = document.getElementById("loginWA").value.trim();
+  const status = document.getElementById("loginStatus");
+  if(!email||!wa){ status.innerText="Isi email & WA!"; return; }
+
+  try{
+    const q = query(collection(db,"pendaftaran"),where("email","==",email),where("wa","==",wa));
+    const snap = await getDocs(q);
+    if(!snap.empty){
+      const userDoc = snap.docs[0];
+      localStorage.setItem("loggedUserId",userDoc.id);
+      document.getElementById("loginPage").style.display="none";
+      document.getElementById("userPage").style.display="block";
+      loadUserData(userDoc.id);
+    }else{ status.innerText="❌ User tidak ditemukan!"; }
+  }catch(e){ console.error(e); status.innerText="❌ Terjadi kesalahan!"; }
+};
+
+// ===== LOAD USER DATA =====
+async function loadUserData(userId){
+  const userRef = doc(db,"pendaftaran",userId);
+  onSnapshot(userRef, docSnap=>{
+    const data = docSnap.data()||{};
+    document.getElementById("saldoNominal").innerText = data.saldo||0;
+
+    const riwayatList = document.getElementById("riwayatList");
+    riwayatList.innerHTML = "";
+    const riwayat = Array.isArray(data.riwayat)?data.riwayat:[];
+
+    riwayat.forEach((item,index)=>{
+      const li = document.createElement("li");
+      li.innerHTML = `
+        ${item.jumlah} - ${item.bank} - 
+        <span style="color:${item.color||'black'}">${item.status||''}</span>
+      `;
+      riwayatList.appendChild(li);
+    });
+  });
+}
+// ===== PROSES TARIK =====
+window.prosesTarik = async function(){
+  const bank=document.getElementById("bank").value;
+  const norek=document.getElementById("norek").value.trim();
+  const namarek=document.getElementById("namarek").value.trim();
+  const jumlah=parseInt(document.getElementById("jumlah").value);
+  const statusP=document.getElementById("tarikStatus");
+  if(!bank||!norek||!namarek||isNaN(jumlah)||jumlah<=0){ statusP.innerText="Isi semua form dengan benar!"; return; }
+
+  const userId=localStorage.getItem("loggedUserId");
+  const userRef=doc(db,"pendaftaran",userId);
+  const userSnap=await getDoc(userRef);
+  const userData=userSnap.data()||{};
+  if((userData.saldo||0)<jumlah){ statusP.innerText="Saldo tidak cukup!"; return; }
+
+  const riwayat=Array.isArray(userData.riwayat)?userData.riwayat:[];
+  riwayat.push({ bank,norek,namarek,jumlah,status:"Proses",color:"orange",createdAt:new Date() });
+
+  await updateDoc(userRef,{
+    saldo:(userData.saldo||0)-jumlah,
+    riwayat
+  });
+
+  statusP.innerText="✅ Permintaan penarikan berhasil dikirim!";
+  document.getElementById("bank").value="";
+  document.getElementById("norek").value="";
+  document.getElementById("namarek").value="";
+  document.getElementById("jumlah").value="";
+};
+
+// ===== SET STATUS APPROVE / TOLAK =====
+window.setStatus = async function(userId, index, status){
+  const userRef = doc(db,"pendaftaran",userId);
+  const userSnap = await getDoc(userRef);
+  const userData = userSnap.data()||{};
+  
+  // Pastikan riwayat selalu array
+  const riwayat = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
+
+  if(!riwayat[index]) return;
+
+  // Update status dan warna
+  riwayat[index] = {
+    ...riwayat[index],
+    status: status,
+    color: status === "Berhasil" ? "green" : status === "Ditolak" ? "red" : "orange"
+  };
+
+  // Hitung saldo baru jika ditolak
+  let newSaldo = userData.saldo || 0;
+  if(status === "Ditolak") newSaldo += riwayat[index].jumlah;
+
+  // Update ke Firestore
+  await updateDoc(userRef, {
+    riwayat: riwayat,
+    saldo: newSaldo
+  });
+};
+
+// ===== LOGOUT =====
+window.logout = function(){
+  localStorage.removeItem("loggedUserId");
+  document.getElementById("userPage").style.display="none";
+  document.getElementById("loginPage").style.display="block";
+};
+
+
+document.getElementById("creditBox").addEventListener("click",()=>{
+  const tarikSection=document.getElementById("tarikSection");
+  tarikSection.style.display=tarikSection.style.display==="none"?"block":"none";
+});
+</script>
+
+<style>
+
+body {
+  font-family: Arial;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 0;
+
+  /* kasih jarak setinggi header */
+  padding-top: 60px; 
+}
+
+
+
+.container{max-width:500px;margin:50px auto;padding:20px;background:#fff;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);}
+h2,h3{margin-top:0;}
+input,select,button{width:95%;padding:8px;margin:5px 0;border-radius:5px;border:1px solid #ccc;}
+button{background:#007bff;color:#fff;border:none;cursor:pointer;}
+button:hover{background:#0056b3;}
+ul{padding-left:20px;}
+li{margin-bottom:5px;}
+li button{margin-left:5px;padding:2px 6px;font-size:12px;}
+
+
+
+.user-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.user-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  background: #fff;
+  cursor: pointer;
+}
+
+.user-card img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  height: 160px;
+}
+
+.user-info {
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+.user-name {
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* jarak nama dengan titik */
+}
+
+.online-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #00c853; /* hijau */
+  border-radius: 50%;
+  display: inline-block;
+}
+
+
+.user-country {
+  display: flex;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #333;
+  margin-right: 5px;
+}
+
+.user-country .country-name {
+  margin-left: 5px;
+}
+
+.flag-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(to bottom, #ff0000 50%, #ffffff 50%);
+  border: 1px solid #ccc;
+  display: inline-block;
+}
+
+.country-name {
+  color: #ffffff;
+}
+.chat-btn {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background: #6c5ce7;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.chat-btn img.chat-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Tombol chat */
+.chat-btn {
+  background: #6a5af9;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.chat-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.bottom-right {
+  position: fixed;
+  bottom: 15px;
+  right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* jarak antar elemen */
+  z-index: 9999;
+}
+
+
+
+/* Navigasi bawah */
+#bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid #ccc;
+  padding: 8px 0;
+  box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+  z-index: 9999; /* biar selalu di atas konten */
+}
+
+#bottomNav img {
+  width: 24px;
+}
+
+/* Supaya konten tidak ketiban navbar */
+.navPage, #userPage {
+  padding-bottom: 70px; /* lebih besar dari tinggi navbar */
+}
+
+
+
+
+    /* Header */
+.header {
+  display: none; /* awalnya disembunyikan */
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+
+  /* Biar beku di atas */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 95%;
+  z-index: 1000;
+}
+
+    .header-tabs {
+      display: flex;
+      gap: 12px;
+      font-size: 18px;
+    }
+
+    .tab {
+      color: #888;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: #000;
+      font-weight: bold;
+    }
+
+    .header-icon {
+      font-size: 22px;
+      cursor: pointer;
+      color: #333;
+    }
+
+
+
+
+
+
+
+
+    .dunia-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: white;
+  border-bottom: 1px solid #eee;
+}
+
+.dunia-header .logo {
+  font-weight: bold;
+  font-size: 18px;
+}
+.dunia-header .coin {
+  background: orange;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  margin-left: 5px;
+}
+
+.dunia-header .menu {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.dunia-header .profile {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.user-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+.user-card {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+.user-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+.user-info {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  color: #fff;
+  font-size: 12px;
+}
+.user-info .status.online {
+  background: green;
+  padding: 2px 6px;
+  border-radius: 5px;
+  margin-left: 5px;
+}
+
+.video-section {
+  text-align: center;
+  margin-top: 20px;
+}
+.avatar-center img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid #6a5acd;
+}
+.video-btn {
+  margin-top: 15px;
+  background: #6a5afd;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.info {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #888;
+}
+
+
+
+.search-loading img {
+  width: 80px;      /* bisa sesuaikan */
+  height: 80px;
+  animation: spin 2s linear infinite; /* efek mutar */
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.profile-pic {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 14px;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.name {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.age, .country {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.level, .verify {
+  font-size: 14px;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: red; /* merah = offline, hijau bisa online */
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.age, .country {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.age .icon, 
+.country .icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+
+
+
+
+
+
+</style>
+</head>
+<body>
+
+  <!-- HEADER (muncul hanya setelah login) -->
+<div class="header" id="mainHeader" style="display:none;">
+  <div class="header-tabs">
+    <div class="tab active">Orang</div>
+    <div class="tab">Pesta</div>
+  </div>
+<div class="header-icon">
+  <img src="more.png" alt="Offline" style="width:24px; height:24px;">
+</div>
+</div>
+
+<!-- LOGIN PAGE -->
+<div class="container" id="loginPage">
+  <h2>Login User</h2>
+  <input type="email" id="loginEmail" placeholder="Email">
+  <input type="text" id="loginWA" placeholder="Nomor WA">
+  <button onclick="loginUser()">Login</button>
+  <p id="loginStatus" style="color:red;"></p>
+</div>
+
+
+
+<!-- USER PAGE -->
+<div id="userPage" style="display:none;">
+  <!-- NAVIGASI BAWAH -->
+  <div id="bottomNav" style="position:fixed; bottom:0; left:0; width:100%; background:#fff; display:flex; justify-content:space-around; border-top:1px solid #ccc; padding:8px 0; box-shadow:0 -2px 4px rgba(0,0,0,0.1);">
+    <div class="nav-item" onclick="showPageNav('play')">
+      <img src="wallet.png" alt="Play" style="width:24px;"><br>
+      <small>Play</small>
+    </div>
+    <div class="nav-item" onclick="showPageNav('dunia')">
+      <img src="dunia.png" alt="Dunia" style="width:24px;"><br>
+      <small>Dunia</small>
+    </div>
+    <div class="nav-item" onclick="showPageNav('chat')">
+      <img src="cahtnav.png" alt="Chat" style="width:24px;"><br>
+      <small>Chat</small>
+    </div>
+    <div class="nav-item" onclick="showPageNav('saya')">
+      <img src="account.png" alt="Saya" style="width:24px;"><br>
+      <small>Saya</small>
+    </div>
+  </div>
+
+  <!-- HALAMAN NAVIGASI -->
+<div id="pagePlay" class="navPage" style="display:none; padding-bottom:60px;">
+  <div class="user-grid">
+
+    <!-- User Card 1-->
+    <div class="user-card">
+      <img src="cewek11.jpeg" alt="Raka Hidra">
+      <div class="user-info">
+      <span class="user-name">
+      <span class="online-dot"></span>
+       Raka Hidra
+      </span>   
+
+       <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+    <!-- User Card 2-->
+    <div class="user-card">
+      <img src="cewek10.jpeg" alt="kabutoo29">
+      <div class="user-info">
+      <span class="online-dot"></span>
+      konbrut
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+    <!-- User Card 3-->
+    <div class="user-card">
+      <img src="andrea.jpeg" alt="only_pe2k">
+      <div class="user-info">
+      <span class="online-dot"></span>
+       Raka loyo
+      </span>           <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+    <!-- User Card 4-->
+    <div class="user-card">
+      <img src="alin.jpeg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+        <!-- User Card 5-->
+    <div class="user-card">
+      <img src="cewek13.jpeg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+        <!-- User Card 6-->
+    <div class="user-card">
+      <img src="cewek14.jpeg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+        <!-- User Card 7-->
+    <div class="user-card">
+      <img src="cewek15.jpeg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+        <!-- User Card 8-->
+    <div class="user-card">
+      <img src="cewek16.jpeg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+        <!-- User Card 9-->
+    <div class="user-card">
+      <img src="cewek20.jpg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+        <!-- User Card 10-->
+    <div class="user-card">
+      <img src="cewek21.jpeg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+
+            <!-- User Card 11-->
+    <div class="user-card">
+      <img src="cewek22.jpeg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+
+            <!-- User Card 12-->
+    <div class="user-card">
+      <img src="cewek23.jpeg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+
+
+                <!-- User Card 13-->
+    <div class="user-card">
+      <img src="cewek24.jpeg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+
+                <!-- User Card 14-->
+    <div class="user-card">
+      <img src="cewek25.jpeg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+
+                <!-- User Card 15-->
+    <div class="user-card">
+      <img src="cewek26.jpg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+
+                <!-- User Card 16-->
+    <div class="user-card">
+      <img src="cewek27.jpeg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+
+                <!-- User Card 17-->
+    <div class="user-card">
+      <img src="cewek28.jpeg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+
+                <!-- User Card 18-->
+    <div class="user-card">
+      <img src="cewek29.jpeg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+
+                <!-- User Card 19-->
+    <div class="user-card">
+      <img src="cewek30.jpeg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+
+
+                <!-- User Card 20-->
+    <div class="user-card">
+      <img src="cewek31.jpeg" alt="aditya">
+      <div class="user-info">
+              <span class="online-dot"></span>
+       adityapek
+      </span>   
+        <span class="user-country">
+          <span class="flag-circle"></span>
+          <span class="country-name">Indonesia</span>
+        </span>
+      </div>
+      <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+    </div>
+    <!-- Tambah user-card lain sesuai kebutuhan -->
+
+  </div>
+</div>
+
+
+
+<!-- Dunia Page -->
+<div id="pageDunia" class="navPage" style="display:none; padding-bottom:60px;">
+
+  <!-- Header -->
+  <div class="dunia-header">
+    <div class="logo">Tigo <span class="coin">1020</span></div>
+    <div class="menu">
+      <button class="btn">+</button>
+      <button class="btn">History</button>
+      <img src="account.png" alt="Profile" class="profile">
+    </div>
+  </div>
+
+<!-- Container -->
+<div class="user-container">
+  <!-- Daftar User -->
+  <div class="user-grid">
+    <div class="user-card">
+      <img src="loadingfoto.png" alt="Charlotte">
+      <div class="user-info">
+        <span class="name">user</span>
+        <span class="flag">🇮🇳 India</span>
+        <span class="status online">Online</span>
+      </div>
+    </div>
+    
+
+    <!-- duplikat list biar looping halus -->
+    <div class="user-card">
+      <img src="loadingfoto.png" alt="Charlotte">
+      <div class="user-info">
+        <span class="name">user</span>
+        <span class="flag">🇮🇳 indonesia</span>
+        <span class="status online">Online</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Avatar tengah + tombol video -->
+  <div class="video-section">
+    <div class="avatar-center">
+<div class="search-loading">
+  <img src="secrchicon.png" alt="Searching...">
+</div>    
+</div>
+<button class="video-btn">
+  <img src="vudeo.png" alt="Offline" style="width:24px; height:24px; vertical-align:middle;">
+  <span style="margin-left:6px;">Mulai Video</span>
+</button>
+<p class="info">
+  120 <img src="coin.png" alt="Offline" style="width:18px; height:18px; vertical-align:middle;"> /Menit
+</p>
+  </div>
+
+</div>
+  <div id="pageChat" class="navPage" style="display:none; padding-bottom:60px;">
+    <h3>Chat Page</h3>
+    <p>Konten chat di sini...</p>
+  </div>
+  <div id="pageSaya" class="navPage" style="display:block; padding-bottom:80px;">
+<div class="profile-header">
+  <img src="cewek16.jpeg" alt="Profile" class="profile-pic">
+
+  <div class="profile-info">
+    <div class="name">Dino</div>
+
+    <div class="age">
+      <img src="tambah.png" class="icon" alt="Age"> 23 Tahun
+    </div>
+
+    <div class="country">
+      <img src="indonesialogo.png" class="icon" alt="Flag"> Indonesia
+    </div>
+
+    <div class="bottom-row">
+      <div class="level">
+        <span class="status-dot"></span> Level 5
+      </div>
+<div class="verify" style="display:flex; align-items:center; border-radius: 5px; gap:0px; background: #cccbcb; font-size:14px;">
+  <img src="verify_icon.png" alt="Verifikasi" style="width:16px; border-radius: 5px; height:16px; background: #cccbcb;">
+  <span>Verifikasi</span>
+</div>
+    </div>
+  </div>
+</div>
+<!-- Box Saldo + Credit -->
+<div style="display:flex; align-items:center; justify-content:space-between; 
+            padding:10px; border:1px solid #ccc; border-radius:8px; 
+            background:#fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+
+  <!-- Kiri: Logo + Saldo -->
+  <div style="display:flex; align-items:center;">
+    <img src="wallet.png" alt="Offline" style="width:30px; height:30px; margin-right:8px;">
+    <span style="font-weight:bold; color:#5f00e3;">
+      Rp <span id="saldoNominal">0</span>
+    </span>
+  </div>
+
+  <!-- Kanan: Credit -->
+  <div id="creditBox" 
+       style="padding:6px 12px; border:1px solid #5f00e3; border-radius:6px; 
+              background:#76059e; font-size:14px; font-weight:bold; 
+              color:#ffffff; cursor:pointer;">
+    Credit
+  </div>
+</div>
+
+
+<div id="tarikSection" style="display:none; margin-top:15px;">
+  <!-- Tarik Box -->
+  <div class="tarik-box">
+    <h3>Form Penarikan</h3>
+    <select id="bank">
+      <option value="">-- Pilih Bank --</option>
+      <option>BCA</option>
+      <option>DANA</option>
+      <option>BRI</option>
+      <option>MANDIRI</option>
+      <option>GOPAY</option>
+      <option>LINKAJA</option>
+      <option>CIMBNIAGA</option>
+      <option>SUPERBANK</option>
+      <option>OVO</option>
+    </select>
+    <input type="text" id="norek" placeholder="Nomor Rekening">
+    <input type="text" id="namarek" placeholder="Nama Rekening">
+    <input type="number" id="jumlah" placeholder="Jumlah Penarikan">
+    <button onclick="prosesTarik()">Tarik Sekarang</button>
+    <p id="tarikStatus" style="color:red;"></p>
+  </div>
+
+  <!-- Riwayat -->
+  <div class="riwayat-box">
+    <h3>Riwayat Penarikan</h3>
+    <ul id="riwayatList"></ul>
+  </div>
+</div>
+
+<!-- Menu List -->
+<div style="border:1px solid #ddd; border-radius:8px; background:#fff; 
+            box-shadow:0 2px 4px rgba(0,0,0,0.05); margin-top: 10px; overflow:hidden;">
+
+  <!-- Token saya -->
+  <div style="display:flex; align-items:center; justify-content:space-between; 
+              padding:12px; border-bottom:1px solid #eee; cursor:pointer;">
+    <div style="display:flex; align-items:center;">
+      <img src="wallet.png" style="width:22px; height:22px; margin-right:10px;">
+      <span>Token Saya</span>
+    </div>
+    <span style="color:#999;">0 &gt;</span>
+  </div>
+
+  <!-- Setelan Obrolan -->
+  <div style="display:flex; align-items:center; justify-content:space-between; 
+              padding:12px; border-bottom:1px solid #eee; cursor:pointer;">
+    <div style="display:flex; align-items:center;">
+      <img src="wallet.png" style="width:22px; height:22px; margin-right:10px;">
+      <span>Setelan Obrolan</span>
+    </div>
+    <span style="color:#999;">&gt;</span>
+  </div>
+
+  <!-- Level Saya -->
+  <div style="display:flex; align-items:center; justify-content:space-between; 
+              padding:12px; border-bottom:1px solid #eee; cursor:pointer;">
+    <div style="display:flex; align-items:center;">
+      <img src="wallet.png" style="width:22px; height:22px; margin-right:10px;">
+      <span>Level Saya</span>
+    </div>
+    <span style="color:#999;">&gt;</span>
+  </div>
+
+  <!-- Rating Saya -->
+  <div style="display:flex; align-items:center; justify-content:space-between; 
+              padding:12px; border-bottom:1px solid #eee; cursor:pointer;">
+    <div style="display:flex; align-items:center;">
+      <img src="wallet.png" style="width:22px; height:22px; margin-right:10px;">
+      <span>Rating Saya</span>
+    </div>
+    <span style="color:#999;">&gt;</span>
+  </div>
+
+  <!-- Menjadi VIP -->
+  <div style="display:flex; align-items:center; justify-content:space-between; 
+              padding:12px; border-bottom:1px solid #eee; cursor:pointer;">
+    <div style="display:flex; align-items:center;">
+      <img src="wallet.png" style="width:22px; height:22px; margin-right:10px;">
+      <span>Menjadi VIP</span>
+    </div>
+    <span style="color:#999;">&gt;</span>
+  </div>
+
+  <!-- Undang untuk VIP -->
+  <div style="display:flex; align-items:center; justify-content:space-between; 
+              padding:12px; border-bottom:1px solid #eee; cursor:pointer;">
+    <div style="display:flex; align-items:center;">
+      <img src="wallet.png" style="width:22px; height:22px; margin-right:10px;">
+      <span>Undang Untuk VIP</span>
+    </div>
+    <span style="color:#999;">&gt;</span>
+  </div>
+
+  <!-- Setelan Aplikasi -->
+  <div style="display:flex; align-items:center; justify-content:space-between; 
+              padding:12px; cursor:pointer;">
+    <div style="display:flex; align-items:center;">
+      <img src="wallet.png" style="width:22px; height:22px; margin-right:10px;">
+      <span>Setelan Aplikasi</span>
+    </div>
+    <span style="color:#999;">&gt;</span>
+  </div>
+
+</div>
+
+<script>
+
+
+// fungsi login dummy (biar bisa test tampilan)
+function loginUser(){
+  document.getElementById("loginPage").style.display="none";
+  document.getElementById("userPage").style.display="block";
+  showPageNav('play');
+}
+
+// navigasi antar halaman
+function showPageNav(page) {
+  // sembunyikan semua halaman
+  document.querySelectorAll(".navPage").forEach(el => el.style.display = "none");
+
+  // tampilkan halaman sesuai nav
+  const target = document.getElementById("page" + page.charAt(0).toUpperCase() + page.slice(1));
+  if (target) target.style.display = "block";
+
+  // khusus header
+  if (page === "play") {
+    document.getElementById("mainHeader").style.display = "flex";
+  } else {
+    document.getElementById("mainHeader").style.display = "none";
+  }
+}
+</script>
+</body>
+</html>
