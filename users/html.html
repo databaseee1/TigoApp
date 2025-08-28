@@ -1202,7 +1202,8 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
 
 <p class="info">
-  120 <img src="coin.png" alt="Offline" style="width:18px; height:18px; vertical-align:middle;"> /Menit
+  Hasil <span style="color: #FFD700; font-weight: bold;">120</span> 
+  <img src="coin.png" alt="Offline" style="width:18px; height:18px; vertical-align:middle;"> /Menit
 </p>
   </div>
 
@@ -1226,7 +1227,15 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
     <!-- Chat Laporan -->
     <div class="chat-item" onclick="openChat('laporan', this)">
-      <img src="cs.png" alt="Laporan" class="chat-avatar">
+<div class="chat-avatar" style="
+  width: 40px; 
+  height: 40px; 
+  background-color: #8000ff;
+  -webkit-mask: url('cs.png') no-repeat center;
+  -webkit-mask-size: contain;
+  mask: url('cs.png') no-repeat center;
+  mask-size: contain;
+"></div>
       <div class="chat-info">
         <h4>Layanan Host</h4>
         <p>Selamat Datang Di Akun Host Baru Anda!</p>
