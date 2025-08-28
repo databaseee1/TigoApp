@@ -97,54 +97,68 @@ document.addEventListener("DOMContentLoaded", async () => {
       };
       statusSelect.onchange = async () => await updateDoc(doc(db, "pendaftaran", userId), { status: statusSelect.value });
 
-      // --- Riwayat Withdraw ---
-      const riwayat = Array.isArray(data.riwayat) ? [...data.riwayat] : [];
-      riwayat.forEach((item, index)=>{
-        const trW = document.createElement("tr");
-        trW.innerHTML = `
-          <td>${data.nama || '-'}</td>
-          <td>${data.email || '-'}</td>
-          <td>${item.bank || '-'}</td>
-          <td>${item.norek || '-'}</td>
-          <td>${item.namarek || '-'}</td>
-          <td>${item.jumlah || 0}</td>
-          <td style="color:${item.color||'black'}">${item.status}</td>
-          <td>
-            <button class="proses-btn">Proses</button>
-            <button class="approve-btn">Approve</button>
-            <button class="tolak-btn">Tolak</button>
-          </td>
-        `;
-        withdrawTable.appendChild(trW);
+// --- Riwayat Withdraw ---
+const riwayat = Array.isArray(data.riwayat) ? [...data.riwayat] : [];
+riwayat.forEach((item, index)=>{
+  const trW = document.createElement("tr");
+  trW.innerHTML = `
+    <td>${data.nama || '-'}</td>
+    <td>${data.email || '-'}</td>
+    <td>${item.bank || '-'}</td>
+    <td>${item.norek || '-'}</td>
+    <td>${item.namarek || '-'}</td>
+    <td>${item.jumlah || 0}</td>
+    <td style="color:${item.color||'black'}">${item.status}</td>
+    <td>
+      <button class="proses-btn">Proses</button>
+      <button class="approve-btn">Approve</button>
+      <button class="tolak-btn">Tolak</button>
+      <button class="hapus-btn" style="background:red;color:white;">Hapus</button>
+    </td>
+  `;
+  withdrawTable.appendChild(trW);
 
-        const prosesBtn = trW.querySelector(".proses-btn");
-        const approveBtn = trW.querySelector(".approve-btn");
-        const tolakBtn = trW.querySelector(".tolak-btn");
+  const prosesBtn = trW.querySelector(".proses-btn");
+  const approveBtn = trW.querySelector(".approve-btn");
+  const tolakBtn = trW.querySelector(".tolak-btn");
+  const hapusBtn = trW.querySelector(".hapus-btn");
 
-        const updateStatus = async (newStatus, color) => {
-          const userRef = doc(db, "pendaftaran", userId);
-          const userSnap = await getDoc(userRef);
-          const userData = userSnap.data() || {};
-          const arr = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
-          arr[index] = {...arr[index], status: newStatus, color: color};
-          await updateDoc(userRef, { riwayat: arr });
-        };
+  const updateStatus = async (newStatus, color) => {
+    const userRef = doc(db, "pendaftaran", userId);
+    const userSnap = await getDoc(userRef);
+    const userData = userSnap.data() || {};
+    const arr = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
+    arr[index] = {...arr[index], status: newStatus, color: color};
+    await updateDoc(userRef, { riwayat: arr });
+  };
 
-        prosesBtn.onclick = () => updateStatus("Proses","orange");
-        approveBtn.onclick = () => updateStatus("Approve","green");
+  prosesBtn.onclick = () => updateStatus("Proses","orange");
+  approveBtn.onclick = () => updateStatus("Approve","green");
 
-        // --- Tolak otomatis kembalikan saldo
-        tolakBtn.onclick = async () => {
-          const userRef = doc(db, "pendaftaran", userId);
-          const userSnap = await getDoc(userRef);
-          const userData = userSnap.data() || {};
-          const arr = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
-          if(!arr[index]) return;
-          const newSaldo = (userData.saldo || 0) + (arr[index].jumlah || 0);
-          arr[index] = {...arr[index], status: "Tolak", color: "red"};
-          await updateDoc(userRef, { riwayat: arr, saldo: newSaldo });
-        };
-      });
+  // --- Tolak otomatis kembalikan saldo
+  tolakBtn.onclick = async () => {
+    const userRef = doc(db, "pendaftaran", userId);
+    const userSnap = await getDoc(userRef);
+    const userData = userSnap.data() || {};
+    const arr = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
+    if(!arr[index]) return;
+    const newSaldo = (userData.saldo || 0) + (arr[index].jumlah || 0);
+    arr[index] = {...arr[index], status: "Tolak", color: "red"};
+    await updateDoc(userRef, { riwayat: arr, saldo: newSaldo });
+  };
+
+  // --- Hapus riwayat withdraw ---
+  hapusBtn.onclick = async () => {
+    if(!confirm("Yakin ingin menghapus riwayat withdraw ini?")) return;
+    const userRef = doc(db, "pendaftaran", userId);
+    const userSnap = await getDoc(userRef);
+    const userData = userSnap.data() || {};
+    let arr = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
+    arr.splice(index, 1); // hapus item sesuai index
+    await updateDoc(userRef, { riwayat: arr });
+    trW.remove(); // hapus langsung dari tabel biar UI update
+  };
+});
 
       // --- Notifikasi user baru ---
       const isNew = data.createdAt && (new Date() - data.createdAt.toDate()) < 24*60*60*1000;
@@ -159,33 +173,171 @@ document.addEventListener("DOMContentLoaded", async () => {
 </script>
 
 <style>
-body {margin:0;font-family:Arial,sans-serif;background:#f5f6fa;}
-.sidebar {width:220px;height:100vh;position:fixed;background:#2f3640;color:#fff;padding-top:20px;}
+body {
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f5f6fa;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+  width:220px;
+  height:100vh;
+  position:fixed;
+  background:#2f3640;
+  color:#fff;
+  padding-top:20px;
+  transition: transform 0.3s ease;
+}
 .sidebar h2 {text-align:center;margin-bottom:30px;}
-.sidebar ul {list-style:none;padding:0;}
+.sidebar ul {list-style:none;padding:0;margin:0;}
 .sidebar ul li {padding:15px 20px;cursor:pointer;transition:0.2s;}
 .sidebar ul li:hover {background:#718093;}
-.main {margin-left:220px;padding:20px;}
-h1{margin-top:0;}
-table {width:100%;border-collapse: collapse;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-table th, table td {padding:10px;border:1px solid #ddd;text-align:left;font-size:13px;}
-table th {background:#f1f2f6;}
-#notif-box {display:none;position: fixed;top:20px;right:20px;background: #ff4757;color:#fff;padding:10px 20px;border-radius:5px;z-index:1000;}
+
+/* --- Main Content --- */
+.main {
+  margin-left:220px;
+  padding:70px 20px 20px; /* top padding biar tidak ketimpa navbar */
+  transition: margin-left 0.3s ease;
+}
+
+h1{margin-top:0; font-size: 15px;}
+table {
+  width:100%;
+  border-collapse: collapse;
+  background:#fff;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+table th, table td {
+  padding:10px;
+  border:1px solid #ddd;
+  text-align:left;
+  font-size:13px;
+}
+table th {
+  background:#9500be;
+  color: #ffffff;
+
+}
+#notif-box {
+  display:none;
+  position: fixed;
+  top:60px;
+  right:20px;
+  background: #08751a;
+  color:#fff;
+  padding:10px 20px;
+  border-radius:5px;
+  z-index:1000;
+  font-size: 10px;
+}
 .page {display:none;}
 .page.active {display:block;}
-button {padding:4px 8px;margin-right:4px;cursor:pointer;}
+button {padding:4px 8px;     background: #834cff;
+    color: #ffff;  margin-right:4px;cursor:pointer;}
 .status-select {padding:4px;}
+
+/* --- Top Navbar --- */
+.topnav {
+  top: 0;
+  left: 220px; /* biar tidak nutup sidebar */
+  right: 0;
+  height: 50px;
+  background: #2f3640;
+  display: flex;
+  align-items: center;
+  padding: 0 0px;
+  color: white;
+  z-index: 1001;
+}
+
+.topnav .menu-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: white;
+  cursor: pointer;
+}
+
+.topnav .logo img {
+  height: 30px; /* atur sesuai ukuran */
+  width: auto;
+  border-radius: 15px;
+}
+
+
+
+.dropdown {
+  margin-left: auto; /* dorong dropdown ke pojok kanan */
+  position: relative;
+}
+.dropdown button {
+  width: 150px;   /* bisa diganti px, %, atau vw */
+  text-align: center; /* biar teks tetap rapi */
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;         /* posisinya nempel kanan */
+  left: auto;
+  width: 50vw;      /* setengah layar */
+  background: white;
+  box-shadow: 0px 4px 6px rgba(0,0,0,0.2);
+  border-radius: 5px;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 12px 16px;
+  color: #333;
+  text-decoration: none;
+  transition: background 0.2s;
+  text-align: left;   /* teks rata kiri (kalau mau rata kanan bisa diganti) */
+}
+
+.dropdown-content a:hover {
+  background: #f1f2f6;
+}
+
+/* Show dropdown when .show ditambah */
+.dropdown-content.show {display:block;}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.active {
+    transform: translateX(0);
+  }
+  .main {
+    margin-left:0;
+    padding:10px 2px 200px;
+    
+  }
+}
+
+
 </style>
 </head>
 <body>
 
-<div class="sidebar">
-  <h2>Admin Panel</h2>
-  <ul>
-    <li onclick="showPage('saldo')">Saldo User</li>
-    <li onclick="showPage('data')">Data User</li>
-    <li onclick="showPage('withdraw')">User Withdraw</li>
-  </ul>
+<div class="topnav">
+  <div class="logo">
+    <img src="agencylogo.png" alt="Logo" />
+  </div>
+
+  <div class="dropdown">
+    <button onclick="toggleDropdown()">⚙ Menu</button>
+    <div class="dropdown-content">
+      <a href="#" onclick="showPage('data')">Data User</a>
+      <a href="#" onclick="showPage('saldo')">Saldo User</a>
+      <a href="#" onclick="showPage('withdraw')">User Withdraw</a>
+    </div>
+  </div>
 </div>
 
 <div class="main">
@@ -249,9 +401,21 @@ button {padding:4px 8px;margin-right:4px;cursor:pointer;}
 </div>
 
 <script>
+function toggleSidebar(){
+  document.querySelector(".sidebar").classList.toggle("active");
+}
+
+function toggleDropdown(){
+  document.querySelector(".dropdown-content").classList.toggle("show");
+}
+
 function showPage(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(page).classList.add('active');
+  // auto close sidebar di mobile
+  if(window.innerWidth <= 768){
+    document.querySelector(".sidebar").classList.remove("active");
+  }
 }
 </script>
 
