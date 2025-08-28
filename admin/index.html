@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - TigoHost</title>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, onSnapshot, query, orderBy, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSy....",
+  authDomain: "users-96dc5.firebaseapp.com",
+  projectId: "users-96dc5",
+  storageBucket: "users-96dc5.appspot.com",
+  messagingSenderId: "483322415863",
+  appId: "1:483322415863:web:xxxxxx"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const dataUserTable = document.getElementById("data-user-table");
+  const saldoUserTable = document.getElementById("saldo-user-table");
+  const withdrawTable = document.getElementById("withdraw-user-table");
+  const notifBox = document.getElementById("notif-box");
+
+  const usersRef = collection(db, "pendaftaran");
+
+  onSnapshot(query(usersRef, orderBy("createdAt", "desc")), async (snapshot) => {
+    dataUserTable.innerHTML = "";
+    saldoUserTable.innerHTML = "";
+    withdrawTable.innerHTML = "";
+
+    snapshot.forEach(async docSnap => {
+      const data = docSnap.data();
+      const userId = docSnap.id;
+
+      if (data.saldo === undefined) {
+        await updateDoc(doc(db, "pendaftaran", userId), { saldo: 0, status: "aktif" });
+        data.saldo = 0;
+        data.status = "aktif";
+      }
+
+      // --- Data User ---
+      const trData = document.createElement("tr");
+      trData.innerHTML = `
+        <td>${data.nama || '-'}</td>
+        <td>${data.umur || '-'}</td>
+        <td>${data.jk || '-'}</td>
+        <td>${data.wa || '-'}</td>
+        <td>${data.email || '-'}</td>
+        <td>${data.app || '-'}</td>
+        <td>${data.bank || '-'}</td>
+        <td>${data.namaRek || '-'}</td>
+        <td>${data.noRek || '-'}</td>
+        <td>${data.fotoURL ? `<img src="${data.fotoURL}" width="50">` : ''}</td>
+      `;
+      dataUserTable.appendChild(trData);
+
+      // --- Saldo User ---
+      const trSaldo = document.createElement("tr");
+      trSaldo.innerHTML = `
+        <td>${data.nama || '-'}</td>
+        <td>${data.email || '-'}</td>
+        <td>Rp ${data.saldo}</td>
+        <td>
+          <select class="status-select">
+            <option value="aktif" ${data.status=="aktif"?"selected":""}>Aktif</option>
+            <option value="ditangguhkan" ${data.status=="ditangguhkan"?"selected":""}>Ditangguhkan</option>
+            <option value="proses" ${data.status=="proses"?"selected":""}>Proses</option>
+            <option value="ditolak" ${data.status=="ditolak"?"selected":""}>Ditolak</option>
+          </select>
+        </td>
+        <td>
+          <button class="add-saldo">Tambah</button>
+          <button class="kurangi-saldo">Kurangi</button>
+        </td>
+      `;
+      saldoUserTable.appendChild(trSaldo);
+
+      const addBtn = trSaldo.querySelector(".add-saldo");
+      const kurangiBtn = trSaldo.querySelector(".kurangi-saldo");
+      const statusSelect = trSaldo.querySelector(".status-select");
+
+      addBtn.onclick = async () => {
+        const val = parseInt(prompt("Masukkan jumlah tambah saldo:"));
+        if (!isNaN(val)) await updateDoc(doc(db, "pendaftaran", userId), { saldo: (data.saldo || 0) + val });
+      };
+      kurangiBtn.onclick = async () => {
+        const val = parseInt(prompt("Masukkan jumlah kurangi saldo:"));
+        if (!isNaN(val)) await updateDoc(doc(db, "pendaftaran", userId), { saldo: (data.saldo || 0) - val });
+      };
+      statusSelect.onchange = async () => await updateDoc(doc(db, "pendaftaran", userId), { status: statusSelect.value });
+
+      // --- Riwayat Withdraw ---
+      const riwayat = Array.isArray(data.riwayat) ? [...data.riwayat] : [];
+      riwayat.forEach((item, index)=>{
+        const trW = document.createElement("tr");
+        trW.innerHTML = `
+          <td>${data.nama || '-'}</td>
+          <td>${data.email || '-'}</td>
+          <td>${item.bank || '-'}</td>
+          <td>${item.norek || '-'}</td>
+          <td>${item.namarek || '-'}</td>
+          <td>${item.jumlah || 0}</td>
+          <td style="color:${item.color||'black'}">${item.status}</td>
+          <td>
+            <button class="proses-btn">Proses</button>
+            <button class="approve-btn">Approve</button>
+            <button class="tolak-btn">Tolak</button>
+          </td>
+        `;
+        withdrawTable.appendChild(trW);
+
+        const prosesBtn = trW.querySelector(".proses-btn");
+        const approveBtn = trW.querySelector(".approve-btn");
+        const tolakBtn = trW.querySelector(".tolak-btn");
+
+        const updateStatus = async (newStatus, color) => {
+          const userRef = doc(db, "pendaftaran", userId);
+          const userSnap = await getDoc(userRef);
+          const userData = userSnap.data() || {};
+          const arr = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
+          arr[index] = {...arr[index], status: newStatus, color: color};
+          await updateDoc(userRef, { riwayat: arr });
+        };
+
+        prosesBtn.onclick = () => updateStatus("Proses","orange");
+        approveBtn.onclick = () => updateStatus("Approve","green");
+
+        // --- Tolak otomatis kembalikan saldo
+        tolakBtn.onclick = async () => {
+          const userRef = doc(db, "pendaftaran", userId);
+          const userSnap = await getDoc(userRef);
+          const userData = userSnap.data() || {};
+          const arr = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
+          if(!arr[index]) return;
+          const newSaldo = (userData.saldo || 0) + (arr[index].jumlah || 0);
+          arr[index] = {...arr[index], status: "Tolak", color: "red"};
+          await updateDoc(userRef, { riwayat: arr, saldo: newSaldo });
+        };
+      });
+
+      // --- Notifikasi user baru ---
+      const isNew = data.createdAt && (new Date() - data.createdAt.toDate()) < 24*60*60*1000;
+      if(isNew){
+        notifBox.innerText = `🚨 User baru mendaftar: ${data.nama || 'User Baru'}`;
+        notifBox.style.display = "block";
+        setTimeout(()=> notifBox.style.display="none", 5000);
+      }
+    });
+  });
+});
+</script>
+
+<style>
+body {margin:0;font-family:Arial,sans-serif;background:#f5f6fa;}
+.sidebar {width:220px;height:100vh;position:fixed;background:#2f3640;color:#fff;padding-top:20px;}
+.sidebar h2 {text-align:center;margin-bottom:30px;}
+.sidebar ul {list-style:none;padding:0;}
+.sidebar ul li {padding:15px 20px;cursor:pointer;transition:0.2s;}
+.sidebar ul li:hover {background:#718093;}
+.main {margin-left:220px;padding:20px;}
+h1{margin-top:0;}
+table {width:100%;border-collapse: collapse;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+table th, table td {padding:10px;border:1px solid #ddd;text-align:left;font-size:13px;}
+table th {background:#f1f2f6;}
+#notif-box {display:none;position: fixed;top:20px;right:20px;background: #ff4757;color:#fff;padding:10px 20px;border-radius:5px;z-index:1000;}
+.page {display:none;}
+.page.active {display:block;}
+button {padding:4px 8px;margin-right:4px;cursor:pointer;}
+.status-select {padding:4px;}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>Admin Panel</h2>
+  <ul>
+    <li onclick="showPage('saldo')">Saldo User</li>
+    <li onclick="showPage('data')">Data User</li>
+    <li onclick="showPage('withdraw')">User Withdraw</li>
+  </ul>
+</div>
+
+<div class="main">
+  <div id="notif-box"></div>
+
+  <div id="saldo" class="page">
+    <h1>Saldo User</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Nama</th>
+          <th>Email</th>
+          <th>Saldo</th>
+          <th>Status</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="saldo-user-table"></tbody>
+    </table>
+  </div>
+
+  <div id="data" class="page active">
+    <h1>Data User</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Nama</th>
+          <th>Umur</th>
+          <th>JK</th>
+          <th>WA</th>
+          <th>Email</th>
+          <th>Aplikasi</th>
+          <th>Bank</th>
+          <th>Nama Rek</th>
+          <th>No Rek</th>
+          <th>Foto</th>
+        </tr>
+      </thead>
+      <tbody id="data-user-table"></tbody>
+    </table>
+  </div>
+
+  <div id="withdraw" class="page">
+    <h1>User Withdraw</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Nama</th>
+          <th>Email</th>
+          <th>Bank</th>
+          <th>No Rek</th>
+          <th>Nama Rek</th>
+          <th>Jumlah</th>
+          <th>Status</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="withdraw-user-table"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(page).classList.add('active');
+}
+</script>
+
+</body>
+</html>
