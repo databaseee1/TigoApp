@@ -2760,67 +2760,99 @@ function showPage(pageId) {
 
 
 
- let saldo = parseInt(localStorage.getItem("saldo")) || 70000;
-  let riwayat = JSON.parse(localStorage.getItem("riwayat")) || [];
+// Elemen
+const saldoNominal = document.getElementById("saldoNominal");
+const riwayatList = document.getElementById("riwayatList");
 
-  function updateSaldo() {
-    document.getElementById("saldoNominal").innerText = saldo;
-    localStorage.setItem("saldo", saldo); // simpan saldo permanen
-  }
+// Ambil email user yang login
+const loggedEmail = localStorage.getItem("loggedUser");
+let userDocId = null;
+let saldo = 0;
+let riwayat = [];
 
-  function renderRiwayat() {
-    const riwayatList = document.getElementById("riwayatList");
-    riwayatList.innerHTML = "";
-    riwayat.forEach(item => {
-      const li = document.createElement("li");
-      li.innerHTML = `Tarik Rp ${item.jumlah} - 
-        <span class="status" style="color:${item.color}">${item.status}</span>`;
-      riwayatList.appendChild(li);
-    });
-    localStorage.setItem("riwayat", JSON.stringify(riwayat)); // simpan riwayat permanen
-  }
+// Ambil data user dari Firestore
+async function fetchUserData() {
+  if (!loggedEmail) return;
 
-  function prosesTarik() {
-    const jumlah = parseInt(document.getElementById("jumlah").value);
-    if (isNaN(jumlah) || jumlah <= 0 || jumlah > saldo) {
-      alert("Jumlah tidak valid atau saldo tidak cukup!");
-      return;
+  const q = query(collection(db, "pendaftaran"), where("email", "==", loggedEmail));
+  
+  onSnapshot(q, snapshot => {
+    if (!snapshot.empty) {
+      const docSnap = snapshot.docs[0];
+      userDocId = docSnap.id;
+      const data = docSnap.data();
+      saldo = data.saldo || 0;
+      riwayat = data.riwayat || [];
+      updateUI();
     }
+  });
+}
 
-    saldo -= jumlah;
-    riwayat.push({ jumlah, status: "Proses", color: "orange" });
-    updateSaldo();
-    renderRiwayat();
-    
+// Update UI saldo & riwayat
+function updateUI() {
+  saldoNominal.innerText = saldo;
+  riwayatList.innerHTML = "";
+  riwayat.forEach(item => {
+    const li = document.createElement("li");
+    li.innerHTML = `Tarik Rp ${item.jumlah} - <span style="color:${item.color}">${item.status}</span>`;
+    riwayatList.appendChild(li);
+  });
+}
+
+// Proses tarik
+window.prosesTarik = async function() {
+  const jumlah = parseInt(document.getElementById("jumlah").value);
+  if (isNaN(jumlah) || jumlah <= 0 || jumlah > saldo) {
+    alert("Jumlah tidak valid atau saldo tidak cukup!");
+    return;
   }
 
-  function kembalikanSaldo() {
-    if (riwayat.length === 0) return;
-    const last = riwayat[riwayat.length - 1];
-    if (last.status !== "Proses") {
-      alert("Tidak ada penarikan yang bisa dibatalkan.");
-      return;
-    }
+  saldo -= jumlah;
+  riwayat.push({ jumlah, status: "Proses", color: "orange" });
+  updateUI();
 
-    // kembalikan saldo
-    saldo += last.jumlah;
-    last.status = "Gagal (Saldo dikembalikan)";
-    last.color = "red";
+  // Update Firestore
+  if (userDocId) {
+    await updateDoc(doc(db, "pendaftaran", userDocId), { saldo, riwayat });
+  }
+}
 
-    // simpan ke localStorage
-    updateSaldo();
-    renderRiwayat();
+// Kembalikan saldo terakhir
+window.kembalikanSaldo = async function() {
+  if (!riwayat.length) return;
+  const last = riwayat[riwayat.length - 1];
+  if (last.status !== "Proses") {
+    alert("Tidak ada penarikan yang bisa dibatalkan.");
+    return;
   }
 
-  window.onload = () => {
-    updateSaldo();
-    renderRiwayat();
-  };
+  saldo += last.jumlah;
+  last.status = "Gagal (Saldo dikembalikan)";
+  last.color = "red";
+  updateUI();
+
+  if (userDocId) {
+    await updateDoc(doc(db, "pendaftaran", userDocId), { saldo, riwayat });
+  }
+}
+
+// Close popup
 function closeWithdraw() {
   document.getElementById("withdrawPopup").style.display = "none";
 }
 
+// Tampilkan popup withdraw
+function openWithdraw() {
+  document.getElementById("withdrawPopup").style.display = "flex";
+}
 
+// Tutup popup withdraw
+function closeWithdraw() {
+  document.getElementById("withdrawPopup").style.display = "none";
+}
+
+// Jalankan saat load
+window.onload = fetchUserData;
 
 
 
