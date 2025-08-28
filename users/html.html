@@ -585,19 +585,39 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   display: flex;
   flex-direction: column;
 }
+/* Jarak antar chat item */
 .chat-item {
   display: flex;
   align-items: center;
-  padding: 12px;
+  padding: 8px 12px;
   border-bottom: 1px solid #eee;
   cursor: pointer;
+  margin-bottom: 8px; /* beri jarak antar chat */
 }
+
+/* Khusus untuk chat laporan agar lebih jauh */
+.chat-item.laporan {
+  margin-bottom: 23px; /* jarak lebih besar untuk laporan */
+}
+
+.chat-info {
+  flex: 1; /* supaya mengisi ruang antara avatar dan jam */
+  margin-left: 8px;
+}
+
+.chat-time {
+  font-size: 12px;
+  color: #999;
+  margin-left: 8px;
+  white-space: nowrap; /* supaya jam tidak wrap */
+}
+
 .chat-item:hover {
   background: #f9f9f9;
 }
 .chat-avatar {
-  width: 25px;
-  height: 25px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
   margin-right: 12px;
 }
@@ -619,8 +639,16 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 }
 
 #chatTitle {
-  color: #000;  /* warna hitam */
-  font-weight: bold;
+    color: #000;
+    font-weight: bold;
+    text-align: center;
+    margin: 0;               /* hilangkan margin samping */
+    font-size: 16px;
+    background: #e6e6e6;
+    border-radius: 3px;
+    width: 100%;             /* full lebar container */
+    padding: 8px 0;          /* beri jarak atas/bawah */
+    box-sizing: border-box;  /* supaya padding tidak bikin overflow */
 }
 
 .nav-item small {
@@ -755,7 +783,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <div class="user-info">
       <span class="user-name">
       <span class="online-dot"></span>
-       Raka Hidra
+       Riks
       </span>   
 
        <span class="user-country">
@@ -771,7 +799,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek10.jpeg" alt="kabutoo29">
       <div class="user-info">
       <span class="online-dot"></span>
-      konbrut
+      Puspita
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -786,7 +814,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="andrea.jpeg" alt="only_pe2k">
       <div class="user-info">
       <span class="online-dot"></span>
-       Raka loyo
+       Ayu Azalea
       </span>           <span class="user-country">
           <span class="flag-circle"></span>
           <span class="country-name">Indonesia</span>
@@ -800,7 +828,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="alin.jpeg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       Aulia Amanda
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -815,7 +843,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek13.jpeg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       Aziza 
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -830,7 +858,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek14.jpeg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       Ayunda
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -845,7 +873,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek15.jpeg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       Adinda Aisha
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -860,7 +888,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek16.jpeg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       Almira Aluna
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -875,7 +903,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek20.jpg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       Amara Anisa
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -890,7 +918,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek21.jpeg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       Arin
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -906,7 +934,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek22.jpeg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       Atikah Amanda
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -922,7 +950,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek23.jpeg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       Aryani
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -939,7 +967,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek24.jpeg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       lea
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -955,7 +983,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek25.jpeg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       Anisa Atikah
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -971,7 +999,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek26.jpg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       Bunga Citra
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -987,7 +1015,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek27.jpeg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       Manda
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -1003,7 +1031,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek28.jpeg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       Brigita Shinta
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -1019,7 +1047,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek29.jpeg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       Bhakti Rahayu
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -1035,7 +1063,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek30.jpeg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       tari
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -1051,7 +1079,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       <img src="cewek31.jpeg" alt="aditya">
       <div class="user-info">
               <span class="online-dot"></span>
-       adityapek
+       Cinta 
       </span>   
         <span class="user-country">
           <span class="flag-circle"></span>
@@ -1103,7 +1131,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
     transform:translateX(-50%);
     width:100%;
     max-width:500px;
-    height:50%; /* setengah layar */
+    height:30%; /* setengah layar */
     background:#fff;
     border-radius:0 0 20px 20px;
     box-shadow:0 5px 15px rgba(0,0,0,0.3);
@@ -1225,22 +1253,22 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   <!-- Daftar Chat -->
   <div class="chat-list">
 
-    <!-- Chat Laporan -->
-    <div class="chat-item" onclick="openChat('laporan', this)">
-<div class="chat-avatar" style="
-  width: 40px; 
-  height: 40px; 
-  background-color: #8000ff;
-  -webkit-mask: url('cs.png') no-repeat center;
-  -webkit-mask-size: contain;
-  mask: url('cs.png') no-repeat center;
-  mask-size: contain;
-"></div>
-      <div class="chat-info">
-        <h4>Layanan Host</h4>
-        <p>Selamat Datang Di Akun Host Baru Anda!</p>
-      </div>
-    </div>
+<!-- Chat Laporan -->
+<div class="chat-item laporan" onclick="openChat('laporan', this)">
+  <div class="chat-avatar" style="
+    width: 40px; 
+    height: 40px; 
+    background-color: #8000ff;
+    -webkit-mask: url('cs.png') no-repeat center;
+    -webkit-mask-size: contain;
+    mask: url('cs.png') no-repeat center;
+    mask-size: contain;
+  "></div>
+  <div class="chat-info">
+    <h4>Layanan Host</h4>
+    <p>Selamat Datang Di Akun Host Baru Anda!</p>
+  </div>
+</div>
 
     <!-- Chat Pengumuman -->
     <div class="chat-item" onclick="openChat('pengumuman', this)">
@@ -1249,6 +1277,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
         <h4>Notifikasi</h4>
         <p>Manda mengunjungi saya 12 kali</p>
       </div>
+      <span class="chat-time">10:30</span>
     </div>
 
     <!-- Chat User -->
@@ -1258,6 +1287,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
         <h4>Riks</h4>
         <p>Hai, lagi apa?</p>
       </div>
+      <span class="chat-time">09:40</span>
     </div>
 
     <div class="chat-item" onclick="openChat('user2', this)">
@@ -1266,22 +1296,34 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
         <h4>Puspita</h4>
         <p>Tinggal dimana bang</p>
       </div>
+      <span class="chat-time">08:45</span>
     </div>
 
     <div class="chat-item" onclick="openChat('user3', this)">
-      <img src="cewek11.jpeg" alt="User" class="chat-avatar">
+      <img src="cewek27.jpeg" alt="User" class="chat-avatar">
       <div class="chat-info">
         <h4>Manda</h4>
         <p>Kamu daftar dimana akun host?</p>
       </div>
+      <span class="chat-time">07:23</span>
     </div>
 
   </div>
 
   <!-- Halaman Isi Chat -->
-  <div id="chatContent" style="display:none; padding:10px;">
+  <div id="chatContent" style="display:none; padding:0 10px;">
 <button onclick="backToList()" 
-  style="padding:2px 6px; font-size:12px; background:#ffffff; border:1px solid #ccc; border-radius:4px; color: #000; cursor:pointer; width:auto;">
+  style="
+    padding:1px 6px;        
+    margin:0 0 8px 0;       
+    font-size:12px; 
+    background:#ffffff; 
+    border:1px solid #ccc; 
+    border-radius:4px; 
+    color:#000; 
+    cursor:pointer; 
+    width:auto;
+  ">
   Kembali
 </button>
    <h3 id="chatTitle"></h3>
@@ -1493,42 +1535,69 @@ function showPageNav(page) {
 
 function openChat(type) {
   document.querySelector(".chat-list").style.display = "none";
-  document.getElementById("chatContent").style.display = "block";
+  const chatContent = document.getElementById("chatContent");
+  chatContent.style.display = "block";
 
   const title = document.getElementById("chatTitle");
   const messages = document.getElementById("chatMessages");
 
+  messages.innerHTML = ""; // kosongkan dulu
+
+  let chatHTML = "";
+
   if (type === "laporan") {
-  title.innerText = "Layanan Host";
-  messages.innerHTML = `
-    <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block; margin:4px 0;">
-      <b>Admin Agency:</b> Selamat Datang Di Akun Host Baru Anda!
-    </div>`;
-} else if (type === "pengumuman") {
-  title.innerText = "Notifikasi";
-  messages.innerHTML = `
-    <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block; margin:4px 0;">
-      <b>Aplikasi:</b> Manda mengunjungi saya 12 kali
-    </div>`;
-} else if (type === "user1") {
-  title.innerText = "Riks";
-  messages.innerHTML = `
-    <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block; margin:4px 0;">
-      <b>Riks:</b> Hai, lagi apa?
-    </div>`;
-} else if (type === "user2") {
-  title.innerText = "Puspita";
-  messages.innerHTML = `
-    <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block; margin:4px 0;">
-      <b>Puspita:</b> Tinggal dimana bang
-    </div>`;
-} else if (type === "user3") {
-  title.innerText = "Manda";
-  messages.innerHTML = `
-    <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block; margin:4px 0;">
-      <b>Manda:</b> Kamu daftar dimana akun host?
-    </div>`;
-}
+    title.innerText = "Layanan Host";
+    chatHTML = `
+      <div style="display:flex; align-items:flex-start; margin:4px 0;">
+        <img src="cs.png" alt="Admin" style="width:30px; height:30px; border-radius:50%; margin-right:8px;">
+        <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block;">
+          <b>Admin Agency:</b> Selamat Datang Di Akun Host Baru Anda!
+        </div>
+      </div>
+    `;         
+  } else if (type === "pengumuman") {
+    title.innerText = "Notifikasi";
+    chatHTML = `
+      <div style="display:flex; align-items:flex-start; margin:4px 0;">
+        <img src="account.png" alt="App" style="width:30px; height:30px; border-radius:50%; margin-right:8px;">
+        <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block;">
+          <b>Aplikasi:</b> Manda mengunjungi saya 12 kali
+        </div>
+      </div>
+    `;
+  } else if (type === "user1") {
+    title.innerText = "Riks";
+    chatHTML = `
+      <div style="display:flex; align-items:flex-start; margin:4px 0;">
+        <img src="cewek11.jpeg" alt="Riks" style="width:30px; height:30px; border-radius:50%; margin-right:8px;">
+        <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block;">
+          <b>Riks:</b> Hai, lagi apa?
+        </div>
+      </div>
+    `;
+  } else if (type === "user2") {
+    title.innerText = "Puspita";
+    chatHTML = `
+      <div style="display:flex; align-items:flex-start; margin:4px 0;">
+        <img src="cewek10.jpeg" alt="Puspita" style="width:30px; height:30px; border-radius:50%; margin-right:8px;">
+        <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block;">
+          <b>Puspita:</b> Tinggal dimana bang
+        </div>
+      </div>
+    `;
+  } else if (type === "user3") {
+    title.innerText = "Manda";
+    chatHTML = `
+      <div style="display:flex; align-items:flex-start; margin:4px 0;">
+        <img src="cewek27.jpeg" alt="Manda" style="width:30px; height:30px; border-radius:50%; margin-right:8px;">
+        <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block;">
+          <b>Manda:</b> Kamu daftar dimana akun host?
+        </div>
+      </div>
+    `;
+  }
+
+  messages.innerHTML = chatHTML;
 }
 
 function backToList() {
