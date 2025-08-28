@@ -76,7 +76,12 @@ header {
   width: 100%;
   z-index: 999;
   background: var(--primary);
-  border-radius:3px;
+
+  /* Border radius hanya di bawah */
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 
@@ -204,14 +209,20 @@ input:focus,select:focus,textarea:focus{
 .cdate{font-size:12px; color:var(--muted)}
 
 .nav {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 9999; /* pastikan paling atas */
-  backdrop-filter: blur(8px);
-  background: var(--primary);
-  border-top: 3px solid var(--primary-dark);
+position: fixed;
+left: 0;
+right: 0;
+bottom: 0;
+z-index: 9999;
+backdrop-filter: blur(8px);
+background: var(--primary);
+border-top: 3px solid var(--primary-dark);
+
+/* Border radius hanya di atas */
+border-top-left-radius: 10px;
+border-top-right-radius: 10px;
+border-bottom-left-radius: 0;
+border-bottom-right-radius: 0;
 }
 
 /* kasih padding bawah ke konten supaya nav tidak ketiban */
