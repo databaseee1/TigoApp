@@ -259,9 +259,19 @@ button {padding:4px 8px;     background: #834cff;
   cursor: pointer;
 }
 
-.topnav .logo img {
-  height: 30px; /* atur sesuai ukuran */
-  width: auto;
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* jarak antara logo dan teks */
+  font-weight: bold;
+  font-size: 16px;
+  color: white;
+}
+
+.logo img {
+  height: 30px;
+  width: 30px;
+  object-fit: contain;
   border-radius: 15px;
 }
 
@@ -321,6 +331,80 @@ button {padding:4px 8px;     background: #834cff;
 }
 
 
+.approve-btn {
+  background-color: #28a745; /* hijau */
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.approve-btn:hover {
+  background-color: #218838; /* hijau lebih gelap saat hover */
+}
+
+
+.proses-btn {
+  background-color: #ffc107; /* kuning */
+  color: #000;  /* teks hitam agar kontras */
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.proses-btn:hover {
+  background-color: #e0a800; /* kuning lebih gelap saat hover */
+}
+
+
+.tolak-btn {
+  background-color: #c82333; /* merah tua */
+  color: #fff; /* teks putih biar kontras */
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.tolak-btn:hover {
+  background-color: #a71d2a; /* merah lebih gelap saat hover */
+}
+
+
+.add-saldo {
+  background-color: #28a745; /* hijau */
+  color: #fff; /* teks putih */
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.add-saldo:hover {
+  background-color: #218838; /* hijau lebih gelap saat hover */
+}
+
+.kurangi-saldo {
+  background-color: #dc3545; /* merah */
+  color: #fff; /* teks putih */
+  border: none;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.kurangi-saldo:hover {
+  background-color: #c82333; /* merah lebih gelap saat hover */
+}
+
+
 </style>
 </head>
 <body>
@@ -328,6 +412,7 @@ button {padding:4px 8px;     background: #834cff;
 <div class="topnav">
   <div class="logo">
     <img src="agencylogo.png" alt="Logo" />
+    <span>ADMIN CS</span>
   </div>
 
   <div class="dropdown">
