@@ -150,11 +150,11 @@ body {
 
 
 
-.container{max-width:500px;margin:50px auto;padding:20px;background:#fff;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);}
-h2,h3{margin-top:0;}
+.container{max-width:500px;margin:200px auto;padding:20px;background:#b200cd;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);}
+h2,h3{margin-top:0; color: #ffffff;}
 input,select,button{width:95%;padding:8px;margin:5px 0;border-radius:5px;border:1px solid #ccc;}
 button{background:#007bff;color:#fff;border:none;cursor:pointer;}
-button:hover{background:#0056b3;}
+button:hover{background:#7328fe;}
 ul{padding-left:20px;}
 li{margin-bottom:5px;}
 li button{margin-left:5px;padding:2px 6px;font-size:12px;}
@@ -248,18 +248,18 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 }
 
 .chat-btn img.chat-icon {
-  width: 16px;
-  height: 16px;
+  width: 80px;
+  height: 80px;
 }
 
 /* Tombol chat */
 .chat-btn {
-  background: #6a5af9;
+  background: #6f08aa;
   border: none;
   border-radius: 50%;
   padding: 10px;
   cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0);
 }
 
 .chat-icon {
@@ -359,6 +359,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   padding: 12px 16px;
   background: white;
   border-bottom: 1px solid #eee;
+  margin-top: -40px;
 }
 
 .dunia-header .logo {
@@ -461,6 +462,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-top: -50px;
 }
 
 .profile-pic {
@@ -526,7 +528,109 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 }
 
 
+.riwayat-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin: 20px auto;
+  max-width: 600px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
+.riwayat-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.riwayat-box h3 {
+  margin-bottom: 15px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 8px;
+}
+
+.riwayat-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.riwayat-box ul li {
+  padding: 5px 10px;
+  margin-bottom: 8px;
+  background: #e7e7ec;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #444;
+  border: 1px solid #eee;
+  transition: background 0.2s ease;
+}
+
+.riwayat-box ul li:hover {
+  background: #f5f5f5;
+}
+
+
+.chat-list {
+  display: flex;
+  flex-direction: column;
+}
+.chat-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+.chat-item:hover {
+  background: #f9f9f9;
+}
+.chat-avatar {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+.chat-info h4 {
+  margin: 0;
+  font-size: 15px;
+}
+.chat-info p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: gray;
+}
+.chat-messages {
+  margin-top: 15px;
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 8px;
+  min-height: 200px;
+}
+
+#chatTitle {
+  color: #000;  /* warna hitam */
+  font-weight: bold;
+}
+
+.nav-item small {
+  color: #555; /* default abu */
+  font-weight: 500;
+}
+
+.nav-item.active small {
+  color: #007bff; /* teks aktif jadi biru */
+  font-weight: bold;
+}
+
+
+.nav-item.active img {
+  filter: brightness(0) saturate(100%); 
+  /* hasilnya hitam */
+}
 
 
 
@@ -561,23 +665,25 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 <div id="userPage" style="display:none;">
   <!-- NAVIGASI BAWAH -->
   <div id="bottomNav" style="position:fixed; bottom:0; left:0; width:100%; background:#fff; display:flex; justify-content:space-around; border-top:1px solid #ccc; padding:8px 0; box-shadow:0 -2px 4px rgba(0,0,0,0.1);">
-    <div class="nav-item" onclick="showPageNav('play')">
-      <img src="wallet.png" alt="Play" style="width:24px;"><br>
-      <small>Play</small>
+    <div class="nav-item" onclick="setActiveNav(this); showPageNav('play')">
+      <img src="plyvideo.png" alt="Play" style="width:50px;"><br>
+      <small></small>
     </div>
-    <div class="nav-item" onclick="showPageNav('dunia')">
-      <img src="dunia.png" alt="Dunia" style="width:24px;"><br>
-      <small>Dunia</small>
+    <div class="nav-item" onclick="setActiveNav(this); showPageNav('dunia')">
+      <img src="global1.png" alt="Dunia" style="width:50px;"><br>
+      <small></small>
     </div>
-    <div class="nav-item" onclick="showPageNav('chat')">
-      <img src="cahtnav.png" alt="Chat" style="width:24px;"><br>
-      <small>Chat</small>
+    <div class="nav-item" onclick="setActiveNav(this); showPageNav('chat')">
+      <img src="chatnav_clean.png" alt="Chat" style="width:50px;"><br>
+      <small></small>
     </div>
-    <div class="nav-item" onclick="showPageNav('saya')">
-      <img src="account.png" alt="Saya" style="width:24px;"><br>
-      <small>Saya</small>
+    <div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
+      <img src="user2.png" alt="Saya" style="width:50px;"><br>
+      <small></small>
     </div>
   </div>
+
+
 
   <!-- HALAMAN NAVIGASI -->
 <div id="pagePlay" class="navPage" style="display:none; padding-bottom:60px;">
@@ -958,10 +1064,86 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   </div>
 
 </div>
-  <div id="pageChat" class="navPage" style="display:none; padding-bottom:60px;">
-    <h3>Chat Page</h3>
-    <p>Konten chat di sini...</p>
+
+
+
+
+<div id="pageChat" class="navPage" style="display:none; padding-bottom:60px; position:relative;">
+  <h3 style="padding:15px; margin-top: -50px; color: #727272; background: #ececec; position:relative;">
+    Chat </span>
+  <span style="color:black;">Panggilan</span>
+
+    <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:12px; color:#999; display:flex; align-items:center; gap:4px;">
+<span style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:12px; color:#999; display:flex; align-items:center; gap:4px;">
+      <img src="adduser.png" alt="Offline" style="width:30px; height:35px;">
+    </span>
+    </h3>
+  <!-- Daftar Chat -->
+  <div class="chat-list">
+
+    <!-- Chat Laporan -->
+    <div class="chat-item" onclick="openChat('laporan', this)">
+      <img src="cs.png" alt="Laporan" class="chat-avatar">
+      <div class="chat-info">
+        <h4>Layanan Host</h4>
+        <p>Selamat Datang Di Akun Host Baru Anda!</p>
+      </div>
+    </div>
+
+    <!-- Chat Pengumuman -->
+    <div class="chat-item" onclick="openChat('pengumuman', this)">
+      <img src="buka.png" alt="Pengumuman" class="chat-avatar">
+      <div class="chat-info">
+        <h4>Notifikasi</h4>
+        <p>Manda mengunjungi saya 12 kali</p>
+      </div>
+    </div>
+
+    <!-- Chat User -->
+    <div class="chat-item" onclick="openChat('user1', this)">
+      <img src="cewek11.jpeg" alt="User" class="chat-avatar">
+      <div class="chat-info">
+        <h4>Riks</h4>
+        <p>Hai, lagi apa?</p>
+      </div>
+    </div>
+
+    <div class="chat-item" onclick="openChat('user2', this)">
+      <img src="cewek10.jpeg" alt="User" class="chat-avatar">
+      <div class="chat-info">
+        <h4>Puspita</h4>
+        <p>Tinggal dimana bang</p>
+      </div>
+    </div>
+
+    <div class="chat-item" onclick="openChat('user3', this)">
+      <img src="cewek11.jpeg" alt="User" class="chat-avatar">
+      <div class="chat-info">
+        <h4>Manda</h4>
+        <p>Kamu daftar dimana akun host?</p>
+      </div>
+    </div>
+
   </div>
+
+  <!-- Halaman Isi Chat -->
+  <div id="chatContent" style="display:none; padding:10px;">
+<button onclick="backToList()" 
+  style="padding:2px 6px; font-size:12px; background:#ffffff; border:1px solid #ccc; border-radius:4px; color: #000; cursor:pointer; width:auto;">
+  Kembali
+</button>
+   <h3 id="chatTitle"></h3>
+    <div id="chatMessages" class="chat-messages" style="min-height:200px; margin-bottom:10px;"></div>
+
+    <!-- Input Balasan -->
+    <div class="chat-input" style="display:flex; gap:8px; border-top:1px solid #ddd; padding-top:8px;">
+      <input type="text" id="messageInput" placeholder="Tulis pesan..." style="flex:1; padding:6px; border:1px solid #ccc; border-radius:6px;">
+      <button onclick="sendMessage()" style="padding:6px 12px; background:#007bff; color:#fff; border:none; border-radius:6px; width:50px; cursor:pointer;">Kirim</button>
+    </div>
+  </div>
+</div>
+
+
   <div id="pageSaya" class="navPage" style="display:block; padding-bottom:80px;">
 <div class="profile-header">
   <img src="cewek16.jpeg" alt="Profile" class="profile-pic">
@@ -1014,8 +1196,8 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 <div id="tarikSection" style="display:none; margin-top:15px;">
   <!-- Tarik Box -->
   <div class="tarik-box">
-    <h3>Form Penarikan</h3>
-    <select id="bank">
+<h3 style="color:#000; text-align:center;">Form Penarikan</h3>
+ <select id="bank">
       <option value="">-- Pilih Bank --</option>
       <option>BCA</option>
       <option>DANA</option>
@@ -1031,7 +1213,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
     <input type="text" id="namarek" placeholder="Nama Rekening">
     <input type="number" id="jumlah" placeholder="Jumlah Penarikan">
     <button onclick="prosesTarik()">Tarik Sekarang</button>
-    <p id="tarikStatus" style="color:red;"></p>
+    <p id="tarikStatus" style=" border-radius: 10px; background: #bebebe; color:rgb(0, 157, 18);"></p>
   </div>
 
   <!-- Riwayat -->
@@ -1043,23 +1225,25 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
 <!-- Menu List -->
 <div style="border:1px solid #ddd; border-radius:8px; background:#fff; 
-            box-shadow:0 2px 4px rgba(0,0,0,0.05); margin-top: 10px; overflow:hidden;">
+            box-shadow:0 2px 4px rgba(0,0,0,0.05); margin-top: 10px; color: #3f3737; overflow:hidden;">
 
   <!-- Token saya -->
   <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:12px; border-bottom:1px solid #eee; cursor:pointer;">
+              padding:15px; border-bottom:1px solid #eee; cursor:pointer;">
     <div style="display:flex; align-items:center;">
-      <img src="wallet.png" style="width:22px; height:22px; margin-right:10px;">
+      <img src="coin.png" style="width:35px; height:35px; margin-right:10px;">
       <span>Token Saya</span>
     </div>
-    <span style="color:#999;">0 &gt;</span>
-  </div>
+<span style="color:#999; display: inline-flex; align-items: center; gap: 4px;">
+  <img src="coin.png" alt="icon" style="width:14px; height:14px; vertical-align:middle;">
+  221 &gt;
+</span>  </div>
 
   <!-- Setelan Obrolan -->
   <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:12px; border-bottom:1px solid #eee; cursor:pointer;">
+              padding:15px; border-bottom:1px solid #eee; cursor:pointer;">
     <div style="display:flex; align-items:center;">
-      <img src="wallet.png" style="width:22px; height:22px; margin-right:10px;">
+      <img src="comment.png" style="width:35px; height:35px; margin-right:10px;">
       <span>Setelan Obrolan</span>
     </div>
     <span style="color:#999;">&gt;</span>
@@ -1067,9 +1251,9 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
   <!-- Level Saya -->
   <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:12px; border-bottom:1px solid #eee; cursor:pointer;">
+              padding:15px; border-bottom:1px solid #eee; cursor:pointer;">
     <div style="display:flex; align-items:center;">
-      <img src="wallet.png" style="width:22px; height:22px; margin-right:10px;">
+      <img src="prist.png" style="width:35px; height:35px; margin-right:10px;">
       <span>Level Saya</span>
     </div>
     <span style="color:#999;">&gt;</span>
@@ -1077,9 +1261,9 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
   <!-- Rating Saya -->
   <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:12px; border-bottom:1px solid #eee; cursor:pointer;">
+              padding:15px; border-bottom:1px solid #eee; cursor:pointer;">
     <div style="display:flex; align-items:center;">
-      <img src="wallet.png" style="width:22px; height:22px; margin-right:10px;">
+      <img src="rating.png" style="width:35px; height:35px; margin-right:10px;">
       <span>Rating Saya</span>
     </div>
     <span style="color:#999;">&gt;</span>
@@ -1087,9 +1271,9 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
   <!-- Menjadi VIP -->
   <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:12px; border-bottom:1px solid #eee; cursor:pointer;">
+              padding:15px; border-bottom:1px solid #eee; cursor:pointer;">
     <div style="display:flex; align-items:center;">
-      <img src="wallet.png" style="width:22px; height:22px; margin-right:10px;">
+      <img src="mahkot.png" style="width:35px; height:35px; margin-right:10px;">
       <span>Menjadi VIP</span>
     </div>
     <span style="color:#999;">&gt;</span>
@@ -1097,9 +1281,9 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
   <!-- Undang untuk VIP -->
   <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:12px; border-bottom:1px solid #eee; cursor:pointer;">
+              padding:15px; border-bottom:1px solid #eee; cursor:pointer;">
     <div style="display:flex; align-items:center;">
-      <img src="wallet.png" style="width:22px; height:22px; margin-right:10px;">
+      <img src="gift.png" style="width:35px; height:35px; margin-right:10px;">
       <span>Undang Untuk VIP</span>
     </div>
     <span style="color:#999;">&gt;</span>
@@ -1107,9 +1291,9 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
   <!-- Setelan Aplikasi -->
   <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:12px; cursor:pointer;">
+              padding:15px; cursor:pointer;">
     <div style="display:flex; align-items:center;">
-      <img src="wallet.png" style="width:22px; height:22px; margin-right:10px;">
+      <img src="gear.png" style="width:35px; height:35px; margin-right:10px;">
       <span>Setelan Aplikasi</span>
     </div>
     <span style="color:#999;">&gt;</span>
@@ -1143,6 +1327,78 @@ function showPageNav(page) {
     document.getElementById("mainHeader").style.display = "none";
   }
 }
+
+
+
+
+function openChat(type) {
+  document.querySelector(".chat-list").style.display = "none";
+  document.getElementById("chatContent").style.display = "block";
+
+  const title = document.getElementById("chatTitle");
+  const messages = document.getElementById("chatMessages");
+
+  if (type === "laporan") {
+  title.innerText = "Layanan Host";
+  messages.innerHTML = `
+    <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block; margin:4px 0;">
+      <b>Admin Agency:</b> Selamat Datang Di Akun Host Baru Anda!
+    </div>`;
+} else if (type === "pengumuman") {
+  title.innerText = "Notifikasi";
+  messages.innerHTML = `
+    <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block; margin:4px 0;">
+      <b>Aplikasi:</b> Manda mengunjungi saya 12 kali
+    </div>`;
+} else if (type === "user1") {
+  title.innerText = "Riks";
+  messages.innerHTML = `
+    <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block; margin:4px 0;">
+      <b>Riks:</b> Hai, lagi apa?
+    </div>`;
+} else if (type === "user2") {
+  title.innerText = "Puspita";
+  messages.innerHTML = `
+    <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block; margin:4px 0;">
+      <b>Puspita:</b> Tinggal dimana bang
+    </div>`;
+} else if (type === "user3") {
+  title.innerText = "Manda";
+  messages.innerHTML = `
+    <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block; margin:4px 0;">
+      <b>Manda:</b> Kamu daftar dimana akun host?
+    </div>`;
+}
+}
+
+function backToList() {
+  document.querySelector(".chat-list").style.display = "block";
+  document.getElementById("chatContent").style.display = "none";
+}
+
+function sendMessage() {
+  const input = document.getElementById("messageInput");
+  if (input.value.trim() !== "") {
+    alert("Anda belum memenuhi syarat untuk membalas.");
+    input.value = ""; // kosongkan input setelah kirim
+  }
+}
+
+
+
+function setActiveNav(el) {
+  document.querySelectorAll("#bottomNav .nav-item").forEach(item => {
+    item.classList.remove("active");
+  });
+  el.classList.add("active");
+}
+
+
+
+
+
+
+
 </script>
 </body>
 </html>
