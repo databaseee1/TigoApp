@@ -152,8 +152,15 @@ body {
 
 .container{max-width:500px;margin:200px auto;padding:20px;background:#b200cd;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.2);}
 h2,h3{margin-top:0; color: #ffffff;}
-input,select,button{width:95%;padding:8px;margin:5px 0;border-radius:5px;border:1px solid #ccc;}
-button{background:#007bff;color:#fff;border:none;cursor:pointer;}
+
+input,select,button{width: 55%;
+    padding: 8px;
+    margin: 4px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;}
+
+
+button{background:#6a5afd;color:#fff;border:none;cursor:pointer;}
 button:hover{background:#7328fe;}
 ul{padding-left:20px;}
 li{margin-bottom:5px;}
@@ -185,7 +192,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 }
 
 .user-info {
-  padding: 6px 8px;
+  padding: 1px 1px;
   font-size: 13px;
 }
 
@@ -632,6 +639,59 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   /* hasilnya hitam */
 }
 
+@keyframes slideDown {
+  from { transform:translate(-50%, -100%); }
+  to   { transform:translate(-50%, 0); }
+}
+
+
+
+.popup {
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.5);
+  z-index:1000;
+  font-family:Arial, sans-serif;
+}
+/* Popup content */
+.popup-content {
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%, -50%);
+  background:#fff;
+  padding:20px 25px;
+  border-radius:12px;
+  max-width:350px;
+  width:80%;
+  box-shadow:0 6px 18px rgba(0,0,0,0.2);
+  text-align:center;
+  animation:fadeIn 0.3s ease;
+}
+.popup-content h3 {
+  margin:0 0 10px;
+  color:#333;
+}
+.popup-content p {
+  margin:0 0 15px;
+  color:#555;
+  font-size:14px;
+}
+.close-btn {
+  background:#6a5afd;
+  color:#fff;
+  border:none;
+  padding:8px 16px;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:14px;
+}
+@keyframes fadeIn {
+  from { opacity:0; transform:translate(-50%, -45%); }
+  to   { opacity:1; transform:translate(-50%, -50%); }
+}
+
 
 
 
@@ -652,10 +712,10 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
 <!-- LOGIN PAGE -->
 <div class="container" id="loginPage">
-  <h2>Login User</h2>
+  <h2>Login Host</h2>
   <input type="email" id="loginEmail" placeholder="Email">
-  <input type="text" id="loginWA" placeholder="Nomor WA">
-  <button onclick="loginUser()">Login</button>
+  <input type="text" id="loginWA" placeholder="Password">
+  <button onclick="loginUser()">Masuk</button>
   <p id="loginStatus" style="color:red;"></p>
 </div>
 
@@ -1005,7 +1065,13 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   </div>
 </div>
 
-
+<div class="popup" id="playPopup">
+  <div class="popup-content">
+    <h3>Pemberitahuan</h3>
+    <p>Anda tidak memenuhi syarat untuk membuka menu ini.</p>
+    <button class="close-btn" onclick="closePlayPopup()">Tutup</button>
+  </div>
+</div>
 
 <!-- Dunia Page -->
 <div id="pageDunia" class="navPage" style="display:none; padding-bottom:60px;">
@@ -1015,7 +1081,56 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
     <div class="logo">Tigo <span class="coin">1020</span></div>
     <div class="menu">
       <button class="btn">+</button>
-      <button class="btn">History</button>
+
+
+<button class="btn" id="historyBtn">History</button>
+
+<!-- Popup -->
+<div id="historyPopup" style="
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+  z-index:1000;
+">
+  <div style="
+    position:absolute;
+    top:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:500px;
+    height:50%; /* setengah layar */
+    background:#fff;
+    border-radius:0 0 20px 20px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.3);
+    padding:20px;
+    overflow-y:auto;
+    animation:slideDown 0.4s ease;
+  ">
+    <h2 style="text-align:center; color: #6a5afd; margin-top:0; border-bottom:1px solid #eee; padding-bottom:10px;">
+      History Panggilan
+    </h2>
+    <ul id="callHistory" style="list-style:none; padding:0; font-size: 10px; margin:0;">
+      <!-- Data riwayat panggilan masuk sini -->
+    </ul>
+    <button onclick="closePopup()" style="
+      display:block;
+      margin:15px auto 0;
+      padding:8px 20px;
+      background:#6a5afd;
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+    ">Tutup</button>
+  </div>
+</div>
+
+
       <img src="account.png" alt="Profile" class="profile">
     </div>
   </div>
@@ -1025,10 +1140,9 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   <!-- Daftar User -->
   <div class="user-grid">
     <div class="user-card">
-      <img src="loadingfoto.png" alt="Charlotte">
+      <img src="global3.png" alt="Charlotte">
       <div class="user-info">
-        <span class="name">user</span>
-        <span class="flag">🇮🇳 India</span>
+<span class="name" style=" color:#0000007d;">Loading...</span>
         <span class="status online">Online</span>
       </div>
     </div>
@@ -1036,13 +1150,31 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
     <!-- duplikat list biar looping halus -->
     <div class="user-card">
-      <img src="loadingfoto.png" alt="Charlotte">
+      <img src="global3.png" alt="Charlotte">
       <div class="user-info">
-        <span class="name">user</span>
-        <span class="flag">🇮🇳 indonesia</span>
+<span class="name" style=" color:#0000007d;">Loading...</span>
         <span class="status online">Online</span>
       </div>
     </div>
+
+        <div class="user-card">
+      <img src="global3.png" alt="Charlotte">
+      <div class="user-info">
+<span class="name" style=" color:#0000007d;">Loading...</span>
+        <span class="status online">Online</span>
+      </div>
+    </div>
+
+        <div class="user-card">
+      <img src="global3.png" alt="Charlotte">
+      <div class="user-info">
+<span class="name" style=" color:#0000007d;">Loading...</span>
+        <span class="status online">Online</span>
+      </div>
+    </div>
+
+
+
   </div>
 </div>
 
@@ -1054,10 +1186,21 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   <img src="secrchicon.png" alt="Searching...">
 </div>    
 </div>
-<button class="video-btn">
+<button class="video-btn" id="videoBtn">
   <img src="vudeo.png" alt="Offline" style="width:24px; height:24px; vertical-align:middle;">
   <span style="margin-left:6px;">Mulai Video</span>
 </button>
+
+<!-- Popup Notifikasi -->
+<div class="popup" id="videoPopup">
+  <div class="popup-content">
+    <h3>Pemberitahuan</h3>
+    <p>Kamu tidak memenuhi syarat untuk membuka menu ini.</p>
+    <button class="close-btn" onclick="closeVideoPopup()">Tutup</button>
+  </div>
+</div>
+
+
 <p class="info">
   120 <img src="coin.png" alt="Offline" style="width:18px; height:18px; vertical-align:middle;"> /Menit
 </p>
@@ -1176,12 +1319,20 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
             background:#fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
 
   <!-- Kiri: Logo + Saldo -->
-  <div style="display:flex; align-items:center;">
-    <img src="wallet.png" alt="Offline" style="width:30px; height:30px; margin-right:8px;">
-    <span style="font-weight:bold; color:#5f00e3;">
-      Rp <span id="saldoNominal">0</span>
-    </span>
-  </div>
+<div style="
+  display: inline-flex; 
+  align-items: center; 
+  background: #fff; 
+  border: 1px solid #ddd; 
+  border-radius: 12px; 
+  padding: 10px 15px; 
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+">
+  <img src="wallet.png" alt="Offline" style="width:30px; height:30px; margin-right:8px;">
+  <span style="font-weight:bold; color:#5f00e3;">
+    Rp <span id="saldoNominal">0</span>
+  </span>
+</div>
 
   <!-- Kanan: Credit -->
   <div id="creditBox" 
@@ -1392,6 +1543,90 @@ function setActiveNav(el) {
   });
   el.classList.add("active");
 }
+
+
+  const historyBtn = document.getElementById("historyBtn");
+  const historyPopup = document.getElementById("historyPopup");
+  const callHistory = document.getElementById("callHistory");
+
+  // Contoh data history (bisa diganti dari Firestore)
+  const dataHistory = [
+    { nama:"Bella anitta", waktu:new Date(), durasi:"15 menit", coin:430 },
+    { nama:"Saliati clis", waktu:new Date(), durasi:"7 menit", coin:201 },
+  ];
+
+  historyBtn.addEventListener("click", () => {
+    // kosongkan list
+    callHistory.innerHTML = "";
+
+    // masukkan data
+    dataHistory.forEach(item => {
+      const li = document.createElement("li");
+      li.style.padding = "10px";
+      li.style.borderBottom = "1px solid #eee";
+      li.innerHTML = `
+        <b>${item.nama}</b><br>
+        ${item.waktu.toLocaleString()}<br>
+        Durasi: ${item.durasi}<br>
+        Pendapatan Coin: <span style="color:green">${item.coin}</span>
+      `;
+      callHistory.appendChild(li);
+    });
+
+    // tampilkan popup
+    historyPopup.style.display = "block";
+  });
+
+  function closePopup(){
+    historyPopup.style.display = "none";
+  }
+
+
+const videoBtn = document.getElementById("videoBtn");
+const videoPopup = document.getElementById("videoPopup");
+
+videoBtn.addEventListener("click", () => {
+  videoPopup.style.display = "block";
+});
+
+function closeVideoPopup() {
+  videoPopup.style.display = "none";
+}
+
+// Tambahan: klik area luar popup untuk menutup
+window.addEventListener("click", (e) => {
+  if (e.target === videoPopup) {
+    closeVideoPopup();
+  }
+});
+
+
+
+const playPage = document.getElementById("pagePlay");
+const playPopup = document.getElementById("playPopup");
+
+// cari semua user-card di dalam pagePlay
+playPage.querySelectorAll(".user-card").forEach(card => {
+  card.addEventListener("click", () => {
+    playPopup.style.display = "block";
+  });
+});
+
+function closePlayPopup() {
+  playPopup.style.display = "none";
+}
+
+// klik area luar popup = close
+window.addEventListener("click", (e) => {
+  if (e.target === playPopup) {
+    closePlayPopup();
+  }
+});
+
+
+
+
+
 
 
 
