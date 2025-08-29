@@ -1021,19 +1021,19 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   <!-- NAVIGASI BAWAH -->
   <div id="bottomNav" style="position:fixed; bottom:0; left:0; width:100%; background:#fff; display:flex; justify-content:space-around; border-top:1px solid #ccc; padding:8px 0; box-shadow:0 -2px 4px rgba(0,0,0,0.1);">
     <div class="nav-item" onclick="setActiveNav(this); showPageNav('play')">
-      <img src="destiny_icon_normal.png" alt="Play" style="width:45px;"><br>
+      <img src="destiny_icon_normal.png" alt="Play" style="width:38px;"><br>
       <small></small>
     </div>
     <div class="nav-item" onclick="setActiveNav(this); showPageNav('dunia')">
-      <img src="match_icon_normal.png" alt="Dunia" style="width:45px;"><br>
+      <img src="match_icon_normal.png" alt="Dunia" style="width:38px;"><br>
       <small></small>
     </div>
     <div class="nav-item" onclick="setActiveNav(this); showPageNav('chat')">
-      <img src="msg_icon_normal.png" alt="Chat" style="width:45px;"><br>
+      <img src="msg_icon_normal.png" alt="Chat" style="width:38px;"><br>
       <small></small>
     </div>
     <div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
-      <img src="mine_icon_normal.png" alt="Saya" style="width:45px;"><br>
+      <img src="mine_icon_normal.png" alt="Saya" style="width:38px;"><br>
       <small></small>
     </div>
   </div>
@@ -1435,7 +1435,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   <!-- Daftar User -->
   <div class="user-grid">
     <div class="user-card">
-      <img src="global3.png" alt="Charlotte">
+      <img src="default_pic_100.png" alt="Charlotte">
       <div class="user-info">
 <span class="name" style=" color:#0000007d;">Loading...</span>
         <span class="status online">Online</span>
@@ -1445,7 +1445,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
     <!-- duplikat list biar looping halus -->
     <div class="user-card">
-      <img src="global3.png" alt="Charlotte">
+      <img src="default_pic_100.png" alt="Charlotte">
       <div class="user-info">
 <span class="name" style=" color:#0000007d;">Loading...</span>
         <span class="status online">Online</span>
@@ -1453,7 +1453,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
     </div>
 
         <div class="user-card">
-      <img src="global3.png" alt="Charlotte">
+      <img src="default_pic_100.png" alt="Charlotte">
       <div class="user-info">
 <span class="name" style=" color:#0000007d;">Loading...</span>
         <span class="status online">Online</span>
@@ -1461,7 +1461,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
     </div>
 
         <div class="user-card">
-      <img src="global3.png" alt="Charlotte">
+      <img src="default_pic_100.png" alt="Charlotte">
       <div class="user-info">
 <span class="name" style=" color:#0000007d;">Loading...</span>
         <span class="status online">Online</span>
@@ -1608,12 +1608,28 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 </div>
 
 
-  <div id="pageSaya" class="navPage" style="display:block; padding-bottom:80px;">
+  <div id="pageSaya" class="navPage" style="display:block; padding-bottom:80px; position: relative;">
+
+  <!-- Logo offline di pojok kanan atas -->
+  <img src="edit_profile_icon.png" alt="Offline" style="
+    width:25px;
+    height:25px;
+    position:absolute;
+    top: 9px;
+    right:10px;
+    border-radius:50%;
+    border:1px solid #fff;
+  ">
+
+
 <div class="profile-header">
-  <img src="cewek16.jpeg" alt="Profile" class="profile-pic">
+  <img src="profizuna.jpg" alt="Profile" class="profile-pic">
 
   <div class="profile-info">
-    <div class="name">it's me</div>
+    <div class="name" style="display: inline-flex; align-items: center; gap: 4px;">
+  <span>it's me🦋</span>
+  <img src="reward_vip_icon_small.png" alt="Offline" style="width:35px; height:35px;">
+</div>
 
     <div class="age">
       <img src="female_icon_new_3.png" class="icon" alt="Age"> 23 Tahun
@@ -1637,7 +1653,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 </div>
 <!-- Box Saldo + Credit -->
 <div style="display:flex; align-items:center; justify-content:space-between; 
-            padding:10px; border:1px solid #ccc; border-radius:8px; 
+            padding:10px; border:5px solid #f3f3f3; border-radius:20px; 
             background:#fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
 
   <!-- Kiri: Logo + Saldo -->
@@ -1658,10 +1674,10 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
   <!-- Kanan: Credit -->
   <div id="creditBox" 
-       style="padding:6px 12px; border:1px solid #5f00e3; border-radius:6px; 
-              background:#76059e; font-size:14px; font-weight:bold; 
+       style="padding:6px 12px; border:1px solid #5f00e3; border-radius:11px; 
+              background:#c00dff; font-size:14px; font-weight:bold; 
               color:#ffffff; cursor:pointer;">
-    Credit
+    Credits
   </div>
 </div>
 
@@ -1753,7 +1769,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
               padding:15px; border-top:1px solid #eee; cursor:pointer;">
     <div style="display:flex; align-items:center; gap:10px;">
       <img src="menjadivip.png" style="width:25px; height:25px;">
-      <span>Menjadi VIP</span>
+      <span>Hasil Agency</span>
     </div>
     <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
   </div>
@@ -1773,7 +1789,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
               padding:15px; border-top:1px solid #eee; cursor:pointer;">
     <div style="display:flex; align-items:center; gap:10px;">
       <img src="setelanaplikasi.png" style="width:25px; height:25px;">
-      <span>Setelan Aplikasi</span>
+      <span>Setelan Agency</span>
     </div>
     <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
   </div>
