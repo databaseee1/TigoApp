@@ -140,7 +140,7 @@ document.getElementById("creditBox").addEventListener("click",()=>{
 
 body {
   font-family: Arial;
-  background: #f5f5f5;
+  background: #ffffff;
   margin: 0;
   padding: 0;
 
@@ -451,15 +451,28 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
 
 
+.search-loading {
+  width: 340px;                /* ukuran container */
+  height: 120px;
+  background-image: url('global_map.png'); /* gambar di belakang */
+  background-size: cover;       /* sesuaikan ukuran gambar */
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0%;           /* buat bulat */
+  margin-bottom: 0px;          /* jarak ke bawah */
+}
+
 .search-loading img {
-  width: 80px;      /* bisa sesuaikan */
-  height: 80px;
+  width: 100px;                  /* ukuran ikon */
+  height: 100px;
   animation: spin 2s linear infinite; /* efek mutar */
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
 }
 
 .profile-header {
@@ -490,10 +503,14 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   margin-bottom: 4px;
 }
 
-.age, .country {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 4px;
+.age .icon, .country .icon, .flag-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    vertical-align: middle;
+    border-radius: 50%;    /* bikin lingkaran */
+    object-fit: cover;     /* supaya proporsional */
+    border: 1px solid #ccc; /* opsional, biar terlihat jelas */
 }
 
 .bottom-row {
@@ -720,6 +737,121 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   to   { opacity:1; transform:translate(-50%, -50%); }
 }
 
+.status-icon {
+  width: 12px;        /* ukuran kecil */
+  height: 12px;
+  vertical-align: middle;
+  margin-right: 4px;  /* jarak ke teks */
+}
+
+
+#loginPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 34vh;
+  background: url('global_map.png') no-repeat center center;
+  background-size: cover;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Bungkus form dengan box agar ada background */
+#loginPage form {
+  background: rgba(0,0,0,0.6); /* semi-transparan hitam */
+  padding: 30px 20px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 350px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Judul dengan background */
+#loginPage h2 {
+  background: rgb(191 0 247); /* bisa ganti warna sesuai keinginan */
+  padding: 10px 20px;
+  border-radius: 8px;
+  color: #fff;
+  margin-bottom: 20px;
+  width: 100%;
+  text-align: center;
+}
+
+#loginPage input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background: rgba(255,255,255,0.9); /* background putih agar input jelas */
+}
+
+#loginPage button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+
+
+
+
+.pesta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 box per baris */
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.pesta-box {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+.pesta-box img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+.pesta-box h3 {
+  margin: 8px 0 4px 0;
+  font-size: 14px;
+  font-weight: bold;
+  color: #000;
+}
+
+.pesta-box p {
+  font-size: 12px;
+  margin: 0 0 6px 0;
+  color: #555;
+}
+
+.pesta-box span {
+  font-size: 12px;
+  font-weight: bold;
+  color: #888888;
+}
+
+
+
+
+
 
 
 
@@ -731,12 +863,147 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 <div class="header" id="mainHeader" style="display:none;">
   <div class="header-tabs">
     <div class="tab active">Orang</div>
-    <div class="tab">Pesta</div>
-  </div>
+<div class="tab" onclick="showPesta()">Pesta</div>  </div>
 <div class="header-icon">
   <img src="more.png" alt="Offline" style="width:24px; height:24px;">
 </div>
 </div>
+
+<!-- Halaman Pesta -->
+<div id="pestaPage" style="display:none; padding:20px;">
+  <img src="back_gray.png" 
+     alt="Kembali" 
+     onclick="backFromPesta()" 
+     style="width:25px; height:25px; cursor:pointer; margin-bottom:15px;">
+
+<h2 style="color:#575757;">Pesta Seru</h2> 
+ <div class="pesta-grid" style="
+        display:grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap:16px;
+      ">
+    <!-- Box 1 -->
+    <div class="pesta-box" style="position: relative; border-radius:8px; overflow:hidden; background:#fff; padding-bottom:10px;">
+      <img src="game_guess_dice_loading_bg.webp" alt="Pesta 1" style="width:100%;">
+      <h3 style="margin:6px 0 2px 0;">Funny Game</h3>
+      <p style="margin:0 0 4px 0;">Dice</p>
+      <span>
+        <img src="room_person_num_icon.png" alt="Offline" style="width:14px; height:14px; vertical-align:middle; margin-right:4px;">
+        2212
+      </span>
+      <img src="demo_icon_bailiang1.webp" alt="Profil" style="
+        width:24px;
+        height:24px;
+        position:absolute;
+        bottom:8px;
+        right:8px;
+        border-radius:50%;
+        border:1px solid #fff;
+      ">
+    </div>
+
+    <!-- Box 2 -->
+    <div class="pesta-box" style="position: relative; border-radius:8px; overflow:hidden; background:#fff; padding-bottom:10px;">
+      <img src="teen_patti_loading_bg.webp" alt="Pesta 2" style="width:100%;">
+      <h3 style="margin:6px 0 2px 0;">Play Together</h3>
+      <p style="margin:0 0 4px 0;">Teen Patti</p>
+      <span>
+        <img src="room_person_num_icon.png" alt="Offline" style="width:14px; height:14px; vertical-align:middle; margin-right:4px;">
+        1830
+      </span>
+      <img src="demo_icon_fennen1.webp" alt="Profil" style="
+        width:24px;
+        height:24px;
+        position:absolute;
+        bottom:8px;
+        right:8px;
+        border-radius:50%;
+        border:1px solid #fff;
+      ">
+    </div>
+
+    <!-- Box 3 -->
+    <div class="pesta-box" style="position: relative; border-radius:8px; overflow:hidden; background:#fff; padding-bottom:10px;">
+      <img src="game_roulette_loading_bg.webp" alt="Pesta 3" style="width:100%;">
+      <h3 style="margin:6px 0 2px 0;">Lucky Day</h3>
+      <p style="margin:0 0 4px 0;">Roulette</p>
+      <span>
+        <img src="room_person_num_icon.png" alt="Offline" style="width:14px; height:14px; vertical-align:middle; margin-right:4px;">
+        1162
+      </span>
+      <img src="demo_icon_gexing1.webp" alt="Profil" style="
+        width:24px;
+        height:24px;
+        position:absolute;
+        bottom:8px;
+        right:8px;
+        border-radius:50%;
+        border:1px solid #fff;
+      ">
+    </div>
+
+    <!-- Box 4 -->
+    <div class="pesta-box" style="position: relative; border-radius:8px; overflow:hidden; background:#fff; padding-bottom:10px;">
+      <img src="teen_patti_loading_bg.webp" alt="Pesta 4" style="width:100%;">
+      <h3 style="margin:6px 0 2px 0;">Teen Patti</h3>
+      <p style="margin:0 0 4px 0;">Lucky Party</p>
+      <span>
+        <img src="room_person_num_icon.png" alt="Offline" style="width:14px; height:14px; vertical-align:middle; margin-right:4px;">
+        2312
+      </span>
+      <img src="demo_icon_heibai1.png" alt="Profil" style="
+        width:24px;
+        height:24px;
+        position:absolute;
+        bottom:8px;
+        right:8px;
+        border-radius:50%;
+        border:1px solid #fff;
+      ">
+    </div>
+
+    <!-- Box 5 -->
+    <div class="pesta-box" style="position: relative; border-radius:8px; overflow:hidden; background:#fff; padding-bottom:10px;">
+      <img src="game_guess_dice_loading_bg.webp" alt="Pesta 5" style="width:100%;">
+      <h3 style="margin:6px 0 2px 0;">Dice</h3>
+      <p style="margin:0 0 4px 0;">Win Win Win!!</p>
+      <span>
+        <img src="room_person_num_icon.png" alt="Offline" style="width:14px; height:14px; vertical-align:middle; margin-right:4px;">
+        3122
+      </span>
+      <img src="demo_icon_lengsediao1.webp" alt="Profil" style="
+        width:24px;
+        height:24px;
+        position:absolute;
+        bottom:8px;
+        right:8px;
+        border-radius:50%;
+        border:1px solid #fff;
+      ">
+    </div>
+
+    <!-- Box 6 -->
+    <div class="pesta-box" style="position: relative; border-radius:8px; overflow:hidden; background:#fff; padding-bottom:10px;">
+      <img src="game_roulette_loading_bg.webp" alt="Pesta 6" style="width:100%;">
+      <h3 style="margin:6px 0 2px 0;">Roulette</h3>
+      <p style="margin:0 0 4px 0;">Let's play together</p>
+      <span>
+        <img src="room_person_num_icon.png" alt="Offline" style="width:14px; height:14px; vertical-align:middle; margin-right:4px;">
+        1232
+      </span>
+      <img src="demo_icon_nuansediao1.webp" alt="Profil" style="
+        width:24px;
+        height:24px;
+        position:absolute;
+        bottom:8px;
+        right:8px;
+        border-radius:50%;
+        border:1px solid #fff;
+      ">
+    </div>
+  </div>
+</div>
+
 
 <!-- LOGIN PAGE -->
 <div class="container" id="loginPage">
@@ -754,19 +1021,19 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   <!-- NAVIGASI BAWAH -->
   <div id="bottomNav" style="position:fixed; bottom:0; left:0; width:100%; background:#fff; display:flex; justify-content:space-around; border-top:1px solid #ccc; padding:8px 0; box-shadow:0 -2px 4px rgba(0,0,0,0.1);">
     <div class="nav-item" onclick="setActiveNav(this); showPageNav('play')">
-      <img src="plyvideo.png" alt="Play" style="width:50px;"><br>
+      <img src="destiny_icon_normal.png" alt="Play" style="width:45px;"><br>
       <small></small>
     </div>
     <div class="nav-item" onclick="setActiveNav(this); showPageNav('dunia')">
-      <img src="global1.png" alt="Dunia" style="width:50px;"><br>
+      <img src="match_icon_normal.png" alt="Dunia" style="width:45px;"><br>
       <small></small>
     </div>
     <div class="nav-item" onclick="setActiveNav(this); showPageNav('chat')">
-      <img src="chatnav_clean.png" alt="Chat" style="width:50px;"><br>
+      <img src="msg_icon_normal.png" alt="Chat" style="width:45px;"><br>
       <small></small>
     </div>
     <div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
-      <img src="user2.png" alt="Saya" style="width:50px;"><br>
+      <img src="mine_icon_normal.png" alt="Saya" style="width:45px;"><br>
       <small></small>
     </div>
   </div>
@@ -1247,7 +1514,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
     <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:12px; color:#999; display:flex; align-items:center; gap:4px;">
 <span style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:12px; color:#999; display:flex; align-items:center; gap:4px;">
-      <img src="adduser.png" alt="Offline" style="width:30px; height:35px;">
+      <img src="contact_unfollow.png" alt="Offline" style="width:30px; height:30px;">
     </span>
     </h3>
   <!-- Daftar Chat -->
@@ -1255,15 +1522,17 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
 <!-- Chat Laporan -->
 <div class="chat-item laporan" onclick="openChat('laporan', this)">
-  <div class="chat-avatar" style="
+<div class="chat-avatar" style="
     width: 40px; 
     height: 40px; 
-    background-color: #8000ff;
-    -webkit-mask: url('cs.png') no-repeat center;
+    -webkit-mask: url('servant_icon.png') no-repeat center;
     -webkit-mask-size: contain;
-    mask: url('cs.png') no-repeat center;
+    mask: url('servant_icon.png') no-repeat center;
     mask-size: contain;
-  "></div>
+    background-image: url('servant_icon.png'); /* tampilkan gambar asli */
+    background-size: cover;
+    background-position: center;
+"></div>
   <div class="chat-info">
     <h4>Layanan Host</h4>
     <p>Selamat Datang Di Akun Host Baru Anda!</p>
@@ -1272,7 +1541,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
     <!-- Chat Pengumuman -->
     <div class="chat-item" onclick="openChat('pengumuman', this)">
-      <img src="buka.png" alt="Pengumuman" class="chat-avatar">
+      <img src="notifikasi.png" alt="Pengumuman" class="chat-avatar">
       <div class="chat-info">
         <h4>Notifikasi</h4>
         <p>Manda mengunjungi saya 12 kali</p>
@@ -1314,17 +1583,18 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   <div id="chatContent" style="display:none; padding:0 10px;">
 <button onclick="backToList()" 
   style="
-    padding:1px 6px;        
+    padding:2px;        
     margin:0 0 8px 0;       
-    font-size:12px; 
     background:#ffffff; 
     border:1px solid #ccc; 
     border-radius:4px; 
-    color:#000; 
     cursor:pointer; 
     width:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
   ">
-  Kembali
+  <img src="back_gray.png" alt="Kembali" style="width:20px; height:20px;">
 </button>
    <h3 id="chatTitle"></h3>
     <div id="chatMessages" class="chat-messages" style="min-height:200px; margin-bottom:10px;"></div>
@@ -1343,22 +1613,23 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   <img src="cewek16.jpeg" alt="Profile" class="profile-pic">
 
   <div class="profile-info">
-    <div class="name">Dino</div>
+    <div class="name">it's me</div>
 
     <div class="age">
-      <img src="tambah.png" class="icon" alt="Age"> 23 Tahun
+      <img src="female_icon_new_3.png" class="icon" alt="Age"> 23 Tahun
     </div>
 
     <div class="country">
       <img src="indonesialogo.png" class="icon" alt="Flag"> Indonesia
     </div>
 
-    <div class="bottom-row">
-      <div class="level">
-        <span class="status-dot"></span> Level 5
-      </div>
-<div class="verify" style="display:flex; align-items:center; border-radius: 5px; gap:0px; background: #cccbcb; font-size:14px;">
-  <img src="verify_icon.png" alt="Verifikasi" style="width:16px; border-radius: 5px; height:16px; background: #cccbcb;">
+<div class="bottom-row">
+  <div class="level">
+    <img src="user_level_5_icon.png" alt="Offline" class="status-icon"> Level 5
+  </div>
+
+<div class="verify" style="display:flex; align-items:center; border-radius: 5px; gap:0px; background: #cccbcb; color: #7f3586; font-size:14px;">
+  <img src="verifikasi.png" alt="Verifikasi" style="width:16px; border-radius: 5px; height:16px;  background: #cccbcb;">
   <span>Verifikasi</span>
 </div>
     </div>
@@ -1379,9 +1650,9 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   padding: 10px 15px; 
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 ">
-  <img src="wallet.png" alt="Offline" style="width:30px; height:30px; margin-right:8px;">
+  <img src="credit.png" alt="Offline" style="width:30px; height:30px; margin-right:8px;">
   <span style="font-weight:bold; color:#5f00e3;">
-    Rp <span id="saldoNominal">0</span>
+  <span id="saldoNominal">0</span>
   </span>
 </div>
 
@@ -1427,81 +1698,88 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
 <!-- Menu List -->
 <div style="border:1px solid #ddd; border-radius:8px; background:#fff; 
-            box-shadow:0 2px 4px rgba(0,0,0,0.05); margin-top: 10px; color: #3f3737; overflow:hidden;">
+            box-shadow:0 2px 4px rgba(0,0,0,0.05); color: #3f3737; overflow:hidden;">
 
-  <!-- Token saya -->
+  <!-- Token Saya -->
   <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:15px; border-bottom:1px solid #eee; cursor:pointer;">
-    <div style="display:flex; align-items:center;">
-      <img src="coin.png" style="width:35px; height:35px; margin-right:10px;">
+              padding:15px; cursor:pointer;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <img src="rokensaya.png" style="width:25px; height:25px;">
       <span>Token Saya</span>
     </div>
+    <div style="display:flex; align-items:center; gap:4px;">
 <span style="color:#999; display: inline-flex; align-items: center; gap: 4px;">
-  <img src="coin.png" alt="icon" style="width:14px; height:14px; vertical-align:middle;">
-  221 &gt;
-</span>  </div>
+  <img src="token_wrap.png" alt="icon" style="width:14px; height:14px; vertical-align:middle;">
+  <span style="color:#999; display: inline-flex; align-items: center; gap: 4px;">
+  221
+  <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px; vertical-align:middle; margin-left:4px;">
+</span>
+</span>
+    </div>
+  </div>
 
   <!-- Setelan Obrolan -->
   <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:15px; border-bottom:1px solid #eee; cursor:pointer;">
-    <div style="display:flex; align-items:center;">
-      <img src="comment.png" style="width:35px; height:35px; margin-right:10px;">
+              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <img src="setelenobrolan.png" style="width:25px; height:25px;">
       <span>Setelan Obrolan</span>
     </div>
-    <span style="color:#999;">&gt;</span>
+    <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
   </div>
 
   <!-- Level Saya -->
   <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:15px; border-bottom:1px solid #eee; cursor:pointer;">
-    <div style="display:flex; align-items:center;">
-      <img src="prist.png" style="width:35px; height:35px; margin-right:10px;">
+              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <img src="levelsaya.png" style="width:25px; height:25px;">
       <span>Level Saya</span>
     </div>
-    <span style="color:#999;">&gt;</span>
+    <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
   </div>
 
   <!-- Rating Saya -->
   <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:15px; border-bottom:1px solid #eee; cursor:pointer;">
-    <div style="display:flex; align-items:center;">
-      <img src="rating.png" style="width:35px; height:35px; margin-right:10px;">
+              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <img src="ratingsaya.png" style="width:25px; height:25px;">
       <span>Rating Saya</span>
     </div>
-    <span style="color:#999;">&gt;</span>
+    <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
   </div>
 
   <!-- Menjadi VIP -->
   <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:15px; border-bottom:1px solid #eee; cursor:pointer;">
-    <div style="display:flex; align-items:center;">
-      <img src="mahkot.png" style="width:35px; height:35px; margin-right:10px;">
+              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <img src="menjadivip.png" style="width:25px; height:25px;">
       <span>Menjadi VIP</span>
     </div>
-    <span style="color:#999;">&gt;</span>
+    <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
   </div>
 
-  <!-- Undang untuk VIP -->
+  <!-- Undang Untuk VIP -->
   <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:15px; border-bottom:1px solid #eee; cursor:pointer;">
-    <div style="display:flex; align-items:center;">
-      <img src="gift.png" style="width:35px; height:35px; margin-right:10px;">
+              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <img src="undang.png" style="width:25px; height:25px;">
       <span>Undang Untuk VIP</span>
     </div>
-    <span style="color:#999;">&gt;</span>
+    <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
   </div>
 
   <!-- Setelan Aplikasi -->
   <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:15px; cursor:pointer;">
-    <div style="display:flex; align-items:center;">
-      <img src="gear.png" style="width:35px; height:35px; margin-right:10px;">
+              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <img src="setelanaplikasi.png" style="width:25px; height:25px;">
       <span>Setelan Aplikasi</span>
     </div>
-    <span style="color:#999;">&gt;</span>
+    <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
   </div>
 
 </div>
+
 
 <script>
 
@@ -1704,7 +1982,14 @@ window.addEventListener("click", (e) => {
 
 
 
+function showPesta() {
+  document.getElementById('pestaPage').style.display = 'block';
+  // sembunyikan tab atau konten lain jika perlu
+}
 
+function backFromPesta() {
+  document.getElementById('pestaPage').style.display = 'none';
+}
 
 
 
