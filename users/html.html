@@ -8,7 +8,12 @@
 <!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { 
+  getFirestore, collection, addDoc, Timestamp, 
+  doc, getDoc, updateDoc, onSnapshot, query, where, getDocs 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
 
 const firebaseConfig = {
   apiKey: "AIzaSy....",
@@ -22,47 +27,114 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+
+
+// =============================
+// ✅ Realtime Update Jumlah Tagihan
+// =============================
+const jumlahTagihanEl = document.getElementById("jumlahTagihan");
+
+if (jumlahTagihanEl) {
+  onSnapshot(doc(db, "settings", "config"), (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const jumlah = data.jumlahTagihan || 0;
+      jumlahTagihanEl.textContent = "Rp " + jumlah.toLocaleString();
+    } else {
+      jumlahTagihanEl.textContent = "Rp 0";
+    }
+  });
+}
+
+
+
+let previousStatus = null; // Simpan status sebelumnya
+
 // ===== LOGIN USER =====
 window.loginUser = async function() {
   const email = document.getElementById("loginEmail").value.trim();
   const wa = document.getElementById("loginWA").value.trim();
-  const status = document.getElementById("loginStatus");
-  if(!email||!wa){ status.innerText="Isi email & WA!"; return; }
+  const statusEl = document.getElementById("loginStatus");
+  if(!email || !wa) { 
+    statusEl.innerText = "Isi email & WA!"; 
+    return; 
+  }
 
-  try{
-    const q = query(collection(db,"pendaftaran"),where("email","==",email),where("wa","==",wa));
+  
+
+  try {
+    const q = query(collection(db,"pendaftaran"), where("email","==",email), where("wa","==",wa));
     const snap = await getDocs(q);
-    if(!snap.empty){
+    if(!snap.empty) {
       const userDoc = snap.docs[0];
-      localStorage.setItem("loggedUserId",userDoc.id);
-      document.getElementById("loginPage").style.display="none";
-      document.getElementById("userPage").style.display="block";
+      localStorage.setItem("loggedUserId", userDoc.id);
+      document.getElementById("loginPage").style.display = "none";
+      document.getElementById("userPage").style.display = "block";
       loadUserData(userDoc.id);
-    }else{ status.innerText="❌ User tidak ditemukan!"; }
-  }catch(e){ console.error(e); status.innerText="❌ Terjadi kesalahan!"; }
+    } else {
+      statusEl.innerText = "❌ User tidak ditemukan!";
+    }
+  } catch(e) {
+    console.error(e);
+    statusEl.innerText = "❌ Terjadi kesalahan!";
+  }
 };
 
 // ===== LOAD USER DATA =====
-async function loadUserData(userId){
-  const userRef = doc(db,"pendaftaran",userId);
-  onSnapshot(userRef, docSnap=>{
-    const data = docSnap.data()||{};
-    document.getElementById("saldoNominal").innerText = data.saldo||0;
+async function loadUserData(userId) {
+  const userRef = doc(db, "pendaftaran", userId);
+
+  onSnapshot(userRef, docSnap => {
+    const data = docSnap.data() || {};
+    const currentStatus = data.status || "aktif";
+
+    // 🔍 Cek perubahan status
+    if (previousStatus && previousStatus !== currentStatus) {
+      if (currentStatus === "aktif" && (previousStatus === "ditangguhkan" || previousStatus === "dihapus")) {
+        showAccountNotif("Akun Anda berhasil diaktifkan kembali.", "third_acoount_bound_iocn.png");
+      }
+    }
+
+    // Simpan status terbaru
+    previousStatus = currentStatus;
+
+    // 🚫 Jika akun ditangguhkan
+    if (currentStatus === "ditangguhkan") {
+      showAccountNotif("Akun Anda sedang ditangguhkan oleh pihak aplikasi.", "match_locked_icon.png");
+      setTimeout(() => logout(), 0);
+      return;
+    }
+
+    // ❌ Jika akun dihapus
+    if (currentStatus === "dihapus") {
+      showAccountNotif("Akun Anda telah dihapus, Harap lapor jika butuh bantuan!.", "banned_icon.png");
+      setTimeout(() => logout(), 100);
+      return;
+    }
+
+  // ✅ Tambah Nama dan Umur User di Header
+document.getElementById("userName").textContent = data.nama || "User";
+document.getElementById("userAge").textContent = (data.umur ? data.umur + " Tahun" : "0 Tahun");
+
+
+    // ✅ Jika akun aktif, tampilkan data
+    document.getElementById("saldoNominal").innerText = data.saldo || 0;
 
     const riwayatList = document.getElementById("riwayatList");
     riwayatList.innerHTML = "";
-    const riwayat = Array.isArray(data.riwayat)?data.riwayat:[];
+    const riwayat = Array.isArray(data.riwayat) ? data.riwayat : [];
 
-    riwayat.forEach((item,index)=>{
+    riwayat.forEach((item, index) => {
       const li = document.createElement("li");
       li.innerHTML = `
         ${item.jumlah} - ${item.bank} - 
-        <span style="color:${item.color||'black'}">${item.status||''}</span>
+        <span style="color:${item.color || 'black'}">${item.status || ''}</span>
       `;
       riwayatList.appendChild(li);
     });
   });
 }
+
 // ===== PROSES TARIK =====
 window.prosesTarik = async function(){
   const bank=document.getElementById("bank").value;
@@ -134,6 +206,206 @@ document.getElementById("creditBox").addEventListener("click",()=>{
   const tarikSection=document.getElementById("tarikSection");
   tarikSection.style.display=tarikSection.style.display==="none"?"block":"none";
 });
+
+
+
+// ===== FITUR EDIT PROFILE =====
+
+// BUKA MODAL
+window.openEditModal = async function () {
+  const userId = localStorage.getItem("loggedUserId");
+  if (!userId) return alert("User belum login");
+
+  const userRef = doc(db, "pendaftaran", userId);
+  const docSnap = await getDoc(userRef);
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+
+    // Data yang hanya ditampilkan (tidak bisa edit)
+document.getElementById("viewEmail").textContent = data.email || "-";
+document.getElementById("viewWA").textContent = data.wa || "-";
+document.getElementById("viewJK").textContent = data.jk || "-";
+document.getElementById("viewBank").textContent = data.bank || "-";
+document.getElementById("viewNamaRek").textContent = data.namaRek || "-";
+document.getElementById("viewNoRek").textContent = data.noRek || "-";
+
+
+
+    // ✅ Isi input yang bisa di-edit
+    document.getElementById("editNama").value = data.nama || "";
+    document.getElementById("editUmur").value = data.umur || "";
+
+    document.getElementById("editProfileModal").style.display = "block";
+  } else {
+    alert("Data user tidak ditemukan!");
+  }
+};
+
+// ✅ Simpan perubahan Nama & Umur (dan opsional foto profil)
+window.saveProfile = async function () {
+  const newNama = document.getElementById("editNama").value.trim();
+  const newUmur = document.getElementById("editUmur").value.trim();
+
+
+  if (!newNama) return alert("Nama tidak boleh kosong!");
+  if (!newUmur) return alert("Umur tidak boleh kosong!");
+
+  const userId = localStorage.getItem("loggedUserId");
+  if (!userId) return alert("User belum login");
+
+  const userRef = doc(db, "pendaftaran", userId);
+
+  try {
+    // ✅ Update Nama & Umur dulu
+    await updateDoc(userRef, {
+      nama: newNama,
+      umur: newUmur
+    });
+
+    
+
+    showToast("✅ Profil berhasil diperbarui!", "success");
+    document.getElementById("editProfileModal").style.display = "none";
+  } catch (error) {
+    console.error("Gagal update profil:", error);
+    showToast("❌ Terjadi kesalahan saat menyimpan profil.", "error");
+
+  }
+};
+
+// ✅ Tutup modal
+window.closeEditModal = function () {
+  document.getElementById("editProfileModal").style.display = "none";
+};
+
+
+function showToast(message, type = "success") {
+  const container = document.getElementById("toastContainer");
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 3000);
+}
+
+
+async function cekStatusVerifikasi() {
+  const userId = localStorage.getItem("loggedUserId");
+  if (!userId) return;
+
+  const userRef = doc(db, "pendaftaran", userId);
+  const docSnap = await getDoc(userRef);
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    const statusText = document.getElementById("statusVerifikasi");
+    const statusIcon = document.getElementById("statusIcon");
+
+    if (data.verified === true) {
+      statusText.textContent = "Diverifikasi";
+      statusIcon.src = "verifikasi.png"; // Logo untuk diverifikasi
+      statusText.style.color = "#7f3586"; // 
+    } else {
+      statusText.textContent = "Pergi Verifikasi";
+      statusIcon.src = "profile_verify_icon.png"; // Logo untuk belum diverifikasi
+      statusText.style.color = "#dc3545"; // Merah untuk belum diverifikasi
+    }
+  } else {
+    console.error("User tidak ditemukan!");
+  }
+}
+
+// Panggil ketika halaman dimuat
+cekStatusVerifikasi();
+
+
+
+
+// ✅ Elemen DOM
+const verifyDiv = document.querySelector(".verify");
+const popupTopup = document.getElementById("popupTopup");
+const saldoHostEl = document.getElementById("saldoHost");
+const saldoCoinEl = document.getElementById("saldoCoin");
+const saldoNominal = document.getElementById("saldoNominal");
+const formTopup = document.getElementById("formTopup");
+
+// ✅ Ambil userId dari localStorage
+const userId = localStorage.getItem("loggedUserId");
+
+// ✅ Pasang listener Firestore sekali saja
+if (userId) {
+  const userRef = doc(db, "pendaftaran", userId);
+  onSnapshot(userRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const saldoRupiah = data.saldoRupiah || 0;
+      const saldoCoin = data.saldoCoin || 0;
+
+      if (saldoHostEl) saldoHostEl.textContent = "Rp " + saldoRupiah.toLocaleString();
+      if (saldoCoinEl) saldoCoinEl.textContent = saldoCoin.toLocaleString() + " Coin";
+      if (saldoNominal) saldoNominal.textContent = saldoRupiah.toLocaleString();
+    }
+  });
+}
+
+// ✅ Event klik untuk buka popup
+if (verifyDiv) {
+  verifyDiv.addEventListener("click", () => {
+    popupTopup.style.display = "flex";
+  });
+}
+
+// ✅ Submit form top up (deposit)
+if (formTopup) {
+  formTopup.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const userId = localStorage.getItem("loggedUserId");
+    const namaPengirim = e.target.namaPengirim.value;
+    const bank = e.target.bank.value;
+    const nominal = parseInt(e.target.nominal.value);
+
+    try {
+      await addDoc(collection(db, "deposit"), {
+        userId,
+        namaPengirim,
+        bank,
+        nominal, // nominal dalam Rupiah
+        status: "pending", // admin akan approve
+        createdAt: Timestamp.now()
+      });
+
+      alert("✅ Permintaan top up berhasil dikirim. Tunggu konfirmasi admin.");
+      popupTopup.style.display = "none";
+      formTopup.reset();
+    } catch (error) {
+      console.error("Gagal mengirim data top up:", error);
+      alert("❌ Terjadi kesalahan saat mengirim permintaan: " + error.message);
+    }
+  });
+}
+
+// ✅ Hanya user yang ganti logo
+const role = localStorage.getItem('role') || 'user';
+
+if (role === 'user') {
+  const bankSelect = document.getElementById('bank');
+  const bankLogo = document.getElementById('bankLogo');
+
+  bankSelect.addEventListener('change', function () {
+    const selectedOption = this.options[this.selectedIndex];
+    const logo = selectedOption.getAttribute('data-logo') || 'bankcustomee.jpg';
+    bankLogo.src = logo;
+  });
+}
+
+
+
+
 </script>
 
 <style>
@@ -452,7 +724,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
 
 .search-loading {
-  width: 340px;                /* ukuran container */
+  width: 360px;                /* ukuran container */
   height: 120px;
   background-image: url('global_map.png'); /* gambar di belakang */
   background-size: cover;       /* sesuaikan ukuran gambar */
@@ -859,9 +1131,27 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 }
 
 
-
-
-
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 2000;
+}
+.toast {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  margin-top: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  animation: fadeIn 0.3s ease, fadeOut 0.3s ease 2.7s;
+}
+.toast.success { background: #bdc1bd; }
+.toast.error { background: #f44336; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px);} to {opacity: 1; transform: translateY(0);} }
+@keyframes fadeOut { from { opacity: 1; transform: translateY(0);} to {opacity: 0; transform: translateY(-10px);} }
 
 
 
@@ -869,31 +1159,79 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 </head>
 <body>
 
-  <!-- HEADER (muncul hanya setelah login) -->
-<div class="header" id="mainHeader" style="display:none;">
+  <!-- ✅ HEADER (Hanya muncul setelah login) -->
+<div class="header" id="mainHeader" style="display:none; justify-content:space-between; align-items:center; padding:10px; background:#f8f8f8;">
   <div class="header-tabs">
     <div class="tab active">Orang</div>
-<div class="tab" onclick="showPesta()">Pesta</div>  </div>
-<div class="header-icon">
-  <img src="more.png" alt="Offline" style="width:24px; height:24px;">
-</div>
+    <div class="tab" onclick="showPesta()">Pesta</div>
+  </div>
+  <div class="header-icon" id="countrySelector" style="cursor:pointer; display:flex; align-items:center; gap:8px;">
+    <img id="selectedCountryIcon" src="country_filter_icon.png" alt="Pilih Negara" style="width:24px; height:24px;">
+  </div>
 </div>
 
-<!-- Halaman Pesta -->
-<div id="pestaPage" style="display:none; padding:20px;">
+<!-- ✅ Overlay -->
+<div id="overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(5px); z-index:998;"></div>
+
+<!-- ✅ Popup Negara -->
+<div id="countryPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.3); width:300px; z-index:999;">
+  <h3 style="margin-bottom:15px; text-align:center; color:#000; font-size:18px; font-weight:bold;">Pilih Negara</h3>
+
+  <ul style="list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(2, 1fr); gap:12px;">
+    <li class="country-item" data-country="Semua" data-icon="country_filter_icon.png" style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+      <img src="country_filter_icon.png" style="width:16px; height:16px;">
+      <span>Semua</span>
+    </li>
+    <li class="country-item" data-country="Brazil" data-icon="brazil_8603047.png" style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+      <img src="brazil_8603047.png" style="width:16px; height:16px;">
+      <span>Brazil</span>
+    </li>
+    <li class="country-item" data-country="Indonesia" data-icon="indonesialogo.png" style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+      <img src="indonesialogo.png" style="width:16px; height:16px;">
+      <span>Indonesia</span>
+    </li>
+    <li class="country-item" data-country="India" data-icon="india_6211408.png" style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+      <img src="india_6211408.png" style="width:16px; height:16px;">
+      <span>India</span>
+    </li>
+    <li class="country-item" data-country="Malaysia" data-icon="malaysia_8603298.png" style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+      <img src="malaysia_8603298.png" style="width:16px; height:16px;">
+      <span>Malaysia</span>
+    </li>
+    <li class="country-item" data-country="Philippines" data-icon="philippine_6211521.png" style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+      <img src="philippine_6211521.png" style="width:16px; height:16px;">
+      <span>Philippines</span>
+    </li>
+    <li class="country-item" data-country="Pakistan" data-icon="pakistan_8603405.png" style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+      <img src="pakistan_8603405.png" style="width:16px; height:16px;">
+      <span>Pakistan</span>
+    </li>
+    <li class="country-item" data-country="Vietnam" data-icon="vietnam_12360402.png" style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+      <img src="vietnam_12360402.png" style="width:16px; height:16px;">
+      <span>Vietnam</span>
+    </li>
+    <li class="country-item" data-country="Lainnya" data-icon="flag_other_country.png" style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+      <img src="flag_other_country.png" style="width:16px; height:16px;">
+      <span>Lainnya</span>
+    </li>
+  </ul>
+
+  <button onclick="closePopup()" style="margin-top:15px; width:100%; padding:10px; background:#333; color:white; border:none; border-radius:6px; cursor:pointer;">Tutup</button>
+</div>
+
+<!-- ✅ Halaman Pesta -->
+<div id="pestaPage" class="page" style="display:none; padding:20px;">
+  <!-- Tombol Kembali -->
   <img src="back_gray.png" 
-     alt="Kembali" 
-     onclick="backFromPesta()" 
-     style="width:25px; height:25px; cursor:pointer; margin-bottom:15px;">
+       alt="Kembali" 
+       onclick="backFromPesta()" 
+       style="width:25px; height:25px; cursor:pointer; margin-bottom:15px;">
+  <h2 style="color:#575757;">Pesta Seru</h2> 
 
-<h2 style="color:#575757;">Pesta Seru</h2> 
- <div class="pesta-grid" style="
-        display:grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap:16px;
-      ">
+  <!-- Grid -->
+  <div class="pesta-grid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
     <!-- Box 1 -->
-    <div class="pesta-box" style="position: relative; border-radius:8px; overflow:hidden; background:#fff; padding-bottom:10px;">
+    <div class="pesta-box" style="position:relative; border-radius:8px; overflow:hidden; background:#fff; padding-bottom:10px;">
       <img src="game_guess_dice_loading_bg.webp" alt="Pesta 1" style="width:100%;">
       <h3 style="margin:6px 0 2px 0;">Funny Game</h3>
       <p style="margin:0 0 4px 0;">Dice</p>
@@ -1024,6 +1362,48 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   <p id="loginStatus" style="color:red;"></p>
 </div>
 
+<!-- Popup & Overlay -->
+<div id="accountNotifOverlay" style="
+  display:none;
+  position:fixed;
+  top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter: blur(6px);
+  z-index:9999;
+"></div>
+
+<div id="accountNotif" style="
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  text-align:center; /* Pusatkan isi */
+  width:300px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.3);
+  z-index:9999;
+">
+  <img id="notifIcon" src="" alt="Icon" style="
+    width:40px;
+    height:40px;
+    margin:0 auto 10px;
+    display:none;
+  ">
+  <p id="notifMessage" style="margin:0; color:#333; font-size:14px;"></p>
+
+  <button onclick="closeAccountNotif()" style="
+    background:#007BFF;
+    color:#fff;
+    border:none;
+    padding:10px 15px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:14px;
+  ">OK</button>
+</div>
 
 
 <!-- USER PAGE -->
@@ -1422,16 +1802,16 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
     <ul id="callHistory" style="list-style:none; padding:0; font-size: 10px; margin:0;">
       <!-- Data riwayat panggilan masuk sini -->
     </ul>
-    <button onclick="closePopup()" style="
-      display:block;
-      margin:15px auto 0;
-      padding:8px 20px;
-      background:#6a5afd;
-      color:#fff;
-      border:none;
-      border-radius:8px;
-      cursor:pointer;
-    ">Tutup</button>
+ <button id="btnClosePopup" style="
+  display:block;
+  margin:15px auto 0;
+  padding:8px 20px;
+  background:#6a5afd;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+">Tutup</button>
   </div>
 </div>
 
@@ -1621,28 +2001,100 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   <div id="pageSaya" class="navPage" style="display:block; padding-bottom:80px; position: relative;">
 
   <!-- Logo offline di pojok kanan atas -->
-  <img src="edit_profile_icon.png" alt="Offline" style="
-    width:25px;
-    height:25px;
+
+<img src="edit_profile_icon.png" alt="Edit" onclick="openEditModal()" style="
+  width:25px;
+  height:25px;
+  position:absolute;
+  top:-20px;
+  right:10px;
+  border-radius:50%;
+  border:1px solid #fff;
+  cursor:pointer;
+">
+
+<!-- Modal Edit Profile -->
+<div id="editProfileModal" style="
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  font-size: 10px;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+  z-index:1000;
+">
+  <div style="
     position:absolute;
-    top: -20px;
-    right:10px;
-    border-radius:50%;
-    border:1px solid #fff;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:90%;
+    max-width:420px;
+    background:#fff;
+    border-radius:10px;
+    padding:20px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.3);
+    overflow-y:auto;
+    max-height:90vh;
   ">
+    <h2 style="text-align:center; color:#6a5afd; margin-bottom:15px;">Edit Profile</h2>
+
+    <!-- Data Non-Editable -->
+    <div style="
+      margin-bottom:15px;
+      font-size:13px;
+      color:#444;
+      border:1px solid #ccc;
+      border-radius:8px;
+      padding:12px;
+      background:#f9f9f9;
+      box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    ">
+      <p><strong>Email:</strong> <span id="viewEmail">-</span></p>
+      <p><strong>Nomor WA:</strong> <span id="viewWA">-</span></p>
+      <p><strong>Jenis Kelamin:</strong> <span id="viewJK">-</span></p>
+      <p><strong>Bank:</strong> <span id="viewBank">-</span></p>
+      <p><strong>Nama Rekening:</strong> <span id="viewNamaRek">-</span></p>
+      <p><strong>No Rekening:</strong> <span id="viewNoRek">-</span></p>
+    </div>
+
+    <!-- Bagian Edit Nama & Umur -->
+    <div style="margin-bottom:10px;">
+      <label for="editNama"><strong>Nama:</strong></label>
+      <input id="editNama" type="text" style="width:50%; padding:8px; margin-top:4px; border:1px solid #ccc; border-radius:5px;">
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label for="editUmur"><strong>Umur:</strong></label>
+      <input id="editUmur" type="number" style="width:30%; padding:8px; margin-top:4px; border:1px solid #ccc; border-radius:5px;">
+    </div>
+
+    <!-- Tombol -->
+    <div style="display:flex; justify-content:space-between; margin-top:15px;">
+      <button onclick="closeEditModal()" style="background:#ccc; padding:8px 12px; border:none; border-radius:5px;">Batal</button>
+      <button onclick="saveProfile()" style="background:#6a5afd; color:#fff; padding:8px 12px; border:none; border-radius:5px;">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
 
 
 <div class="profile-header">
   <img src="profizuna.jpg" alt="Profile" class="profile-pic">
 
-  <div class="profile-info">
+<div class="profile-info">
     <div class="name" style="display: inline-flex; align-items: center; gap: 4px;">
-  <span>it's me🦋</span>
-  <img src="reward_vip_icon_small.png" alt="Offline" style="width:35px; height:35px;">
-</div>
+      <span id="userName"></span>
+      <img id="vipIcon" src="reward_vip_icon_small.png" alt="VIP" style="width:35px; height:35px; display:none;">
+    </div>
 
-    <div class="age">
-      <img src="female_icon_new_3.png" class="icon" alt="Age"> 23 Tahun
+     <div class="age" style="font-size:14px; color:#444;">
+      <img src="female_icon_new_3.png" class="icon" alt="Age" style="width:18px;"> 
+      <span id="userAge">0 Tahun</span>
     </div>
 
     <div class="country">
@@ -1654,10 +2106,15 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   <img src="user_level_4_icon.png" alt="Offline" class="status-icon"> Level 4
 </div>
 
-<div class="verify" style="display:flex; align-items:center; border-radius: 5px; gap:0px; background: #e5e5e5; color: #7f3586; font-size:14px;">
-  <img src="verifikasi.png" alt="Verifikasi" style="width:16px; border-radius: 5px; height:16px;  background: #cccbcb;">
-  <span>Diverifikasi</span>
+<div class="verify" style="display:flex; align-items:center; gap:0px; background:#e5e5e5; padding:0px 5px; border-radius:5px; font-size:14px; color:#7f3586;">
+  <img id="statusIcon" src="belum.png" alt="Status" style="width:18px; height:18px; border-radius:4px;">
+  <span id="statusVerifikasi">Memuat...</span>
 </div>
+
+
+
+
+
     </div>
   </div>
 </div>
@@ -1693,27 +2150,40 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
 
 <div id="tarikSection" style="display:none; margin-top:15px;">
-  <!-- Tarik Box -->
-  <div class="tarik-box">
-<h3 style="color:#000; text-align:center;">Form Penarikan</h3>
- <select id="bank">
-      <option value="">-- Pilih Bank --</option>
-      <option>BCA</option>
-      <option>DANA</option>
-      <option>BRI</option>
-      <option>MANDIRI</option>
-      <option>GOPAY</option>
-      <option>LINKAJA</option>
-      <option>CIMBNIAGA</option>
-      <option>SUPERBANK</option>
-      <option>OVO</option>
-    </select>
-    <input type="text" id="norek" placeholder="Nomor Rekening">
-    <input type="text" id="namarek" placeholder="Nama Rekening">
-    <input type="number" id="jumlah" placeholder="Jumlah Penarikan">
-    <button onclick="prosesTarik()">Tarik Sekarang</button>
-    <p id="tarikStatus" style=" border-radius: 10px; background: #bebebe; color:rgb(0, 157, 18);"></p>
+  <div class="tarik-box" style="text-align:center; max-width:400px; margin:auto; padding:15px; border:1px solid #ccc; border-radius:10px; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+    <h3 style="color:#000; text-align:center; margin-bottom:15px;">Form Penarikan</h3>
+
+    <!-- Wrapper dengan logo -->
+    <div class="select-with-logo" style="display:flex; align-items:center; border:1px solid #ccc; border-radius:5px; padding:5px; margin-bottom:10px;">
+      <img id="bankLogo" src="transfer.png" alt="Logo Bank" style="width:40px; height:40px; margin-right:8px;">
+      <select id="bank" style="flex:1; border:none; outline:none; font-size:14px;">
+        <option value="">-- Pilih Bank --</option>
+        <option value="BCA" data-logo="bca.png">BCA</option>
+        <option value="DANA" data-logo="dana.png">DANA</option>
+        <option value="BRI" data-logo="bank-bri-logo-png_.png">BRI</option>
+        <option value="MANDIRI" data-logo="bank-bni-logo-png.png">MANDIRI</option>
+        <option value="GOPAY" data-logo="gopay.png">GOPAY</option>
+        <option value="LINKAJA" data-logo="link-aja-logo.png">LINKAJA</option>
+        <option value="CIMBNIAGA" data-logo="cimbniaga.jpg">CIMBNIAGA</option>
+        <option value="SUPERBANK" data-logo="Superbank.png">SUPERBANK</option>
+        <option value="OVO" data-logo="ovo.png">OVO</option>
+        <option value="JakOne" data-logo="abankbank.png">JakOne</option>
+        <option value="Bank China" data-logo="Bank-of-China-Logo.png">Bank China</option>
+        <option value="Shopeepay" data-logo="ShopeePay.png">Shopeepay</option>
+        <option value="Custom" data-logo="transfer.png">Custom</option>
+      </select>
+    </div>
+
+    <input type="text" id="norek" placeholder="Nomor Rekening" style="width:100%; padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
+    <input type="text" id="namarek" placeholder="Nama Rekening" style="width:100%; padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
+    <input type="number" id="jumlah" placeholder="Jumlah Penarikan" style="width:100%; padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
+    
+    <button onclick="prosesTarik()" style="width:100%; padding:10px; background:#6a5afd; color:#fff; border:none; border-radius:5px; font-size:14px; cursor:pointer;">Tarik Sekarang</button>
+    
+    <p id="tarikStatus" style="margin-top:10px; border-radius:10px; background:#bebebe; color:rgb(0, 157, 18); padding:8px;"></p>
   </div>
+
+
 
   <!-- Riwayat -->
   <div class="riwayat-box">
@@ -1806,6 +2276,81 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
 </div>
 
+
+<!-- Popup Top Up -->
+<div id="popupTopup" style="
+  display:none; 
+  position:fixed; 
+  top:0; 
+  left:0; 
+  width:100%; 
+  height:100%; 
+  background:rgba(0,0,0,0.5); 
+  justify-content:center; 
+  align-items:center; 
+  z-index:9999;
+">
+  <div style="
+    background:#fff; 
+    padding:20px; 
+    border-radius:12px; 
+    width:90%; 
+    max-width:400px; 
+    box-shadow:0 8px 16px rgba(0,0,0,0.2);
+  ">
+    
+    <h2 style="color:#000; font-size:18px; text-align:center;">Aktivasi & Deposit Akun Host</h2>
+    
+    <!-- Info Saldo -->
+    <div style="background:#fff; padding:15px 20px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); margin:15px 0; font-size:16px;">
+      <p style="margin:10px 0; display:flex; align-items:center;">
+        <img src="score_icon_wrap.png" alt="icon" style="width:20px; height:20px; margin-right:8px;">
+        <b style="color:#000;">Saldo Host:</b>&nbsp; 
+        <span style="color:#e91e63; margin-left:5px;" id="saldoHost">Rp 0</span>
+      </p>
+      <p style="margin:10px 0; display:flex; align-items:center;">
+        <img src="super_pack_float_icon.png" alt="icon" style="width:20px; height:20px; margin-right:8px;">
+        <b style="color:#000;">Saldo Coin:</b>&nbsp; 
+        <span style="color:#ffb700; font-weight: bold; margin-left:5px;" id="saldoCoin">0 Coin</span>
+      </p>
+      <p style="margin:10px 0; display:flex; align-items:center;">
+        <img src="certification_award_icon_0_female.png" alt="icon" style="width:30px; height:30px; margin-right:8px;">
+        <b style="color:#000;">Jumlah Tagihan:</b>&nbsp; 
+        <span style="color:#e91e63; margin-left:5px;" id="jumlahTagihan">Rp 500.000</span>
+      </p>
+    </div>
+
+    <!-- Info Wajib Top Up -->
+    <div style="background:#fff3f3; border:1px solid #f5c2c2; padding:15px; border-radius:8px; margin-bottom:15px; box-shadow:0 4px 8px rgba(0,0,0,0.05);">
+      <p style="color:red; font-size:13px; margin:0; line-height:1.5;">
+        Untuk mengaktifkan akun host Anda dan memverifikasi, wajib melakukan top up minimal 
+        <b>Rp 500.000</b>. Saldo akan masuk ke akun Anda dan bisa ditarik kembali.
+      </p>
+    </div>
+
+    <!-- Form Top Up -->
+    <h3 style="margin-bottom:10px; color:#7f3586; text-align:center;">Form Top Up</h3>
+    <form id="formTopup">
+      <input type="text" name="namaPengirim" placeholder="Nama Pengirim" required style="
+        width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;
+      ">
+      <input type="text" name="bank" placeholder="Nama Bank / E-Wallet" required style="
+        width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;
+      ">
+      <input type="number" name="nominal" placeholder="Nominal (Rp)" required style="
+        width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;
+      ">
+      <button type="submit" style="
+        background:#7f3586; color:#fff; padding:12px; border:none; border-radius:6px; width:100%; font-size:16px;
+      ">Kirim</button>
+    </form>
+    
+    <!-- Tombol Tutup -->
+    <button onclick="document.getElementById('popupTopup').style.display='none';" style="
+      margin-top:12px; padding:12px; width:100%; background:#ccc; border:none; border-radius:6px; font-size:16px; cursor:pointer;
+    ">Tutup</button>
+  </div>
+</div>
 
 <script>
 
@@ -1927,10 +2472,43 @@ function setActiveNav(el) {
 }
 
 
-  const historyBtn = document.getElementById("historyBtn");
-  const historyPopup = document.getElementById("historyPopup");
-  const callHistory = document.getElementById("callHistory");
+ document.addEventListener('DOMContentLoaded', () => {
+  const historyBtn   = document.getElementById('historyBtn');
+  const historyPopup = document.getElementById('historyPopup');
 
+  // Buka popup History
+  historyBtn?.addEventListener('click', () => {
+    historyPopup.style.display = 'block';
+    // Kunci scroll halaman saat popup terbuka (opsional)
+    document.body.style.overflow = 'hidden';
+  });
+
+  // Tutup popup saat klik tombol "Tutup" (ID btnClosePopup di dalam #historyPopup)
+  document.addEventListener('click', (e) => {
+    if (e.target.id === 'btnClosePopup' && e.target.closest('#historyPopup')) {
+      closeHistoryPopup();
+    }
+  });
+
+  // Tutup popup saat klik area gelap di luar panel
+  historyPopup?.addEventListener('click', (e) => {
+    if (e.target === historyPopup) {
+      closeHistoryPopup();
+    }
+  });
+
+  // Tutup popup saat tekan ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && historyPopup?.style.display === 'block') {
+      closeHistoryPopup();
+    }
+  });
+
+  function closeHistoryPopup() {
+    historyPopup.style.display = 'none';
+    document.body.style.overflow = ''; // balikin scroll
+  }
+});
   // Contoh data history (bisa diganti dari Firestore)
   const dataHistory = [
     { nama:"Bella anitta", waktu:new Date(), durasi:"15 menit", coin:430 },
@@ -2016,6 +2594,112 @@ function showPesta() {
 function backFromPesta() {
   document.getElementById('pestaPage').style.display = 'none';
 }
+
+
+
+
+function showAccountNotif(message, icon = null, showHelp = false) {
+  const notifBox = document.getElementById('accountNotif');
+  const notifMsg = document.getElementById('notifMessage');
+  const notifIcon = document.getElementById('notifIcon');
+
+  // Tampilkan pesan (boleh HTML)
+  notifMsg.innerHTML = message;
+
+  // Tampilkan icon jika ada
+  if (icon) {
+    notifIcon.src = icon;
+    notifIcon.style.display = 'block';
+    notifIcon.style.margin = '0 auto'; // tengah
+    notifIcon.style.display = 'block';
+  } else {
+    notifIcon.style.display = 'none';
+  }
+
+  // Hapus tombol lama jika ada
+  const oldBtn = document.querySelector('#accountNotif .help-btn');
+  if (oldBtn) oldBtn.remove();
+
+  // Tambahkan tombol "Hubungi Admin" jika showHelp = true
+  if (showHelp) {
+    const helpBtn = document.createElement('button');
+    helpBtn.textContent = 'Hubungi Admin';
+    helpBtn.classList.add('help-btn');
+    helpBtn.style.cssText = `
+      display:block;
+      margin:10px auto 0;
+      padding:8px 15px;
+      background:#25D366;
+      color:#fff;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      font-size:14px;
+    `;
+    helpBtn.onclick = function () {
+      window.open('https://wa.me/6281234567890?text=Halo%20Admin,%20saya%20butuh%20bantuan%20karena%20akun%20saya%20dihapus.', '_blank');
+    };
+
+    notifBox.appendChild(helpBtn);
+  }
+
+  // Tampilkan notif
+  notifBox.style.display = 'block';
+
+  // Auto hide setelah 30 detik
+  setTimeout(() => {
+    notifBox.style.display = 'none';
+  }, 30000);
+}
+
+
+
+function closeAccountNotif() {
+  document.getElementById("accountNotif").style.display = "none";
+  document.body.style.overflow = "auto";
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const overlay = document.getElementById('overlay');
+  const popup = document.getElementById('countryPopup');
+  const countrySelector = document.getElementById('countrySelector');
+  const selectedCountryIcon = document.getElementById('selectedCountryIcon');
+  const countryItems = document.querySelectorAll('.country-item');
+
+  const defaultIcon = 'country_filter_icon.png'; // ✅ Icon default filter
+
+  // ✅ Klik icon header → buka popup
+  countrySelector.addEventListener('click', () => {
+    overlay.style.display = 'block';
+    popup.style.display = 'block';
+  });
+
+  // ✅ Pilih negara
+  countryItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const icon = item.getAttribute('data-icon');
+
+      // Update icon header ke icon negara yang dipilih
+      selectedCountryIcon.src = icon;
+
+      // Simpan hanya icon ke localStorage (opsional)
+      localStorage.setItem('selectedCountryIcon', icon);
+
+      closePopup();
+    });
+  });
+
+  // ✅ Reset icon ke default saat reload
+  selectedCountryIcon.src = defaultIcon;
+
+  // ✅ Fungsi close popup
+  window.closePopup = function() {
+    overlay.style.display = 'none';
+    popup.style.display = 'none';
+  }
+});
+
+
 
 
 
