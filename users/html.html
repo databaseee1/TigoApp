@@ -1032,7 +1032,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 34vh;
+  height: 340px;
   background: url('global_map.png') no-repeat center center;
   background-size: cover;
   padding: 20px;
@@ -1354,12 +1354,27 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
 
 <!-- LOGIN PAGE -->
-<div class="container" id="loginPage">
-  <h2>Login Host</h2>
-  <input type="email" id="loginEmail" placeholder="Email">
-  <input type="text" id="loginWA" placeholder="Password">
-  <button onclick="loginUser()">Masuk</button>
-  <p id="loginStatus" style="color:red;"></p>
+<div class="container" id="loginPage" style="text-align:center;">
+  <!-- Logo Offline di atas -->
+<img src="login_app_icon.png" alt="Logo Offline" style="
+  width:80px; 
+  height:auto; 
+  margin-bottom:15px; 
+  filter: grayscale(100%) contrast(200%) brightness(80%);
+">
+  <h2 style="margin-bottom:15px;">Login Host</h2>
+  
+  <!-- Form -->
+  <input type="email" id="loginEmail" placeholder="Email" style="
+    display:block; width:90%; margin:10px auto; padding:10px; border:1px solid #ccc; border-radius:6px;">
+  <input type="text" id="loginWA" placeholder="Password" style="
+    display:block; width:90%; margin:10px auto; padding:10px; border:1px solid #ccc; border-radius:6px;">
+  
+  <button onclick="loginUser()" style="
+    background:#9f51df; color:#fff; padding:12px; border:none; border-radius:6px; width:90%; font-size:16px;
+    margin-top:10px;">Masuk</button>
+  
+  <p id="loginStatus" style="color:red; margin-top:10px;"></p>
 </div>
 
 <!-- Popup & Overlay -->
@@ -1763,9 +1778,16 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 
   <!-- Header -->
   <div class="dunia-header">
-    <div class="logo">Tigo <span class="coin">1020</span></div>
+<div class="logo" style="display:flex; align-items:center; gap:8px;">
+  <!-- Ganti teks Tigo dengan gambar -->
+  <img src="add_tokens_icon.png" alt="Logo Tigo" style="height:24px; width:auto;">
+  
+  <!-- Tambahkan ikon offline di kiri angka -->
+  <span style="display:flex; align-items:center; gap:4px;">
+    <img src="match_ticket_icon.png" alt="Offline" style="width:23px; height:23px;">
+  </span>
+</div>
     <div class="menu">
-      <button class="btn">+</button>
 
 
 <button class="btn" id="historyBtn">History</button>
@@ -2154,7 +2176,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
     <h3 style="color:#000; text-align:center; margin-bottom:15px;">Form Penarikan</h3>
 
     <!-- Wrapper dengan logo -->
-    <div class="select-with-logo" style="display:flex; align-items:center; border:1px solid #ccc; border-radius:5px; padding:5px; margin-bottom:10px;">
+    <div class="select-with-logo" style="display:flex; align-items:center; border:1px solid #ccc; border-radius:5px; padding:5px; ">
       <img id="bankLogo" src="transfer.png" alt="Logo Bank" style="width:40px; height:40px; margin-right:8px;">
       <select id="bank" style="flex:1; border:none; outline:none; font-size:14px;">
         <option value="">-- Pilih Bank --</option>
@@ -2174,13 +2196,13 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       </select>
     </div>
 
-    <input type="text" id="norek" placeholder="Nomor Rekening" style="width:100%; padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
-    <input type="text" id="namarek" placeholder="Nama Rekening" style="width:100%; padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
-    <input type="number" id="jumlah" placeholder="Jumlah Penarikan" style="width:100%; padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
+    <input type="text" id="norek" placeholder="Nomor Rekening" style=" padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
+    <input type="text" id="namarek" placeholder="Nama Rekening" style=" padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
+    <input type="number" id="jumlah" placeholder="Jumlah Penarikan" style=" padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
     
-    <button onclick="prosesTarik()" style="width:100%; padding:10px; background:#6a5afd; color:#fff; border:none; border-radius:5px; font-size:14px; cursor:pointer;">Tarik Sekarang</button>
+    <button onclick="prosesTarik()" style=" padding:10px; background:#6a5afd; color:#fff; border:none; border-radius:5px; font-size:14px; cursor:pointer;">Tarik Sekarang</button>
     
-    <p id="tarikStatus" style="margin-top:10px; border-radius:10px; background:#bebebe; color:rgb(0, 157, 18); padding:8px;"></p>
+    <p id="tarikStatus" style="margin-top:10px; border-radius:10px; background:#fbf8f8; color:rgb(0, 157, 18); padding:8px;"></p>
   </div>
 
 
