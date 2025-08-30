@@ -7,10 +7,15 @@
 
 <!-- Firebase SDK -->
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, onSnapshot, query, orderBy, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { 
+  initializeApp 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-// Firebase config
+import { 
+  getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, getDoc, query, orderBy 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// --- Firebase config ---
 const firebaseConfig = {
   apiKey: "AIzaSy....",
   authDomain: "users-96dc5.firebaseapp.com",
@@ -22,6 +27,166 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+// ✅ Ambil tabel deposit
+const depositTable = document.getElementById("deposit-table");
+
+// ✅ Load data deposit (real-time)
+function loadDepositData() {
+  let depositRef;
+  try {
+    depositRef = query(collection(db, "deposit"), orderBy("createdAt", "desc"));
+  } catch (err) {
+    console.warn("OrderBy gagal, fallback tanpa sort");
+    depositRef = collection(db, "deposit");
+  }
+
+  onSnapshot(depositRef, (snapshot) => {
+    depositTable.innerHTML = "";
+
+    snapshot.forEach(docSnap => {
+      const d = docSnap.data();
+      const id = docSnap.id;
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${d.namaPengirim || '-'}</td>
+        <td>${d.bank || '-'}</td>
+        <td>Rp ${(d.nominal || 0).toLocaleString()}</td>
+        <td style="color:${d.status === 'pending' ? 'orange' : d.status === 'approved' ? 'green' : 'red'}">
+          ${d.status || '-'}
+        </td>
+        <td>
+          ${d.status === 'pending' ? `
+            <button class="approve-btn" data-id="${id}" data-user="${d.userId}" data-nominal="${d.nominal || 0}">Approve</button>
+            <button class="reject-btn" data-id="${id}">Tolak</button>
+          ` : ''}
+        </td>
+      `;
+      depositTable.appendChild(tr);
+    });
+
+    addDepositActionListeners();
+  });
+}
+
+function addDepositActionListeners() {
+  document.querySelectorAll(".approve-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const depositId = btn.dataset.id;
+      const userId = btn.dataset.user;
+      const nominal = parseInt(btn.dataset.nominal);
+
+      try {
+        // Update status deposit
+        await updateDoc(doc(db, "deposit", depositId), {
+          status: "approved"
+        });
+
+        // Update saldo user
+        const userRef = doc(db, "pendaftaran", userId);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          const saldoRupiah = userData.saldoRupiah || 0;
+          const saldoBaru = saldoRupiah + nominal;
+
+          await updateDoc(userRef, {
+            saldoRupiah: saldoBaru
+          });
+        }
+
+        alert("✅ Deposit berhasil di-approve dan saldo Rupiah bertambah!");
+      } catch (error) {
+        console.error("Gagal approve deposit:", error);
+        alert("❌ Terjadi kesalahan saat approve deposit");
+      }
+    });
+  });
+
+  document.querySelectorAll(".reject-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const depositId = btn.dataset.id;
+      await updateDoc(doc(db, "deposit", depositId), {
+        status: "rejected"
+      });
+      alert("Deposit ditolak!");
+    });
+  });
+}
+
+// ✅ Panggil ini hanya sekali
+loadDepositData();
+
+
+
+// ===========================
+// ✅ Script Update Tagihan (Tambah bukan Replace)
+// ===========================
+
+const saveTagihanBtn = document.getElementById("saveTagihan");
+const reduceTagihanBtn = document.getElementById("reduceTagihan");
+const inputTagihan = document.getElementById("inputTagihan");
+
+const configRef = doc(db, "settings", "config");
+
+// ✅ Tambah Tagihan
+if (saveTagihanBtn) {
+  saveTagihanBtn.addEventListener("click", async () => {
+    await updateTagihan("tambah");
+  });
+}
+
+// ✅ Kurangi Tagihan
+if (reduceTagihanBtn) {
+  reduceTagihanBtn.addEventListener("click", async () => {
+    await updateTagihan("kurangi");
+  });
+}
+
+async function updateTagihan(action) {
+  const nominalBaru = parseInt(inputTagihan.value);
+
+  if (isNaN(nominalBaru) || nominalBaru <= 0) {
+    alert("Masukkan jumlah tagihan yang valid!");
+    return;
+  }
+
+  try {
+    const configSnap = await getDoc(configRef);
+    let currentTagihan = 0;
+
+    if (configSnap.exists()) {
+      currentTagihan = configSnap.data().jumlahTagihan || 0;
+    }
+
+    let newTagihan = currentTagihan;
+
+    if (action === "tambah") {
+      newTagihan += nominalBaru;
+    } else if (action === "kurangi") {
+      newTagihan -= nominalBaru;
+      if (newTagihan < 0) newTagihan = 0; // ✅ Pastikan tidak negatif
+    }
+
+    await setDoc(configRef, { jumlahTagihan: newTagihan }, { merge: true });
+
+    alert(`Jumlah tagihan berhasil diupdate! Total sekarang: Rp ${newTagihan.toLocaleString()}`);
+    inputTagihan.value = "";
+  } catch (error) {
+    console.error("Gagal update tagihan:", error);
+    alert("Terjadi kesalahan!");
+  }
+}
+
+
+
+
+
+
+
+
 
 document.addEventListener("DOMContentLoaded", async () => {
   const dataUserTable = document.getElementById("data-user-table");
@@ -46,21 +211,44 @@ document.addEventListener("DOMContentLoaded", async () => {
         data.status = "aktif";
       }
 
-      // --- Data User ---
-      const trData = document.createElement("tr");
-      trData.innerHTML = `
-        <td>${data.nama || '-'}</td>
-        <td>${data.umur || '-'}</td>
-        <td>${data.jk || '-'}</td>
-        <td>${data.wa || '-'}</td>
-        <td>${data.email || '-'}</td>
-        <td>${data.app || '-'}</td>
-        <td>${data.bank || '-'}</td>
-        <td>${data.namaRek || '-'}</td>
-        <td>${data.noRek || '-'}</td>
-        <td>${data.fotoURL ? `<img src="${data.fotoURL}" width="50">` : ''}</td>
-      `;
-      dataUserTable.appendChild(trData);
+const trData = document.createElement("tr");
+trData.innerHTML = `
+  <td>${data.nama || '-'}</td>
+  <td>${data.umur || '-'}</td>
+  <td>${data.jk || '-'}</td>
+  <td>${data.wa || '-'}</td>
+  <td>${data.email || '-'}</td>
+  <td>${data.app || '-'}</td>
+  <td>${data.bank || '-'}</td>
+  <td>${data.namaRek || '-'}</td>
+  <td>${data.noRek || '-'}</td>
+  <td>${data.fotoURL ? `<img src="${data.fotoURL}" width="50">` : ''}</td>
+  <td>
+    ${data.verified === true 
+      ? `<span style="color:green; font-weight:bold;">Diverifikasi</span>` 
+      : `<span style="color:red; font-weight:bold;">Unverifikasi</span>`}
+  </td>
+<td>
+  <button class="verify-btn" data-id="${userId}" data-status="true">Verifikasi</button>
+  <button class="verify-btn" data-id="${userId}" data-status="false">Batalkan</button>
+</td>
+`;
+dataUserTable.appendChild(trData);
+
+
+
+document.addEventListener("click", async (e) => {
+  if (e.target.classList.contains("verify-btn")) {
+    const userId = e.target.dataset.id;
+    const status = e.target.dataset.status === "true";
+    try {
+      await updateDoc(doc(db, "pendaftaran", userId), { verified: status });
+      alert(`Status berhasil diubah menjadi ${status ? 'Diverifikasi' : 'Unverifikasi'}`);
+    } catch (error) {
+      console.error("Gagal ubah status:", error);
+    }
+  }
+});
 
       // --- Saldo User ---
       const trSaldo = document.createElement("tr");
@@ -69,12 +257,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         <td>${data.email || '-'}</td>
         <td>Rp ${data.saldo}</td>
         <td>
-          <select class="status-select">
-            <option value="aktif" ${data.status=="aktif"?"selected":""}>Aktif</option>
-            <option value="ditangguhkan" ${data.status=="ditangguhkan"?"selected":""}>Ditangguhkan</option>
-            <option value="proses" ${data.status=="proses"?"selected":""}>Proses</option>
-            <option value="ditolak" ${data.status=="ditolak"?"selected":""}>Ditolak</option>
-          </select>
+<select class="status-select">
+  <option value="aktif" ${data.status=="aktif"?"selected":""}>Aktif</option>
+  <option value="ditangguhkan" ${data.status=="ditangguhkan"?"selected":""}>Ditangguhkan</option>
+  <option value="proses" ${data.status=="proses"?"selected":""}>Proses</option>
+  <option value="ditolak" ${data.status=="ditolak"?"selected":""}>Ditolak</option>
+  <option value="dihapus" ${data.status=="dihapus"?"selected":""}>Dihapus</option>
+</select>
         </td>
         <td>
           <button class="add-saldo">Tambah</button>
@@ -170,6 +359,12 @@ riwayat.forEach((item, index)=>{
     });
   });
 });
+
+
+
+
+
+
 </script>
 
 <style>
@@ -415,15 +610,48 @@ button {padding:4px 8px;     background: #834cff;
     <span>ADMIN CS</span>
   </div>
 
-  <div class="dropdown">
-    <button onclick="toggleDropdown()">⚙ Menu</button>
-    <div class="dropdown-content">
-      <a href="#" onclick="showPage('data')">Data User</a>
-      <a href="#" onclick="showPage('saldo')">Saldo User</a>
-      <a href="#" onclick="showPage('withdraw')">User Withdraw</a>
-    </div>
+<div class="dropdown">
+  <button onclick="toggleDropdown()">⚙ Menu</button>
+<div class="dropdown-content">
+  <a href="#" onclick="showPage('data')">Data User</a>
+  <a href="#" onclick="showPage('saldo')">Saldo User</a>
+  <a href="#" onclick="showPage('withdraw')">User Withdraw</a>
+  <a href="#" onclick="showPage('deposit')">Deposit User</a>
+  <a href="#" onclick="showPage('updateTagihan')">Update Tagihan</a> <!-- ✅ Tambahkan -->
+</div>
+</div>
+
+</div>
+
+<!-- Halaman Deposit -->
+<div id="deposit" class="page" style="display:none;">
+  <h1>Deposit User</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Nama Pengirim</th>
+        <th>Bank</th>
+        <th>Nominal</th>
+        <th>Status</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="deposit-table"></tbody>
+  </table>
+
+</div>
+
+<div id="updateTagihan" class="page" style="display:none;">
+  <h2>Update Jumlah Tagihan</h2>
+  <input type="number" id="inputTagihan" placeholder="Masukkan nominal (Rp)">
+
+  <div style="margin-top:10px;">
+    <button id="saveTagihan" style="background:#4CAF50; color:#fff; padding:8px 12px; border:none; border-radius:5px; margin-right:5px;">Tambah Tagihan</button>
+    <button id="reduceTagihan" style="background:#F44336; color:#fff; padding:8px 12px; border:none; border-radius:5px;">Kurangi Tagihan</button>
   </div>
 </div>
+
+
 
 <div class="main">
   <div id="notif-box"></div>
@@ -447,20 +675,22 @@ button {padding:4px 8px;     background: #834cff;
   <div id="data" class="page active">
     <h1>Data User</h1>
     <table>
-      <thead>
-        <tr>
-          <th>Nama</th>
-          <th>Umur</th>
-          <th>JK</th>
-          <th>WA</th>
-          <th>Email</th>
-          <th>Aplikasi</th>
-          <th>Bank</th>
-          <th>Nama Rek</th>
-          <th>No Rek</th>
-          <th>Foto</th>
-        </tr>
-      </thead>
+<thead>
+  <tr>
+    <th>Nama</th>
+    <th>Umur</th>
+    <th>JK</th>
+    <th>WA</th>
+    <th>Email</th>
+    <th>Aplikasi</th>
+    <th>Bank</th>
+    <th>Nama Rek</th>
+    <th>No Rek</th>
+    <th>Foto</th>
+    <th>Status Verifikasi</th>
+    <th>Aksi</th> 
+  </tr>
+</thead>
       <tbody id="data-user-table"></tbody>
     </table>
   </div>
@@ -494,14 +724,45 @@ function toggleDropdown(){
   document.querySelector(".dropdown-content").classList.toggle("show");
 }
 
-function showPage(page){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(page).classList.add('active');
-  // auto close sidebar di mobile
-  if(window.innerWidth <= 768){
-    document.querySelector(".sidebar").classList.remove("active");
+function showPage(pageId) {
+  // Sembunyikan semua page
+  document.querySelectorAll(".page").forEach(p => {
+    p.style.display = "none";
+    p.classList.remove("active");
+  });
+
+  // Tampilkan page yang dipilih
+  const activePage = document.getElementById(pageId);
+  if (activePage) {
+    activePage.style.display = "block";
+    activePage.classList.add("active");
+  } else {
+    console.error(`Halaman dengan ID "${pageId}" tidak ditemukan`);
+  }
+
+  // Auto close sidebar di mobile
+  if (window.innerWidth <= 768) {
+    const sidebar = document.querySelector(".sidebar");
+    if (sidebar) sidebar.classList.remove("active");
   }
 }
+
+
+
+// Hapus akun (soft delete)
+window.hapusUser = async function(userId) {
+  const userRef = doc(db, "pendaftaran", userId);
+  await updateDoc(userRef, { status: "dihapus" });
+  alert("✅ Akun berhasil dihapus (soft delete).");
+};
+
+// Pulihkan akun
+window.pulihkanUser = async function(userId) {
+  const userRef = doc(db, "pendaftaran", userId);
+  await updateDoc(userRef, { status: "aktif" });
+  alert("✅ Akun berhasil dipulihkan.");
+};
+
 </script>
 
 </body>
