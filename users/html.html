@@ -28,6 +28,107 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+
+// Fungsi untuk membuka / menutup chat
+window.openChat = async function(chatId, el) {
+  const target = document.getElementById(chatId);
+  if (!target) return;
+
+  // Jika sedang terbuka → tutup
+  if (target.style.display === "block") {
+    target.style.display = "none";
+    return;
+  }
+
+  // Jika tertutup → buka
+  target.style.display = "block";
+  target.innerHTML = "<p style='text-align:center;color:#999;'>Memuat chat...</p>";
+
+  const lastMessageEl = el.querySelector("#lastMessage");
+
+  const userId = localStorage.getItem("userId");
+  if (!userId) {
+    target.innerHTML = "<p style='color:red;text-align:center;'>User belum login.</p>";
+    return;
+  }
+
+  // Query Firestore untuk pesan user
+  const q = query(
+    collection(db, "pesan"),
+    where("userId", "==", userId),
+    orderBy("timestamp", "asc")
+  );
+
+  // Real-time listener
+  onSnapshot(q, (snapshot) => {
+    const messages = snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        pesan: data.pesan || "",
+        timeString: data.timestamp 
+          ? new Date(data.timestamp.toMillis()).toLocaleTimeString()
+          : ""
+      };
+    });
+
+    target.innerHTML = "";
+
+    if (messages.length === 0) {
+      target.innerHTML = "<p style='text-align:center;'>Belum ada pesan.</p>";
+      if (lastMessageEl) lastMessageEl.textContent = "Belum ada pesan.";
+      return;
+    }
+
+messages.forEach(msg => {
+  const wrapper = document.createElement("div");
+  wrapper.style.display = "flex";
+  wrapper.style.alignItems = "flex-start";
+  wrapper.style.margin = "8px 0";
+
+  // Gambar offline di kiri
+  const img = document.createElement("img");
+  img.src = "servant_icon.png"; // Ganti dengan path icon offline
+  img.alt = "Offline";
+  img.style.width = "24px";
+  img.style.height = "24px";
+  img.style.marginRight = "8px";
+
+  // Bubble pesan
+  const bubble = document.createElement("div");
+  bubble.style.padding = "8px 12px";
+  bubble.style.borderRadius = "10px";
+  bubble.style.backgroundColor = "#f1f1f1";
+  bubble.style.maxWidth = "80%";
+
+  // Ambil nama dari msg atau fallback
+  const namaPengirim = msg.nama || "Human Assistant";
+
+  bubble.innerHTML = `
+    <strong style="font-size:12px; color:#333; display:block; margin-bottom:4px;">
+      ${namaPengirim}
+    </strong>
+    <p style="margin:0;">${msg.pesan}</p>
+    <small style="font-size:10px;color:#555;">${msg.timeString}</small>
+  `;
+
+  wrapper.appendChild(img);
+  wrapper.appendChild(bubble);
+  target.appendChild(wrapper);
+});
+    if (lastMessageEl) lastMessageEl.textContent = messages[messages.length - 1].pesan;
+
+    // Scroll otomatis ke bawah
+    target.scrollTop = target.scrollHeight;
+  });
+};
+
+
+
+
+
+
+
+
 const depositHistoryTable = document.getElementById("depositHistoryTable");
 
 // ✅ Buka Popup History
@@ -429,11 +530,12 @@ const saldoHostEl = document.getElementById("saldoHost");
 const saldoCoinEl = document.getElementById("saldoCoin");
 const saldoNominal = document.getElementById("saldoNominal");
 const formTopup = document.getElementById("formTopup");
+const hasilAgencyBtn = document.getElementById("hasilAgencyBtn");
 
 // ✅ Ambil userId dari localStorage
 const userId = localStorage.getItem("loggedUserId");
 
-// ✅ Pasang listener Firestore sekali saja
+// ✅ Listener untuk saldo real-time
 if (userId) {
   const userRef = doc(db, "pendaftaran", userId);
   onSnapshot(userRef, (docSnap) => {
@@ -449,19 +551,39 @@ if (userId) {
   });
 }
 
-// ✅ Event klik untuk buka popup
+// ✅ Event klik untuk buka popup dari verifyDiv & hasilAgencyBtn
 if (verifyDiv) {
   verifyDiv.addEventListener("click", () => {
-    popupTopup.style.display = "flex";
+    showPopup();
+  });
+}
+if (hasilAgencyBtn) {
+  hasilAgencyBtn.addEventListener("click", () => {
+    showPopup();
   });
 }
 
-// ✅ Submit form top up (deposit)
+function showPopup() {
+  popupTopup.style.display = "flex";
+  popupTopup.style.opacity = "0";
+  setTimeout(() => {
+    popupTopup.style.transition = "opacity 0.3s ease";
+    popupTopup.style.opacity = "1";
+  }, 10);
+}
+
+// ✅ Tutup popup saat klik di luar box
+popupTopup.addEventListener("click", (e) => {
+  if (e.target === popupTopup) {
+    popupTopup.style.display = "none";
+  }
+});
+
+// ✅ Submit form top up
 if (formTopup) {
   formTopup.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const userId = localStorage.getItem("loggedUserId");
     const namaPengirim = e.target.namaPengirim.value.trim();
     const bank = e.target.bank.value.trim();
     const nominal = parseInt(e.target.nominal.value);
@@ -478,28 +600,27 @@ if (formTopup) {
     }
 
     try {
-      // ✅ Simpan data ke Firestore
       await addDoc(collection(db, "deposit"), {
         userId,
         namaPengirim,
         bank,
-        nominal, // nominal dalam Rupiah
-        status: "pending", // admin akan approve
+        nominal,
+        status: "pending",
         createdAt: Timestamp.now()
       });
 
-      // ✅ Notifikasi lebih profesional
-Swal.fire({
-  icon: 'success',
-  title: 'Berhasil!',
-  text: 'Permintaan top up berhasil dikirim. Tunggu konfirmasi admin.',
-  confirmButtonColor: '#7f3586',
-  width: '400px', // ✅ Perbesar lebar popup
-  padding: '20px', // ✅ Tambah padding agar isi tidak terlalu rapat
-  customClass: {
-    popup: 'custom-swal-popup'
-  }
-});
+      // ✅ Notifikasi Swal dengan style custom
+      Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: 'Permintaan top up berhasil dikirim. Tunggu konfirmasi admin.',
+        confirmButtonColor: '#7f3586',
+        width: '400px',
+        padding: '20px',
+        customClass: {
+          popup: 'custom-swal-popup'
+        }
+      });
 
       popupTopup.style.display = "none";
       formTopup.reset();
@@ -1278,17 +1399,26 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px);} to {opacity: 1; transform: translateY(0);} }
 @keyframes fadeOut { from { opacity: 1; transform: translateY(0);} to {opacity: 0; transform: translateY(-10px);} }
 
-#historyPopup table th, #historyPopup table td {
+/* Untuk header dan isi agar rata kiri dan font kecil */
+#historyPopup table th,
+#historyPopup table td {
   text-align: left;
-  font-size: 14px;
+  font-size: 10px;
+  padding: 6px 8px; /* Tambahkan sedikit padding agar rapi */
+  white-space: nowrap; /* Supaya teks tidak turun ke bawah */
 }
 
+/* Agar tabel scrollable tanpa mengganggu layout */
 #depositHistoryPopup table {
-  display:block;
-  max-height:50vh; /* ✅ Scroll hanya tabel */
-  overflow-y:auto;
+  width: 100%; /* Pastikan tabel lebar penuh */
+  border-collapse: collapse; /* Hilangkan double border */
 }
 
+#depositHistoryPopup {
+  max-height: 95vh; /* Scroll hanya di wrapper */
+  overflow-y: auto;
+  display: block;
+}
 
 
 div:where(.swal2-container) div:where(.swal2-actions) {
@@ -2083,67 +2213,92 @@ div:where(.swal2-container) div:where(.swal2-actions) {
       <img src="contact_unfollow.png" alt="Offline" style="width:30px; height:30px;">
     </span>
     </h3>
-  <!-- Daftar Chat -->
-  <div class="chat-list">
 
-<!-- Chat Laporan -->
-<div class="chat-item laporan" onclick="openChat('laporan', this)">
-<div class="chat-avatar" style="
-    width: 40px; 
-    height: 40px; 
-    -webkit-mask: url('servant_icon.png') no-repeat center;
-    -webkit-mask-size: contain;
-    mask: url('servant_icon.png') no-repeat center;
-    mask-size: contain;
-    background-image: url('servant_icon.png'); /* tampilkan gambar asli */
-    background-size: cover;
-    background-position: center;
-"></div>
-  <div class="chat-info">
-    <h4>Layanan Host</h4>
-    <p>Selamat Datang Di Akun Host Baru Anda!</p>
+
+
+ <!-- Daftar Chat -->
+<div class="chat-list">
+
+  <!-- Chat Layanan Host -->
+  <div id="chatList" style="margin:10px;">
+    <div class="chat-item laporan" onclick="openChat('chatLayananHost', this)">
+      <div class="chat-avatar" style="
+        width: 40px; 
+        height: 40px; 
+        -webkit-mask: url('servant_icon.png') no-repeat center;
+        -webkit-mask-size: contain;
+        mask: url('servant_icon.png') no-repeat center;
+        mask-size: contain;
+        background-image: url('servant_icon.png'); 
+        background-size: cover;
+        background-position: center;
+      "></div>
+      <div class="chat-info">
+        <h4>Layanan Host</h4>
+        <p id="lastMessage">Klik untuk melihat chat...</p>
+      </div>
+    </div>
+
+    <!-- Tempat isi chat -->
+    <div id="chatLayananHost" class="chat-detail" style="
+      display:none;
+      border:1px solid #ccc;
+      border-radius:8px;
+      padding:10px;
+      margin-top:10px;
+      max-height:300px;
+      overflow-y:auto;
+      background:#f9f9f9;
+      font-size: 15px;
+    ">
+      <p style="text-align:center;color:#999;">Memuat chat...</p>
+    </div>
   </div>
+
+
+
+
+<!-- Chat Pengumuman -->
+<div class="chat-item" onclick="openChat('pengumuman')">
+  <img src="notifikasi.png" alt="Pengumuman" class="chat-avatar">
+  <div class="chat-info">
+    <h4>Notifikasi</h4>
+    <p>Manda mengunjungi saya 12 kali</p>
+  </div>
+  <span class="chat-time">10:30</span>
 </div>
 
-    <!-- Chat Pengumuman -->
-    <div class="chat-item" onclick="openChat('pengumuman', this)">
-      <img src="notifikasi.png" alt="Pengumuman" class="chat-avatar">
-      <div class="chat-info">
-        <h4>Notifikasi</h4>
-        <p>Manda mengunjungi saya 12 kali</p>
-      </div>
-      <span class="chat-time">10:30</span>
-    </div>
-
-    <!-- Chat User -->
-    <div class="chat-item" onclick="openChat('user1', this)">
-      <img src="cewek11.jpeg" alt="User" class="chat-avatar">
-      <div class="chat-info">
-        <h4>Riks</h4>
-        <p>Hai, lagi apa?</p>
-      </div>
-      <span class="chat-time">09:40</span>
-    </div>
-
-    <div class="chat-item" onclick="openChat('user2', this)">
-      <img src="cewek10.jpeg" alt="User" class="chat-avatar">
-      <div class="chat-info">
-        <h4>Puspita</h4>
-        <p>Tinggal dimana bang</p>
-      </div>
-      <span class="chat-time">08:45</span>
-    </div>
-
-    <div class="chat-item" onclick="openChat('user3', this)">
-      <img src="cewek27.jpeg" alt="User" class="chat-avatar">
-      <div class="chat-info">
-        <h4>Manda</h4>
-        <p>Kamu daftar dimana akun host?</p>
-      </div>
-      <span class="chat-time">07:23</span>
-    </div>
-
+<!-- Chat User 1 -->
+<div class="chat-item" onclick="openChat('user1')">
+  <img src="cewek11.jpeg" alt="User" class="chat-avatar">
+  <div class="chat-info">
+    <h4>Riks</h4>
+    <p>Hai, lagi apa?</p>
   </div>
+  <span class="chat-time">09:40</span>
+</div>
+
+<!-- Chat User 2 -->
+<div class="chat-item" onclick="openChat('user2')">
+  <img src="cewek10.jpeg" alt="User" class="chat-avatar">
+  <div class="chat-info">
+    <h4>Puspita</h4>
+    <p>Tinggal dimana bang</p>
+  </div>
+  <span class="chat-time">08:45</span>
+</div>
+
+<!-- Chat User 3 -->
+<div class="chat-item" onclick="openChat('user3')">
+  <img src="cewek27.jpeg" alt="User" class="chat-avatar">
+  <div class="chat-info">
+    <h4>Manda</h4>
+    <p>Kamu daftar dimana akun host?</p>
+  </div>
+  <span class="chat-time">07:23</span>
+</div>
+</div>
+
 
   <!-- Halaman Isi Chat -->
   <div id="chatContent" style="display:none; padding:0 10px;">
@@ -2294,35 +2449,55 @@ div:where(.swal2-container) div:where(.swal2-actions) {
     </div>
   </div>
 </div>
+
+
+
 <!-- Box Saldo + Credit -->
-<div style="display:flex; align-items:center; justify-content:space-between; 
-            padding:10px; border:5px solid #f3f3f3; border-radius:20px; 
-            background:#fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
-
-  <!-- Kiri: Logo + Saldo -->
 <div style="
-  display: inline-flex; 
-  align-items: center; 
-  background: #fff; 
-  border: 1px solid #ddd; 
-  border-radius: 12px; 
-  padding: 10px 15px; 
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display:flex; 
+  justify-content:space-between; 
+  padding:10px; 
+  background:#fff; 
+  box-shadow:0 2px 4px rgba(0,0,0,0.1);
 ">
-  <img src="credit.png" alt="Offline" style="width:30px; height:30px; margin-right:8px;">
-  <span style="font-weight:bold; color:#5f00e3;">
-  <span id="saldoNominal">0</span>
-  </span>
-</div>
 
-  <!-- Kanan: Credit -->
-  <div id="creditBox" 
-       style="padding:6px 12px; border:1px solid #5f00e3; border-radius:11px; 
-              background:#c00dff; font-size:14px; font-weight:bold; 
-              color:#ffffff; cursor:pointer;">
-    Credits
+  <!-- Kiri + Kanan di dalam 1 box -->
+  <div style="
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center; 
+    width:100%;
+    background:#fff; 
+    border:1px solid #ddd; 
+    border-radius:22px; 
+    padding:20px 15px; 
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  ">
+    <!-- Kiri: Icon + Saldo -->
+    <div style="display:flex; align-items:center;">
+      <img src="credit.png" alt="Offline" style="width:30px; height:30px; margin-right:8px;">
+      <span style="font-weight:bold; color:#5f00e3;">
+        <span id="saldoNominal">0</span>
+      </span>
+    </div>
+
+    <!-- Kanan: Tombol Credit -->
+    <div id="creditBox" style="
+      padding:6px 12px; 
+      border:1px solid #5f00e3; 
+      border-radius:11px; 
+      background:#c00dff; 
+      font-size:14px; 
+      font-weight:bold; 
+      color:#ffffff; 
+      cursor:pointer;
+    ">
+      Credits
+    </div>
   </div>
 </div>
+
+
 
 
 <div id="tarikSection" style="display:none; margin-top:15px;">
@@ -2421,14 +2596,14 @@ div:where(.swal2-container) div:where(.swal2-actions) {
   </div>
 
   <!-- Menjadi VIP -->
-  <div style="display:flex; align-items:center; justify-content:space-between; 
+<div id="hasilAgencyBtn" style="display:flex; align-items:center; justify-content:space-between; 
               padding:15px; border-top:1px solid #eee; cursor:pointer;">
     <div style="display:flex; align-items:center; gap:10px;">
       <img src="menjadivip.png" style="width:25px; height:25px;">
       <span>Hasil Agency</span>
     </div>
     <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
-  </div>
+</div>
 
   <!-- Undang Untuk VIP -->
   <div style="display:flex; align-items:center; justify-content:space-between; 
@@ -2512,7 +2687,7 @@ div:where(.swal2-container) div:where(.swal2-actions) {
 ">
   <h3 style="text-align:center; margin-bottom:10px; color:#7f3586;">Riwayat Host</h3>
   
-  <table style="width:100%; border-collapse:collapse; font-size:14px;">
+  <table style="width:100%; border-collapse:collapse; font-size:12px;">
     <thead>
 <tr style="background:#d1d1d1; color:#121212;">
   <th style="text-align:left; padding:6px;">Nominal</th>
@@ -2542,7 +2717,7 @@ div:where(.swal2-container) div:where(.swal2-actions) {
       <p style="margin:10px 0; display:flex; align-items:center;">
         <img src="score_icon_wrap.png" alt="icon" style="width:20px; height:20px; margin-right:8px;">
         <b style="color:#000;">Saldo Host:</b>&nbsp; 
-        <span style="color:#e91e63; margin-left:5px;" id="saldoHost">Rp 0</span>
+        <span style="color:#e91e63; font-weight: bold; margin-left:5px;" id="saldoHost">Rp 0</span>
       </p>
       <p style="margin:10px 0; display:flex; align-items:center;">
         <img src="super_pack_float_icon.png" alt="icon" style="width:20px; height:20px; margin-right:8px;">
@@ -2552,7 +2727,7 @@ div:where(.swal2-container) div:where(.swal2-actions) {
       <p style="margin:10px 0; display:flex; align-items:center;">
         <img src="certification_award_icon_0_female.png" alt="icon" style="width:30px; height:30px; margin-right:8px;">
         <b style="color:#000;">Jumlah Tagihan:</b>&nbsp; 
-        <span style="color:#e91e63; margin-left:5px;" id="jumlahTagihan">Rp 500.000</span>
+        <span style="color:#e91e63; font-weight: bold; margin-left:5px;" id="jumlahTagihan">Rp 500.000</span>
       </p>
     </div>
 
@@ -2632,6 +2807,7 @@ function showPageNav(page) {
 function openChat(type) {
   document.querySelector(".chat-list").style.display = "none";
   const chatContent = document.getElementById("chatContent");
+  
   chatContent.style.display = "block";
 
   const title = document.getElementById("chatTitle");
@@ -2708,7 +2884,6 @@ function sendMessage() {
     input.value = ""; // kosongkan input setelah kirim
   }
 }
-
 
 
 function setActiveNav(el) {
