@@ -46,13 +46,17 @@ window.openChat = async function(chatId, el) {
 
   const lastMessageEl = el.querySelector("#lastMessage");
 
-  const userId = localStorage.getItem("userId");
+  // Ambil userId dari localStorage
+  let userId = localStorage.getItem("userId");
+  let isGuest = false;
+
   if (!userId) {
-    target.innerHTML = "<p style='color:red;text-align:center;'>User belum login.</p>";
-    return;
+    // Mode guest → userId = "guest"
+    userId = "guest";
+    isGuest = true;
   }
 
-  // Query Firestore untuk pesan user
+  // Query Firestore untuk pesan user (atau guest)
   const q = query(
     collection(db, "pesan"),
     where("userId", "==", userId),
@@ -65,6 +69,7 @@ window.openChat = async function(chatId, el) {
       const data = doc.data();
       return {
         pesan: data.pesan || "",
+        nama: data.nama || (data.sender === "admin" ? "Admin" : "User"),
         timeString: data.timestamp 
           ? new Date(data.timestamp.toMillis()).toLocaleTimeString()
           : ""
@@ -73,55 +78,62 @@ window.openChat = async function(chatId, el) {
 
     target.innerHTML = "";
 
+    // Jika tidak ada pesan
     if (messages.length === 0) {
-      target.innerHTML = "<p style='text-align:center;'>Belum ada pesan.</p>";
+      if (isGuest) {
+        target.innerHTML = `
+          <p style="text-align:center;">Belum ada pesan untuk guest.</p>
+          <p style="text-align:center;color:red;font-size:12px;">Silakan login untuk melihat chat pribadi.</p>
+        `;
+      } else {
+        target.innerHTML = "<p style='text-align:center;'>Belum ada pesan.</p>";
+      }
       if (lastMessageEl) lastMessageEl.textContent = "Belum ada pesan.";
       return;
     }
 
-messages.forEach(msg => {
-  const wrapper = document.createElement("div");
-  wrapper.style.display = "flex";
-  wrapper.style.alignItems = "flex-start";
-  wrapper.style.margin = "8px 0";
+    // Tampilkan pesan
+    messages.forEach(msg => {
+      const wrapper = document.createElement("div");
+      wrapper.style.display = "flex";
+      wrapper.style.alignItems = "flex-start";
+      wrapper.style.margin = "8px 0";
 
-  // Gambar offline di kiri
-  const img = document.createElement("img");
-  img.src = "servant_icon.png"; // Ganti dengan path icon offline
-  img.alt = "Offline";
-  img.style.width = "24px";
-  img.style.height = "24px";
-  img.style.marginRight = "8px";
+      // Gambar offline di kiri
+      const img = document.createElement("img");
+      img.src = "./servant_icon.png"; // ✅ Pastikan file ada di folder yang sama dengan index.html
+      img.alt = "Icon";
+      img.style.width = "24px";
+      img.style.height = "24px";
+      img.style.marginRight = "8px";
 
-  // Bubble pesan
-  const bubble = document.createElement("div");
-  bubble.style.padding = "8px 12px";
-  bubble.style.borderRadius = "10px";
-  bubble.style.backgroundColor = "#f1f1f1";
-  bubble.style.maxWidth = "80%";
+      // Bubble pesan
+      const bubble = document.createElement("div");
+      bubble.style.padding = "8px 12px";
+      bubble.style.borderRadius = "10px";
+      bubble.style.backgroundColor = "#f1f1f1";
+      bubble.style.maxWidth = "80%";
 
-  // Ambil nama dari msg atau fallback
-  const namaPengirim = msg.nama || "Human Assistant";
+      bubble.innerHTML = `
+        <strong style="font-size:12px; color:#333; display:block; margin-bottom:4px;">
+          ${msg.nama}
+        </strong>
+        <p style="margin:0;">${msg.pesan}</p>
+        <small style="font-size:10px;color:#555;">${msg.timeString}</small>
+      `;
 
-  bubble.innerHTML = `
-    <strong style="font-size:12px; color:#333; display:block; margin-bottom:4px;">
-      ${namaPengirim}
-    </strong>
-    <p style="margin:0;">${msg.pesan}</p>
-    <small style="font-size:10px;color:#555;">${msg.timeString}</small>
-  `;
+      wrapper.appendChild(img);
+      wrapper.appendChild(bubble);
+      target.appendChild(wrapper);
+    });
 
-  wrapper.appendChild(img);
-  wrapper.appendChild(bubble);
-  target.appendChild(wrapper);
-});
+    // Update last message
     if (lastMessageEl) lastMessageEl.textContent = messages[messages.length - 1].pesan;
 
     // Scroll otomatis ke bawah
     target.scrollTop = target.scrollHeight;
   });
 };
-
 
 
 
