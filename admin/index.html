@@ -42,35 +42,87 @@ function loadDepositData() {
   }
 
   onSnapshot(depositRef, (snapshot) => {
-    depositTable.innerHTML = "";
+    depositTable.innerHTML = ""; // Kosongkan tabel sebelum render ulang
 
     snapshot.forEach(docSnap => {
       const d = docSnap.data();
       const id = docSnap.id;
 
+      // Buat baris
       const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${d.namaPengirim || '-'}</td>
-        <td>${d.bank || '-'}</td>
-        <td>Rp ${(d.nominal || 0).toLocaleString()}</td>
-        <td style="color:${d.status === 'pending' ? 'orange' : d.status === 'approved' ? 'green' : 'red'}">
-          ${d.status || '-'}
-        </td>
-        <td>
-          ${d.status === 'pending' ? `
-            <button class="approve-btn" data-id="${id}" data-user="${d.userId}" data-nominal="${d.nominal || 0}">Approve</button>
-            <button class="reject-btn" data-id="${id}">Tolak</button>
-          ` : ''}
-        </td>
-      `;
+
+      // Kolom Nama
+      const td1 = document.createElement("td");
+      td1.textContent = d.namaPengirim || '-';
+      tr.appendChild(td1);
+
+      // Kolom Bank
+      const td2 = document.createElement("td");
+      td2.textContent = d.bank || '-';
+      tr.appendChild(td2);
+
+      // Kolom Nominal
+      const td3 = document.createElement("td");
+      td3.textContent = `Rp ${(d.nominal || 0).toLocaleString()}`;
+      tr.appendChild(td3);
+
+      // Kolom Status
+      const td4 = document.createElement("td");
+      td4.style.color = d.status === 'pending' ? 'orange' : (d.status === 'approved' ? 'green' : 'red');
+      td4.textContent = d.status || '-';
+      tr.appendChild(td4);
+
+      // Kolom Aksi
+      const td5 = document.createElement("td");
+
+      // Tombol Approve
+      const approveBtn = document.createElement("button");
+      approveBtn.classList.add("approve-btn");
+      approveBtn.dataset.id = id;
+      approveBtn.dataset.user = d.userId;
+      approveBtn.dataset.nominal = d.nominal || 0;
+      approveBtn.textContent = "Approve";
+      if (d.status !== 'pending') approveBtn.disabled = true;
+
+      // Tombol Tolak
+      const rejectBtn = document.createElement("button");
+      rejectBtn.classList.add("reject-btn");
+      rejectBtn.dataset.id = id;
+      rejectBtn.textContent = "Tolak";
+      if (d.status !== 'pending') rejectBtn.disabled = true;
+
+      // Tombol Tambah Saldo
+      const addSaldoBtn = document.createElement("button");
+      addSaldoBtn.classList.add("add-saldo-btn");
+      addSaldoBtn.dataset.user = d.userId;
+      addSaldoBtn.textContent = "Tambahkan";
+
+      // Tombol Kurangi Saldo
+      const kurangiSaldoBtn = document.createElement("button");
+      kurangiSaldoBtn.classList.add("kurangi-saldo-btn");
+      kurangiSaldoBtn.dataset.user = d.userId;
+      kurangiSaldoBtn.textContent = "Kurangi";
+
+      // Masukkan semua tombol ke kolom aksi
+      td5.appendChild(approveBtn);
+      td5.appendChild(rejectBtn);
+      td5.appendChild(addSaldoBtn);
+      td5.appendChild(kurangiSaldoBtn);
+
+      tr.appendChild(td5);
+
+      // Tambahkan baris ke tabel
       depositTable.appendChild(tr);
     });
 
+    // Tambahkan event listener setelah data dimuat
     addDepositActionListeners();
   });
 }
 
+// ✅ Event Listener untuk tombol aksi
 function addDepositActionListeners() {
+  // Approve
   document.querySelectorAll(".approve-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
       const depositId = btn.dataset.id;
@@ -78,12 +130,8 @@ function addDepositActionListeners() {
       const nominal = parseInt(btn.dataset.nominal);
 
       try {
-        // Update status deposit
-        await updateDoc(doc(db, "deposit", depositId), {
-          status: "approved"
-        });
+        await updateDoc(doc(db, "deposit", depositId), { status: "approved" });
 
-        // Update saldo user
         const userRef = doc(db, "pendaftaran", userId);
         const userSnap = await getDoc(userRef);
 
@@ -92,9 +140,7 @@ function addDepositActionListeners() {
           const saldoRupiah = userData.saldoRupiah || 0;
           const saldoBaru = saldoRupiah + nominal;
 
-          await updateDoc(userRef, {
-            saldoRupiah: saldoBaru
-          });
+          await updateDoc(userRef, { saldoRupiah: saldoBaru });
         }
 
         alert("✅ Deposit berhasil di-approve dan saldo Rupiah bertambah!");
@@ -105,19 +151,81 @@ function addDepositActionListeners() {
     });
   });
 
+  // Reject
   document.querySelectorAll(".reject-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
       const depositId = btn.dataset.id;
-      await updateDoc(doc(db, "deposit", depositId), {
-        status: "rejected"
-      });
+      await updateDoc(doc(db, "deposit", depositId), { status: "rejected" });
       alert("Deposit ditolak!");
+    });
+  });
+
+  // Tambahkan Saldo
+  document.querySelectorAll(".add-saldo-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const userId = btn.dataset.user;
+      const amountToAdd = prompt("Masukkan jumlah saldo yang ingin ditambahkan:");
+
+      if (isNaN(amountToAdd) || amountToAdd <= 0) {
+        alert("Jumlah saldo tidak valid!");
+        return;
+      }
+
+      try {
+        const userRef = doc(db, "pendaftaran", userId);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          const saldoRupiah = userData.saldoRupiah || 0;
+          const newSaldo = saldoRupiah + parseInt(amountToAdd);
+
+          await updateDoc(userRef, { saldoRupiah: newSaldo });
+        }
+
+        alert("Saldo berhasil ditambahkan!");
+      } catch (error) {
+        console.error("Gagal menambah saldo:", error);
+        alert("❌ Terjadi kesalahan saat menambah saldo");
+      }
+    });
+  });
+
+  // Kurangi Saldo
+  document.querySelectorAll(".kurangi-saldo-btn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const userId = btn.dataset.user;
+      const amountToSubtract = prompt("Masukkan jumlah saldo yang ingin dikurangi:");
+
+      if (isNaN(amountToSubtract) || amountToSubtract <= 0) {
+        alert("Jumlah saldo tidak valid!");
+        return;
+      }
+
+      try {
+        const userRef = doc(db, "pendaftaran", userId);
+        const userSnap = await getDoc(userRef);
+
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          const saldoRupiah = userData.saldoRupiah || 0;
+          const newSaldo = saldoRupiah - parseInt(amountToSubtract);
+
+          await updateDoc(userRef, { saldoRupiah: newSaldo });
+        }
+
+        alert("Saldo berhasil dikurangi!");
+      } catch (error) {
+        console.error("Gagal mengurangi saldo:", error);
+        alert("❌ Terjadi kesalahan saat mengurangi saldo");
+      }
     });
   });
 }
 
-// ✅ Panggil ini hanya sekali
+// ✅ Panggil ini hanya sekali saat halaman dimuat
 loadDepositData();
+
 
 
 
@@ -626,7 +734,7 @@ button {padding:4px 8px;     background: #834cff;
 <!-- Halaman Deposit -->
 <div id="deposit" class="page" style="display:none;">
   <h1>Deposit User</h1>
-  <table>
+  <table border="1" cellspacing="0" cellpadding="8" style="width:100%; border-collapse: collapse;">
     <thead>
       <tr>
         <th>Nama Pengirim</th>
@@ -638,8 +746,10 @@ button {padding:4px 8px;     background: #834cff;
     </thead>
     <tbody id="deposit-table"></tbody>
   </table>
-
 </div>
+
+
+
 
 <div id="updateTagihan" class="page" style="display:none;">
   <h2>Update Jumlah Tagihan</h2>

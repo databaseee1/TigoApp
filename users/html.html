@@ -4,13 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>User Panel - TigoHost</title>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { 
   getFirestore, collection, addDoc, Timestamp, 
-  doc, getDoc, updateDoc, onSnapshot, query, where, getDocs 
+  doc, getDoc, updateDoc, onSnapshot, query, orderBy, where, getDocs 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
@@ -27,7 +28,82 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const depositHistoryTable = document.getElementById("depositHistoryTable");
 
+// ✅ Buka Popup History
+window.openDepositHistoryPopup = function() {
+  document.getElementById("depositHistoryPopup").style.display = "block";
+  document.getElementById("depositHistoryOverlay").style.display = "block";
+  loadDepositHistoryData();
+}
+
+// ✅ Tutup Popup History
+window.closeDepositHistoryPopup = function() {
+  document.getElementById("depositHistoryPopup").style.display = "none";
+  document.getElementById("depositHistoryOverlay").style.display = "none";
+}
+
+// ✅ Ambil Data Riwayat Deposit
+function loadDepositHistoryData() {
+  depositHistoryTable.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:10px;'>Loading...</td></tr>";
+
+  const depositRef = query(collection(db, "deposit"), orderBy("createdAt", "desc"));
+
+  onSnapshot(depositRef, (snapshot) => {
+    depositHistoryTable.innerHTML = "";
+
+    if (snapshot.empty) {
+      depositHistoryTable.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:10px;'>Tidak ada data</td></tr>";
+      return;
+    }
+
+    snapshot.forEach(docSnap => {
+      const d = docSnap.data();
+
+      // Format tanggal & jam
+      let tanggal = "-";
+      if (d.createdAt && d.createdAt.toDate) {
+        const date = d.createdAt.toDate();
+        const jam = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        const tgl = date.toLocaleDateString('id-ID');
+        tanggal = `${tgl} ${jam}`;
+      }
+
+      // Warna status
+       let statusColor = d.status === 'approved' ? 'green' : (d.status === 'pending' ? 'orange' : 'red');
+
+      // Teks status custom
+      let statusText = '-';
+      if (d.status === 'approved') {
+        statusText = 'Berhasil';
+      } else if (d.status === 'pending') {
+        statusText = 'Pending';
+      } else if (d.status === 'rejected') {
+        statusText = 'Ditolak';
+      }
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+<td style="padding:8px; border-bottom:1px solid #ddd;">
+  <span style="
+    display:inline-block; 
+    padding:4px 8px; 
+    border-radius:6px; 
+    background:#f4f4f4; 
+    font-weight:bold;
+    color:#7f3586;
+  ">
+    Rp ${(d.nominal || 0).toLocaleString()}
+  </span>
+</td>
+
+        <td style="padding:8px; border-bottom:1px solid #ddd; color:${statusColor}; font-weight:bold;">${d.status}</td>
+        <td style="padding:8px; border-bottom:1px solid #ddd;">${tanggal}</td>
+      `;
+      depositHistoryTable.appendChild(tr);
+    });
+  });
+}
 
 // =============================
 // ✅ Realtime Update Jumlah Tagihan
@@ -304,24 +380,45 @@ async function cekStatusVerifikasi() {
     const data = docSnap.data();
     const statusText = document.getElementById("statusVerifikasi");
     const statusIcon = document.getElementById("statusIcon");
+    const aktivasiBox = document.getElementById("aktivasiBox");
+    const aktivasiText = document.getElementById("aktivasiText");
 
     if (data.verified === true) {
       statusText.textContent = "Diverifikasi";
       statusIcon.src = "verifikasi.png"; // Logo untuk diverifikasi
       statusText.style.color = "#7f3586"; // 
+
+
+      // Tampilkan box info untuk akun terverifikasi
+      aktivasiBox.style.display = "block";
+      aktivasiBox.style.background = "#e8f8e8";
+      aktivasiBox.style.border = "1px solid #b2e0b2";
+      aktivasiText.style.color = "green";
+      aktivasiText.innerHTML = "Akun Anda sudah terverifikasi. Semua fitur sudah aktif.";
+
+
+
+
     } else {
+      // ❌ Belum diverifikasi
       statusText.textContent = "Pergi Verifikasi";
-      statusIcon.src = "profile_verify_icon.png"; // Logo untuk belum diverifikasi
-      statusText.style.color = "#dc3545"; // Merah untuk belum diverifikasi
+      statusIcon.src = "profile_verify_icon.png";
+      statusText.style.color = "#dc3545";
+
+      // Tampilkan box info untuk akun belum diverifikasi
+      aktivasiBox.style.display = "block";
+      aktivasiBox.style.background = "#fff3f3";
+      aktivasiBox.style.border = "1px solid #f5c2c2";
+      aktivasiText.style.color = "red";
+      aktivasiText.innerHTML = "Untuk mengaktifkan akun host Anda dan memverifikasi, wajib melakukan top up minimal <b>Rp 500.000</b>. Saldo akan masuk ke akun Anda dan bisa ditarik kembali.";
     }
   } else {
     console.error("User tidak ditemukan!");
   }
 }
 
-// Panggil ketika halaman dimuat
+// ✅ Jalankan saat halaman dimuat
 cekStatusVerifikasi();
-
 
 
 
@@ -365,11 +462,23 @@ if (formTopup) {
     e.preventDefault();
 
     const userId = localStorage.getItem("loggedUserId");
-    const namaPengirim = e.target.namaPengirim.value;
-    const bank = e.target.bank.value;
+    const namaPengirim = e.target.namaPengirim.value.trim();
+    const bank = e.target.bank.value.trim();
     const nominal = parseInt(e.target.nominal.value);
 
+    // ✅ Validasi minimal Rp 500.000
+    const errorMsg = document.getElementById("nominalError");
+    if (isNaN(nominal) || nominal < 500000) {
+      errorMsg.style.display = "block";
+      e.target.nominal.style.borderColor = "red";
+      return;
+    } else {
+      errorMsg.style.display = "none";
+      e.target.nominal.style.borderColor = "#ccc";
+    }
+
     try {
+      // ✅ Simpan data ke Firestore
       await addDoc(collection(db, "deposit"), {
         userId,
         namaPengirim,
@@ -379,12 +488,29 @@ if (formTopup) {
         createdAt: Timestamp.now()
       });
 
-      alert("✅ Permintaan top up berhasil dikirim. Tunggu konfirmasi admin.");
+      // ✅ Notifikasi lebih profesional
+Swal.fire({
+  icon: 'success',
+  title: 'Berhasil!',
+  text: 'Permintaan top up berhasil dikirim. Tunggu konfirmasi admin.',
+  confirmButtonColor: '#7f3586',
+  width: '400px', // ✅ Perbesar lebar popup
+  padding: '20px', // ✅ Tambah padding agar isi tidak terlalu rapat
+  customClass: {
+    popup: 'custom-swal-popup'
+  }
+});
+
       popupTopup.style.display = "none";
       formTopup.reset();
     } catch (error) {
       console.error("Gagal mengirim data top up:", error);
-      alert("❌ Terjadi kesalahan saat mengirim permintaan: " + error.message);
+      Swal.fire({
+        icon: 'error',
+        title: 'Gagal!',
+        text: 'Terjadi kesalahan: ' + error.message,
+        confirmButtonColor: '#dc3545'
+      });
     }
   });
 }
@@ -1153,6 +1279,34 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px);} to {opacity: 1; transform: translateY(0);} }
 @keyframes fadeOut { from { opacity: 1; transform: translateY(0);} to {opacity: 0; transform: translateY(-10px);} }
 
+#historyPopup table th, #historyPopup table td {
+  text-align: left;
+  font-size: 14px;
+}
+
+#depositHistoryPopup table {
+  display:block;
+  max-height:50vh; /* ✅ Scroll hanya tabel */
+  overflow-y:auto;
+}
+
+
+
+div:where(.swal2-container) div:where(.swal2-actions) {
+    display: flex;
+    z-index: 1;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center; /* ✅ Pastikan tombol OK di tengah */
+    width: 100%; /* ✅ Biar tombol penuh sejajar popup */
+    margin: 0 auto; /* ✅ Hilangkan margin berlebih */
+    padding: 15px; /* ✅ Tambah padding agar rapi */
+    border-radius: 0; /* ✅ Hilangkan radius agar rata */
+    background: transparent; /* ✅ Biar tidak bentrok dengan background */
+}
+
+
 
 
 </style>
@@ -1790,7 +1944,9 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
     <div class="menu">
 
 
-<button class="btn" id="historyBtn">History</button>
+<button class="btn" id="historyBtn" style="background:none; border:none; padding:0; cursor:pointer;">
+  <img src="match_his_icon.png" alt="History" style="width:28px; height:28px;">
+</button>
 
 <!-- Popup -->
 <div id="historyPopup" style="
@@ -1838,7 +1994,6 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 </div>
 
 
-      <img src="account.png" alt="Profile" class="profile">
     </div>
   </div>
 
@@ -1895,7 +2050,7 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
 </div>
 <button class="video-btn" id="videoBtn">
   <img src="vudeo.png" alt="Offline" style="width:24px; height:24px; vertical-align:middle;">
-  <span style="margin-left:6px;">Mulai Video</span>
+  <span style="margin-left:6px;">Mulai Gratis</span>
 </button>
 
 <!-- Popup Notifikasi -->
@@ -2321,8 +2476,68 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
     box-shadow:0 8px 16px rgba(0,0,0,0.2);
   ">
     
-    <h2 style="color:#000; font-size:18px; text-align:center;">Aktivasi & Deposit Akun Host</h2>
-    
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+  <h2 style="color:#000; font-size:18px; text-align:center; position:relative;">
+  Aktivasi & Deposit Akun Host
+  <img src="match_his_icon.png" onclick="openDepositHistoryPopup()" style="
+    width:24px; height:24px; cursor:pointer;
+    position:absolute; right:-70px; top:50%; transform:translateY(-50%) ;
+  ">
+</h2>
+</div>    
+
+<!-- ✅ Overlay -->
+<div id="depositHistoryOverlay" style="
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgb(109 109 109);
+  z-index:998;
+"></div>
+
+<!-- ✅ Popup History -->
+<div id="depositHistoryPopup" style="
+  display:none;
+  position:fixed;
+  top:50%; 
+  left:50%;
+  transform:translate(-50%, -50%);
+  background:#fff;
+  width:90%;
+  max-width:400px;
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.3);
+  z-index:999;
+  padding:15px;
+">
+  <h3 style="text-align:center; margin-bottom:10px; color:#7f3586;">Riwayat Host</h3>
+  
+  <table style="width:100%; border-collapse:collapse; font-size:14px;">
+    <thead>
+<tr style="background:#d1d1d1; color:#121212;">
+  <th style="text-align:left; padding:6px;">Nominal</th>
+  <th style="text-align:left; padding:6px;">Status</th>
+  <th style="text-align:left; padding:6px;">Waktu</th>
+</tr>
+    </thead>
+    <tbody id="depositHistoryTable"></tbody>
+  </table>
+
+  <div style="text-align:center; margin-top:15px;">
+    <button onclick="closeDepositHistoryPopup()" style="
+      padding:10px 20px; 
+      background:#7f3586; 
+      color:#fff; 
+      border:none; 
+      border-radius:6px; 
+      font-size:14px; 
+      cursor:pointer;
+    ">Tutup</button>
+  </div>
+</div>
+
+
     <!-- Info Saldo -->
     <div style="background:#fff; padding:15px 20px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); margin:15px 0; font-size:16px;">
       <p style="margin:10px 0; display:flex; align-items:center;">
@@ -2342,36 +2557,47 @@ li button{margin-left:5px;padding:2px 6px;font-size:12px;}
       </p>
     </div>
 
-    <!-- Info Wajib Top Up -->
-    <div style="background:#fff3f3; border:1px solid #f5c2c2; padding:15px; border-radius:8px; margin-bottom:15px; box-shadow:0 4px 8px rgba(0,0,0,0.05);">
-      <p style="color:red; font-size:13px; margin:0; line-height:1.5;">
-        Untuk mengaktifkan akun host Anda dan memverifikasi, wajib melakukan top up minimal 
-        <b>Rp 500.000</b>. Saldo akan masuk ke akun Anda dan bisa ditarik kembali.
-      </p>
-    </div>
+   
 
-    <!-- Form Top Up -->
-    <h3 style="margin-bottom:10px; color:#7f3586; text-align:center;">Form Top Up</h3>
-    <form id="formTopup">
-      <input type="text" name="namaPengirim" placeholder="Nama Pengirim" required style="
-        width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;
-      ">
-      <input type="text" name="bank" placeholder="Nama Bank / E-Wallet" required style="
-        width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;
-      ">
-      <input type="number" name="nominal" placeholder="Nominal (Rp)" required style="
-        width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;
-      ">
-      <button type="submit" style="
-        background:#7f3586; color:#fff; padding:12px; border:none; border-radius:6px; width:100%; font-size:16px;
-      ">Kirim</button>
-    </form>
-    
-    <!-- Tombol Tutup -->
-    <button onclick="document.getElementById('popupTopup').style.display='none';" style="
-      margin-top:12px; padding:12px; width:100%; background:#ccc; border:none; border-radius:6px; font-size:16px; cursor:pointer;
-    ">Tutup</button>
-  </div>
+
+
+
+
+
+
+
+
+    <!-- Info Wajib Top Up -->
+<!-- Box Info Aktivasi -->
+<div id="aktivasiBox" style="display:none; background:#fff3f3; border:1px solid #f5c2c2; padding:15px; border-radius:8px; margin-top:10px;">
+  <p id="aktivasiText" style="font-size:13px; margin:0;"></p>
+</div>
+
+  <!-- Form Top Up -->
+  <h3 style="margin-bottom:10px; margin-top: 25px; color:#7f3586; text-align:center;">Form Deposit</h3>
+  <form id="formTopup">
+    <input type="text" name="namaPengirim" placeholder="Nama Pengirim" required style="
+      width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;
+    ">
+    <input type="text" name="bank" placeholder="Nama Bank / E-Wallet" required style="
+      width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;
+    ">
+<div style="position:relative; margin-bottom:15px;">
+  <input type="number" id="nominalInput" name="nominal" placeholder="Nominal (Rp)" required 
+    style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;">
+  <small id="nominalError" style="color:red; font-size:12px; display:none; position:absolute; bottom:-18px; left:0;">
+    Minimal deposit Rp 500.000
+  </small>
+</div>
+
+<button type="submit" style="
+  background:#7f3586; color:#fff; padding:12px; border:none; border-radius:6px; width:100%; font-size:16px;
+">Kirim</button>
+
+  <!-- Tombol Tutup -->
+  <button onclick="document.getElementById('popupTopup').style.display='none';" style="
+    margin-top:12px; padding:12px; width:100%; background:#ccc; border:none; border-radius:6px; font-size:16px; cursor:pointer;
+  ">Tutup</button>
 </div>
 
 <script>
@@ -2720,10 +2946,6 @@ document.addEventListener('DOMContentLoaded', () => {
     popup.style.display = 'none';
   }
 });
-
-
-
-
 
 
 
