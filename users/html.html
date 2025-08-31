@@ -46,31 +46,34 @@ window.openChat = async function(chatId, el) {
 
   const lastMessageEl = el.querySelector("#lastMessage");
 
-  // Ambil userId dari localStorage
-  let userId = localStorage.getItem("userId");
-  let isGuest = false;
-
+  const userId = localStorage.getItem("userId");
   if (!userId) {
-    // Mode guest → userId = "guest"
-    userId = "guest";
-    isGuest = true;
+    // ✅ Guest mode
+    target.innerHTML = `
+      <div style="text-align:center; padding:15px; color:#444; font-size:14px;">
+        <p><strong>Belum ada pesan untuk guest.</strong></p>
+        <p>Silakan login untuk melihat chat pribadi.</p>
+      </div>
+    `;
+    if (lastMessageEl) lastMessageEl.textContent = "Belum ada pesan untuk guest.";
+    return;
   }
 
-  // Query Firestore untuk pesan user (atau guest)
+  // ✅ Query Firestore untuk pesan user
   const q = query(
     collection(db, "pesan"),
     where("userId", "==", userId),
     orderBy("timestamp", "asc")
   );
 
-  // Real-time listener
+  // ✅ Real-time listener
   onSnapshot(q, (snapshot) => {
     const messages = snapshot.docs.map(doc => {
       const data = doc.data();
       return {
+        sender: data.sender || "Human Assistant",
         pesan: data.pesan || "",
-        nama: data.nama || (data.sender === "admin" ? "Admin" : "User"),
-        timeString: data.timestamp 
+        timeString: data.timestamp
           ? new Date(data.timestamp.toMillis()).toLocaleTimeString()
           : ""
       };
@@ -78,31 +81,22 @@ window.openChat = async function(chatId, el) {
 
     target.innerHTML = "";
 
-    // Jika tidak ada pesan
     if (messages.length === 0) {
-      if (isGuest) {
-        target.innerHTML = `
-          <p style="text-align:center;">Belum ada pesan untuk guest.</p>
-          <p style="text-align:center;color:red;font-size:12px;">Silakan login untuk melihat chat pribadi.</p>
-        `;
-      } else {
-        target.innerHTML = "<p style='text-align:center;'>Belum ada pesan.</p>";
-      }
+      target.innerHTML = "<p style='text-align:center;'>Belum ada pesan.</p>";
       if (lastMessageEl) lastMessageEl.textContent = "Belum ada pesan.";
       return;
     }
 
-    // Tampilkan pesan
     messages.forEach(msg => {
       const wrapper = document.createElement("div");
       wrapper.style.display = "flex";
       wrapper.style.alignItems = "flex-start";
       wrapper.style.margin = "8px 0";
 
-      // Gambar offline di kiri
+      // Ikon avatar
       const img = document.createElement("img");
-      img.src = "./servant_icon.png"; // ✅ Pastikan file ada di folder yang sama dengan index.html
-      img.alt = "Icon";
+      img.src = "servant_icon.png"; // Ganti sesuai path icon
+      img.alt = "Avatar";
       img.style.width = "24px";
       img.style.height = "24px";
       img.style.marginRight = "8px";
@@ -111,12 +105,12 @@ window.openChat = async function(chatId, el) {
       const bubble = document.createElement("div");
       bubble.style.padding = "8px 12px";
       bubble.style.borderRadius = "10px";
-      bubble.style.backgroundColor = "#f1f1f1";
+      bubble.style.backgroundColor = msg.sender === "admin" ? "#e3f2fd" : "#f1f1f1";
       bubble.style.maxWidth = "80%";
 
       bubble.innerHTML = `
         <strong style="font-size:12px; color:#333; display:block; margin-bottom:4px;">
-          ${msg.nama}
+          ${msg.sender === "admin" ? "Admin" : "User"}
         </strong>
         <p style="margin:0;">${msg.pesan}</p>
         <small style="font-size:10px;color:#555;">${msg.timeString}</small>
@@ -127,14 +121,12 @@ window.openChat = async function(chatId, el) {
       target.appendChild(wrapper);
     });
 
-    // Update last message
     if (lastMessageEl) lastMessageEl.textContent = messages[messages.length - 1].pesan;
 
-    // Scroll otomatis ke bawah
+    // ✅ Scroll otomatis ke bawah
     target.scrollTop = target.scrollHeight;
   });
 };
-
 
 
 
