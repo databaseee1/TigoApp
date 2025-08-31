@@ -13,10 +13,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 
-import {
-  getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, getDoc,
-  query, orderBy, getDocs, addDoc, serverTimestamp, where, deleteDoc
+import { 
+  getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, getDoc, query, orderBy, getDocs, addDoc, deleteDoc, serverTimestamp, where
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 
 
 
@@ -304,7 +304,7 @@ async function updateTagihan(action) {
 
 
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
   const dataUserTable = document.getElementById("data-user-table");
   const saldoUserTable = document.getElementById("saldo-user-table");
   const withdrawTable = document.getElementById("withdraw-user-table");
@@ -312,322 +312,361 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const usersRef = collection(db, "pendaftaran");
 
-  onSnapshot(query(usersRef, orderBy("createdAt", "desc")), async (snapshot) => {
+  // ========================
+  // 🔹 Render User Data
+  // ========================
+  function renderUserRow(userId, data) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${data.nama || '-'}</td>
+      <td>${data.umur || '-'}</td>
+      <td>${data.jk || '-'}</td>
+      <td>${data.wa || '-'}</td>
+      <td>${data.email || '-'}</td>
+      <td>${data.app || '-'}</td>
+      <td>${data.bank || '-'}</td>
+      <td>${data.namaRek || '-'}</td>
+      <td>${data.noRek || '-'}</td>
+      <td>${data.fotoURL ? `<img src="${data.fotoURL}" width="50">` : ''}</td>
+      <td>
+        ${data.verified 
+          ? `<span style="color:green;font-weight:bold;">Diverifikasi</span>` 
+          : `<span style="color:red;font-weight:bold;">Unverifikasi</span>`}
+      </td>
+      <td>
+        <button class="verify-btn" data-id="${userId}" data-status="true">Verifikasi</button>
+        <button class="verify-btn" data-id="${userId}" data-status="false">Batalkan</button>
+      </td>
+    `;
+    dataUserTable.appendChild(tr);
+  }
+
+  // ========================
+  // 🔹 Render Saldo
+  // ========================
+  function renderSaldoRow(userId, data) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${data.nama || '-'}</td>
+      <td>${data.email || '-'}</td>
+      <td>Rp ${(data.saldo || 0).toLocaleString()}</td>
+      <td>
+        <select class="status-select">
+          <option value="aktif" ${data.status=="aktif"?"selected":""}>Aktif</option>
+          <option value="ditangguhkan" ${data.status=="ditangguhkan"?"selected":""}>Ditangguhkan</option>
+          <option value="proses" ${data.status=="proses"?"selected":""}>Proses</option>
+          <option value="ditolak" ${data.status=="ditolak"?"selected":""}>Ditolak</option>
+          <option value="dihapus" ${data.status=="dihapus"?"selected":""}>Dihapus</option>
+        </select>
+      </td>
+      <td>
+        <button class="add-saldo">Tambah</button>
+        <button class="kurangi-saldo">Kurangi</button>
+      </td>
+    `;
+    saldoUserTable.appendChild(tr);
+
+    // ✅ Event tambah saldo
+    tr.querySelector(".add-saldo").onclick = async () => {
+      const val = parseInt(prompt("Masukkan jumlah tambah saldo:"));
+      if (!isNaN(val) && val > 0) {
+        await updateDoc(doc(db, "pendaftaran", userId), { saldo: (data.saldo || 0) + val });
+      }
+    };
+
+    // ✅ Event kurangi saldo
+    tr.querySelector(".kurangi-saldo").onclick = async () => {
+      const val = parseInt(prompt("Masukkan jumlah kurangi saldo:"));
+      if (!isNaN(val) && val > 0) {
+        await updateDoc(doc(db, "pendaftaran", userId), { saldo: (data.saldo || 0) - val });
+      }
+    };
+
+    // ✅ Event ubah status
+    tr.querySelector(".status-select").onchange = async (e) => {
+      await updateDoc(doc(db, "pendaftaran", userId), { status: e.target.value });
+    };
+  }
+
+  // ========================
+  // 🔹 Render Withdraw
+  // ========================
+  function renderWithdrawRow(userId, data, item, index) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${data.nama || '-'}</td>
+      <td>${data.email || '-'}</td>
+      <td>${item.bank || '-'}</td>
+      <td>${item.norek || '-'}</td>
+      <td>${item.namarek || '-'}</td>
+      <td>${item.jumlah || 0}</td>
+      <td style="color:${item.color || 'black'}">${item.status}</td>
+      <td>
+        <button class="proses-btn">Proses</button>
+        <button class="approve-btn">Approve</button>
+        <button class="tolak-btn">Tolak</button>
+        <button class="hapus-btn" style="background:red;color:white;">Hapus</button>
+      </td>
+    `;
+    withdrawTable.appendChild(tr);
+
+    // ✅ Update status riwayat
+    const updateStatus = async (newStatus, color) => {
+      const userRef = doc(db, "pendaftaran", userId);
+      const userSnap = await getDoc(userRef);
+      const userData = userSnap.data() || {};
+      const arr = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
+      arr[index] = { ...arr[index], status: newStatus, color };
+      await updateDoc(userRef, { riwayat: arr });
+    };
+
+    // ✅ Event tombol
+    tr.querySelector(".proses-btn").onclick = () => updateStatus("Proses", "orange");
+    tr.querySelector(".approve-btn").onclick = () => updateStatus("Approve", "green");
+
+    tr.querySelector(".tolak-btn").onclick = async () => {
+      const userRef = doc(db, "pendaftaran", userId);
+      const userSnap = await getDoc(userRef);
+      const userData = userSnap.data() || {};
+      const arr = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
+      if (!arr[index]) return;
+      const newSaldo = (userData.saldo || 0) + (arr[index].jumlah || 0);
+      arr[index] = { ...arr[index], status: "Tolak", color: "red" };
+      await updateDoc(userRef, { riwayat: arr, saldo: newSaldo });
+    };
+
+    tr.querySelector(".hapus-btn").onclick = async () => {
+      if (!confirm("Yakin ingin menghapus riwayat withdraw ini?")) return;
+      const userRef = doc(db, "pendaftaran", userId);
+      const userSnap = await getDoc(userRef);
+      const userData = userSnap.data() || {};
+      let arr = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
+      arr.splice(index, 1);
+      await updateDoc(userRef, { riwayat: arr });
+      tr.remove();
+    };
+  }
+
+  // ========================
+  // 🔹 Listener Firestore
+  // ========================
+  onSnapshot(query(usersRef, orderBy("createdAt", "desc")), (snapshot) => {
     dataUserTable.innerHTML = "";
     saldoUserTable.innerHTML = "";
     withdrawTable.innerHTML = "";
 
-    snapshot.forEach(async docSnap => {
+    snapshot.forEach((docSnap) => {
       const data = docSnap.data();
       const userId = docSnap.id;
 
+      // ✅ Pastikan user punya saldo & status
       if (data.saldo === undefined) {
-        await updateDoc(doc(db, "pendaftaran", userId), { saldo: 0, status: "aktif" });
-        data.saldo = 0;
-        data.status = "aktif";
+        updateDoc(doc(db, "pendaftaran", userId), { saldo: 0, status: "aktif" });
       }
 
-const trData = document.createElement("tr");
-trData.innerHTML = `
-  <td>${data.nama || '-'}</td>
-  <td>${data.umur || '-'}</td>
-  <td>${data.jk || '-'}</td>
-  <td>${data.wa || '-'}</td>
-  <td>${data.email || '-'}</td>
-  <td>${data.app || '-'}</td>
-  <td>${data.bank || '-'}</td>
-  <td>${data.namaRek || '-'}</td>
-  <td>${data.noRek || '-'}</td>
-  <td>${data.fotoURL ? `<img src="${data.fotoURL}" width="50">` : ''}</td>
-  <td>
-    ${data.verified === true 
-      ? `<span style="color:green; font-weight:bold;">Diverifikasi</span>` 
-      : `<span style="color:red; font-weight:bold;">Unverifikasi</span>`}
-  </td>
-<td>
-  <button class="verify-btn" data-id="${userId}" data-status="true">Verifikasi</button>
-  <button class="verify-btn" data-id="${userId}" data-status="false">Batalkan</button>
-</td>
-`;
-dataUserTable.appendChild(trData);
+      // ✅ Render tabel user & saldo
+      renderUserRow(userId, data);
+      renderSaldoRow(userId, data);
 
+      // ✅ Render withdraw
+      const riwayat = Array.isArray(data.riwayat) ? data.riwayat : [];
+      riwayat.forEach((item, index) => renderWithdrawRow(userId, data, item, index));
 
-
-document.addEventListener("click", async (e) => {
-  if (e.target.classList.contains("verify-btn")) {
-    const userId = e.target.dataset.id;
-    const status = e.target.dataset.status === "true";
-    try {
-      await updateDoc(doc(db, "pendaftaran", userId), { verified: status });
-      alert(`Status berhasil diubah menjadi ${status ? 'Diverifikasi' : 'Unverifikasi'}`);
-    } catch (error) {
-      console.error("Gagal ubah status:", error);
-    }
-  }
-});
-
-      // --- Saldo User ---
-      const trSaldo = document.createElement("tr");
-      trSaldo.innerHTML = `
-        <td>${data.nama || '-'}</td>
-        <td>${data.email || '-'}</td>
-        <td>Rp ${data.saldo}</td>
-        <td>
-<select class="status-select">
-  <option value="aktif" ${data.status=="aktif"?"selected":""}>Aktif</option>
-  <option value="ditangguhkan" ${data.status=="ditangguhkan"?"selected":""}>Ditangguhkan</option>
-  <option value="proses" ${data.status=="proses"?"selected":""}>Proses</option>
-  <option value="ditolak" ${data.status=="ditolak"?"selected":""}>Ditolak</option>
-  <option value="dihapus" ${data.status=="dihapus"?"selected":""}>Dihapus</option>
-</select>
-        </td>
-        <td>
-          <button class="add-saldo">Tambah</button>
-          <button class="kurangi-saldo">Kurangi</button>
-        </td>
-      `;
-      saldoUserTable.appendChild(trSaldo);
-
-      const addBtn = trSaldo.querySelector(".add-saldo");
-      const kurangiBtn = trSaldo.querySelector(".kurangi-saldo");
-      const statusSelect = trSaldo.querySelector(".status-select");
-
-      addBtn.onclick = async () => {
-        const val = parseInt(prompt("Masukkan jumlah tambah saldo:"));
-        if (!isNaN(val)) await updateDoc(doc(db, "pendaftaran", userId), { saldo: (data.saldo || 0) + val });
-      };
-      kurangiBtn.onclick = async () => {
-        const val = parseInt(prompt("Masukkan jumlah kurangi saldo:"));
-        if (!isNaN(val)) await updateDoc(doc(db, "pendaftaran", userId), { saldo: (data.saldo || 0) - val });
-      };
-      statusSelect.onchange = async () => await updateDoc(doc(db, "pendaftaran", userId), { status: statusSelect.value });
-
-// --- Riwayat Withdraw ---
-const riwayat = Array.isArray(data.riwayat) ? [...data.riwayat] : [];
-riwayat.forEach((item, index)=>{
-  const trW = document.createElement("tr");
-  trW.innerHTML = `
-    <td>${data.nama || '-'}</td>
-    <td>${data.email || '-'}</td>
-    <td>${item.bank || '-'}</td>
-    <td>${item.norek || '-'}</td>
-    <td>${item.namarek || '-'}</td>
-    <td>${item.jumlah || 0}</td>
-    <td style="color:${item.color||'black'}">${item.status}</td>
-    <td>
-      <button class="proses-btn">Proses</button>
-      <button class="approve-btn">Approve</button>
-      <button class="tolak-btn">Tolak</button>
-      <button class="hapus-btn" style="background:red;color:white;">Hapus</button>
-    </td>
-  `;
-  withdrawTable.appendChild(trW);
-
-  const prosesBtn = trW.querySelector(".proses-btn");
-  const approveBtn = trW.querySelector(".approve-btn");
-  const tolakBtn = trW.querySelector(".tolak-btn");
-  const hapusBtn = trW.querySelector(".hapus-btn");
-
-  const updateStatus = async (newStatus, color) => {
-    const userRef = doc(db, "pendaftaran", userId);
-    const userSnap = await getDoc(userRef);
-    const userData = userSnap.data() || {};
-    const arr = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
-    arr[index] = {...arr[index], status: newStatus, color: color};
-    await updateDoc(userRef, { riwayat: arr });
-  };
-
-  prosesBtn.onclick = () => updateStatus("Proses","orange");
-  approveBtn.onclick = () => updateStatus("Approve","green");
-
-  // --- Tolak otomatis kembalikan saldo
-  tolakBtn.onclick = async () => {
-    const userRef = doc(db, "pendaftaran", userId);
-    const userSnap = await getDoc(userRef);
-    const userData = userSnap.data() || {};
-    const arr = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
-    if(!arr[index]) return;
-    const newSaldo = (userData.saldo || 0) + (arr[index].jumlah || 0);
-    arr[index] = {...arr[index], status: "Tolak", color: "red"};
-    await updateDoc(userRef, { riwayat: arr, saldo: newSaldo });
-  };
-
-  // --- Hapus riwayat withdraw ---
-  hapusBtn.onclick = async () => {
-    if(!confirm("Yakin ingin menghapus riwayat withdraw ini?")) return;
-    const userRef = doc(db, "pendaftaran", userId);
-    const userSnap = await getDoc(userRef);
-    const userData = userSnap.data() || {};
-    let arr = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
-    arr.splice(index, 1); // hapus item sesuai index
-    await updateDoc(userRef, { riwayat: arr });
-    trW.remove(); // hapus langsung dari tabel biar UI update
-  };
-});
-
-      // --- Notifikasi user baru ---
-      const isNew = data.createdAt && (new Date() - data.createdAt.toDate()) < 24*60*60*1000;
-      if(isNew){
+      // ✅ Notif user baru
+      const isNew = data.createdAt && (new Date() - data.createdAt.toDate()) < 24 * 60 * 60 * 1000;
+      if (isNew) {
         notifBox.innerText = `🚨 User baru mendaftar: ${data.nama || 'User Baru'}`;
         notifBox.style.display = "block";
-        setTimeout(()=> notifBox.style.display="none", 5000);
+        setTimeout(() => notifBox.style.display = "none", 5000);
       }
     });
   });
+
+  // ========================
+  // 🔹 Event Verifikasi
+  // ========================
+  document.addEventListener("click", async (e) => {
+    if (e.target.classList.contains("verify-btn")) {
+      const userId = e.target.dataset.id;
+      const status = e.target.dataset.status === "true";
+
+      const konfirmasi = confirm(`Apakah Anda yakin ingin ${status ? 'memverifikasi' : 'membatalkan verifikasi'} user ini?`);
+      if (!konfirmasi) return;
+
+      try {
+        await updateDoc(doc(db, "pendaftaran", userId), { verified: status });
+        alert(`✅ Status berhasil diubah menjadi ${status ? 'Diverifikasi' : 'Unverifikasi'}`);
+      } catch (error) {
+        console.error("Gagal ubah status:", error);
+        alert("❌ Gagal mengubah status. Cek koneksi atau Firestore rules.");
+      }
+    }
+  });
 });
+
 
 
 // ✅ Load daftar user dari collection pendaftaran
-  async function loadUserList() {
-    const userListEl = document.getElementById('userList');
-    userListEl.innerHTML = '<p>Loading...</p>';
+async function loadUserList() {
+  const userListEl = document.getElementById('userList');
+  userListEl.innerHTML = '<p>Loading...</p>';
 
-    const usersSnap = await getDocs(collection(db, 'pendaftaran'));
-    let html = '';
+  const usersSnap = await getDocs(collection(db, 'pendaftaran'));
+  let html = '';
 
-    usersSnap.forEach(docSnap => {
-      const data = docSnap.data();
-      html += `
-        <div style="border:1px solid #ccc; padding:10px; margin-bottom:8px; border-radius:6px; cursor:pointer;" 
-          onclick="openSendMessagePopup('${docSnap.id}', '${data.nama || ''}', '${data.email || ''}', '${data.wa || ''}')">
-          <strong>${data.nama || '-'}</strong><br>
-          Email: ${data.email || '-'}<br>
-          WA: ${data.wa || '-'}
-        </div>
-      `;
-    });
-
-    userListEl.innerHTML = html || '<p>Tidak ada user.</p>';
-  }
-
-  // ✅ Buka popup kirim pesan
-  window.openSendMessagePopup = function(userId, nama, email, wa) {
-    document.getElementById('sendMessagePopup').style.display = 'block';
-    document.querySelector('#sendMessageForm input[name="userId"]').value = userId;
-    document.querySelector('#sendMessagePopup h3').innerText = `Kirim Pesan ke ${nama}`;
-    document.getElementById('chatInfo').innerHTML = `
-      <p><strong>Nama:</strong> ${nama}</p>
-      <p><strong>Email:</strong> ${email}</p>
-      <p><strong>WA:</strong> ${wa}</p>
+  usersSnap.forEach(docSnap => {
+    const data = docSnap.data();
+    html += `
+      <div style="border:1px solid #ccc; padding:10px; margin-bottom:8px; border-radius:6px; cursor:pointer;" 
+        onclick="openSendMessagePopup('${docSnap.id}', '${data.nama || ''}', '${data.email || ''}', '${data.wa || ''}')">
+        <strong>${data.nama || '-'}</strong><br>
+        Email: ${data.email || '-'}<br>
+        WA: ${data.wa || '-'}
+      </div>
     `;
-    loadChatHistory(userId);
-  };
-
-  // ✅ Tutup popup kirim pesan
-  window.closeSendMessagePopup = function() {
-    document.getElementById('sendMessagePopup').style.display = 'none';
-  };
-
-  // ✅ Tutup popup CS
-  window.closeCsPopup = function() {
-    document.getElementById('csPopup').style.display = 'none';
-    document.getElementById('csOverlay').style.display = 'none';
-  };
-
-  // ✅ Buka popup CS (list user)
-  window.openCsPopup = function() {
-    document.getElementById("csPopup").style.display = "block";
-    document.getElementById("csOverlay").style.display = "block";
-    loadUserList();
-  };
-
-  // ✅ Kirim pesan ke Firestore
-  document.getElementById('sendMessageForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const userId = this.userId.value;
-    const pesan = this.message.value.trim();
-    if (!pesan) return;
-
-    await addDoc(collection(db, 'pesan'), {
-      userId: userId,
-      pesan: pesan,
-      sender: 'admin',
-      timestamp: serverTimestamp()
-    });
-
-    this.message.value = '';
   });
 
-  // ✅ Load riwayat chat user (REAL-TIME)
-  function loadChatHistory(userId) {
-    const chatBox = document.getElementById('chatHistory');
-    chatBox.innerHTML = '<p>Loading chat...</p>';
+  userListEl.innerHTML = html || '<p>Tidak ada user.</p>';
+}
 
-    const q = query(
-      collection(db, 'pesan'),
-      where('userId', '==', userId),
-      orderBy('timestamp', 'asc')
-    );
+// ✅ Buka popup kirim pesan
+window.openSendMessagePopup = function(userId, nama, email, wa) {
+  document.getElementById('sendMessagePopup').style.display = 'block';
+  document.querySelector('#sendMessageForm input[name="userId"]').value = userId;
+  document.querySelector('#sendMessagePopup h3').innerText = `Kirim Pesan ke ${nama}`;
+  document.getElementById('chatInfo').innerHTML = `
+    <p><strong>Nama:</strong> ${nama}</p>
+    <p><strong>Email:</strong> ${email}</p>
+    <p><strong>WA:</strong> ${wa}</p>
+  `;
+  loadChatHistory(userId);
+};
 
-    onSnapshot(q, (snapshot) => {
-      if (snapshot.empty) {
-        chatBox.innerHTML = '<p>Belum ada pesan.</p>';
-        return;
-      }
+// ✅ Tutup popup kirim pesan
+window.closeSendMessagePopup = function() {
+  document.getElementById('sendMessagePopup').style.display = 'none';
+};
 
-      chatBox.innerHTML = '';
+// ✅ Tutup popup CS
+window.closeCsPopup = function() {
+  document.getElementById('csPopup').style.display = 'none';
+  document.getElementById('csOverlay').style.display = 'none';
+};
 
-      snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        const senderName = data.sender === 'admin' ? '<strong>Admin:</strong>' : '<strong>User:</strong>';
+// ✅ Kirim pesan ke Firestore
+document.getElementById('sendMessageForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const userId = this.userId.value;
+  const pesan = this.message.value.trim();
+  if (!pesan) return;
 
-        const wrapper = document.createElement('div');
-        wrapper.classList.add('chat-item');
-        wrapper.setAttribute('data-id', docSnap.id);
-        wrapper.style.display = 'flex';
-        wrapper.style.alignItems = 'center';
-        wrapper.style.marginBottom = '8px';
+  await addDoc(collection(db, 'pesan'), {
+    userId: userId,
+    pesan: pesan,
+    sender: 'admin', // ✅ Tandai pengirim
+    timestamp: serverTimestamp()
+  });
 
-        const messageText = document.createElement('p');
-        messageText.style.flex = '1';
-        messageText.style.margin = '0';
-        messageText.innerHTML = `${senderName} ${data.pesan}`;
+  this.message.value = '';
+});
 
-        const deleteIcon = document.createElement('img');
-        deleteIcon.src = 'servant_icon.png'; // ✅ Ganti sesuai path ikon kamu
-        deleteIcon.alt = 'Hapus';
-        deleteIcon.title = 'Hapus Pesan';
-        deleteIcon.classList.add('delete-icon');
-        deleteIcon.style.width = '18px';
-        deleteIcon.style.height = '18px';
-        deleteIcon.style.cursor = 'pointer';
-        deleteIcon.style.marginLeft = '8px';
+// ✅ Load riwayat chat user (REAL-TIME)
+function loadChatHistory(userId) {
+  const chatBox = document.getElementById('chatHistory');
+  chatBox.innerHTML = '<p>Loading chat...</p>';
 
-        deleteIcon.addEventListener('click', () => deleteMessage(docSnap.id, wrapper));
+  const q = query(
+    collection(db, 'pesan'),
+    where('userId', '==', userId),
+    orderBy('timestamp', 'asc')
+  );
 
-        wrapper.appendChild(messageText);
-        wrapper.appendChild(deleteIcon);
-        chatBox.appendChild(wrapper);
-      });
+  // ✅ Dengarkan perubahan data (real-time)
+  onSnapshot(q, (snapshot) => {
+    if (snapshot.empty) {
+      chatBox.innerHTML = '<p>Belum ada pesan.</p>';
+      return;
+    }
 
-      chatBox.scrollTop = chatBox.scrollHeight;
+    chatBox.innerHTML = ''; // Hapus konten lama
+
+    snapshot.forEach(docSnap => {
+      const data = docSnap.data();
+      const senderName = data.sender === 'admin' ? '<strong>Admin:</strong>' : '<strong>User:</strong>';
+
+      // ✅ Buat wrapper pesan
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('chat-item');
+      wrapper.setAttribute('data-id', docSnap.id);
+      wrapper.style.display = 'flex';
+      wrapper.style.alignItems = 'center';
+      wrapper.style.marginBottom = '8px';
+
+      // ✅ Teks pesan
+      const messageText = document.createElement('p');
+      messageText.style.flex = '1';
+      messageText.style.margin = '0';
+      messageText.innerHTML = `${senderName} ${data.pesan}`;
+
+      // ✅ Ikon hapus
+      const deleteIcon = document.createElement('img');
+      deleteIcon.src = 'servant_icon.png';
+      deleteIcon.alt = 'Hapus';
+      deleteIcon.title = 'Hapus Pesan';
+      deleteIcon.classList.add('delete-icon'); // CSS hover effect
+      deleteIcon.style.width = '18px';
+      deleteIcon.style.height = '18px';
+      deleteIcon.style.cursor = 'pointer';
+      deleteIcon.style.marginLeft = '8px';
+
+      // ✅ Tambahkan event hapus
+      deleteIcon.addEventListener('click', () => deleteMessage(docSnap.id, wrapper));
+
+      // ✅ Gabungkan ke wrapper
+      wrapper.appendChild(messageText);
+      wrapper.appendChild(deleteIcon);
+
+      chatBox.appendChild(wrapper);
     });
-  }
 
-  // ✅ Fungsi hapus pesan (SweetAlert konfirmasi)
-  async function deleteMessage(messageId, element) {
-    const result = await Swal.fire({
-      title: 'Yakin hapus pesan ini?',
-      text: "Pesan akan dihapus permanen",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Ya, hapus!',
-      cancelButtonText: 'Batal'
-    });
+    // ✅ Auto scroll ke bawah
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
+}
 
-    if (result.isConfirmed) {
-      try {
-        await deleteDoc(doc(db, 'pesan', messageId));
-        element.style.transition = 'opacity 0.3s';
-        element.style.opacity = '0';
-        setTimeout(() => element.remove(), 300);
-        Swal.fire('Berhasil!', 'Pesan sudah dihapus.', 'success');
-      } catch (error) {
-        console.error('Gagal menghapus pesan:', error);
-        Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus.', 'error');
-      }
+// ✅ Fungsi hapus pesan (SweetAlert konfirmasi)
+async function deleteMessage(messageId, element) {
+  const result = await Swal.fire({
+    title: 'Yakin hapus pesan ini?',
+    text: "Pesan akan dihapus permanen",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Ya, hapus!',
+    cancelButtonText: 'Batal'
+  });
+
+  if (result.isConfirmed) {
+    try {
+      await deleteDoc(doc(db, 'pesan', messageId));
+      element.style.transition = 'opacity 0.3s';
+      element.style.opacity = '0';
+      setTimeout(() => element.remove(), 300);
+      Swal.fire('Berhasil!', 'Pesan sudah dihapus.', 'success');
+    } catch (error) {
+      console.error('Gagal menghapus pesan:', error);
+      Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus.', 'error');
     }
   }
+}
+
+// ✅ Buka popup CS (list user)
+window.openCsPopup = function() {
+  document.getElementById("csPopup").style.display = "block";
+  document.getElementById("csOverlay").style.display = "block";
+  loadUserList(); 
+};
+
+
 
 
 
@@ -690,6 +729,9 @@ body {
     padding: 5px 0;
   }
 
+.swal2-container {
+  z-index: 2147483647 !important; /* Maksimum */
+}
 
 
 /* --- Main Content --- */
