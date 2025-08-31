@@ -29,49 +29,32 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-// Fungsi untuk membuka / menutup chat
-window.openChat = async function(chatId, el) {
+// ✅ Fungsi untuk membuka / menutup chat
+window.openChat = async function (chatId, el) {
   const target = document.getElementById(chatId);
   if (!target) return;
 
-  // Jika sedang terbuka → tutup
+  // Toggle tampilan chat
   if (target.style.display === "block") {
     target.style.display = "none";
     return;
   }
 
-  // Jika tertutup → buka
   target.style.display = "block";
   target.innerHTML = "<p style='text-align:center;color:#999;'>Memuat chat...</p>";
 
   const lastMessageEl = el.querySelector("#lastMessage");
+  const userRole = localStorage.getItem("role") || "user"; // Ambil role dari localStorage
 
-  const userId = localStorage.getItem("userId");
-  if (!userId) {
-    // ✅ Guest mode
-    target.innerHTML = `
-      <div style="text-align:center; padding:15px; color:#444; font-size:14px;">
-        <p><strong>Selamat datang di akun host!</strong></p>
-        <p>Untuk membuka semua fitur dan menghasilkan,silakan untuk melakukan deposit terlebih dahulu</p>
-      </div>
-    `;
-    if (lastMessageEl) lastMessageEl.textContent = "Belum ada pesan untuk guest.";
-    return;
-  }
+  // ✅ Query Firestore untuk pesan (real-time)
+  const q = query(collection(db, "pesan"), orderBy("timestamp", "asc"));
 
-  // ✅ Query Firestore untuk pesan user
-  const q = query(
-    collection(db, "pesan"),
-    where("userId", "==", userId),
-    orderBy("timestamp", "asc")
-  );
-
-  // ✅ Real-time listener
   onSnapshot(q, (snapshot) => {
     const messages = snapshot.docs.map(doc => {
       const data = doc.data();
       return {
-        sender: data.sender || "Human Assistant",
+        id: doc.id, // simpan ID dokumen untuk admin
+        sender: data.sender || "Unknown",
         pesan: data.pesan || "",
         timeString: data.timestamp
           ? new Date(data.timestamp.toMillis()).toLocaleTimeString()
@@ -81,39 +64,46 @@ window.openChat = async function(chatId, el) {
 
     target.innerHTML = "";
 
+    // ✅ Jika tidak ada pesan
     if (messages.length === 0) {
       target.innerHTML = "<p style='text-align:center;'>Belum ada pesan.</p>";
       if (lastMessageEl) lastMessageEl.textContent = "Belum ada pesan.";
       return;
     }
 
+    // ✅ Render setiap pesan
     messages.forEach(msg => {
       const wrapper = document.createElement("div");
       wrapper.style.display = "flex";
       wrapper.style.alignItems = "flex-start";
       wrapper.style.margin = "8px 0";
 
-      // Ikon avatar
       const img = document.createElement("img");
-      img.src = "servant_icon.png"; // Ganti sesuai path icon
+      img.src = "servant_icon.png";
       img.alt = "Avatar";
       img.style.width = "24px";
       img.style.height = "24px";
       img.style.marginRight = "8px";
 
-      // Bubble pesan
       const bubble = document.createElement("div");
       bubble.style.padding = "8px 12px";
       bubble.style.borderRadius = "10px";
       bubble.style.backgroundColor = msg.sender === "admin" ? "#e3f2fd" : "#f1f1f1";
       bubble.style.maxWidth = "80%";
 
+      // ✅ Jika admin, tambahkan tombol hapus
+      let deleteButton = "";
+      if (userRole === "admin") {
+        deleteButton = `<button data-id="${msg.id}" class="btn-delete" style="font-size:10px; color:red; background:none; border:none; cursor:pointer; margin-top:5px;">Hapus</button>`;
+      }
+
       bubble.innerHTML = `
         <strong style="font-size:12px; color:#333; display:block; margin-bottom:4px;">
-          ${msg.sender === "admin" ? "Admin" : "User"}
+          ${msg.sender === "admin" ? "Admin" : msg.sender}
         </strong>
         <p style="margin:0;">${msg.pesan}</p>
         <small style="font-size:10px;color:#555;">${msg.timeString}</small>
+        ${deleteButton}
       `;
 
       wrapper.appendChild(img);
@@ -121,15 +111,28 @@ window.openChat = async function(chatId, el) {
       target.appendChild(wrapper);
     });
 
+    // ✅ Update last message di daftar chat
     if (lastMessageEl) lastMessageEl.textContent = messages[messages.length - 1].pesan;
 
-    // ✅ Scroll otomatis ke bawah
     target.scrollTop = target.scrollHeight;
   });
+
+  // ✅ Event listener untuk hapus (hanya admin)
+  target.addEventListener("click", async (e) => {
+    if (e.target.classList.contains("btn-delete")) {
+      const messageId = e.target.getAttribute("data-id");
+      if (confirm("Yakin ingin menghapus pesan ini?")) {
+        try {
+          await deleteDoc(doc(db, "pesan", messageId));
+          alert("Pesan berhasil dihapus!");
+        } catch (error) {
+          console.error("Gagal menghapus pesan:", error);
+          alert("Terjadi kesalahan saat menghapus pesan.");
+        }
+      }
+    }
+  });
 };
-
-
-
 
 
 
@@ -148,11 +151,23 @@ window.closeDepositHistoryPopup = function() {
   document.getElementById("depositHistoryOverlay").style.display = "none";
 }
 
-// ✅ Ambil Data Riwayat Deposit
+// ✅ Ambil Data Riwayat Deposit sesuai user login
+// ✅ Ambil Data Riwayat Deposit khusus user login
 function loadDepositHistoryData() {
   depositHistoryTable.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:10px;'>Loading...</td></tr>";
 
-  const depositRef = query(collection(db, "deposit"), orderBy("createdAt", "desc"));
+  const currentUserId = localStorage.getItem("loggedUserId"); // ✅ pastikan sesuai
+  if (!currentUserId) {
+    depositHistoryTable.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:10px;'>User belum login</td></tr>";
+    return;
+  }
+
+  // 🔑 Query hanya untuk user ini
+  const depositRef = query(
+    collection(db, "deposit"),
+    where("userId", "==", currentUserId),
+    orderBy("createdAt", "desc")
+  );
 
   onSnapshot(depositRef, (snapshot) => {
     depositHistoryTable.innerHTML = "";
@@ -165,9 +180,9 @@ function loadDepositHistoryData() {
     snapshot.forEach(docSnap => {
       const d = docSnap.data();
 
-      // Format tanggal & jam
+      // Format tanggal
       let tanggal = "-";
-      if (d.createdAt && d.createdAt.toDate) {
+      if (d.createdAt?.toDate) {
         const date = d.createdAt.toDate();
         const jam = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
         const tgl = date.toLocaleDateString('id-ID');
@@ -175,34 +190,18 @@ function loadDepositHistoryData() {
       }
 
       // Warna status
-       let statusColor = d.status === 'approved' ? 'green' : (d.status === 'pending' ? 'orange' : 'red');
-
-      // Teks status custom
-      let statusText = '-';
-      if (d.status === 'approved') {
-        statusText = 'Berhasil';
-      } else if (d.status === 'pending') {
-        statusText = 'Pending';
-      } else if (d.status === 'rejected') {
-        statusText = 'Ditolak';
-      }
+      const statusColor = d.status === 'approved' ? 'green' : (d.status === 'pending' ? 'orange' : 'red');
+      const statusText = d.status === 'approved' ? 'Berhasil' :
+                         d.status === 'pending' ? 'Pending' : 'Ditolak';
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
-<td style="padding:8px; border-bottom:1px solid #ddd;">
-  <span style="
-    display:inline-block; 
-    padding:4px 8px; 
-    border-radius:6px; 
-    background:#f4f4f4; 
-    font-weight:bold;
-    color:#7f3586;
-  ">
-    Rp ${(d.nominal || 0).toLocaleString()}
-  </span>
-</td>
-
-        <td style="padding:8px; border-bottom:1px solid #ddd; color:${statusColor}; font-weight:bold;">${d.status}</td>
+        <td style="padding:8px; border-bottom:1px solid #ddd;">
+          <span style="display:inline-block; padding:4px 8px; border-radius:6px; background:#f4f4f4; font-weight:bold; color:#7f3586;">
+            Rp ${(d.nominal || 0).toLocaleString()}
+          </span>
+        </td>
+        <td style="padding:8px; border-bottom:1px solid #ddd; color:${statusColor}; font-weight:bold;">${statusText}</td>
         <td style="padding:8px; border-bottom:1px solid #ddd;">${tanggal}</td>
       `;
       depositHistoryTable.appendChild(tr);
@@ -474,188 +473,170 @@ function showToast(message, type = "success") {
 }
 
 
-async function cekStatusVerifikasi() {
+document.addEventListener("DOMContentLoaded", () => {
+  const verifyDiv = document.querySelector(".verify");
+  const popupTopup = document.getElementById("popupTopup");
+  const saldoHostEl = document.getElementById("saldoHost");
+  const saldoCoinEl = document.getElementById("saldoCoin");
+  const saldoNominal = document.getElementById("saldoNominal");
+  const formTopup = document.getElementById("formTopup");
+  const hasilAgencyBtn = document.getElementById("hasilAgencyBtn");
+
   const userId = localStorage.getItem("loggedUserId");
-  if (!userId) return;
+  const role = localStorage.getItem("role") || "user";
 
-  const userRef = doc(db, "pendaftaran", userId);
-  const docSnap = await getDoc(userRef);
+  // ✅ Cek status verifikasi real-time
+  if (userId) {
+    const userRef = doc(db, "pendaftaran", userId);
 
-  if (docSnap.exists()) {
-    const data = docSnap.data();
+    // ✅ Listener status verifikasi
+    onSnapshot(userRef, { includeMetadataChanges: true }, (docSnap) => {
+      if (!docSnap.exists()) return;
+
+      if (docSnap.metadata.hasPendingWrites) return;
+
+      const data = docSnap.data();
+      updateUIStatusVerifikasi(data.verified === true);
+    });
+
+    // ✅ Listener saldo real-time
+    onSnapshot(userRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const saldoRupiah = data.saldoRupiah || 0;
+        const saldoCoin = data.saldoCoin || 0;
+
+        if (saldoHostEl) saldoHostEl.textContent = "Rp " + saldoRupiah.toLocaleString();
+        if (saldoCoinEl) saldoCoinEl.textContent = saldoCoin.toLocaleString() + " Coin";
+        if (saldoNominal) saldoNominal.textContent = saldoRupiah.toLocaleString();
+      }
+    });
+  }
+
+  function updateUIStatusVerifikasi(isVerified) {
     const statusText = document.getElementById("statusVerifikasi");
     const statusIcon = document.getElementById("statusIcon");
     const aktivasiBox = document.getElementById("aktivasiBox");
     const aktivasiText = document.getElementById("aktivasiText");
 
-    if (data.verified === true) {
+    if (!statusText || !statusIcon || !aktivasiBox || !aktivasiText) return;
+
+    if (isVerified) {
       statusText.textContent = "Diverifikasi";
-      statusIcon.src = "verifikasi.png"; // Logo untuk diverifikasi
-      statusText.style.color = "#7f3586"; // 
+      statusIcon.src = "verifikasi.png";
+      statusText.style.color = "#7f3586";
 
-
-      // Tampilkan box info untuk akun terverifikasi
       aktivasiBox.style.display = "block";
       aktivasiBox.style.background = "#e8f8e8";
       aktivasiBox.style.border = "1px solid #b2e0b2";
       aktivasiText.style.color = "green";
-      aktivasiText.innerHTML = "Akun Anda sudah terverifikasi. Semua fitur sudah aktif.";
-
-
-
-
+      aktivasiText.innerHTML = "Akun Anda sudah terverifikasi. Aplikasi sedang memeriksa kelengkapan data!.";
     } else {
-      // ❌ Belum diverifikasi
       statusText.textContent = "Pergi Verifikasi";
       statusIcon.src = "profile_verify_icon.png";
       statusText.style.color = "#dc3545";
 
-      // Tampilkan box info untuk akun belum diverifikasi
       aktivasiBox.style.display = "block";
       aktivasiBox.style.background = "#fff3f3";
       aktivasiBox.style.border = "1px solid #f5c2c2";
       aktivasiText.style.color = "red";
-      aktivasiText.innerHTML = "Untuk mengaktifkan akun host Anda dan memverifikasi, wajib melakukan top up minimal <b>Rp 500.000</b>. Saldo akan masuk ke akun Anda dan bisa ditarik kembali.";
+      aktivasiText.innerHTML = "Untuk mengaktifkan akun host Anda, wajib top up minimal <b>Rp 500.000</b> Saldo akan otomatis dimasukan pada saldo host dan dapat ditarik kembali pada rekening anda!.";
     }
-  } else {
-    console.error("User tidak ditemukan!");
   }
-}
 
-// ✅ Jalankan saat halaman dimuat
-cekStatusVerifikasi();
+  // ✅ Event klik untuk buka popup
+  if (verifyDiv) {
+    verifyDiv.addEventListener("click", showPopup);
+  }
+  if (hasilAgencyBtn) {
+    hasilAgencyBtn.addEventListener("click", showPopup);
+  }
 
+  function showPopup() {
+    if (!popupTopup) return;
+    popupTopup.style.display = "flex";
+    popupTopup.style.opacity = "0";
+    setTimeout(() => {
+      popupTopup.style.transition = "opacity 0.3s ease";
+      popupTopup.style.opacity = "1";
+    }, 10);
+  }
 
+  // ✅ Tutup popup saat klik luar
+  if (popupTopup) {
+    popupTopup.addEventListener("click", (e) => {
+      if (e.target === popupTopup) {
+        popupTopup.style.display = "none";
+      }
+    });
+  }
 
-// ✅ Elemen DOM
-const verifyDiv = document.querySelector(".verify");
-const popupTopup = document.getElementById("popupTopup");
-const saldoHostEl = document.getElementById("saldoHost");
-const saldoCoinEl = document.getElementById("saldoCoin");
-const saldoNominal = document.getElementById("saldoNominal");
-const formTopup = document.getElementById("formTopup");
-const hasilAgencyBtn = document.getElementById("hasilAgencyBtn");
+  // ✅ Submit form top up
+  if (formTopup) {
+    formTopup.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-// ✅ Ambil userId dari localStorage
-const userId = localStorage.getItem("loggedUserId");
+      const namaPengirim = e.target.namaPengirim.value.trim();
+      const bank = e.target.bank.value.trim();
+      const nominal = parseInt(e.target.nominal.value);
 
-// ✅ Listener untuk saldo real-time
-if (userId) {
-  const userRef = doc(db, "pendaftaran", userId);
-  onSnapshot(userRef, (docSnap) => {
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      const saldoRupiah = data.saldoRupiah || 0;
-      const saldoCoin = data.saldoCoin || 0;
+      const errorMsg = document.getElementById("nominalError");
+      if (isNaN(nominal) || nominal < 500000) {
+        if (errorMsg) errorMsg.style.display = "block";
+        e.target.nominal.style.borderColor = "red";
+        return;
+      } else {
+        if (errorMsg) errorMsg.style.display = "none";
+        e.target.nominal.style.borderColor = "#ccc";
+      }
 
-      if (saldoHostEl) saldoHostEl.textContent = "Rp " + saldoRupiah.toLocaleString();
-      if (saldoCoinEl) saldoCoinEl.textContent = saldoCoin.toLocaleString() + " Coin";
-      if (saldoNominal) saldoNominal.textContent = saldoRupiah.toLocaleString();
+      try {
+        await addDoc(collection(db, "deposit"), {
+          userId,
+          namaPengirim,
+          bank,
+          nominal,
+          status: "pending",
+          createdAt: Timestamp.now()
+        });
+
+        Swal.fire({
+          icon: "success",
+          title: "Berhasil!",
+          text: "Permintaan top up berhasil dikirim. Tunggu konfirmasi admin.",
+          confirmButtonColor: "#7f3586",
+          width: "400px",
+          padding: "20px"
+        });
+
+        popupTopup.style.display = "none";
+        formTopup.reset();
+      } catch (error) {
+        console.error("Gagal mengirim data top up:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Gagal!",
+          text: "Terjadi kesalahan: " + error.message,
+          confirmButtonColor: "#dc3545"
+        });
+      }
+    });
+  }
+
+  // ✅ Logo bank hanya untuk user
+  if (role === "user") {
+    const bankSelect = document.getElementById("bank");
+    const bankLogo = document.getElementById("bankLogo");
+
+    if (bankSelect && bankLogo) {
+      bankSelect.addEventListener("change", function () {
+        const selectedOption = this.options[this.selectedIndex];
+        const logo = selectedOption.getAttribute("data-logo") || "bankcustomee.jpg";
+        bankLogo.src = logo;
+      });
     }
-  });
-}
-
-// ✅ Event klik untuk buka popup dari verifyDiv & hasilAgencyBtn
-if (verifyDiv) {
-  verifyDiv.addEventListener("click", () => {
-    showPopup();
-  });
-}
-if (hasilAgencyBtn) {
-  hasilAgencyBtn.addEventListener("click", () => {
-    showPopup();
-  });
-}
-
-function showPopup() {
-  popupTopup.style.display = "flex";
-  popupTopup.style.opacity = "0";
-  setTimeout(() => {
-    popupTopup.style.transition = "opacity 0.3s ease";
-    popupTopup.style.opacity = "1";
-  }, 10);
-}
-
-// ✅ Tutup popup saat klik di luar box
-popupTopup.addEventListener("click", (e) => {
-  if (e.target === popupTopup) {
-    popupTopup.style.display = "none";
   }
 });
-
-// ✅ Submit form top up
-if (formTopup) {
-  formTopup.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const namaPengirim = e.target.namaPengirim.value.trim();
-    const bank = e.target.bank.value.trim();
-    const nominal = parseInt(e.target.nominal.value);
-
-    // ✅ Validasi minimal Rp 500.000
-    const errorMsg = document.getElementById("nominalError");
-    if (isNaN(nominal) || nominal < 500000) {
-      errorMsg.style.display = "block";
-      e.target.nominal.style.borderColor = "red";
-      return;
-    } else {
-      errorMsg.style.display = "none";
-      e.target.nominal.style.borderColor = "#ccc";
-    }
-
-    try {
-      await addDoc(collection(db, "deposit"), {
-        userId,
-        namaPengirim,
-        bank,
-        nominal,
-        status: "pending",
-        createdAt: Timestamp.now()
-      });
-
-      // ✅ Notifikasi Swal dengan style custom
-      Swal.fire({
-        icon: 'success',
-        title: 'Berhasil!',
-        text: 'Permintaan top up berhasil dikirim. Tunggu konfirmasi admin.',
-        confirmButtonColor: '#7f3586',
-        width: '400px',
-        padding: '20px',
-        customClass: {
-          popup: 'custom-swal-popup'
-        }
-      });
-
-      popupTopup.style.display = "none";
-      formTopup.reset();
-    } catch (error) {
-      console.error("Gagal mengirim data top up:", error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Gagal!',
-        text: 'Terjadi kesalahan: ' + error.message,
-        confirmButtonColor: '#dc3545'
-      });
-    }
-  });
-}
-
-// ✅ Hanya user yang ganti logo
-const role = localStorage.getItem('role') || 'user';
-
-if (role === 'user') {
-  const bankSelect = document.getElementById('bank');
-  const bankLogo = document.getElementById('bankLogo');
-
-  bankSelect.addEventListener('change', function () {
-    const selectedOption = this.options[this.selectedIndex];
-    const logo = selectedOption.getAttribute('data-logo') || 'bankcustomee.jpg';
-    bankLogo.src = logo;
-  });
-}
-
-
-
 
 </script>
 
@@ -2937,8 +2918,8 @@ function setActiveNav(el) {
 });
   // Contoh data history (bisa diganti dari Firestore)
   const dataHistory = [
-    { nama:"Bella anitta", waktu:new Date(), durasi:"15 menit", coin:430 },
-    { nama:"Saliati clis", waktu:new Date(), durasi:"7 menit", coin:201 },
+    { nama:"Belum ada panggilan", waktu:new Date(), durasi:"0 menit", coin:0 },
+    { nama:"Belum ada panggilan", waktu:new Date(), durasi:"0 menit", coin:0 },
   ];
 
   historyBtn.addEventListener("click", () => {
