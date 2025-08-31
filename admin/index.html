@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Panel - TigoHost</title>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Firebase SDK -->
 <script type="module">
@@ -11,9 +12,16 @@ import {
   initializeApp 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import { 
-  getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, getDoc, query, orderBy 
+
+import {
+  getFirestore, collection, onSnapshot, doc, setDoc, updateDoc, getDoc,
+  query, orderBy, getDocs, addDoc, serverTimestamp, where, deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+
+
 
 // --- Firebase config ---
 const firebaseConfig = {
@@ -469,7 +477,157 @@ riwayat.forEach((item, index)=>{
 });
 
 
+// ✅ Load daftar user dari collection pendaftaran
+  async function loadUserList() {
+    const userListEl = document.getElementById('userList');
+    userListEl.innerHTML = '<p>Loading...</p>';
 
+    const usersSnap = await getDocs(collection(db, 'pendaftaran'));
+    let html = '';
+
+    usersSnap.forEach(docSnap => {
+      const data = docSnap.data();
+      html += `
+        <div style="border:1px solid #ccc; padding:10px; margin-bottom:8px; border-radius:6px; cursor:pointer;" 
+          onclick="openSendMessagePopup('${docSnap.id}', '${data.nama || ''}', '${data.email || ''}', '${data.wa || ''}')">
+          <strong>${data.nama || '-'}</strong><br>
+          Email: ${data.email || '-'}<br>
+          WA: ${data.wa || '-'}
+        </div>
+      `;
+    });
+
+    userListEl.innerHTML = html || '<p>Tidak ada user.</p>';
+  }
+
+  // ✅ Buka popup kirim pesan
+  window.openSendMessagePopup = function(userId, nama, email, wa) {
+    document.getElementById('sendMessagePopup').style.display = 'block';
+    document.querySelector('#sendMessageForm input[name="userId"]').value = userId;
+    document.querySelector('#sendMessagePopup h3').innerText = `Kirim Pesan ke ${nama}`;
+    document.getElementById('chatInfo').innerHTML = `
+      <p><strong>Nama:</strong> ${nama}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>WA:</strong> ${wa}</p>
+    `;
+    loadChatHistory(userId);
+  };
+
+  // ✅ Tutup popup kirim pesan
+  window.closeSendMessagePopup = function() {
+    document.getElementById('sendMessagePopup').style.display = 'none';
+  };
+
+  // ✅ Tutup popup CS
+  window.closeCsPopup = function() {
+    document.getElementById('csPopup').style.display = 'none';
+    document.getElementById('csOverlay').style.display = 'none';
+  };
+
+  // ✅ Buka popup CS (list user)
+  window.openCsPopup = function() {
+    document.getElementById("csPopup").style.display = "block";
+    document.getElementById("csOverlay").style.display = "block";
+    loadUserList();
+  };
+
+  // ✅ Kirim pesan ke Firestore
+  document.getElementById('sendMessageForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const userId = this.userId.value;
+    const pesan = this.message.value.trim();
+    if (!pesan) return;
+
+    await addDoc(collection(db, 'pesan'), {
+      userId: userId,
+      pesan: pesan,
+      sender: 'admin',
+      timestamp: serverTimestamp()
+    });
+
+    this.message.value = '';
+  });
+
+  // ✅ Load riwayat chat user (REAL-TIME)
+  function loadChatHistory(userId) {
+    const chatBox = document.getElementById('chatHistory');
+    chatBox.innerHTML = '<p>Loading chat...</p>';
+
+    const q = query(
+      collection(db, 'pesan'),
+      where('userId', '==', userId),
+      orderBy('timestamp', 'asc')
+    );
+
+    onSnapshot(q, (snapshot) => {
+      if (snapshot.empty) {
+        chatBox.innerHTML = '<p>Belum ada pesan.</p>';
+        return;
+      }
+
+      chatBox.innerHTML = '';
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const senderName = data.sender === 'admin' ? '<strong>Admin:</strong>' : '<strong>User:</strong>';
+
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('chat-item');
+        wrapper.setAttribute('data-id', docSnap.id);
+        wrapper.style.display = 'flex';
+        wrapper.style.alignItems = 'center';
+        wrapper.style.marginBottom = '8px';
+
+        const messageText = document.createElement('p');
+        messageText.style.flex = '1';
+        messageText.style.margin = '0';
+        messageText.innerHTML = `${senderName} ${data.pesan}`;
+
+        const deleteIcon = document.createElement('img');
+        deleteIcon.src = 'servant_icon.png'; // ✅ Ganti sesuai path ikon kamu
+        deleteIcon.alt = 'Hapus';
+        deleteIcon.title = 'Hapus Pesan';
+        deleteIcon.classList.add('delete-icon');
+        deleteIcon.style.width = '18px';
+        deleteIcon.style.height = '18px';
+        deleteIcon.style.cursor = 'pointer';
+        deleteIcon.style.marginLeft = '8px';
+
+        deleteIcon.addEventListener('click', () => deleteMessage(docSnap.id, wrapper));
+
+        wrapper.appendChild(messageText);
+        wrapper.appendChild(deleteIcon);
+        chatBox.appendChild(wrapper);
+      });
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+  }
+
+  // ✅ Fungsi hapus pesan (SweetAlert konfirmasi)
+  async function deleteMessage(messageId, element) {
+    const result = await Swal.fire({
+      title: 'Yakin hapus pesan ini?',
+      text: "Pesan akan dihapus permanen",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Ya, hapus!',
+      cancelButtonText: 'Batal'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteDoc(doc(db, 'pesan', messageId));
+        element.style.transition = 'opacity 0.3s';
+        element.style.opacity = '0';
+        setTimeout(() => element.remove(), 300);
+        Swal.fire('Berhasil!', 'Pesan sudah dihapus.', 'success');
+      } catch (error) {
+        console.error('Gagal menghapus pesan:', error);
+        Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus.', 'error');
+      }
+    }
+  }
 
 
 
@@ -497,6 +655,43 @@ body {
 .sidebar ul li {padding:15px 20px;cursor:pointer;transition:0.2s;}
 .sidebar ul li:hover {background:#718093;}
 
+
+
+
+ .delete-icon:hover {
+    filter: brightness(0.8);
+    transform: scale(1.1);
+    transition: 0.2s;
+  }
+  #csPopup, #sendMessagePopup {
+    display: none;
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 999;
+    width: 90%;
+    max-width: 500px;
+  }
+  #csOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 998;
+  }
+  .chat-item {
+    border-bottom: 1px solid #ddd;
+    padding: 5px 0;
+  }
+
+
+
 /* --- Main Content --- */
 .main {
   margin-left:220px;
@@ -520,6 +715,29 @@ table th, table td {
 table th {
   background:#9500be;
   color: #ffffff;
+
+
+
+
+#csOverlay {
+    display:none;
+    position:fixed; top:0; left:0; width:100%; height:100%;
+    background:rgba(0,0,0,0.5); z-index:999;
+    pointer-events:none; /* Tambahkan ini supaya overlay tidak blok klik */
+}
+
+
+#dropdownMenu {
+  display: none;
+}
+#dropdownMenu.show {
+  display: block;
+}
+
+
+
+
+
 
 }
 #notif-box {
@@ -580,44 +798,36 @@ button {padding:4px 8px;     background: #834cff;
 
 
 
-.dropdown {
-  margin-left: auto; /* dorong dropdown ke pojok kanan */
-  position: relative;
-}
-.dropdown button {
-  width: 150px;   /* bisa diganti px, %, atau vw */
-  text-align: center; /* biar teks tetap rapi */
-}
 .dropdown-content {
-  display: none;
-  position: absolute;
-  top: 100%;
-  right: 0;         /* posisinya nempel kanan */
-  left: auto;
-  width: 50vw;      /* setengah layar */
-  background: white;
-  box-shadow: 0px 4px 6px rgba(0,0,0,0.2);
-  border-radius: 5px;
-  overflow: hidden;
-  z-index: 1000;
-}
+    display: none;
+    position: absolute;
+    right: 0;
+    background: #fff;
+    min-width: 160px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    border-radius: 6px;
+    z-index: 1000;
+  }
 
-.dropdown-content a {
-  display: block;
-  padding: 12px 16px;
-  color: #333;
-  text-decoration: none;
-  transition: background 0.2s;
-  text-align: left;   /* teks rata kiri (kalau mau rata kanan bisa diganti) */
-}
+  .dropdown-content a {
+    display: block;
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+  }
 
-.dropdown-content a:hover {
-  background: #f1f2f6;
-}
+  .dropdown-content a:hover {
+    background: #f0f0f0;
+  }
 
-/* Show dropdown when .show ditambah */
-.dropdown-content.show {display:block;}
+  .dropdown-content.show {
+    display: block;
+  }
 
+
+
+
+  
 /* --- Responsive --- */
 @media (max-width: 768px) {
   .sidebar {
@@ -712,24 +922,59 @@ button {padding:4px 8px;     background: #834cff;
 </head>
 <body>
 
-<div class="topnav">
-  <div class="logo">
-    <img src="agencylogo.png" alt="Logo" />
-    <span>ADMIN CS</span>
+<!-- ✅ NAVBAR -->
+<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#7f3586; color:#fff;">
+  <div style="display:flex; align-items:center; gap:10px;">
+    <img src="agencylogo.png" alt="Logo" style="width:35px; height:35px; border-radius:50%;">
+    <span style="font-weight:bold;">ADMIN CS</span>
+    <img src="agencylogo.png" alt="CS" onclick="openCsPopup()" style="width:30px; height:30px; cursor:pointer;" onerror="this.src='https://via.placeholder.com/30'">
   </div>
+  <div style="position:relative;">
+    <button onclick="toggleDropdown()" style="background:#fff; color:#7f3586; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;">⚙ Menu</button>
+    <div id="dropdownMenu" class="dropdown-content">
+      <a href="#" onclick="showPage('data')">Data User</a>
+      <a href="#" onclick="showPage('saldo')">Saldo User</a>
+      <a href="#" onclick="showPage('withdraw')">User Withdraw</a>
+      <a href="#" onclick="showPage('deposit')">Deposit User</a>
+      <a href="#" onclick="showPage('updateTagihan')">Update Tagihan</a>
+    </div>
+  </div>
+</div>
 
-<div class="dropdown">
-  <button onclick="toggleDropdown()">⚙ Menu</button>
-<div class="dropdown-content">
-  <a href="#" onclick="showPage('data')">Data User</a>
-  <a href="#" onclick="showPage('saldo')">Saldo User</a>
-  <a href="#" onclick="showPage('withdraw')">User Withdraw</a>
-  <a href="#" onclick="showPage('deposit')">Deposit User</a>
-  <a href="#" onclick="showPage('updateTagihan')">Update Tagihan</a> <!-- ✅ Tambahkan -->
-</div>
+<!-- ✅ Overlay -->
+<div id="csOverlay" onclick="closeAllPopups()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999;"></div>
+
+<!-- ✅ Popup CS -->
+<div id="csPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:#fff; border-radius:10px; padding:20px; box-shadow:0 6px 12px rgba(0,0,0,0.2); z-index:10000; width:90%; max-width:500px;">
+  <h3 style="text-align:center; color:#7f3586; margin-top:0;">Daftar User</h3>
+  <div id="userList" style="max-height:300px; overflow-y:auto; margin-top:15px; border:1px solid #ddd; border-radius:6px; padding:5px;"></div>
+  <button onclick="closeCsPopup()" style="background:#ccc; border:none; padding:10px; width:100%; margin-top:10px; border-radius:6px; cursor:pointer;">Tutup</button>
 </div>
 
+<!-- ✅ Popup Kirim Pesan -->
+<div id="sendMessagePopup" style="
+  display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);
+  background:#fff; width:90%; max-width:400px; border-radius:10px; padding:20px;
+  box-shadow:0 6px 12px rgba(0,0,0,0.2); z-index:10001;
+">
+  <h3 style="text-align:center; color:#7f3586;">Kirim Pesan</h3>
+  <div id="chatInfo" style="margin-bottom:10px; font-size:14px; color:#333;"></div>
+  <div id="chatHistory" style="max-height:150px; overflow-y:auto; border:1px solid #ccc; padding:8px; margin-bottom:10px; border-radius:6px;"></div>
+  <form id="sendMessageForm">
+    <input type="hidden" name="userId">
+    <textarea name="message" placeholder="Tulis pesan..." required style="
+      width:100%; padding:10px; margin-top:10px; border-radius:6px; border:1px solid #ccc; height:100px;
+    "></textarea>
+    <button type="submit" style="
+      background:#7f3586; color:#fff; padding:12px; border:none; border-radius:8px; width:100%; margin-top:10px;
+    ">Kirim</button>
+  </form>
+  <button onclick="closeSendMessagePopup()" style="
+    background:#ccc; border:none; padding:10px; width:100%; margin-top:10px; border-radius:6px;
+  ">Batal</button>
 </div>
+
+
 
 <!-- Halaman Deposit -->
 <div id="deposit" class="page" style="display:none;">
@@ -826,13 +1071,31 @@ button {padding:4px 8px;     background: #834cff;
 </div>
 
 <script>
-function toggleSidebar(){
-  document.querySelector(".sidebar").classList.toggle("active");
+function toggleSidebar() {
+  const sidebar = document.querySelector(".sidebar");
+  if (sidebar) {
+    sidebar.classList.toggle("active");
+  }
 }
 
-function toggleDropdown(){
-  document.querySelector(".dropdown-content").classList.toggle("show");
+function toggleDropdown() {
+  const dropdown = document.getElementById("dropdownMenu");
+  if (!dropdown) {
+    console.error("Dropdown menu tidak ditemukan");
+    return;
+  }
+  dropdown.classList.toggle("show");
 }
+
+// Klik di luar dropdown → tutup otomatis
+document.addEventListener("click", function (e) {
+  const dropdown = document.getElementById("dropdownMenu");
+  const button = e.target.closest("button");
+
+  if (dropdown && !dropdown.contains(e.target) && !button) {
+    dropdown.classList.remove("show");
+  }
+});
 
 function showPage(pageId) {
   // Sembunyikan semua page
@@ -872,6 +1135,21 @@ window.pulihkanUser = async function(userId) {
   await updateDoc(userRef, { status: "aktif" });
   alert("✅ Akun berhasil dipulihkan.");
 };
+
+
+document.addEventListener("click", function (e) {
+  const dropdown = document.getElementById("dropdownMenu");
+  const button = e.target.closest("button");
+
+  if (!dropdown.contains(e.target) && !button) {
+    dropdown.classList.remove("show");
+  }
+});
+
+
+
+
+
 
 </script>
 
