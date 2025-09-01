@@ -43,7 +43,7 @@ window.openChat = async function (chatId, el) {
   target.style.display = "block";
   target.innerHTML = "<p style='text-align:center;color:#999;'>Memuat chat...</p>";
 
-  const lastMessageEl = el.querySelector("#lastMessage");
+  const lastMessageEl = el.querySelector("#lastMessage"); // ✅ hanya sekali ini
   const userRole = localStorage.getItem("role") || "user"; // Ambil role dari localStorage
 
   // ✅ Query Firestore untuk pesan (real-time)
@@ -88,7 +88,7 @@ window.openChat = async function (chatId, el) {
       const bubble = document.createElement("div");
       bubble.style.padding = "8px 12px";
       bubble.style.borderRadius = "10px";
-      bubble.style.backgroundColor = msg.sender === "admin" ? "#e3f2fd" : "#f1f1f1";
+      bubble.style.backgroundColor = msg.sender === "Human Assistant" ? "#e3f2fd" : "#f1f1f1";
       bubble.style.maxWidth = "80%";
 
       // ✅ Jika admin, tambahkan tombol hapus
@@ -99,7 +99,7 @@ window.openChat = async function (chatId, el) {
 
       bubble.innerHTML = `
         <strong style="font-size:12px; color:#333; display:block; margin-bottom:4px;">
-          ${msg.sender === "admin" ? "Admin" : msg.sender}
+          Human Assistant
         </strong>
         <p style="margin:0;">${msg.pesan}</p>
         <small style="font-size:10px;color:#555;">${msg.timeString}</small>
@@ -111,28 +111,21 @@ window.openChat = async function (chatId, el) {
       target.appendChild(wrapper);
     });
 
-    // ✅ Update last message di daftar chat
-    if (lastMessageEl) lastMessageEl.textContent = messages[messages.length - 1].pesan;
+    // ✅ Update last message (potong jadi preview)
+    if (lastMessageEl) {
+      let previewText = messages[messages.length - 1].pesan;
+      if (previewText.length > 32) previewText = previewText.substring(0, 32) + "...";
+      lastMessageEl.textContent = previewText;
+    }
 
     target.scrollTop = target.scrollHeight;
   });
-
-  // ✅ Event listener untuk hapus (hanya admin)
-  target.addEventListener("click", async (e) => {
-    if (e.target.classList.contains("btn-delete")) {
-      const messageId = e.target.getAttribute("data-id");
-      if (confirm("Yakin ingin menghapus pesan ini?")) {
-        try {
-          await deleteDoc(doc(db, "pesan", messageId));
-          alert("Pesan berhasil dihapus!");
-        } catch (error) {
-          console.error("Gagal menghapus pesan:", error);
-          alert("Terjadi kesalahan saat menghapus pesan.");
-        }
-      }
-    }
-  });
 };
+
+
+
+
+
 
 
 
