@@ -133,9 +133,10 @@ main{max-width:1100px; margin:18px auto 90px; padding:0 0px}
 
 
 .card{
-  background:var(--card);
+  background:#8d57ff;
   border:1px solid rgba(255, 255, 255, 0.2);
-  border-radius:18px; padding:16px;
+  border-radius:18px;     
+  padding: 0px 10px;
   box-shadow:0 8px 24px rgba(124,58,237,.15)
 }
 .card h2 {
@@ -396,7 +397,7 @@ border-bottom-right-radius: 0;
 /* Status text */
 #status-daftar {
   margin-top: 12px;
-  font-size: 18px;
+  font-size: 10px;
   font-weight: 600;
 }
 
@@ -1518,7 +1519,7 @@ button[onclick="prosesTarik()"] {
 
 .country {
   font-size: 10px;
-  color: #000000;
+  color: #755b82;
 }
 
 .verify-wrap {
@@ -1527,6 +1528,7 @@ button[onclick="prosesTarik()"] {
   gap: 1px;      /* jarak antara logo & teks */
   margin-top: -18px;
   background: #9e9d9d;
+      border-radius: 4px;
 }
 
 .verify-logo {
@@ -1539,6 +1541,7 @@ button[onclick="prosesTarik()"] {
   font-size: 9px;
   font-weight: 600;
   color: rgb(255, 255, 255);
+  background: #a1a1a1;
 }
 
 .age {
@@ -1552,6 +1555,34 @@ button[onclick="prosesTarik()"] {
   position: relative;
   top: -6px; /* naik ke atas */
 }
+
+
+#conbank {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start; 
+  margin: 20px 0;
+
+  max-width: 100%;       /* biar ngikutin lebar parent */
+  overflow-x: auto;      /* scroll horizontal aktif */
+  overflow-y: hidden;
+  box-sizing: border-box;
+  white-space: nowrap;
+  padding-left: 0;       /* pastikan nempel kiri */
+}
+
+#conbank img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  background: #fff;
+  padding: 5px;
+  flex-shrink: 0;
+}
+
 
   </style>
 </head>
@@ -2010,8 +2041,30 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <div class="grid">
       <!-- ===== Left: Registration Card (default visible on DAFTAR) ===== -->
       <section class="card" id="section-daftar">
-        <h2>Form Pendaftaran Host</h2>
-        <p class="muted">Lengkapi data berikut untuk mendaftar sebagai Host Agency TIGOHOST. Setelah mengirim, status akan muncul otomatis.</p>
+<style>
+  .title-box {
+    border:1px solid #ffc2d9;
+    border-radius:14px;
+    padding:4px;
+    width:100%;
+    box-sizing:border-box;
+    box-shadow:0 6px 16px rgba(0,0,0,.06);
+  }
+  .title-box h2 {
+    margin:0;
+    color:#fff;
+    padding:12px 16px;
+    border-radius:10px;
+    font-size:20px;
+    font-weight:700;
+    text-align:center;
+    letter-spacing:.2px;
+  }
+</style>
+
+<div class="title-box">
+  <h2>Form Pendaftaran Host</h2>
+</div>        <p class="muted">Lengkapi data berikut untuk mendaftar sebagai Host Agency TIGOHOST. Setelah mengirim, status akan muncul otomatis.</p>
 
 <form id="form-daftar">          <label>Nama Lengkap</label>
           <input type="text" name="nama" required placeholder="Nama lengkap sesuai rekening" />
@@ -2084,6 +2137,18 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
           <p class="help">Dengan menekan tombol di atas, Anda menyetujui syarat & ketentuan Agency.</p>
         </form>
 
+<!-- Container -->
+<div id="conbank">
+  <img src="tigogambar.webp" alt="icon1">
+  <img src="TenderUlogo.webp" alt="icon2">
+  <img src="weelivelogo.webp" alt="icon3">
+  <img src="bling.webp" alt="icon4">
+  <img src="ayarlogo.webp" alt="icon5">
+  <img src="meegologo.webp" alt="icon6">
+  <img src="makologo.webp" alt="icon7">
+</div>
+
+
 <!-- GRID FOTO -->
 <div class="foto-grid">
   <div class="foto-box" onclick="openProfile(0)">
@@ -2116,11 +2181,11 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
         <div class="verify-wrap">
           <div class="verify-wrap">
   <span id="popupVerify" class="verify"></span>
-  <img src="verify_icon.png" class="verify-logo" alt="Offline">
+  <img src="verifikasi.png" class="verify-logo" alt="Offline">
 </div>
         </div>
         <div class="level-wrap">
-  <img src="level1.png" class="level-logo" alt="Offline">
+  <img src="user_level_4_icon.png" class="level-logo" alt="Offline">
   <p id="popupLevel" class="level"></p>
 </div>
       </div>
@@ -2174,7 +2239,9 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 
 <div class="comment-box">
   <div class="divider"></div>
+  <div class="title-box">
   <h2>Komentar (Publik Khusus Host)</h2>
+</div>
   <p class="muted">Umpan balik dari komunitas. Ditampilkan untuk semua pengunjung.</p>
   <div class="comments" id="comments"></div>
 </div>
@@ -2582,7 +2649,7 @@ function renderComments(){
         <div class="row" style="justify-content:space-between">
           <div>
             <span class="cname">${k.nama}</span>
-            ${k.verified?'<span class="vbadge">Terverifikasi</span>':''}
+            ${k.verified?'<span class="vbadge">Diverifikasi</span>':''}
           </div>
           <div class="cdate">${k.tanggal}</div>
         </div>
@@ -3015,11 +3082,11 @@ function openProfile(i){
 
 const verifyEl = document.getElementById('popupVerify');
 if (p.verified) {
-  verifyEl.innerText = "Terverifikasi";
-  verifyEl.style.color = "black";
+  verifyEl.innerText = "Diverifikasi";
+  verifyEl.style.color = "#914999";
 } else {
-  verifyEl.innerText = "Terverifikasi";
-  verifyEl.style.color = "black";
+  verifyEl.innerText = "Diverifikasi";
+  verifyEl.style.color = "#914999";
 }
 
   document.getElementById('profilePopup').classList.add('active');
@@ -3090,7 +3157,7 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 
 // cegah Ctrl+C, Ctrl+X, Ctrl+V
 document.addEventListener('keydown', e => {
-  if ((e.ctrlKey || e.metaKey) && ['c','x','v','a'].includes(e.key.toLowerCase())) {
+  if ((e.ctrlKey || e.metaKey) && ['c','x','a'].includes(e.key.toLowerCase())) {
     e.preventDefault();
   }
 });
