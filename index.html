@@ -1870,6 +1870,61 @@ button[onclick="prosesTarik()"] {
   color: #333;
 }
 
+
+
+
+.lihat-komentar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #444;
+}
+
+.lihat-komentar .offline-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Popup */
+.popup-komentar {
+  display: none; /* default tersembunyi */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
+}
+
+.popup-box {
+  background: #fff;
+  padding: 20px;
+  max-width: 350px;
+  margin: 100px auto;
+  border-radius: 10px;
+  text-align: center;
+  position: relative;
+}
+
+.popup-box .popup-icon {
+  width: 30px;
+  margin-bottom: 10px;
+}
+
+.popup-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  cursor: pointer;
+  font-size: 18px;
+  color: #666;
+}
+
   </style>
 </head>
 <body>
@@ -3002,7 +3057,20 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
   </div>
 </div>
 
+<div id="lihatKomentar" class="lihat-komentar">
+  <img src="rate_app_light.png" alt="Offline" class="offline-icon">
+  <span>Komentar Lainnya</span>
+  <img src="select_birthday_icon.png" alt="Offline" class="offline-icon">
+</div>
 
+<!-- Popup -->
+<div id="popupKomentar" class="popup-komentar">
+  <div class="popup-box">
+<span id="popupKomentarClose" class="popup-close">✕</span>
+    <img src="im_banned_icon.png" alt="Offline" class="popup-icon">
+    <p>Untuk melihat komentar lainnya, mohon login akun host terlebih dahulu.</p>
+  </div>
+</div>
 
   
   <div class="comments" id="comments">
@@ -4129,6 +4197,25 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const trigger = document.getElementById("lihatKomentar");
+  const modal   = document.getElementById("popupKomentar");
+  const closeBtn= document.getElementById("popupKomentarClose");
+
+  const open  = () => { modal.style.display = "block"; };
+  const close = () => { modal.style.display = "none"; };
+
+  if (trigger)  trigger.addEventListener("click", open);
+  if (closeBtn) closeBtn.addEventListener("click", close);
+  // klik area gelap untuk tutup
+  modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
+});
 
 </script>
 
