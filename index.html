@@ -3475,23 +3475,25 @@ const slider = document.querySelector(".slider");
 const dotsContainer = document.querySelector(".dots");
 const slides = document.querySelectorAll(".slider img");
 
-// buat titik sesuai jumlah gambar
-slides.forEach((_, i) => {
+// hapus dot lama
+dotsContainer.innerHTML = "";
+
+// buat dot sesuai jumlah "slide viewport"
+const slidesPerView = Math.floor(slider.offsetWidth / slides[0].offsetWidth);
+const dotCount = slides.length - slidesPerView + 1; // dot = jumlah posisi scroll
+for (let i = 0; i < dotCount; i++) {
   const dot = document.createElement("span");
   if (i === 0) dot.classList.add("active");
   dotsContainer.appendChild(dot);
-});
+}
 
 const dots = document.querySelectorAll(".dots span");
 
-// update titik saat geser
 slider.addEventListener("scroll", () => {
-  let index = Math.round(slider.scrollLeft / slider.clientWidth);
+  const scrollIndex = Math.round(slider.scrollLeft / slides[0].offsetWidth);
   dots.forEach(dot => dot.classList.remove("active"));
-  if (dots[index]) dots[index].classList.add("active");
+  if (dots[scrollIndex]) dots[scrollIndex].classList.add("active");
 });
-
-
 
 
 </script>
