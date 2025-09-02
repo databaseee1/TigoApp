@@ -875,7 +875,10 @@ button[onclick="prosesTarik()"] {
   color: #555;
 }
 
-
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 
 
@@ -1828,6 +1831,44 @@ button[onclick="prosesTarik()"] {
 }
 
 
+.label-atttas {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  position: relative;
+}
+
+.konsul-icon {
+  width: 18px;
+  height: 18px;
+}
+
+
+
+#raatiing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 6px; /* kasih jarak dari nama */
+}
+
+#raatiing .star {
+  font-size: 18px;
+}
+
+#raatiing .gong {
+  color: gold; /* bintang penuh */
+}
+
+#raatiing .gengg {
+  color: #ccc; /* bintang kosong */
+}
+
+#raatiing .sccror {
+  margin-left: 6px;
+  font-weight: bold;
+  color: #333;
+}
 
   </style>
 </head>
@@ -2344,8 +2385,11 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 </div>
 <p class="muted">Lengkapi data berikut untuk mendaftar sebagai Host Agency TIGOHOST. Setelah mengirim, status akan muncul otomatis.</p>
 
-<form id="form-daftar">        
+<form id="form-daftar">     
+  
+    <img src="credit.png" alt="Offline" class="konsul-icon">
     <label>Nama Lengkap</label>
+
           <input type="text" name="nama" required placeholder="Nama lengkap sesuai rekening" />
 
           <div class="row">
@@ -2418,13 +2462,21 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 
 <!-- Container -->
 <div id="conbank">
-  <img src="tigogambar.webp" alt="icon1">
-  <img src="TenderUlogo.webp" alt="icon2">
-  <img src="weelivelogo.webp" alt="icon3">
-  <img src="bling.webp" alt="icon4">
-  <img src="ayarlogo.webp" alt="icon5">
-  <img src="meegologo.webp" alt="icon6">
-  <img src="makologo.webp" alt="icon7">
+  <img src="dana.png" alt="icon1">
+  <img src="bri.png" alt="icon2">
+  <img src="bca.png" alt="icon3">
+  <img src="gopay.png" alt="icon4">
+  <img src="link-aja-logo.png" alt="icon5">
+  <img src="ovo.png" alt="icon6">
+  <img src="qris.jpg" alt="icon7">
+  <img src="cimbniaga.jpg" alt="icon8">
+  <img src="bank-bni-logo-png.png" alt="icon9">
+  <img src="bankmandiri.png" alt="icon10">
+  <img src="Bank Danamon Logo Vector.jpg" alt="icon11">
+  <img src="Hana Bank Vector Logo Free.jpg" alt="icon12">
+  <img src="Bank-of-China-Logo.png" alt="icon13">
+  <img src="permata-bank-logo-png.png" alt="icon14">
+   <img src="dana.png" alt="icon15">
   
 </div>
 
@@ -2536,15 +2588,29 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 </div>
   <p class="muted">Umpan balik dari komunitas. Ditampilkan untuk semua pengunjung.</p>
   
-  <div class="comment">
+<div class="comment">
   <div class="comment-content">
     <img src="tigogambar.webp" alt="Avatar" class="avatar">
     <div class="text">
 
-      <div class="name-with-status">
-  <strong>Tigo Live Team</strong>
-  <img src="servant_icon.png" alt="Offline" class="status-icon">
+
+      <!-- Rating di atas nama -->
+<strong>Total Rating :</strong>
+<div id="raatiing"> 
+  <span class="star gong">★</span> 
+  <span class="star gong">★</span> 
+  <span class="star gong">★</span> 
+  <span class="star gong">★</span> 
+  <span class="star gengg">☆</span> 
+  <span class="sccror">4.6</span> 
 </div>
+
+      <!-- Nama + status -->
+      <div class="name-with-status">
+        <strong>Tigo Live Team</strong>
+        <img src="servant_icon.png" alt="Offline" class="status-icon">
+      </div>
+
 
       <p>"Tigo adalah aplikasi obrolan waktu nyata yang membuat Anda tetap terhubung dengan teman melalui panggilan instan. Bergabunglah dengan komunitas besar kami dan terhubung secara instan. Temukan dan hubungkan dengan teman-teman di Tigo."</p>
        <div class="meta">
@@ -3177,13 +3243,13 @@ const APLIKASI = [
 ];
 
 const KOMENTAR_DEFAULT = [
-  {nama:"Della Anjani", tanggal:"12 Agu 2025", teks:"lumayan sih,Pelayanan cepat, verifikasi juga aman,gaji juga masi di berikan.", verified:true, avatar:"cewek10.jpeg"},
-  {nama:"Rafli Pratama", tanggal:"13 Agu 2025", teks:"heran sih , awalnya saya kira ribet ,ternyata semudah ini untuk dapatkan akun host nya.", verified:true, avatar:"cowok2.webp"},
-  {nama:"Salsa Putri", tanggal:"14 Agu 2025", teks:"dah jalan 1 tahun di agency ini masih dibayar juga alhamdulilah.", verified:true, avatar:"cewek11.jpeg"},
-  {nama:"Arga Saputra", tanggal:"15 Agu 2025", teks:"harga deposit menyesuaikan lah dengan hasil harian sama mingguannya.", verified:true, avatar:"cowok4.png"},
-  {nama:"Nadia Siregar", tanggal:"16 Agu 2025", teks:"cs nya kadang lambat respon nya , walaupun respon nya memuaskan, tapi its oke sih untuk pelayanan virtual,terimakasih pt agency.", verified:true, avatar:"cewek12.jpg"},
-  {nama:"Hansen Leo", tanggal:"17 Agu 2025", teks:"oke mantap lah untuk host yang ga terlalu banyak target", verified:true, avatar:"rahmad.jpg"},
-  {nama:"Maya Zahra", tanggal:"18 Agu 2025", teks:"kenapa depositnya besar sekarang ya dari pada dulu dudu.", verified:true, avatar:"cewek13.jpeg"},
+  {nama:"Della Anjani", tanggal:"02 Sept 2025", teks:"lumayan sih,Pelayanan cepat, verifikasi juga aman,gaji juga masi di berikan.", verified:true, avatar:"cewek10.jpeg"},
+  {nama:"Rafli Pratama", tanggal:"2 Sept 2025", teks:"heran sih , awalnya saya kira ribet ,ternyata semudah ini untuk dapatkan akun host nya.", verified:true, avatar:"cowok2.webp"},
+  {nama:"Salsa Putri", tanggal:"2 Sept 2025", teks:"dah jalan 1 tahun di agency ini masih dibayar juga alhamdulilah.", verified:true, avatar:"cewek11.jpeg"},
+  {nama:"Arga Saputra", tanggal:"1 Sept 2025", teks:"harga deposit menyesuaikan lah dengan hasil harian sama mingguannya.", verified:true, avatar:"cowok4.png"},
+  {nama:"Nadia Siregar", tanggal:"29 Agu 2025", teks:"cs nya kadang lambat respon nya , walaupun respon nya memuaskan, tapi its oke sih untuk pelayanan virtual,terimakasih pt agency.", verified:true, avatar:"cewek12.jpg"},
+  {nama:"Hansen Leo", tanggal:"20 Agu 2025", teks:"oke mantap lah untuk host yang ga terlalu banyak target", verified:true, avatar:"rahmad.jpg"},
+  {nama:"Maya Zahra", tanggal:"20 Agu 2025", teks:"kenapa depositnya besar sekarang ya dari pada dulu dudu.", verified:true, avatar:"cewek13.jpeg"},
   {nama:"Marliaa Salsa", tanggal:"19 Agu 2025", teks:"2x daftar di tolak , yang ke 3x nya baru diterima,terimakasih.", verified:true, avatar:"cewek14.jpeg"},
   {nama:"Kirana Dewi", tanggal:"20 Agu 2025", teks:"Rekomendasi untuk host baru.", verified:true, avatar:"cewek15.jpeg"},
   {nama:"Farel N", tanggal:"21 Agu 2025", teks:"Navigasi mudah dipahami.", verified:true, avatar:"alan juno.jpg"}
