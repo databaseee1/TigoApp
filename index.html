@@ -177,7 +177,6 @@ input:focus,select:focus,textarea:focus{
   border-radius: 10px;
   padding: 15px;
   margin-top: 20px;
-  background: #d1d1d1;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 .comment-box h2 {
@@ -192,9 +191,10 @@ input:focus,select:focus,textarea:focus{
   font-size: 14px;
 }
 
-.comments{display:grid; gap:12px}
+.comments{ gap:12px}
+
 .comment{
-  display:flex; gap:12px;
+  gap:12px;
   background:#f3f4f6;
   border:1px solid rgba(124,58,237,.2);
   padding:12px; border-radius:16px
@@ -1699,6 +1699,96 @@ button[onclick="prosesTarik()"] {
 }
 
 
+/* Komentar utama */
+.comment {
+  margin: 20px 0;
+}
+
+.comment-content {
+  display: flex;
+  gap: 10px;
+  position: relative;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.text {
+  background: #f0f2f5;
+  padding: 10px;
+  border-radius: 12px;
+  position: relative;
+}
+
+/* Balasan */
+.reply {
+  margin-left: 50px;
+  margin-top: 10px;
+  padding: 8px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  position: relative; /* penting untuk anchor ::before */
+}
+
+.reply::before {
+  content: '';
+  position: absolute;
+  left: -20px;     /* jarak dari avatar/teks */
+  top: 0;          /* mulai dari atas reply */
+  bottom: 100px;       /* otomatis sampai bawah reply */
+  width: 2px;
+  background: #ccc;
+  border-radius: 2px;
+}
+.meta {
+  font-size: 13px;
+  color: #65676b;
+  margin-top: 5px;
+}
+
+.meta .action {
+  margin-left: 12px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.meta .action:hover {
+  color: #1877f2; /* biru ala Facebook */
+}
+
+/* waktu default */
+.meta .time {
+  color: #65676b;
+}
+
+/* khusus yang 3 minggu → hijau */
+.meta .time.green {
+  color: #979998;
+  font-weight: bold;
+}
+
+/* jumlah suka → ungu */
+.like-count {
+  font-weight: bold;
+  margin-left: 3px;
+}
+
+/* jumlah balas */
+.reply-count {
+  font-weight: bold;
+  margin-left: 3px;
+}
+
+/* nested reply lebih ke dalam lagi */
+.reply .reply {
+  margin-left: 50px; /* makin dalam kalau nested */
+  background: #fff;  /* biar bedain layer */
+}
+
   </style>
 </head>
 <body>
@@ -2395,22 +2485,331 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
   </div>
 </div>
 
+
+
+
+
 <div class="comment-box">
   <div class="divider"></div>
   <div class="title-box">
   <h2>Komentar (Publik Khusus Host)</h2>
 </div>
   <p class="muted">Umpan balik dari komunitas. Ditampilkan untuk semua pengunjung.</p>
-  <div class="comments" id="comments"></div>
+  
+  <div class="comment">
+  <div class="comment-content">
+    <img src="tigogambar.webp" alt="Avatar" class="avatar">
+    <div class="text">
+      <strong>Tigo Live Team</strong>
+      <p>"Tigo adalah aplikasi obrolan waktu nyata yang membuat Anda tetap terhubung dengan teman melalui panggilan instan. Bergabunglah dengan komunitas besar kami dan terhubung secara instan. Temukan dan hubungkan dengan teman-teman di Tigo."</p>
+       <div class="meta">
+  <div class="top-row">
+    <span class="time green">1 Hari</span>
+    <span class="action suka">Suka <span class="like-count">(7.9jt)</span></span>
+    <span class="action balas">Balas <span class="reply-count">(10,7jt)</span></span>
+  </div>
+  <div class="bottom-row">
+<span class="action translate">Terjemahan</span>
+  </div>
+</div>
+  </div>
+  </div>
+  </div>
+
+<!-- balasan 1 -->
+<div class="reply">
+  <div class="comment-content">
+    <img src="risky maulana.webp" alt="Avatar" class="avatar">
+    <div class="text">
+      <strong>Rizky Maulana</strong>
+      <p>Aplikasinya bagus banyak wanita dari berbagai negara...</p>
+      <div class="meta">
+        <div class="top-row">
+          <span class="time green">1 Hari</span>
+          <span class="action suka">Suka <span class="like-count">(8,2k)</span></span>
+          <span class="action balas">Balas <span class="reply-count">(2,7k)</span></span>
+        </div>
+        <div class="bottom-row">
+          <span class="action translate">Terjemahan</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- nested reply (balasan dalam balasan) -->
+  <div class="reply">
+    <div class="comment-content">
+      <img src="tigogambar.webp" alt="Avatar" class="avatar">
+      <div class="text">
+        <strong>Tigo Live Team</strong>
+        <p>Terima kasih atas cinta Anda, kami akan bekerja lebih keras dan berharap Anda hidup bahagia.</p>
+        <div class="meta">
+          <div class="top-row">
+            <span class="time green">2 hari</span>
+            <span class="action suka">Suka <span class="like-count">(5,2jt)</span></span>
+            <span class="action balas">Balas <span class="reply-count">(120)</span></span>
+          </div>
+          <div class="bottom-row">
+            <span class="action translate">Terjemahan</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+
+  <!-- balasan 2 -->
+  <div class="reply">
+    <div class="comment-content">
+      <img src="logo m.webp" alt="Avatar" class="avatar">
+      <div class="text">
+        <strong>Mila Agustin</strong>
+        <p>maaf user yang gak di tampakin mukanya+ga pasang foto profil ga kena pelanggaran dan host yang ga pasang foto profil dan ga nampakin wajah saat vidio call kena peringatan. jadi user seenaknya buat kejahatan ke host host mau  akun saya</p>
+      <div class="meta">
+  <div class="top-row">
+    <span class="time green">1 Hari</span>
+    <span class="action suka">Suka <span class="like-count">(8,2k)</span></span>
+    <span class="action balas">Balas <span class="reply-count">(2,7k)</span></span>
+  </div>
+  <div class="bottom-row">
+<span class="action translate">Terjemahan</span>
+  </div>
+</div>
+  </div>
+  </div>
+
+
+    <!-- nested reply (balasan dalam balasan) -->
+  <div class="reply">
+    <div class="comment-content">
+      <img src="tigogambar.webp" alt="Avatar" class="avatar">
+      <div class="text">
+        <strong>Tigo Live Team</strong>
+        <p>Anda dapat menghubungi layanan pelanggan di aplikasi dan menjelaskan masalah yang Anda hadapi. Layanan pelanggan akan membantu Anda dalam menyelesaikan masalah Anda.</p>
+        <div class="meta">
+          <div class="top-row">
+            <span class="time green">2 hari</span>
+            <span class="action suka">Suka <span class="like-count">(5,2jt)</span></span>
+            <span class="action balas">Balas <span class="reply-count">(120)</span></span>
+          </div>
+          <div class="bottom-row">
+            <span class="action translate">Terjemahan</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <!-- balasan 3 -->
+  <div class="reply">
+    <div class="comment-content">
+      <img src="hendi.webp" alt="Avatar" class="avatar">
+      <div class="text">
+        <strong>Hendi Hermawan</strong>
+        <p>trimksih Tigo sngat bgus mudah digunakan.</p>
+      <div class="meta">
+  <div class="top-row">
+    <span class="time green">1 Hari</span>
+    <span class="action suka">Suka <span class="like-count">(8,2k)</span></span>
+    <span class="action balas">Balas <span class="reply-count">(2,7k)</span></span>
+  </div>
+  <div class="bottom-row">
+<span class="action translate">Terjemahan</span>
+  </div>
+</div>
+  </div>
+  </div>
+      <!-- nested reply (balasan dalam balasan) -->
+  <div class="reply">
+    <div class="comment-content">
+      <img src="tigogambar.webp" alt="Avatar" class="avatar">
+      <div class="text">
+        <strong>Tigo Live Team</strong>
+        <p>Pengguna yang terhormat, terima kasih atas persetujuan Anda. Jika Anda puas dengan kami, dapatkah Anda memberi kami peringkat yang lebih tinggi? Atau, jika Anda memiliki saran untuk kami, Anda dapat menghubungi layanan pelanggan melalui aplikasi dan memberi tahu kami. Semoga Anda dapat kembali dan memberi kami peringkat yang lebih tinggi!</p>
+        <div class="meta">
+          <div class="top-row">
+            <span class="time green">2 hari</span>
+            <span class="action suka">Suka <span class="like-count">(5,2jt)</span></span>
+            <span class="action balas">Balas <span class="reply-count">(120)</span></span>
+          </div>
+          <div class="bottom-row">
+            <span class="action translate">Terjemahan</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  
+
+  <!-- balasan 4 -->
+  <div class="reply">
+    <div class="comment-content">
+      <img src="bella putri.webp" alt="Avatar" class="avatar">
+      <div class="text">
+        <strong>Bella Putri</strong>
+        <p>MAntap apk nya,survey nya kayaknya tergantung daerah sih,tapi okelah gampang nyari dolar nya,meskipun ada beberapa yg eror survey ya. Pakai kode C NT9 W A kalau kalian mau dapetin bonus dollar nya yah, semangat. 🔥</p>
+      <div class="meta">
+  <div class="top-row">
+    <span class="time green">1 Hari</span>
+    <span class="action suka">Suka <span class="like-count">(8,2k)</span></span>
+    <span class="action balas">Balas <span class="reply-count">(2,7k)</span></span>
+  </div>
+  <div class="bottom-row">
+<span class="action translate">Terjemahan</span>
+  </div>
+</div>
+  </div>
+  </div>
+        <!-- nested reply (balasan dalam balasan) -->
+  <div class="reply">
+    <div class="comment-content">
+      <img src="tigogambar.webp" alt="Avatar" class="avatar">
+      <div class="text">
+        <strong>Tigo Live Team</strong>
+        <p>Terima kasih atas penilaian dan sokongan anda Setiap pengguna setia adalah rakan kami yang paling berharga. Jika anda mempunyai masa, anda boleh menghubungi perkhidmatan pelanggan untuk menerangkan cadangan anda secara terperinci.</p>
+        <div class="meta">
+          <div class="top-row">
+            <span class="time green">2 hari</span>
+            <span class="action suka">Suka <span class="like-count">(5,2jt)</span></span>
+            <span class="action balas">Balas <span class="reply-count">(120)</span></span>
+          </div>
+          <div class="bottom-row">
+            <span class="action translate">Terjemahan</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+<!-- balasan 5 -->
+<div class="reply">
+  <div class="comment-content">
+    <img src="risky maulana.webp" alt="Avatar" class="avatar">
+    <div class="text">
+      <strong>Rizky Maulana</strong>
+      <p>Aplikasinya bagus banyak wanita dari berbagai negara dan ada terjemahan untuk chattingan</p>
+      <div class="meta">
+        <div class="top-row">
+          <span class="time green">1 Hari</span>
+          <span class="action suka">Suka <span class="like-count">(8,2k)</span></span>
+          <span class="action balas">Balas <span class="reply-count">(2,7k)</span></span>
+        </div>
+        <div class="bottom-row">
+          <span class="action translate">Terjemahan</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- nested reply (balasan dalam balasan) -->
+  <div class="reply">
+    <div class="comment-content">
+      <img src="tigogambar.webp" alt="Avatar" class="avatar">
+      <div class="text">
+        <strong>Tigo Live Team</strong>
+        <p>Terima kasih atas ulasan lima bintang anda, kami akan terus bekerja keras untuk memenuhi jangkaan anda</p>
+        <div class="meta">
+          <div class="top-row">
+            <span class="time green">2 hari</span>
+            <span class="action suka">Suka <span class="like-count">(5,2jt)</span></span>
+            <span class="action balas">Balas <span class="reply-count">(120)</span></span>
+          </div>
+          <div class="bottom-row">
+            <span class="action translate">Terjemahan</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
+
+<!-- balasan 6 -->
+<div class="reply">
+  <div class="comment-content">
+    <img src="logo d.webp" alt="Avatar" class="avatar">
+    <div class="text">
+      <strong>Dapit Barokah</strong>
+      <p>pas narik 500k 600k oke aja masuk ke dana langsung🌟</p>
+      <div class="meta">
+        <div class="top-row">
+          <span class="time green">1 Hari</span>
+          <span class="action suka">Suka <span class="like-count">(8,2k)</span></span>
+          <span class="action balas">Balas <span class="reply-count">(2,7k)</span></span>
+        </div>
+        <div class="bottom-row">
+          <span class="action translate">Terjemahan</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- nested reply (balasan dalam balasan) -->
+  <div class="reply">
+    <div class="comment-content">
+      <img src="tigogambar.webp" alt="Avatar" class="avatar">
+      <div class="text">
+        <strong>Tigo Live Team</strong>
+        <p>Terima kasih atas cinta Anda, kami akan bekerja lebih keras dan berharap Anda hidup bahagia.</p>
+        <div class="meta">
+          <div class="top-row">
+            <span class="time green">2 hari</span>
+            <span class="action suka">Suka <span class="like-count">(5,2jt)</span></span>
+            <span class="action balas">Balas <span class="reply-count">(120)</span></span>
+          </div>
+          <div class="bottom-row">
+            <span class="action translate">Terjemahan</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+  
+  <div class="comments" id="comments">
+
+  </div>
+</div>
+
+
       </section>
+
+
+
+
 
 <!-- ====== POSTINGAN: HTML ====== -->
 <div id="postWidget">
   <h3 id="postTitle">Postingan Terbaru</h3>
   <div id="postList"></div>
 </div>
+
+
+
+
+
+
+
+
+
+
       
 <!-- ===== Bottom Navigation ===== -->
 <nav class="nav">
@@ -3494,6 +3893,19 @@ slider.addEventListener("scroll", () => {
   dots.forEach(dot => dot.classList.remove("active"));
   if (dots[scrollIndex]) dots[scrollIndex].classList.add("active");
 });
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  // ambil semua tombol action
+  document.querySelectorAll(".action").forEach(el => {
+    el.addEventListener("click", () => {
+      alert("Untuk membuka semua ulasan, silakan login akun host terlebih dahulu.");
+    });
+  });
+});
+
 
 
 </script>
