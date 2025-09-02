@@ -1515,6 +1515,7 @@ button[onclick="prosesTarik()"] {
   width: 15px;           /* atur ukuran logo biar kecil */
   height: 15px;
   object-fit: contain;   /* biar proporsional */
+  border-radius: 50px;
 }
 
 .country {
@@ -1584,6 +1585,65 @@ button[onclick="prosesTarik()"] {
 }
 
 
+#conbank img.active {
+  border: 2px solid #007bff; /* warna biru saat aktif */
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.6);
+  background: #e6f0ff;       /* background sedikit biru */
+}
+
+.badsss {
+  width: 20px;          /* sesuaikan ukuran logo */
+  height: auto;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 8px;     /* jarak dari teks sebelumnya */
+}
+
+/* Popup default hidden */
+#popupOfficial {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; 
+  top: 0;
+  width: 100%; 
+  height: 100%;
+  background-color: rgb(255 255 255);
+}
+
+/* Box isi popup */
+#popupContent {
+  background: #fff;
+  color: #333;
+  margin: 15% auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Tombol close */
+#popupClose {
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+#popupClose:hover {
+  color: red;
+}
+
+.age-logo {
+  width: 13px;
+  height: 13px;
+  object-fit: contain;
+}
+
+
+
   </style>
 </head>
 <body>
@@ -1591,7 +1651,21 @@ button[onclick="prosesTarik()"] {
   <header>
     <div class="hdr">
       <img src="agencylogo.png" alt="Logo" class="logo" style="width:44px; height:44px; border-radius:12px;">
-      <div class="title">PT. AGENCY TIGOHOST INDONESIA <span class="badge">Official</span></div>
+      <div class="title">PT. AGENCY TIGOHOST INDONESIA 
+<img src="servant_icon.png" 
+     alt="Official" 
+     id="officialIcon"
+     style="width:20px; height:20px; cursor:pointer;">
+
+<!-- Popup -->
+<div id="popupOfficial">
+  <div id="popupContent">
+    <span id="popupClose">&times;</span>
+    <p>Untuk fitur ini hanya dapat diakses oleh host terdaftar.</p>
+  </div>
+</div>
+
+</div>
       <!-- HAMBURGER -->
 <!-- Tombol hamburger -->
 <div id="hamburgerBtn">☰</div>
@@ -1754,7 +1828,7 @@ Aktif Minimal 1 Jam per Hari<br>
     <h2>Tentang Agency</h2>
     <div class="agency-content">
       <p>
-        Artikel panjang tentang Agency bisa kamu isi di sini.
+        Tentang Top up di Tigohost indonesia
       </p>
       <p>
         Aplikasi Live 1 vs 1: Hiburan Digital Modern
@@ -1813,7 +1887,7 @@ Agency Tigohost Indonesia<br>
     <h2>Tentang Top Up</h2>
     <div class="topup-content">
       <p>
-        Artikel panjang tentang Top Up bisa kamu isi di sini.
+        Tentang Top up di Tigohost indonesia
       </p>
       <p>
         Contoh isi:
@@ -2064,9 +2138,21 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 
 <div class="title-box">
   <h2>Form Pendaftaran Host</h2>
-</div>        <p class="muted">Lengkapi data berikut untuk mendaftar sebagai Host Agency TIGOHOST. Setelah mengirim, status akan muncul otomatis.</p>
+</div>        
+<div id="conbank">
+  <img src="tigogambar.webp" alt="icon1">
+  <img src="TenderUlogo.webp" alt="icon2">
+  <img src="weelivelogo.webp" alt="icon3">
+  <img src="bling.webp" alt="icon4">
+  <img src="ayarlogo.webp" alt="icon5">
+  <img src="meegologo.webp" alt="icon6">
+  <img src="makologo.webp" alt="icon7">
+  <img src="chatologo.webp" alt="icon8">
+</div>
+<p class="muted">Lengkapi data berikut untuk mendaftar sebagai Host Agency TIGOHOST. Setelah mengirim, status akan muncul otomatis.</p>
 
-<form id="form-daftar">          <label>Nama Lengkap</label>
+<form id="form-daftar">        
+    <label>Nama Lengkap</label>
           <input type="text" name="nama" required placeholder="Nama lengkap sesuai rekening" />
 
           <div class="row">
@@ -2146,6 +2232,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
   <img src="ayarlogo.webp" alt="icon5">
   <img src="meegologo.webp" alt="icon6">
   <img src="makologo.webp" alt="icon7">
+  <img src="chatologo.webp" alt="icon8">
 </div>
 
 
@@ -2177,7 +2264,12 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
       <!-- Nama, umur, verifikasi -->
       <div>
         <h3 id="popupName"></h3>
-        <p id="popupAge" class="age"></p>
+
+          <div class="age-wrap">
+    <img src="female_icon_new_3.png" alt="Offline" class="age-logo">
+    <p id="popupAge" class="age"></p>
+  </div>
+
         <div class="verify-wrap">
           <div class="verify-wrap">
   <span id="popupVerify" class="verify"></span>
@@ -3270,9 +3362,42 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstati
   };
 
 
+document.addEventListener("DOMContentLoaded", function () {
+  const popup = document.getElementById("popupOfficial");
+  const icon = document.getElementById("officialIcon");
+  const closeBtn = document.getElementById("popupClose");
 
+  // buka popup
+  icon.onclick = function () {
+    popup.style.display = "block";
+  };
 
+  // tutup popup
+  closeBtn.onclick = function () {
+    popup.style.display = "none";
+  };
 
+  // klik luar area popup -> close
+  window.onclick = function (event) {
+    if (event.target === popup) {
+      popup.style.display = "none";
+    }
+  };
+});
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const bankImgs = document.querySelectorAll("#conbank img");
+
+    bankImgs.forEach(img => {
+      img.addEventListener("click", function() {
+        // hapus kelas active dari semua img
+        bankImgs.forEach(i => i.classList.remove("active"));
+
+        // tambahkan active ke yg diklik
+        this.classList.add("active");
+      });
+    });
+  });
  
 </script>
 
