@@ -122,7 +122,7 @@ header {
 
 /* ===== Layout ===== */
 main{max-width:1100px; margin:18px auto 90px; padding:0 0px}
-.grid{display:grid; gap:16px}
+.grid{ gap:16px}
 @media(min-width:840px){.grid{grid-template-columns:1.4fr .9fr}}
 
 
@@ -1291,15 +1291,15 @@ button[onclick="prosesTarik()"] {
   font-size: 20px;
 }
 
-/* Grid foto */
+/* Grid foto: 5 kolom agar box lebih kecil */
 .foto-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* selalu 4 kolom */
-  gap: 12px;
+  grid-template-columns: repeat(5, 1fr); /* 5 kolom */
+  gap: 10px; /* jarak dikit lebih rapat */
   margin: 20px 0;
 }
 
-/* Box foto */
+/* Box foto lebih kecil */
 .foto-box {
   aspect-ratio: 1 / 1;
   border: 2px solid #ddd;
@@ -1307,15 +1307,21 @@ button[onclick="prosesTarik()"] {
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.3s, box-shadow 0.3s;
+  max-width: 100%; /* biar responsive */
 }
+
+/* Hover efek */
 .foto-box:hover {
   transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
+
+/* Gambar */
 .foto-box img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 12px; /* bisa 12px saja untuk lebih kecil */
 }
 .foto-box:hover { transform: scale(1.05); }
 .foto-box img { width: 100%; height: 100%; border-radius: 30px; object-fit: cover; }
@@ -1562,15 +1568,20 @@ button[onclick="prosesTarik()"] {
   display: flex;
   gap: 12px;
   align-items: center;
-  justify-content: flex-start; 
+  justify-content: center; /* tengah secara horizontal */
+  
   margin: 20px 0;
-
-  max-width: 100%;       /* biar ngikutin lebar parent */
-  overflow-x: auto;      /* scroll horizontal aktif */
+  max-width: 100%;
+  
+  overflow-x: auto;    /* scroll horizontal tetap aktif */
   overflow-y: hidden;
   box-sizing: border-box;
   white-space: nowrap;
-  padding-left: 0;       /* pastikan nempel kiri */
+  padding-left: 0;
+  padding-right: 0;
+
+  /* opsional: smooth scroll */
+  scroll-behavior: smooth;
 }
 
 #conbank img {
@@ -1583,7 +1594,6 @@ button[onclick="prosesTarik()"] {
   padding: 5px;
   flex-shrink: 0;
 }
-
 
 #conbank img.active {
   border: 2px solid #007bff; /* warna biru saat aktif */
@@ -1642,6 +1652,51 @@ button[onclick="prosesTarik()"] {
   object-fit: contain;
 }
 
+
+
+.slider-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  text-align: center;
+}
+
+.slider {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+.slider::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.slider img {
+  flex: 0 0 auto;
+  width: 100px;
+  height: auto;
+  margin: 10px;
+  scroll-snap-align: center;
+}
+
+/* dots */
+.dots {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+.dots span {
+  width: 10px;
+  height: 10px;
+  background: #ccc;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dots span.active {
+  background: #333;
+}
 
 
   </style>
@@ -2139,15 +2194,24 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 <div class="title-box">
   <h2>Form Pendaftaran Host</h2>
 </div>        
-<div id="conbank">
-  <img src="tigogambar.webp" alt="icon1">
-  <img src="TenderUlogo.webp" alt="icon2">
-  <img src="weelivelogo.webp" alt="icon3">
-  <img src="bling.webp" alt="icon4">
-  <img src="ayarlogo.webp" alt="icon5">
-  <img src="meegologo.webp" alt="icon6">
-  <img src="makologo.webp" alt="icon7">
-  <img src="chatologo.webp" alt="icon8">
+<div class="slider-container">
+  <div id="conbank" class="slider">
+    <img src="tigogambar.webp" alt="icon1">
+    <img src="TenderUlogo.webp" alt="icon2">
+    <img src="weelivelogo.webp" alt="icon3">
+    <img src="bling.webp" alt="icon4">
+    <img src="ayarlogo.webp" alt="icon5">
+    <img src="meegologo.webp" alt="icon6">
+    <img src="makologo.webp" alt="icon7">
+        <img src="tigogambar.webp" alt="icon1">
+    <img src="TenderUlogo.webp" alt="icon2">
+    <img src="weelivelogo.webp" alt="icon3">
+    <img src="bling.webp" alt="icon4">
+    <img src="ayarlogo.webp" alt="icon5">
+    <img src="meegologo.webp" alt="icon6">
+    <img src="makologo.webp" alt="icon7">
+  </div>
+  <div class="dots"></div>
 </div>
 <p class="muted">Lengkapi data berikut untuk mendaftar sebagai Host Agency TIGOHOST. Setelah mengirim, status akan muncul otomatis.</p>
 
@@ -2232,7 +2296,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
   <img src="ayarlogo.webp" alt="icon5">
   <img src="meegologo.webp" alt="icon6">
   <img src="makologo.webp" alt="icon7">
-  <img src="chatologo.webp" alt="icon8">
+  
 </div>
 
 
@@ -3399,6 +3463,32 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
  
+
+
+
+const slider = document.querySelector(".slider");
+const dotsContainer = document.querySelector(".dots");
+const slides = document.querySelectorAll(".slider img");
+
+// buat titik sesuai jumlah gambar
+slides.forEach((_, i) => {
+  const dot = document.createElement("span");
+  if (i === 0) dot.classList.add("active");
+  dotsContainer.appendChild(dot);
+});
+
+const dots = document.querySelectorAll(".dots span");
+
+// update titik saat geser
+slider.addEventListener("scroll", () => {
+  let index = Math.round(slider.scrollLeft / slider.clientWidth);
+  dots.forEach(dot => dot.classList.remove("active"));
+  if (dots[index]) dots[index].classList.add("active");
+});
+
+
+
+
 </script>
 
 
