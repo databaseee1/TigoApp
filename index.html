@@ -1754,6 +1754,7 @@ button[onclick="prosesTarik()"] {
   margin-left: 12px;
   cursor: pointer;
   transition: color 0.2s;
+  color: #5c75b6;
 }
 
 .meta .action:hover {
@@ -1788,6 +1789,45 @@ button[onclick="prosesTarik()"] {
   margin-left: 50px; /* makin dalam kalau nested */
   background: #fff;  /* biar bedain layer */
 }
+
+
+.stars {
+  font-size: 16px;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.star {
+  color: #ccc; /* default putih/abu */
+}
+
+.star.filled {
+  color: gold; /* bintang aktif */
+}
+
+.score {
+  font-size: 13px;
+  color: #555;
+}
+
+.name-with-status {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* jarak antara nama & icon */
+}
+
+.status-icon {
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+}
+
+
 
   </style>
 </head>
@@ -2500,7 +2540,12 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
   <div class="comment-content">
     <img src="tigogambar.webp" alt="Avatar" class="avatar">
     <div class="text">
-      <strong>Tigo Live Team</strong>
+
+      <div class="name-with-status">
+  <strong>Tigo Live Team</strong>
+  <img src="servant_icon.png" alt="Offline" class="status-icon">
+</div>
+
       <p>"Tigo adalah aplikasi obrolan waktu nyata yang membuat Anda tetap terhubung dengan teman melalui panggilan instan. Bergabunglah dengan komunitas besar kami dan terhubung secara instan. Temukan dan hubungkan dengan teman-teman di Tigo."</p>
        <div class="meta">
   <div class="top-row">
@@ -2521,7 +2566,19 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
   <div class="comment-content">
     <img src="risky maulana.webp" alt="Avatar" class="avatar">
     <div class="text">
-      <strong>Rizky Maulana</strong>
+
+<strong>Rizky Maulana</strong>
+<div class="rating">
+  <span class="stars">
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star">★</span>
+  </span>
+  <span class="score">4.1</span>
+</div>
+
       <p>Aplikasinya bagus banyak wanita dari berbagai negara...</p>
       <div class="meta">
         <div class="top-row">
@@ -2541,7 +2598,12 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <div class="comment-content">
       <img src="tigogambar.webp" alt="Avatar" class="avatar">
       <div class="text">
-        <strong>Tigo Live Team</strong>
+
+     <div class="name-with-status">
+  <strong>Tigo Live Team</strong>
+  <img src="servant_icon.png" alt="Offline" class="status-icon">
+</div>
+
         <p>Terima kasih atas cinta Anda, kami akan bekerja lebih keras dan berharap Anda hidup bahagia.</p>
         <div class="meta">
           <div class="top-row">
@@ -2564,13 +2626,26 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <div class="comment-content">
       <img src="logo m.webp" alt="Avatar" class="avatar">
       <div class="text">
-        <strong>Mila Agustin</strong>
+
+
+<strong>Mila Agustin</strong>
+<div class="rating">
+  <span class="stars">
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star">★</span>
+    <span class="star">★</span>
+  </span>
+  <span class="score">3.0</span>
+</div>
+
         <p>maaf user yang gak di tampakin mukanya+ga pasang foto profil ga kena pelanggaran dan host yang ga pasang foto profil dan ga nampakin wajah saat vidio call kena peringatan. jadi user seenaknya buat kejahatan ke host host mau  akun saya</p>
       <div class="meta">
   <div class="top-row">
     <span class="time green">1 Hari</span>
-    <span class="action suka">Suka <span class="like-count">(8,2k)</span></span>
-    <span class="action balas">Balas <span class="reply-count">(2,7k)</span></span>
+    <span class="action suka">Suka <span class="like-count">(7,2k)</span></span>
+    <span class="action balas">Balas <span class="reply-count">(1,5k)</span></span>
   </div>
   <div class="bottom-row">
 <span class="action translate">Terjemahan</span>
@@ -2585,13 +2660,18 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <div class="comment-content">
       <img src="tigogambar.webp" alt="Avatar" class="avatar">
       <div class="text">
-        <strong>Tigo Live Team</strong>
+
+             <div class="name-with-status">
+  <strong>Tigo Live Team</strong>
+  <img src="servant_icon.png" alt="Offline" class="status-icon">
+</div>
+
         <p>Anda dapat menghubungi layanan pelanggan di aplikasi dan menjelaskan masalah yang Anda hadapi. Layanan pelanggan akan membantu Anda dalam menyelesaikan masalah Anda.</p>
         <div class="meta">
           <div class="top-row">
             <span class="time green">2 hari</span>
-            <span class="action suka">Suka <span class="like-count">(5,2jt)</span></span>
-            <span class="action balas">Balas <span class="reply-count">(120)</span></span>
+            <span class="action suka">Suka <span class="like-count">(2,2jt)</span></span>
+            <span class="action balas">Balas <span class="reply-count">(110)</span></span>
           </div>
           <div class="bottom-row">
             <span class="action translate">Terjemahan</span>
@@ -2616,13 +2696,26 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <div class="comment-content">
       <img src="hendi.webp" alt="Avatar" class="avatar">
       <div class="text">
-        <strong>Hendi Hermawan</strong>
+
+
+  <strong>Hendi Hermawan</strong>
+<div class="rating">
+  <span class="stars">
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+  </span>
+  <span class="score">4.9</span>
+</div>
+
         <p>trimksih Tigo sngat bgus mudah digunakan.</p>
       <div class="meta">
   <div class="top-row">
     <span class="time green">1 Hari</span>
-    <span class="action suka">Suka <span class="like-count">(8,2k)</span></span>
-    <span class="action balas">Balas <span class="reply-count">(2,7k)</span></span>
+    <span class="action suka">Suka <span class="like-count">(9,8k)</span></span>
+    <span class="action balas">Balas <span class="reply-count">(5,9k)</span></span>
   </div>
   <div class="bottom-row">
 <span class="action translate">Terjemahan</span>
@@ -2635,13 +2728,18 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <div class="comment-content">
       <img src="tigogambar.webp" alt="Avatar" class="avatar">
       <div class="text">
-        <strong>Tigo Live Team</strong>
+        
+             <div class="name-with-status">
+  <strong>Tigo Live Team</strong>
+  <img src="servant_icon.png" alt="Offline" class="status-icon">
+</div>
+
         <p>Pengguna yang terhormat, terima kasih atas persetujuan Anda. Jika Anda puas dengan kami, dapatkah Anda memberi kami peringkat yang lebih tinggi? Atau, jika Anda memiliki saran untuk kami, Anda dapat menghubungi layanan pelanggan melalui aplikasi dan memberi tahu kami. Semoga Anda dapat kembali dan memberi kami peringkat yang lebih tinggi!</p>
         <div class="meta">
           <div class="top-row">
             <span class="time green">2 hari</span>
-            <span class="action suka">Suka <span class="like-count">(5,2jt)</span></span>
-            <span class="action balas">Balas <span class="reply-count">(120)</span></span>
+            <span class="action suka">Suka <span class="like-count">(1,9jt)</span></span>
+            <span class="action balas">Balas <span class="reply-count">(420)</span></span>
           </div>
           <div class="bottom-row">
             <span class="action translate">Terjemahan</span>
@@ -2659,12 +2757,25 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
       <img src="bella putri.webp" alt="Avatar" class="avatar">
       <div class="text">
         <strong>Bella Putri</strong>
+        <div class="rating">
+
+  <span class="stars">
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star">★</span>
+    <span class="star">★</span>
+  </span>
+  <span class="score">4.3</span>
+</div>
+
+
         <p>MAntap apk nya,survey nya kayaknya tergantung daerah sih,tapi okelah gampang nyari dolar nya,meskipun ada beberapa yg eror survey ya. Pakai kode C NT9 W A kalau kalian mau dapetin bonus dollar nya yah, semangat. 🔥</p>
       <div class="meta">
   <div class="top-row">
     <span class="time green">1 Hari</span>
-    <span class="action suka">Suka <span class="like-count">(8,2k)</span></span>
-    <span class="action balas">Balas <span class="reply-count">(2,7k)</span></span>
+    <span class="action suka">Suka <span class="like-count">(17,2k)</span></span>
+    <span class="action balas">Balas <span class="reply-count">(4,7k)</span></span>
   </div>
   <div class="bottom-row">
 <span class="action translate">Terjemahan</span>
@@ -2677,13 +2788,19 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <div class="comment-content">
       <img src="tigogambar.webp" alt="Avatar" class="avatar">
       <div class="text">
-        <strong>Tigo Live Team</strong>
+        
+             <div class="name-with-status">
+  <strong>Tigo Live Team</strong>
+  <img src="servant_icon.png" alt="Offline" class="status-icon">
+</div>
+
+
         <p>Terima kasih atas penilaian dan sokongan anda Setiap pengguna setia adalah rakan kami yang paling berharga. Jika anda mempunyai masa, anda boleh menghubungi perkhidmatan pelanggan untuk menerangkan cadangan anda secara terperinci.</p>
         <div class="meta">
           <div class="top-row">
             <span class="time green">2 hari</span>
-            <span class="action suka">Suka <span class="like-count">(5,2jt)</span></span>
-            <span class="action balas">Balas <span class="reply-count">(120)</span></span>
+            <span class="action suka">Suka <span class="like-count">(5,1jt)</span></span>
+            <span class="action balas">Balas <span class="reply-count">(1,2jt)</span></span>
           </div>
           <div class="bottom-row">
             <span class="action translate">Terjemahan</span>
@@ -2698,15 +2815,27 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 <!-- balasan 5 -->
 <div class="reply">
   <div class="comment-content">
-    <img src="risky maulana.webp" alt="Avatar" class="avatar">
+    <img src="maisha.jpeg" alt="Avatar" class="avatar">
     <div class="text">
-      <strong>Rizky Maulana</strong>
+      <strong>Renal aditya</strong>
+
+
+      <div class="rating">
+  <span class="stars">
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star">★</span>
+  </span>
+  <span class="score">4.7</span>
+</div>
       <p>Aplikasinya bagus banyak wanita dari berbagai negara dan ada terjemahan untuk chattingan</p>
       <div class="meta">
         <div class="top-row">
           <span class="time green">1 Hari</span>
-          <span class="action suka">Suka <span class="like-count">(8,2k)</span></span>
-          <span class="action balas">Balas <span class="reply-count">(2,7k)</span></span>
+          <span class="action suka">Suka <span class="like-count">(20,12k)</span></span>
+          <span class="action balas">Balas <span class="reply-count">(10,4k)</span></span>
         </div>
         <div class="bottom-row">
           <span class="action translate">Terjemahan</span>
@@ -2720,13 +2849,20 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <div class="comment-content">
       <img src="tigogambar.webp" alt="Avatar" class="avatar">
       <div class="text">
-        <strong>Tigo Live Team</strong>
+        
+        
+             <div class="name-with-status">
+  <strong>Tigo Live Team</strong>
+  <img src="servant_icon.png" alt="Offline" class="status-icon">
+</div>
+
+
         <p>Terima kasih atas ulasan lima bintang anda, kami akan terus bekerja keras untuk memenuhi jangkaan anda</p>
         <div class="meta">
           <div class="top-row">
             <span class="time green">2 hari</span>
-            <span class="action suka">Suka <span class="like-count">(5,2jt)</span></span>
-            <span class="action balas">Balas <span class="reply-count">(120)</span></span>
+            <span class="action suka">Suka <span class="like-count">(1,2jt)</span></span>
+            <span class="action balas">Balas <span class="reply-count">(920)</span></span>
           </div>
           <div class="bottom-row">
             <span class="action translate">Terjemahan</span>
@@ -2744,12 +2880,26 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <img src="logo d.webp" alt="Avatar" class="avatar">
     <div class="text">
       <strong>Dapit Barokah</strong>
+
+
+      <div class="rating">
+  <span class="stars">
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star filled">★</span>
+    <span class="star">★</span>
+  </span>
+  <span class="score">4.8</span>
+</div>
+
+      
       <p>pas narik 500k 600k oke aja masuk ke dana langsung🌟</p>
       <div class="meta">
         <div class="top-row">
           <span class="time green">1 Hari</span>
-          <span class="action suka">Suka <span class="like-count">(8,2k)</span></span>
-          <span class="action balas">Balas <span class="reply-count">(2,7k)</span></span>
+          <span class="action suka">Suka <span class="like-count">(13,2k)</span></span>
+          <span class="action balas">Balas <span class="reply-count">(3,7k)</span></span>
         </div>
         <div class="bottom-row">
           <span class="action translate">Terjemahan</span>
@@ -2763,13 +2913,19 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <div class="comment-content">
       <img src="tigogambar.webp" alt="Avatar" class="avatar">
       <div class="text">
-        <strong>Tigo Live Team</strong>
+        
+        
+     <div class="name-with-status">
+  <strong>Tigo Live Team</strong>
+  <img src="servant_icon.png" alt="Offline" class="status-icon">
+</div>
+
         <p>Terima kasih atas cinta Anda, kami akan bekerja lebih keras dan berharap Anda hidup bahagia.</p>
         <div class="meta">
           <div class="top-row">
             <span class="time green">2 hari</span>
-            <span class="action suka">Suka <span class="like-count">(5,2jt)</span></span>
-            <span class="action balas">Balas <span class="reply-count">(120)</span></span>
+            <span class="action suka">Suka <span class="like-count">(6,01jt)</span></span>
+            <span class="action balas">Balas <span class="reply-count">(320)</span></span>
           </div>
           <div class="bottom-row">
             <span class="action translate">Terjemahan</span>
