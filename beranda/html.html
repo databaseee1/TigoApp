@@ -1,0 +1,3310 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Panel - TigoHost</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, Timestamp,
+      doc, getDoc, updateDoc, onSnapshot, query, orderBy, where, getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+    const firebaseConfig = {
+      apiKey: "AIzaSy....",
+      authDomain: "users-96dc5.firebaseapp.com",
+      projectId: "users-96dc5",
+      storageBucket: "users-96dc5.appspot.com",
+      messagingSenderId: "483322415863",
+      appId: "1:483322415863:web:xxxxxx"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+
+    // ✅ Fungsi untuk membuka / menutup chat
+    window.openChat = async function (chatId, el) {
+      const target = document.getElementById(chatId);
+      if (!target) return;
+
+      // Toggle tampilan chat
+      if (target.style.display === "block") {
+        target.style.display = "none";
+        return;
+      }
+
+      target.style.display = "block";
+      target.innerHTML = "<p style='text-align:center;color:#999;'>Memuat chat...</p>";
+
+      const lastMessageEl = el.querySelector("#lastMessage"); // ✅ hanya sekali ini
+      const userRole = localStorage.getItem("role") || "user"; // Ambil role dari localStorage
+
+      // ✅ Query Firestore untuk pesan (real-time)
+      const q = query(collection(db, "pesan"), orderBy("timestamp", "asc"));
+
+      onSnapshot(q, (snapshot) => {
+        const messages = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id, // simpan ID dokumen untuk admin
+            sender: data.sender || "Unknown",
+            pesan: data.pesan || "",
+            timeString: data.timestamp
+              ? new Date(data.timestamp.toMillis()).toLocaleTimeString()
+              : ""
+          };
+        });
+
+        target.innerHTML = "";
+
+        // ✅ Jika tidak ada pesan
+        if (messages.length === 0) {
+          target.innerHTML = "<p style='text-align:center;'>Belum ada pesan.</p>";
+          if (lastMessageEl) lastMessageEl.textContent = "Belum ada pesan.";
+          return;
+        }
+
+        // ✅ Render setiap pesan
+        messages.forEach(msg => {
+          const wrapper = document.createElement("div");
+          wrapper.style.display = "flex";
+          wrapper.style.alignItems = "flex-start";
+          wrapper.style.margin = "8px 0";
+
+          const img = document.createElement("img");
+          img.src = "servant_icon.png";
+          img.alt = "Avatar";
+          img.style.width = "24px";
+          img.style.height = "24px";
+          img.style.marginRight = "8px";
+
+          const bubble = document.createElement("div");
+          bubble.style.padding = "8px 12px";
+          bubble.style.borderRadius = "10px";
+          bubble.style.backgroundColor = msg.sender === "Human Assistant" ? "#e3f2fd" : "#f1f1f1";
+          bubble.style.maxWidth = "80%";
+
+          // ✅ Jika admin, tambahkan tombol hapus
+          let deleteButton = "";
+          if (userRole === "admin") {
+            deleteButton = `<button data-id="${msg.id}" class="btn-delete" style="font-size:10px; color:red; background:none; border:none; cursor:pointer; margin-top:5px;">Hapus</button>`;
+          }
+
+          bubble.innerHTML = `
+        <strong style="font-size:12px; color:#333; display:block; margin-bottom:4px;">
+          Human Assistant
+        </strong>
+        <p style="margin:0;">${msg.pesan}</p>
+        <small style="font-size:10px;color:#555;">${msg.timeString}</small>
+        ${deleteButton}
+      `;
+
+          wrapper.appendChild(img);
+          wrapper.appendChild(bubble);
+          target.appendChild(wrapper);
+        });
+
+        // ✅ Update last message (potong jadi preview)
+        if (lastMessageEl) {
+          let previewText = messages[messages.length - 1].pesan;
+          if (previewText.length > 32) previewText = previewText.substring(0, 32) + "...";
+          lastMessageEl.textContent = previewText;
+        }
+
+        target.scrollTop = target.scrollHeight;
+      });
+    };
+
+
+
+
+
+
+
+
+    const depositHistoryTable = document.getElementById("depositHistoryTable");
+
+    // ✅ Buka Popup History
+    window.openDepositHistoryPopup = function () {
+      document.getElementById("depositHistoryPopup").style.display = "block";
+      document.getElementById("depositHistoryOverlay").style.display = "block";
+      loadDepositHistoryData();
+    }
+
+    // ✅ Tutup Popup History
+    window.closeDepositHistoryPopup = function () {
+      document.getElementById("depositHistoryPopup").style.display = "none";
+      document.getElementById("depositHistoryOverlay").style.display = "none";
+    }
+
+    // ✅ Ambil Data Riwayat Deposit sesuai user login
+    // ✅ Ambil Data Riwayat Deposit khusus user login
+    function loadDepositHistoryData() {
+      depositHistoryTable.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:10px;'>Loading...</td></tr>";
+
+      const currentUserId = localStorage.getItem("loggedUserId"); // ✅ pastikan sesuai
+      if (!currentUserId) {
+        depositHistoryTable.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:10px;'>User belum login</td></tr>";
+        return;
+      }
+
+      // 🔑 Query hanya untuk user ini
+      const depositRef = query(
+        collection(db, "deposit"),
+        where("userId", "==", currentUserId),
+        orderBy("createdAt", "desc")
+      );
+
+      onSnapshot(depositRef, (snapshot) => {
+        depositHistoryTable.innerHTML = "";
+
+        if (snapshot.empty) {
+          depositHistoryTable.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:10px;'>Tidak ada data</td></tr>";
+          return;
+        }
+
+        snapshot.forEach(docSnap => {
+          const d = docSnap.data();
+
+          // Format tanggal
+          let tanggal = "-";
+          if (d.createdAt?.toDate) {
+            const date = d.createdAt.toDate();
+            const jam = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            const tgl = date.toLocaleDateString('id-ID');
+            tanggal = `${tgl} ${jam}`;
+          }
+
+          // Warna status
+          const statusColor = d.status === 'approved' ? 'green' : (d.status === 'pending' ? 'orange' : 'red');
+          const statusText = d.status === 'approved' ? 'Berhasil' :
+            d.status === 'pending' ? 'Pending' : 'Ditolak';
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+        <td style="padding:8px; border-bottom:1px solid #ddd;">
+          <span style="display:inline-block; padding:4px 8px; border-radius:6px; background:#f4f4f4; font-weight:bold; color:#7f3586;">
+            Rp ${(d.nominal || 0).toLocaleString()}
+          </span>
+        </td>
+        <td style="padding:8px; border-bottom:1px solid #ddd; color:${statusColor}; font-weight:bold;">${statusText}</td>
+        <td style="padding:8px; border-bottom:1px solid #ddd;">${tanggal}</td>
+      `;
+          depositHistoryTable.appendChild(tr);
+        });
+      });
+    }
+
+    // =============================
+    // ✅ Realtime Update Jumlah Tagihan
+    // =============================
+    const jumlahTagihanEl = document.getElementById("jumlahTagihan");
+
+    if (jumlahTagihanEl) {
+      onSnapshot(doc(db, "settings", "config"), (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const jumlah = data.jumlahTagihan || 0;
+          jumlahTagihanEl.textContent = "Rp " + jumlah.toLocaleString();
+        } else {
+          jumlahTagihanEl.textContent = "Rp 0";
+        }
+      });
+    }
+
+
+
+    let previousStatus = null; // Simpan status sebelumnya
+
+    // ===== LOGIN USER =====
+    window.loginUser = async function () {
+      const email = document.getElementById("loginEmail").value.trim();
+      const wa = document.getElementById("loginWA").value.trim();
+      const statusEl = document.getElementById("loginStatus");
+      if (!email || !wa) {
+        statusEl.innerText = "Isi email & WA!";
+        return;
+      }
+
+
+
+      try {
+        const q = query(collection(db, "pendaftaran"), where("email", "==", email), where("wa", "==", wa));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          const userDoc = snap.docs[0];
+          localStorage.setItem("loggedUserId", userDoc.id);
+          document.getElementById("loginPage").style.display = "none";
+          document.getElementById("userPage").style.display = "block";
+          loadUserData(userDoc.id);
+        } else {
+          statusEl.innerText = "❌ User tidak ditemukan!";
+        }
+      } catch (e) {
+        console.error(e);
+        statusEl.innerText = "❌ Terjadi kesalahan!";
+      }
+    };
+
+    // ===== LOAD USER DATA =====
+    async function loadUserData(userId) {
+      const userRef = doc(db, "pendaftaran", userId);
+
+      onSnapshot(userRef, docSnap => {
+        const data = docSnap.data() || {};
+        const currentStatus = data.status || "aktif";
+
+        // 🔍 Cek perubahan status
+        if (previousStatus && previousStatus !== currentStatus) {
+          if (currentStatus === "aktif" && (previousStatus === "ditangguhkan" || previousStatus === "dihapus")) {
+            showAccountNotif("Akun Anda berhasil diaktifkan kembali.", "third_acoount_bound_iocn.png");
+          }
+        }
+
+        // Simpan status terbaru
+        previousStatus = currentStatus;
+
+        // 🚫 Jika akun ditangguhkan
+        if (currentStatus === "ditangguhkan") {
+          showAccountNotif("Akun Anda sedang ditangguhkan oleh pihak aplikasi.", "match_locked_icon.png");
+          setTimeout(() => logout(), 0);
+          return;
+        }
+
+        // ❌ Jika akun dihapus
+        if (currentStatus === "dihapus") {
+          showAccountNotif("Akun Anda telah dihapus, Harap lapor jika butuh bantuan!.", "banned_icon.png");
+          setTimeout(() => logout(), 100);
+          return;
+        }
+
+        // ✅ Tambah Nama dan Umur User di Header
+        document.getElementById("userName").textContent = data.nama || "User";
+        document.getElementById("userAge").textContent = (data.umur ? data.umur + " Tahun" : "0 Tahun");
+
+
+        // ✅ Jika akun aktif, tampilkan data
+        document.getElementById("saldoNominal").innerText = data.saldo || 0;
+
+        const riwayatList = document.getElementById("riwayatList");
+        riwayatList.innerHTML = "";
+        const riwayat = Array.isArray(data.riwayat) ? data.riwayat : [];
+
+        riwayat.forEach((item, index) => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+        ${item.jumlah} - ${item.bank} - 
+        <span style="color:${item.color || 'black'}">${item.status || ''}</span>
+      `;
+          riwayatList.appendChild(li);
+        });
+      });
+    }
+
+    // ===== PROSES TARIK =====
+    window.prosesTarik = async function () {
+      const bank = document.getElementById("bank").value;
+      const norek = document.getElementById("norek").value.trim();
+      const namarek = document.getElementById("namarek").value.trim();
+      const jumlah = parseInt(document.getElementById("jumlah").value);
+      const statusP = document.getElementById("tarikStatus");
+      if (!bank || !norek || !namarek || isNaN(jumlah) || jumlah <= 0) { statusP.innerText = "Isi semua form dengan benar!"; return; }
+
+      const userId = localStorage.getItem("loggedUserId");
+      const userRef = doc(db, "pendaftaran", userId);
+      const userSnap = await getDoc(userRef);
+      const userData = userSnap.data() || {};
+      if ((userData.saldo || 0) < jumlah) { statusP.innerText = "Saldo tidak cukup!"; return; }
+
+      const riwayat = Array.isArray(userData.riwayat) ? userData.riwayat : [];
+      riwayat.push({ bank, norek, namarek, jumlah, status: "Proses", color: "orange", createdAt: new Date() });
+
+      await updateDoc(userRef, {
+        saldo: (userData.saldo || 0) - jumlah,
+        riwayat
+      });
+
+      statusP.innerText = "✅ Permintaan penarikan berhasil dikirim!";
+      document.getElementById("bank").value = "";
+      document.getElementById("norek").value = "";
+      document.getElementById("namarek").value = "";
+      document.getElementById("jumlah").value = "";
+    };
+
+    // ===== SET STATUS APPROVE / TOLAK =====
+    window.setStatus = async function (userId, index, status) {
+      const userRef = doc(db, "pendaftaran", userId);
+      const userSnap = await getDoc(userRef);
+      const userData = userSnap.data() || {};
+
+      // Pastikan riwayat selalu array
+      const riwayat = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
+
+      if (!riwayat[index]) return;
+
+      // Update status dan warna
+      riwayat[index] = {
+        ...riwayat[index],
+        status: status,
+        color: status === "Berhasil" ? "green" : status === "Ditolak" ? "red" : "orange"
+      };
+
+      // Hitung saldo baru jika ditolak
+      let newSaldo = userData.saldo || 0;
+      if (status === "Ditolak") newSaldo += riwayat[index].jumlah;
+
+      // Update ke Firestore
+      await updateDoc(userRef, {
+        riwayat: riwayat,
+        saldo: newSaldo
+      });
+    };
+
+    // ===== LOGOUT =====
+    window.logout = function () {
+      localStorage.removeItem("loggedUserId");
+      document.getElementById("userPage").style.display = "none";
+      document.getElementById("loginPage").style.display = "block";
+    };
+
+
+    document.getElementById("creditBox").addEventListener("click", () => {
+      const tarikSection = document.getElementById("tarikSection");
+      tarikSection.style.display = tarikSection.style.display === "none" ? "block" : "none";
+    });
+
+
+
+    // ===== FITUR EDIT PROFILE =====
+
+    // BUKA MODAL
+    window.openEditModal = async function () {
+      const userId = localStorage.getItem("loggedUserId");
+      if (!userId) return alert("User belum login");
+
+      const userRef = doc(db, "pendaftaran", userId);
+      const docSnap = await getDoc(userRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+
+        // Data yang hanya ditampilkan (tidak bisa edit)
+        document.getElementById("viewEmail").textContent = data.email || "-";
+        document.getElementById("viewWA").textContent = data.wa || "-";
+        document.getElementById("viewJK").textContent = data.jk || "-";
+        document.getElementById("viewBank").textContent = data.bank || "-";
+        document.getElementById("viewNamaRek").textContent = data.namaRek || "-";
+        document.getElementById("viewNoRek").textContent = data.noRek || "-";
+
+
+
+        // ✅ Isi input yang bisa di-edit
+        document.getElementById("editNama").value = data.nama || "";
+        document.getElementById("editUmur").value = data.umur || "";
+
+        document.getElementById("editProfileModal").style.display = "block";
+      } else {
+        alert("Data user tidak ditemukan!");
+      }
+    };
+
+    // ✅ Simpan perubahan Nama & Umur (dan opsional foto profil)
+    window.saveProfile = async function () {
+      const newNama = document.getElementById("editNama").value.trim();
+      const newUmur = document.getElementById("editUmur").value.trim();
+
+
+      if (!newNama) return alert("Nama tidak boleh kosong!");
+      if (!newUmur) return alert("Umur tidak boleh kosong!");
+
+      const userId = localStorage.getItem("loggedUserId");
+      if (!userId) return alert("User belum login");
+
+      const userRef = doc(db, "pendaftaran", userId);
+
+      try {
+        // ✅ Update Nama & Umur dulu
+        await updateDoc(userRef, {
+          nama: newNama,
+          umur: newUmur
+        });
+
+
+
+        showToast("✅ Profil berhasil diperbarui!", "success");
+        document.getElementById("editProfileModal").style.display = "none";
+      } catch (error) {
+        console.error("Gagal update profil:", error);
+        showToast("❌ Terjadi kesalahan saat menyimpan profil.", "error");
+
+      }
+    };
+
+    // ✅ Tutup modal
+    window.closeEditModal = function () {
+      document.getElementById("editProfileModal").style.display = "none";
+    };
+
+
+    function showToast(message, type = "success") {
+      const container = document.getElementById("toastContainer");
+      const toast = document.createElement("div");
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const verifyDiv = document.querySelector(".verify");
+      const popupTopup = document.getElementById("popupTopup");
+      const saldoHostEl = document.getElementById("saldoHost");
+      const saldoCoinEl = document.getElementById("saldoCoin");
+      const saldoNominal = document.getElementById("saldoNominal");
+      const formTopup = document.getElementById("formTopup");
+      const hasilAgencyBtn = document.getElementById("hasilAgencyBtn");
+
+      const userId = localStorage.getItem("loggedUserId");
+      const role = localStorage.getItem("role") || "user";
+
+      // ✅ Cek status verifikasi real-time
+      if (userId) {
+        const userRef = doc(db, "pendaftaran", userId);
+
+        // ✅ Listener status verifikasi
+        onSnapshot(userRef, { includeMetadataChanges: true }, (docSnap) => {
+          if (!docSnap.exists()) return;
+
+          if (docSnap.metadata.hasPendingWrites) return;
+
+          const data = docSnap.data();
+          updateUIStatusVerifikasi(data.verified === true);
+        });
+
+        // ✅ Listener saldo real-time
+        onSnapshot(userRef, (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            const saldoRupiah = data.saldoRupiah || 0;
+            const saldoCoin = data.saldoCoin || 0;
+
+            if (saldoHostEl) saldoHostEl.textContent = "Rp " + saldoRupiah.toLocaleString();
+            if (saldoCoinEl) saldoCoinEl.textContent = saldoCoin.toLocaleString() + " Coin";
+            if (saldoNominal) saldoNominal.textContent = saldoRupiah.toLocaleString();
+          }
+        });
+      }
+
+      function updateUIStatusVerifikasi(isVerified) {
+        const statusText = document.getElementById("statusVerifikasi");
+        const statusIcon = document.getElementById("statusIcon");
+        const aktivasiBox = document.getElementById("aktivasiBox");
+        const aktivasiText = document.getElementById("aktivasiText");
+
+        if (!statusText || !statusIcon || !aktivasiBox || !aktivasiText) return;
+
+        if (isVerified) {
+          statusText.textContent = "Diverifikasi";
+          statusIcon.src = "verifikasi.png";
+          statusText.style.color = "#7f3586";
+
+          aktivasiBox.style.display = "block";
+          aktivasiBox.style.background = "#e8f8e8";
+          aktivasiBox.style.border = "1px solid #b2e0b2";
+          aktivasiText.style.color = "green";
+          aktivasiText.innerHTML = "Akun Anda sudah terverifikasi. Aplikasi sedang memeriksa kelengkapan data!.";
+        } else {
+          statusText.textContent = "Pergi Verifikasi";
+          statusIcon.src = "profile_verify_icon.png";
+          statusText.style.color = "#dc3545";
+
+          aktivasiBox.style.display = "block";
+          aktivasiBox.style.background = "#fff3f3";
+          aktivasiBox.style.border = "1px solid #f5c2c2";
+          aktivasiText.style.color = "red";
+          aktivasiText.innerHTML = "Untuk mengaktifkan akun host Anda, wajib top up minimal <b>Rp 500.000</b> Saldo akan otomatis dimasukan pada saldo host dan dapat ditarik kembali pada rekening anda!.";
+        }
+      }
+
+      // ✅ Event klik untuk buka popup
+      if (verifyDiv) {
+        verifyDiv.addEventListener("click", showPopup);
+      }
+      if (hasilAgencyBtn) {
+        hasilAgencyBtn.addEventListener("click", showPopup);
+      }
+
+      function showPopup() {
+        if (!popupTopup) return;
+        popupTopup.style.display = "flex";
+        popupTopup.style.opacity = "0";
+        setTimeout(() => {
+          popupTopup.style.transition = "opacity 0.3s ease";
+          popupTopup.style.opacity = "1";
+        }, 10);
+      }
+
+      // ✅ Tutup popup saat klik luar
+      if (popupTopup) {
+        popupTopup.addEventListener("click", (e) => {
+          if (e.target === popupTopup) {
+            popupTopup.style.display = "none";
+          }
+        });
+      }
+
+      // ✅ Submit form top up
+      if (formTopup) {
+        formTopup.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const namaPengirim = e.target.namaPengirim.value.trim();
+          const bank = e.target.bank.value.trim();
+          const nominal = parseInt(e.target.nominal.value);
+
+          const errorMsg = document.getElementById("nominalError");
+          if (isNaN(nominal) || nominal < 500000) {
+            if (errorMsg) errorMsg.style.display = "block";
+            e.target.nominal.style.borderColor = "red";
+            return;
+          } else {
+            if (errorMsg) errorMsg.style.display = "none";
+            e.target.nominal.style.borderColor = "#ccc";
+          }
+
+          try {
+            await addDoc(collection(db, "deposit"), {
+              userId,
+              namaPengirim,
+              bank,
+              nominal,
+              status: "pending",
+              createdAt: Timestamp.now()
+            });
+
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil!",
+              text: "Permintaan top up berhasil dikirim. Tunggu konfirmasi admin.",
+              confirmButtonColor: "#7f3586",
+              width: "400px",
+              padding: "20px"
+            });
+
+            popupTopup.style.display = "none";
+            formTopup.reset();
+          } catch (error) {
+            console.error("Gagal mengirim data top up:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Gagal!",
+              text: "Terjadi kesalahan: " + error.message,
+              confirmButtonColor: "#dc3545"
+            });
+          }
+        });
+      }
+
+      // ✅ Logo bank hanya untuk user
+      if (role === "user") {
+        const bankSelect = document.getElementById("bank");
+        const bankLogo = document.getElementById("bankLogo");
+
+        if (bankSelect && bankLogo) {
+          bankSelect.addEventListener("change", function () {
+            const selectedOption = this.options[this.selectedIndex];
+            const logo = selectedOption.getAttribute("data-logo") || "bankcustomee.jpg";
+            bankLogo.src = logo;
+          });
+        }
+      }
+    });
+
+  </script>
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+
+      /* kasih jarak setinggi header */
+      padding-top: 60px;
+    }
+
+
+
+    .container {
+      max-width: 500px;
+      margin: 200px auto;
+      padding: 20px;
+      background: #b200cd;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    h2,
+    h3 {
+      margin-top: 0;
+      color: #ffffff;
+    }
+
+    input,
+    select,
+    button {
+      width: 55%;
+      padding: 8px;
+      margin: 4px 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+
+    button {
+      background: #6a5afd;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #7328fe;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+
+    li button {
+      margin-left: 5px;
+      padding: 2px 6px;
+      font-size: 12px;
+    }
+
+
+
+    .user-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      padding: 10px 0;
+    }
+
+    .user-card {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .user-card img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      height: 160px;
+    }
+
+    .user-info {
+      padding: 1px 1px;
+      font-size: 13px;
+    }
+
+    .user-name {
+      font-weight: bold;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      /* jarak nama dengan titik */
+    }
+
+    .online-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #00c853;
+      /* hijau */
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+
+    .user-country {
+      display: flex;
+      align-items: center;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #333;
+      margin-right: 5px;
+    }
+
+    .user-country .country-name {
+      margin-left: 5px;
+    }
+
+    .flag-circle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(to bottom, #ff0000 50%, #ffffff 50%);
+      border: 1px solid #ccc;
+      display: inline-block;
+    }
+
+    .country-name {
+      color: #ffffff;
+    }
+
+    .chat-btn {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      background: #6c5ce7;
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .chat-btn img.chat-icon {
+      width: 80px;
+      height: 80px;
+    }
+
+    /* Tombol chat */
+    .chat-btn {
+      background: #6f08aa;
+      border: none;
+      border-radius: 50%;
+      padding: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(255, 255, 255, 0);
+    }
+
+    .chat-icon {
+      width: 22px;
+      height: 22px;
+    }
+
+    .bottom-right {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      /* jarak antar elemen */
+      z-index: 9999;
+    }
+
+
+
+    /* Navigasi bawah */
+    #bottomNav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid #ccc;
+      padding: 8px 0;
+      box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+      z-index: 9999;
+      /* biar selalu di atas konten */
+    }
+
+    #bottomNav img {
+      width: 24px;
+    }
+
+    /* Supaya konten tidak ketiban navbar */
+    .navPage,
+    #userPage {
+      padding-bottom: 70px;
+      /* lebih besar dari tinggi navbar */
+    }
+
+
+
+
+    /* Header */
+    .header {
+      display: none;
+      /* awalnya disembunyikan */
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background-color: #fff;
+      border-bottom: 1px solid #eee;
+
+      /* Biar beku di atas */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 95%;
+      z-index: 1000;
+    }
+
+    .header-tabs {
+      display: flex;
+      gap: 12px;
+      font-size: 18px;
+    }
+
+    .tab {
+      color: #888;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: #000;
+      font-weight: bold;
+    }
+
+    .header-icon {
+      font-size: 22px;
+      cursor: pointer;
+      color: #333;
+    }
+
+
+
+
+
+
+
+
+    .dunia-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: white;
+      border-bottom: 1px solid #eee;
+      margin-top: -40px;
+    }
+
+    .dunia-header .logo {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .dunia-header .coin {
+      background: orange;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      margin-left: 5px;
+    }
+
+    .dunia-header .menu {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .dunia-header .profile {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+    }
+
+    .user-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .user-card {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .user-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    .user-info {
+      position: absolute;
+      bottom: 5px;
+      left: 5px;
+      color: #fff;
+      font-size: 12px;
+    }
+
+    .user-info .status.online {
+      background: green;
+      padding: 2px 6px;
+      border-radius: 5px;
+      margin-left: 5px;
+    }
+
+    .video-section {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .avatar-center img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 4px solid #6a5acd;
+    }
+
+    .video-btn {
+      margin-top: 15px;
+      background: #6a5afd;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .info {
+      margin-top: 8px;
+      font-size: 14px;
+      color: #888;
+    }
+
+
+
+    .search-loading {
+      /* ukuran container */
+      height: 120px;
+      background-image: url('global_map.png');
+      /* gambar di belakang */
+      background-size: cover;
+      /* sesuaikan ukuran gambar *
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0%;           /* buat bulat */
+      margin-bottom: 0px;
+      /* jarak ke bawah */
+    }
+
+    .search-loading img {
+      width: 100px;
+      /* ukuran ikon */
+      height: 100px;
+      animation: spin 2s linear infinite;
+      /* efek mutar */
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      padding: 15px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-top: -20px;
+    }
+
+    .profile-pic {
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 14px;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .name {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+
+    .age .icon,
+    .country .icon,
+    .flag-icon {
+      width: 16px;
+      height: 16px;
+      margin-right: 6px;
+      vertical-align: middle;
+      border-radius: 50%;
+      /* bikin lingkaran */
+      object-fit: cover;
+      /* supaya proporsional */
+      border: 1px solid #ccc;
+      /* opsional, biar terlihat jelas */
+    }
+
+    .bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .level {
+      background-color: #b31d8b;
+      /* Warna background pink */
+      padding: 1px;
+      /* Ruang dalam box */
+      border-radius: 7px;
+      /* Sudut membulat (opsional) */
+      display: inline-flex;
+      /* Agar rapi dengan icon */
+      align-items: center;
+      /* Menyelaraskan ikon & teks secara vertikal */
+      gap: 0px;
+      /* Jarak antara ikon dan teks */
+    }
+
+
+    .level,
+    .verify {
+      font-size: 10px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      background: red;
+      /* merah = offline, hijau bisa online */
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+
+    .age,
+    .country {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+    }
+
+    .age .icon,
+    .country .icon {
+      width: 16px;
+      height: 16px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+
+    .riwayat-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      margin: 20px auto;
+      max-width: 600px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .riwayat-box:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .riwayat-box h3 {
+      margin-bottom: 15px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 8px;
+    }
+
+    .riwayat-box ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .riwayat-box ul li {
+      padding: 5px 10px;
+      margin-bottom: 8px;
+      background: #e7e7ec;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #444;
+      border: 1px solid #eee;
+      transition: background 0.2s ease;
+    }
+
+    .riwayat-box ul li:hover {
+      background: #f5f5f5;
+    }
+
+
+    .chat-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Jarak antar chat item */
+    .chat-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      margin-bottom: 8px;
+      /* beri jarak antar chat */
+    }
+
+    /* Khusus untuk chat laporan agar lebih jauh */
+    .chat-item.laporan {
+      margin-bottom: 23px;
+      /* jarak lebih besar untuk laporan */
+    }
+
+    .chat-info {
+      flex: 1;
+      /* supaya mengisi ruang antara avatar dan jam */
+      margin-left: 8px;
+    }
+
+    .chat-time {
+      font-size: 12px;
+      color: #999;
+      margin-left: 8px;
+      white-space: nowrap;
+      /* supaya jam tidak wrap */
+    }
+
+    .chat-item:hover {
+      background: #f9f9f9;
+    }
+
+    .chat-avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      margin-right: 12px;
+    }
+
+    .chat-info h4 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .chat-info p {
+      margin: 2px 0 0;
+      font-size: 13px;
+      color: gray;
+    }
+
+    .chat-messages {
+      margin-top: 15px;
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 8px;
+      min-height: 200px;
+    }
+
+    #chatTitle {
+      color: #000;
+      font-weight: bold;
+      text-align: center;
+      margin: 0;
+      /* hilangkan margin samping */
+      font-size: 16px;
+      background: #e6e6e6;
+      border-radius: 3px;
+      width: 100%;
+      /* full lebar container */
+      padding: 8px 0;
+      /* beri jarak atas/bawah */
+      box-sizing: border-box;
+      /* supaya padding tidak bikin overflow */
+    }
+
+    .nav-item small {
+      color: #555;
+      /* default abu */
+      font-weight: 500;
+    }
+
+    .nav-item.active small {
+      color: #007bff;
+      /* teks aktif jadi biru */
+      font-weight: bold;
+    }
+
+
+    .nav-item.active img {
+      filter: brightness(0) saturate(100%);
+      /* hasilnya hitam */
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translate(-50%, -100%);
+      }
+
+      to {
+        transform: translate(-50%, 0);
+      }
+    }
+
+
+
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Popup content */
+    .popup-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      padding: 20px 25px;
+      border-radius: 12px;
+      max-width: 350px;
+      width: 80%;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .popup-content h3 {
+      margin: 0 0 10px;
+      color: #333;
+    }
+
+    .popup-content p {
+      margin: 0 0 15px;
+      color: #555;
+      font-size: 14px;
+    }
+
+    .close-btn {
+      background: #6a5afd;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -45%);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    .status-icon {
+      width: 12px;
+      /* ukuran kecil */
+      height: 12px;
+      vertical-align: middle;
+      margin-right: 4px;
+      /* jarak ke teks */
+    }
+
+
+    #loginPage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 340px;
+      background: url('global_map.png') no-repeat center center;
+      background-size: cover;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    /* Bungkus form dengan box agar ada background */
+    #loginPage form {
+      background: rgba(0, 0, 0, 0.6);
+      /* semi-transparan hitam */
+      padding: 30px 20px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 350px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Judul dengan background */
+    #loginPage h2 {
+      background: rgb(191 0 247);
+      /* bisa ganti warna sesuai keinginan */
+      padding: 10px 20px;
+      border-radius: 8px;
+      color: #fff;
+      margin-bottom: 20px;
+      width: 100%;
+      text-align: center;
+    }
+
+    #loginPage input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.9);
+      /* background putih agar input jelas */
+    }
+
+    #loginPage button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+
+
+
+
+    .pesta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      /* 2 box per baris */
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .pesta-box {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      padding-bottom: 10px;
+    }
+
+    .pesta-box img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+    }
+
+    .pesta-box h3 {
+      margin: 8px 0 4px 0;
+      font-size: 14px;
+      font-weight: bold;
+      color: #000;
+    }
+
+    .pesta-box p {
+      font-size: 12px;
+      margin: 0 0 6px 0;
+      color: #555;
+    }
+
+    .pesta-box span {
+      font-size: 12px;
+      font-weight: bold;
+      color: #888888;
+    }
+
+
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 2000;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      margin-top: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.3s ease, fadeOut 0.3s ease 2.7s;
+    }
+
+    .toast.success {
+      background: #bdc1bd;
+    }
+
+    .toast.error {
+      background: #f44336;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      to {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+    }
+
+    /* Untuk header dan isi agar rata kiri dan font kecil */
+    #historyPopup table th,
+    #historyPopup table td {
+      text-align: left;
+      font-size: 10px;
+      padding: 6px 8px;
+      /* Tambahkan sedikit padding agar rapi */
+      white-space: nowrap;
+      /* Supaya teks tidak turun ke bawah */
+    }
+
+    /* Agar tabel scrollable tanpa mengganggu layout */
+    #depositHistoryPopup table {
+      width: 100%;
+      /* Pastikan tabel lebar penuh */
+      border-collapse: collapse;
+      /* Hilangkan double border */
+    }
+
+    #depositHistoryPopup {
+      max-height: 95vh;
+      /* Scroll hanya di wrapper */
+      overflow-y: auto;
+      display: block;
+    }
+
+
+    div:where(.swal2-container) div:where(.swal2-actions) {
+      display: flex;
+      z-index: 1;
+      box-sizing: border-box;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      /* ✅ Pastikan tombol OK di tengah */
+      width: 100%;
+      /* ✅ Biar tombol penuh sejajar popup */
+      margin: 0 auto;
+      /* ✅ Hilangkan margin berlebih */
+      padding: 15px;
+      /* ✅ Tambah padding agar rapi */
+      border-radius: 0;
+      /* ✅ Hilangkan radius agar rata */
+      background: transparent;
+      /* ✅ Biar tidak bentrok dengan background */
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ✅ HEADER (Hanya muncul setelah login) -->
+  <div class="header" id="mainHeader"
+    style="display:none; justify-content:space-between; align-items:center; padding:10px; background:#f8f8f8;">
+    <div class="header-tabs">
+      <div class="tab active">Orang</div>
+      <div class="tab" onclick="showPesta()">Pesta</div>
+    </div>
+    <div class="header-icon" id="countrySelector" style="cursor:pointer; display:flex; align-items:center; gap:8px;">
+      <img id="selectedCountryIcon" src="country_filter_icon.png" alt="Pilih Negara" style="width:24px; height:24px;">
+    </div>
+  </div>
+
+  <!-- ✅ Overlay -->
+  <div id="overlay"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(5px); z-index:998;">
+  </div>
+
+  <!-- ✅ Popup Negara -->
+  <div id="countryPopup"
+    style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.3); width:300px; z-index:999;">
+    <h3 style="margin-bottom:15px; text-align:center; color:#000; font-size:18px; font-weight:bold;">Pilih Negara</h3>
+
+    <ul style="list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(2, 1fr); gap:12px;">
+      <li class="country-item" data-country="Semua" data-icon="country_filter_icon.png"
+        style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+        <img src="country_filter_icon.png" style="width:16px; height:16px;">
+        <span>Semua</span>
+      </li>
+      <li class="country-item" data-country="Brazil" data-icon="brazil_8603047.png"
+        style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+        <img src="brazil_8603047.png" style="width:16px; height:16px;">
+        <span>Brazil</span>
+      </li>
+      <li class="country-item" data-country="Indonesia" data-icon="indonesialogo.png"
+        style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+        <img src="indonesialogo.png" style="width:16px; height:16px;">
+        <span>Indonesia</span>
+      </li>
+      <li class="country-item" data-country="India" data-icon="india_6211408.png"
+        style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+        <img src="india_6211408.png" style="width:16px; height:16px;">
+        <span>India</span>
+      </li>
+      <li class="country-item" data-country="Malaysia" data-icon="malaysia_8603298.png"
+        style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+        <img src="malaysia_8603298.png" style="width:16px; height:16px;">
+        <span>Malaysia</span>
+      </li>
+      <li class="country-item" data-country="Philippines" data-icon="philippine_6211521.png"
+        style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+        <img src="philippine_6211521.png" style="width:16px; height:16px;">
+        <span>Philippines</span>
+      </li>
+      <li class="country-item" data-country="Pakistan" data-icon="pakistan_8603405.png"
+        style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+        <img src="pakistan_8603405.png" style="width:16px; height:16px;">
+        <span>Pakistan</span>
+      </li>
+      <li class="country-item" data-country="Vietnam" data-icon="vietnam_12360402.png"
+        style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+        <img src="vietnam_12360402.png" style="width:16px; height:16px;">
+        <span>Vietnam</span>
+      </li>
+      <li class="country-item" data-country="Lainnya" data-icon="flag_other_country.png"
+        style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
+        <img src="flag_other_country.png" style="width:16px; height:16px;">
+        <span>Lainnya</span>
+      </li>
+    </ul>
+
+    <button onclick="closePopup()"
+      style="margin-top:15px; width:100%; padding:10px; background:#333; color:white; border:none; border-radius:6px; cursor:pointer;">Tutup</button>
+  </div>
+
+  <!-- ✅ Halaman Pesta -->
+  <div id="pestaPage" class="page" style="display:none; padding:20px;">
+    <!-- Tombol Kembali -->
+    <img src="back_gray.png" alt="Kembali" onclick="backFromPesta()"
+      style="width:25px; height:25px; cursor:pointer; margin-bottom:15px;">
+    <h2 style="color:#575757;">Pesta Seru</h2>
+
+    <!-- Grid -->
+    <div class="pesta-grid" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:16px;">
+      <!-- Box 1 -->
+      <div class="pesta-box"
+        style="position:relative; border-radius:8px; overflow:hidden; background:#fff; padding-bottom:10px;">
+        <img src="game_guess_dice_loading_bg.webp" alt="Pesta 1" style="width:100%;">
+        <h3 style="margin:6px 0 2px 0;">Funny Game</h3>
+        <p style="margin:0 0 4px 0;">Dice</p>
+        <span>
+          <img src="room_person_num_icon.png" alt="Offline"
+            style="width:14px; height:14px; vertical-align:middle; margin-right:4px;">
+          2212
+        </span>
+        <img src="demo_icon_bailiang1.webp" alt="Profil" style="
+        width:24px;
+        height:24px;
+        position:absolute;
+        bottom:8px;
+        right:8px;
+        border-radius:50%;
+        border:1px solid #fff;
+      ">
+      </div>
+
+      <!-- Box 2 -->
+      <div class="pesta-box"
+        style="position: relative; border-radius:8px; overflow:hidden; background:#fff; padding-bottom:10px;">
+        <img src="teen_patti_loading_bg.webp" alt="Pesta 2" style="width:100%;">
+        <h3 style="margin:6px 0 2px 0;">Play Together</h3>
+        <p style="margin:0 0 4px 0;">Teen Patti</p>
+        <span>
+          <img src="room_person_num_icon.png" alt="Offline"
+            style="width:14px; height:14px; vertical-align:middle; margin-right:4px;">
+          1830
+        </span>
+        <img src="demo_icon_fennen1.webp" alt="Profil" style="
+        width:24px;
+        height:24px;
+        position:absolute;
+        bottom:8px;
+        right:8px;
+        border-radius:50%;
+        border:1px solid #fff;
+      ">
+      </div>
+
+      <!-- Box 3 -->
+      <div class="pesta-box"
+        style="position: relative; border-radius:8px; overflow:hidden; background:#fff; padding-bottom:10px;">
+        <img src="game_roulette_loading_bg.webp" alt="Pesta 3" style="width:100%;">
+        <h3 style="margin:6px 0 2px 0;">Lucky Day</h3>
+        <p style="margin:0 0 4px 0;">Roulette</p>
+        <span>
+          <img src="room_person_num_icon.png" alt="Offline"
+            style="width:14px; height:14px; vertical-align:middle; margin-right:4px;">
+          1162
+        </span>
+        <img src="demo_icon_gexing1.webp" alt="Profil" style="
+        width:24px;
+        height:24px;
+        position:absolute;
+        bottom:8px;
+        right:8px;
+        border-radius:50%;
+        border:1px solid #fff;
+      ">
+      </div>
+
+      <!-- Box 4 -->
+      <div class="pesta-box"
+        style="position: relative; border-radius:8px; overflow:hidden; background:#fff; padding-bottom:10px;">
+        <img src="teen_patti_loading_bg.webp" alt="Pesta 4" style="width:100%;">
+        <h3 style="margin:6px 0 2px 0;">Teen Patti</h3>
+        <p style="margin:0 0 4px 0;">Lucky Party</p>
+        <span>
+          <img src="room_person_num_icon.png" alt="Offline"
+            style="width:14px; height:14px; vertical-align:middle; margin-right:4px;">
+          2312
+        </span>
+        <img src="demo_icon_heibai1.png" alt="Profil" style="
+        width:24px;
+        height:24px;
+        position:absolute;
+        bottom:8px;
+        right:8px;
+        border-radius:50%;
+        border:1px solid #fff;
+      ">
+      </div>
+
+      <!-- Box 5 -->
+      <div class="pesta-box"
+        style="position: relative; border-radius:8px; overflow:hidden; background:#fff; padding-bottom:10px;">
+        <img src="game_guess_dice_loading_bg.webp" alt="Pesta 5" style="width:100%;">
+        <h3 style="margin:6px 0 2px 0;">Dice</h3>
+        <p style="margin:0 0 4px 0;">Win Win Win!!</p>
+        <span>
+          <img src="room_person_num_icon.png" alt="Offline"
+            style="width:14px; height:14px; vertical-align:middle; margin-right:4px;">
+          3122
+        </span>
+        <img src="demo_icon_lengsediao1.webp" alt="Profil" style="
+        width:24px;
+        height:24px;
+        position:absolute;
+        bottom:8px;
+        right:8px;
+        border-radius:50%;
+        border:1px solid #fff;
+      ">
+      </div>
+
+      <!-- Box 6 -->
+      <div class="pesta-box"
+        style="position: relative; border-radius:8px; overflow:hidden; background:#fff; padding-bottom:10px;">
+        <img src="game_roulette_loading_bg.webp" alt="Pesta 6" style="width:100%;">
+        <h3 style="margin:6px 0 2px 0;">Roulette</h3>
+        <p style="margin:0 0 4px 0;">Let's play together</p>
+        <span>
+          <img src="room_person_num_icon.png" alt="Offline"
+            style="width:14px; height:14px; vertical-align:middle; margin-right:4px;">
+          1232
+        </span>
+        <img src="demo_icon_nuansediao1.webp" alt="Profil" style="
+        width:24px;
+        height:24px;
+        position:absolute;
+        bottom:8px;
+        right:8px;
+        border-radius:50%;
+        border:1px solid #fff;
+      ">
+      </div>
+    </div>
+  </div>
+
+
+  <!-- LOGIN PAGE -->
+  <div class="container" id="loginPage" style="text-align:center;">
+    <!-- Logo Offline di atas -->
+    <img src="login_app_icon.png" alt="Logo Offline" style="
+  width:80px; 
+  height:auto; 
+  margin-bottom:15px; 
+  filter: grayscale(100%) contrast(200%) brightness(80%);
+">
+    <h2 style="margin-bottom:15px;">Login Host</h2>
+
+    <!-- Form -->
+    <input type="email" id="loginEmail" placeholder="Email" style="
+    display:block; width:90%; margin:10px auto; padding:10px; border:1px solid #ccc; border-radius:6px;">
+    <input type="text" id="loginWA" placeholder="Password" style="
+    display:block; width:90%; margin:10px auto; padding:10px; border:1px solid #ccc; border-radius:6px;">
+
+    <button onclick="loginUser()" style="
+    background:#9f51df; color:#fff; padding:12px; border:none; border-radius:6px; width:90%; font-size:16px;
+    margin-top:10px;">Masuk</button>
+
+    <p id="loginStatus" style="color:red; margin-top:10px;"></p>
+  </div>
+
+  <!-- Popup & Overlay -->
+  <div id="accountNotifOverlay" style="
+  display:none;
+  position:fixed;
+  top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter: blur(6px);
+  z-index:9999;
+"></div>
+
+  <div id="accountNotif" style="
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+  text-align:center; /* Pusatkan isi */
+  width:300px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.3);
+  z-index:9999;
+">
+    <img id="notifIcon" src="" alt="Icon" style="
+    width:40px;
+    height:40px;
+    margin:0 auto 10px;
+    display:none;
+  ">
+    <p id="notifMessage" style="margin:0; color:#333; font-size:14px;"></p>
+
+    <button onclick="closeAccountNotif()" style="
+    background:#007BFF;
+    color:#fff;
+    border:none;
+    padding:10px 15px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:14px;
+  ">OK</button>
+  </div>
+
+
+  <!-- USER PAGE -->
+  <div id="userPage" style="display:none;">
+    <!-- NAVIGASI BAWAH -->
+    <div id="bottomNav"
+      style="position:fixed; bottom:0; left:0; width:100%; background:#fff; display:flex; justify-content:space-around; border-top:1px solid #ccc; padding:8px 0; box-shadow:0 -2px 4px rgba(0,0,0,0.1);">
+      <div class="nav-item" onclick="setActiveNav(this); showPageNav('play')">
+        <img src="destiny_icon_normal.png" alt="Play" style="width:38px;"><br>
+        <small></small>
+      </div>
+      <div class="nav-item" onclick="setActiveNav(this); showPageNav('dunia')">
+        <img src="match_icon_normal.png" alt="Dunia" style="width:38px;"><br>
+        <small></small>
+      </div>
+      <div class="nav-item" onclick="setActiveNav(this); showPageNav('chat')">
+        <img src="msg_icon_normal.png" alt="Chat" style="width:38px;"><br>
+        <small></small>
+      </div>
+      <div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
+        <img src="mine_icon_normal.png" alt="Saya" style="width:38px;"><br>
+        <small></small>
+      </div>
+    </div>
+
+
+
+    <!-- HALAMAN NAVIGASI -->
+    <div id="pagePlay" class="navPage" style="display:none; padding-bottom:60px;">
+      <div class="user-grid">
+
+        <!-- User Card 1-->
+        <div class="user-card">
+          <img src="cewek11.jpeg" alt="Raka Hidra">
+          <div class="user-info">
+            <span class="user-name">
+              <span class="online-dot"></span>
+              Riks
+            </span>
+
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+        <!-- User Card 2-->
+        <div class="user-card">
+          <img src="cewek10.jpeg" alt="kabutoo29">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Puspita
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+        <!-- User Card 3-->
+        <div class="user-card">
+          <img src="andrea.jpeg" alt="only_pe2k">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Ayu Azalea
+            </span> <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+        <!-- User Card 4-->
+        <div class="user-card">
+          <img src="alin.jpeg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Aulia Amanda
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+        <!-- User Card 5-->
+        <div class="user-card">
+          <img src="cewek13.jpeg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Aziza
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+        <!-- User Card 6-->
+        <div class="user-card">
+          <img src="cewek14.jpeg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Ayunda
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+        <!-- User Card 7-->
+        <div class="user-card">
+          <img src="cewek15.jpeg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Adinda Aisha
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+        <!-- User Card 8-->
+        <div class="user-card">
+          <img src="cewek16.jpeg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Almira Aluna
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+        <!-- User Card 9-->
+        <div class="user-card">
+          <img src="cewek20.jpg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Amara Anisa
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+        <!-- User Card 10-->
+        <div class="user-card">
+          <img src="cewek21.jpeg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Arin
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+
+        <!-- User Card 11-->
+        <div class="user-card">
+          <img src="cewek22.jpeg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Atikah Amanda
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+
+        <!-- User Card 12-->
+        <div class="user-card">
+          <img src="cewek23.jpeg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Aryani
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+
+
+        <!-- User Card 13-->
+        <div class="user-card">
+          <img src="cewek24.jpeg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            lea
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+
+        <!-- User Card 14-->
+        <div class="user-card">
+          <img src="cewek25.jpeg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Anisa Atikah
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+
+        <!-- User Card 15-->
+        <div class="user-card">
+          <img src="cewek26.jpg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Bunga Citra
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+
+        <!-- User Card 16-->
+        <div class="user-card">
+          <img src="cewek27.jpeg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Manda
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+
+        <!-- User Card 17-->
+        <div class="user-card">
+          <img src="cewek28.jpeg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Brigita Shinta
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+
+        <!-- User Card 18-->
+        <div class="user-card">
+          <img src="cewek29.jpeg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Bhakti Rahayu
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+
+        <!-- User Card 19-->
+        <div class="user-card">
+          <img src="cewek30.jpeg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            tari
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+
+
+        <!-- User Card 20-->
+        <div class="user-card">
+          <img src="cewek31.jpeg" alt="aditya">
+          <div class="user-info">
+            <span class="online-dot"></span>
+            Cinta
+            </span>
+            <span class="user-country">
+              <span class="flag-circle"></span>
+              <span class="country-name">Indonesia</span>
+            </span>
+          </div>
+          <button class="chat-btn"><img src="cahtnav.png" alt="Chat" class="chat-icon"></button>
+        </div>
+        <!-- Tambah user-card lain sesuai kebutuhan -->
+
+      </div>
+    </div>
+
+    <div class="popup" id="playPopup">
+      <div class="popup-content">
+        <h3>Pemberitahuan</h3>
+        <p>Anda tidak memenuhi syarat untuk membuka menu ini.</p>
+        <button class="close-btn" onclick="closePlayPopup()">Tutup</button>
+      </div>
+    </div>
+
+    <!-- Dunia Page -->
+    <div id="pageDunia" class="navPage" style="display:none; padding-bottom:60px;">
+
+      <!-- Header -->
+      <div class="dunia-header">
+        <div class="logo" style="display:flex; align-items:center; gap:8px;">
+          <!-- Ganti teks Tigo dengan gambar -->
+          <img src="add_tokens_icon.png" alt="Logo Tigo" style="height:24px; width:auto;">
+
+          <!-- Tambahkan ikon offline di kiri angka -->
+          <span style="display:flex; align-items:center; gap:4px;">
+            <img src="match_ticket_icon.png" alt="Offline" style="width:23px; height:23px;">
+          </span>
+        </div>
+        <div class="menu">
+
+
+          <button class="btn" id="historyBtn" style="background:none; border:none; padding:0; cursor:pointer;">
+            <img src="match_his_icon.png" alt="History" style="width:28px; height:28px;">
+          </button>
+
+          <!-- Popup -->
+          <div id="historyPopup" style="
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+  z-index:1000;
+">
+            <div style="
+    position:absolute;
+    top:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:500px;
+    height:30%; /* setengah layar */
+    background:#fff;
+    border-radius:0 0 20px 20px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.3);
+    padding:20px;
+    overflow-y:auto;
+    animation:slideDown 0.4s ease;
+  ">
+              <h2
+                style="text-align:center; color: #6a5afd; margin-top:0; border-bottom:1px solid #eee; padding-bottom:10px;">
+                History Panggilan
+              </h2>
+              <ul id="callHistory" style="list-style:none; padding:0; font-size: 10px; margin:0;">
+                <!-- Data riwayat panggilan masuk sini -->
+              </ul>
+              <button id="btnClosePopup" style="
+  display:block;
+  margin:15px auto 0;
+  padding:8px 20px;
+  background:#6a5afd;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+">Tutup</button>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+      <!-- Container -->
+      <div class="user-container">
+        <!-- Daftar User -->
+        <div class="user-grid">
+          <div class="user-card">
+            <img src="default_pic_100.png" alt="Charlotte">
+            <div class="user-info">
+              <span class="name" style=" color:#0000007d;">Loading...</span>
+              <span class="status online">Online</span>
+            </div>
+          </div>
+
+
+          <!-- duplikat list biar looping halus -->
+          <div class="user-card">
+            <img src="default_pic_100.png" alt="Charlotte">
+            <div class="user-info">
+              <span class="name" style=" color:#0000007d;">Loading...</span>
+              <span class="status online">Online</span>
+            </div>
+          </div>
+
+          <div class="user-card">
+            <img src="default_pic_100.png" alt="Charlotte">
+            <div class="user-info">
+              <span class="name" style=" color:#0000007d;">Loading...</span>
+              <span class="status online">Online</span>
+            </div>
+          </div>
+
+          <div class="user-card">
+            <img src="default_pic_100.png" alt="Charlotte">
+            <div class="user-info">
+              <span class="name" style=" color:#0000007d;">Loading...</span>
+              <span class="status online">Online</span>
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+
+
+      <!-- Avatar tengah + tombol video -->
+      <div class="video-section">
+        <div class="avatar-center">
+          <div class="search-loading">
+            <img src="secrchicon.png" alt="Searching...">
+          </div>
+        </div>
+        <button class="video-btn" id="videoBtn">
+          <img src="vudeo.png" alt="Offline" style="width:24px; height:24px; vertical-align:middle;">
+          <span style="margin-left:6px;">Mulai Gratis</span>
+        </button>
+
+        <!-- Popup Notifikasi -->
+        <div class="popup" id="videoPopup">
+          <div class="popup-content">
+            <h3>Pemberitahuan</h3>
+            <p>Kamu tidak memenuhi syarat untuk membuka menu ini.</p>
+            <button class="close-btn" onclick="closeVideoPopup()">Tutup</button>
+          </div>
+        </div>
+
+
+        <p class="info">
+          Hasil <span style="color: #FFD700; font-weight: bold;">120</span>
+          <img src="coin.png" alt="Offline" style="width:18px; height:18px; vertical-align:middle;"> /Menit
+        </p>
+      </div>
+
+    </div>
+
+
+
+
+    <div id="pageChat" class="navPage" style="display:none; padding-bottom:60px; position:relative;">
+      <h3 style="padding:15px; margin-top: -50px; color: #727272; background: #ececec; position:relative;">
+        Chat </span>
+        <span style="color:black;">Panggilan</span>
+
+        <span
+          style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:12px; color:#999; display:flex; align-items:center; gap:4px;">
+          <span
+            style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:12px; color:#999; display:flex; align-items:center; gap:4px;">
+            <img src="contact_unfollow.png" alt="Offline" style="width:30px; height:30px;">
+          </span>
+      </h3>
+
+
+
+      <!-- Daftar Chat -->
+      <div class="chat-list">
+
+        <!-- Chat Layanan Host -->
+        <div id="chatList" style="margin:10px;">
+          <div class="chat-item laporan" onclick="openChat('chatLayananHost', this)">
+            <div class="chat-avatar" style="
+        width: 40px; 
+        height: 40px; 
+        -webkit-mask: url('servant_icon.png') no-repeat center;
+        -webkit-mask-size: contain;
+        mask: url('servant_icon.png') no-repeat center;
+        mask-size: contain;
+        background-image: url('servant_icon.png'); 
+        background-size: cover;
+        background-position: center;
+      "></div>
+            <div class="chat-info">
+              <h4>Layanan Host</h4>
+              <p id="lastMessage">Klik untuk melihat chat...</p>
+            </div>
+          </div>
+
+          <!-- Tempat isi chat -->
+          <div id="chatLayananHost" class="chat-detail" style="
+      display:none;
+      border:1px solid #ccc;
+      border-radius:8px;
+      padding:10px;
+      margin-top:10px;
+      max-height:300px;
+      overflow-y:auto;
+      background:#f9f9f9;
+      font-size: 15px;
+    ">
+            <p style="text-align:center;color:#999;">Memuat chat...</p>
+          </div>
+        </div>
+
+
+
+
+        <!-- Chat Pengumuman -->
+        <div class="chat-item" onclick="openChat('pengumuman')">
+          <img src="notifikasi.png" alt="Pengumuman" class="chat-avatar">
+          <div class="chat-info">
+            <h4>Notifikasi</h4>
+            <p>Manda mengunjungi saya 12 kali</p>
+          </div>
+          <span class="chat-time">10:30</span>
+        </div>
+
+        <!-- Chat User 1 -->
+        <div class="chat-item" onclick="openChat('user1')">
+          <img src="cewek11.jpeg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>Riks</h4>
+            <p>Hai, lagi apa?</p>
+          </div>
+          <span class="chat-time">09:40</span>
+        </div>
+
+        <!-- Chat User 2 -->
+        <div class="chat-item" onclick="openChat('user2')">
+          <img src="cewek10.jpeg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>Puspita</h4>
+            <p>Tinggal dimana bang</p>
+          </div>
+          <span class="chat-time">08:45</span>
+        </div>
+
+        <!-- Chat User 3 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="cewek27.jpeg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>Manda</h4>
+            <p>Kamu daftar dimana akun host?</p>
+          </div>
+          <span class="chat-time">07:23</span>
+        </div>
+      </div>
+
+
+      <!-- Halaman Isi Chat -->
+      <div id="chatContent" style="display:none; padding:0 10px;">
+        <button onclick="backToList()" style="
+    padding:2px;        
+    margin:0 0 8px 0;       
+    background:#ffffff; 
+    border:1px solid #ccc; 
+    border-radius:4px; 
+    cursor:pointer; 
+    width:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  ">
+          <img src="back_gray.png" alt="Kembali" style="width:20px; height:20px;">
+        </button>
+        <h3 id="chatTitle"></h3>
+        <div id="chatMessages" class="chat-messages" style="min-height:200px; margin-bottom:10px;"></div>
+
+        <!-- Input Balasan -->
+        <div class="chat-input" style="display:flex; gap:8px; border-top:1px solid #ddd; padding-top:8px;">
+          <input type="text" id="messageInput" placeholder="Tulis pesan..."
+            style="flex:1; padding:6px; border:1px solid #ccc; border-radius:6px;">
+          <button onclick="sendMessage()"
+            style="padding:6px 12px; background:#007bff; color:#fff; border:none; border-radius:6px; width:50px; cursor:pointer;">Kirim</button>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="pageSaya" class="navPage" style="display:block; padding-bottom:80px; position: relative;">
+
+      <!-- Logo offline di pojok kanan atas -->
+
+      <img src="edit_profile_icon.png" alt="Edit" onclick="openEditModal()" style="
+  width:25px;
+  height:25px;
+  position:absolute;
+  top:-20px;
+  right:10px;
+  border-radius:50%;
+  border:1px solid #fff;
+  cursor:pointer;
+">
+
+      <!-- Modal Edit Profile -->
+      <div id="editProfileModal" style="
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  font-size: 10px;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+  z-index:1000;
+">
+        <div style="
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:90%;
+    max-width:420px;
+    background:#fff;
+    border-radius:10px;
+    padding:20px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.3);
+    overflow-y:auto;
+    max-height:90vh;
+  ">
+          <h2 style="text-align:center; color:#6a5afd; margin-bottom:15px;">Edit Profile</h2>
+
+          <!-- Data Non-Editable -->
+          <div style="
+      margin-bottom:15px;
+      font-size:13px;
+      color:#444;
+      border:1px solid #ccc;
+      border-radius:8px;
+      padding:12px;
+      background:#f9f9f9;
+      box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    ">
+            <p><strong>Email:</strong> <span id="viewEmail">-</span></p>
+            <p><strong>Nomor WA:</strong> <span id="viewWA">-</span></p>
+            <p><strong>Jenis Kelamin:</strong> <span id="viewJK">-</span></p>
+            <p><strong>Bank:</strong> <span id="viewBank">-</span></p>
+            <p><strong>Nama Rekening:</strong> <span id="viewNamaRek">-</span></p>
+            <p><strong>No Rekening:</strong> <span id="viewNoRek">-</span></p>
+          </div>
+
+          <!-- Bagian Edit Nama & Umur -->
+          <div style="margin-bottom:10px;">
+            <label for="editNama"><strong>Nama:</strong></label>
+            <input id="editNama" type="text"
+              style="width:50%; padding:8px; margin-top:4px; border:1px solid #ccc; border-radius:5px;">
+          </div>
+
+          <div style="margin-bottom:10px;">
+            <label for="editUmur"><strong>Umur:</strong></label>
+            <input id="editUmur" type="number"
+              style="width:30%; padding:8px; margin-top:4px; border:1px solid #ccc; border-radius:5px;">
+          </div>
+
+          <!-- Tombol -->
+          <div style="display:flex; justify-content:space-between; margin-top:15px;">
+            <button onclick="closeEditModal()"
+              style="background:#ccc; padding:8px 12px; border:none; border-radius:5px;">Batal</button>
+            <button onclick="saveProfile()"
+              style="background:#6a5afd; color:#fff; padding:8px 12px; border:none; border-radius:5px;">Simpan</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast-container" id="toastContainer"></div>
+
+
+
+      <div class="profile-header">
+        <img src="default_pic_100.png" alt="Profile" class="profile-pic">
+
+        <div class="profile-info">
+          <div class="name" style="display: inline-flex; align-items: center; gap: 4px;">
+            <span id="userName"></span>
+            <img id="vipIcon" src="reward_vip_icon_small.png" alt="VIP" style="width:35px; height:35px; display:none;">
+          </div>
+
+          <div class="age" style="font-size:14px; color:#444;">
+            <img src="female_icon_new_3.png" class="icon" alt="Age" style="width:18px;">
+            <span id="userAge">0 Tahun</span>
+          </div>
+
+          <div class="country">
+            <img src="indonesialogo.png" class="icon" alt="Flag"> Indonesia
+          </div>
+
+          <div class="bottom-row">
+            <div class="level">
+              <img src="user_level_4_icon.png" alt="Offline" class="status-icon"> Level 4
+            </div>
+
+            <div class="verify"
+              style="display:flex; align-items:center; gap:0px; background:#e5e5e5; padding:0px 5px; border-radius:5px; font-size:14px; color:#7f3586;">
+              <img id="statusIcon" src="belum.png" alt="Status" style="width:18px; height:18px; border-radius:4px;">
+              <span id="statusVerifikasi">Memuat...</span>
+            </div>
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- Box Saldo + Credit -->
+      <div style="
+  display:flex; 
+  justify-content:space-between; 
+  padding:10px; 
+  background:#fff; 
+  box-shadow:0 2px 4px rgba(0,0,0,0.1);
+">
+
+        <!-- Kiri + Kanan di dalam 1 box -->
+        <div style="
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center; 
+    width:100%;
+    background:#fff; 
+    border:1px solid #ddd; 
+    border-radius:22px; 
+    padding:20px 15px; 
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  ">
+          <!-- Kiri: Icon + Saldo -->
+          <div style="display:flex; align-items:center;">
+            <img src="credit.png" alt="Offline" style="width:30px; height:30px; margin-right:8px;">
+            <span style="font-weight:bold; color:#5f00e3;">
+              <span id="saldoNominal">0</span>
+            </span>
+          </div>
+
+          <!-- Kanan: Tombol Credit -->
+          <div id="creditBox" style="
+      padding:6px 12px; 
+      border:1px solid #5f00e3; 
+      border-radius:11px; 
+      background:#c00dff; 
+      font-size:14px; 
+      font-weight:bold; 
+      color:#ffffff; 
+      cursor:pointer;
+    ">
+            Credits
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <div id="tarikSection" style="display:none; margin-top:15px;">
+        <div class="tarik-box"
+          style="text-align:center; max-width:400px; margin:auto; padding:15px; border:1px solid #ccc; border-radius:10px; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+          <h3 style="color:#000; text-align:center; margin-bottom:15px;">Form Penarikan</h3>
+
+          <!-- Wrapper dengan logo -->
+          <div class="select-with-logo"
+            style="display:flex; align-items:center; border:1px solid #ccc; border-radius:5px; padding:5px; ">
+            <img id="bankLogo" src="transfer.png" alt="Logo Bank" style="width:40px; height:40px; margin-right:8px;">
+            <select id="bank" style="flex:1; border:none; outline:none; font-size:14px;">
+              <option value="">-- Pilih Bank --</option>
+              <option value="BCA" data-logo="bca.png">BCA</option>
+              <option value="DANA" data-logo="dana.png">DANA</option>
+              <option value="BRI" data-logo="bank-bri-logo-png_.png">BRI</option>
+              <option value="MANDIRI" data-logo="bank-bni-logo-png.png">MANDIRI</option>
+              <option value="GOPAY" data-logo="gopay.png">GOPAY</option>
+              <option value="LINKAJA" data-logo="link-aja-logo.png">LINKAJA</option>
+              <option value="CIMBNIAGA" data-logo="cimbniaga.jpg">CIMBNIAGA</option>
+              <option value="SUPERBANK" data-logo="Superbank.png">SUPERBANK</option>
+              <option value="OVO" data-logo="ovo.png">OVO</option>
+              <option value="JakOne" data-logo="abankbank.png">JakOne</option>
+              <option value="Bank China" data-logo="Bank-of-China-Logo.png">Bank China</option>
+              <option value="Shopeepay" data-logo="ShopeePay.png">Shopeepay</option>
+              <option value="Custom" data-logo="transfer.png">Custom</option>
+            </select>
+          </div>
+
+          <input type="text" id="norek" placeholder="Nomor Rekening"
+            style=" padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
+          <input type="text" id="namarek" placeholder="Nama Rekening"
+            style=" padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
+          <input type="number" id="jumlah" placeholder="Jumlah Penarikan"
+            style=" padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
+
+          <button onclick="prosesTarik()"
+            style=" padding:10px; background:#6a5afd; color:#fff; border:none; border-radius:5px; font-size:14px; cursor:pointer;">Tarik
+            Sekarang</button>
+
+          <p id="tarikStatus"
+            style="margin-top:10px; border-radius:10px; background:#fbf8f8; color:rgb(0, 157, 18); padding:8px;"></p>
+        </div>
+
+
+
+        <!-- Riwayat -->
+        <div class="riwayat-box">
+          <h3>Riwayat Penarikan</h3>
+          <ul id="riwayatList"></ul>
+        </div>
+      </div>
+
+      <!-- Menu List -->
+      <div style="border:1px solid #ddd; border-radius:8px; background:#fff; 
+            box-shadow:0 2px 4px rgba(0,0,0,0.05); color: #3f3737; overflow:hidden;">
+
+        <!-- Token Saya -->
+        <div style="display:flex; align-items:center; justify-content:space-between; 
+              padding:15px; cursor:pointer;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img src="rokensaya.png" style="width:25px; height:25px;">
+            <span>Token Saya</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:4px;">
+            <span style="color:#999; display: inline-flex; align-items: center; gap: 4px;">
+              <img src="token_wrap.png" alt="icon" style="width:14px; height:14px; vertical-align:middle;">
+              <span style="color:#999; display: inline-flex; align-items: center; gap: 4px;">
+                0
+                <img src="right_arrow_gray.png" alt="Offline"
+                  style="width:18px; height:18px; vertical-align:middle; margin-left:4px;">
+              </span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Setelan Obrolan -->
+        <div style="display:flex; align-items:center; justify-content:space-between; 
+              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img src="setelenobrolan.png" style="width:25px; height:25px;">
+            <span>Setelan Obrolan</span>
+          </div>
+          <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
+        </div>
+
+        <!-- Level Saya -->
+        <div style="display:flex; align-items:center; justify-content:space-between; 
+              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img src="levelsaya.png" style="width:25px; height:25px;">
+            <span>Level Saya</span>
+          </div>
+          <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
+        </div>
+
+        <!-- Rating Saya -->
+        <div style="display:flex; align-items:center; justify-content:space-between; 
+              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img src="ratingsaya.png" style="width:25px; height:25px;">
+            <span>Rating Saya</span>
+          </div>
+          <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
+        </div>
+
+        <!-- Menjadi VIP -->
+        <div id="hasilAgencyBtn" style="display:flex; align-items:center; justify-content:space-between; 
+              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img src="menjadivip.png" style="width:25px; height:25px;">
+            <span>Hasil Agency</span>
+          </div>
+          <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
+        </div>
+
+        <!-- Undang Untuk VIP -->
+        <div style="display:flex; align-items:center; justify-content:space-between; 
+              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img src="undang.png" style="width:25px; height:25px;">
+            <span>Undang Untuk VIP</span>
+          </div>
+          <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
+        </div>
+
+        <!-- Setelan Aplikasi -->
+        <div style="display:flex; align-items:center; justify-content:space-between; 
+              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img src="setelanaplikasi.png" style="width:25px; height:25px;">
+            <span>Setelan Agency</span>
+          </div>
+          <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
+        </div>
+
+      </div>
+
+
+      <!-- Popup Top Up -->
+      <div id="popupTopup" style="
+  display:none; 
+  position:fixed; 
+  top:0; 
+  left:0; 
+  width:100%; 
+  height:100%; 
+  background:rgba(0,0,0,0.5); 
+  justify-content:center; 
+  align-items:center; 
+  z-index:9999;
+">
+        <div style="
+    background:#fff; 
+    padding:20px; 
+    border-radius:12px; 
+    width:90%; 
+    max-width:400px; 
+    box-shadow:0 8px 16px rgba(0,0,0,0.2);
+  ">
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h2 style="color:#000; font-size:18px; text-align:center; position:relative;">
+              Aktivasi & Deposit Akun Host
+              <img src="match_his_icon.png" onclick="openDepositHistoryPopup()" style="
+    width:24px; height:24px; cursor:pointer;
+    position:absolute; right:-120px; top:50%; transform:translateY(-50%) ;
+  ">
+            </h2>
+          </div>
+
+          <!-- ✅ Overlay -->
+          <div id="depositHistoryOverlay" style="
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgb(109 109 109);
+  z-index:998;
+"></div>
+
+          <!-- ✅ Popup History -->
+          <div id="depositHistoryPopup" style="
+  display:none;
+  position:fixed;
+  top:50%; 
+  left:50%;
+  transform:translate(-50%, -50%);
+  background:#fff;
+  width:90%;
+  max-width:400px;
+  border-radius:10px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.3);
+  z-index:999;
+  padding:15px;
+">
+            <h3 style="text-align:center; margin-bottom:10px; color:#7f3586;">Riwayat Host</h3>
+
+            <table style="width:100%; border-collapse:collapse; font-size:12px;">
+              <thead>
+                <tr style="background:#d1d1d1; color:#121212;">
+                  <th style="text-align:left; padding:6px;">Nominal</th>
+                  <th style="text-align:left; padding:6px;">Status</th>
+                  <th style="text-align:left; padding:6px;">Waktu</th>
+                </tr>
+              </thead>
+              <tbody id="depositHistoryTable"></tbody>
+            </table>
+
+            <div style="text-align:center; margin-top:15px;">
+              <button onclick="closeDepositHistoryPopup()" style="
+      padding:10px 20px; 
+      background:#7f3586; 
+      color:#fff; 
+      border:none; 
+      border-radius:6px; 
+      font-size:14px; 
+      cursor:pointer;
+    ">Tutup</button>
+            </div>
+          </div>
+
+
+          <!-- Info Saldo -->
+          <div
+            style="background:#fff; padding:15px 20px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); margin:15px 0; font-size:16px;">
+            <p style="margin:10px 0; display:flex; align-items:center;">
+              <img src="score_icon_wrap.png" alt="icon" style="width:20px; height:20px; margin-right:8px;">
+              <b style="color:#000;">Saldo Host:</b>&nbsp;
+              <span style="color:#e91e63; font-weight: bold; margin-left:5px;" id="saldoHost">Rp 0</span>
+            </p>
+            <p style="margin:10px 0; display:flex; align-items:center;">
+              <img src="super_pack_float_icon.png" alt="icon" style="width:20px; height:20px; margin-right:8px;">
+              <b style="color:#000;">Saldo Coin:</b>&nbsp;
+              <span style="color:#ffb700; font-weight: bold; margin-left:5px;" id="saldoCoin">0 Coin</span>
+            </p>
+            <p style="margin:10px 0; display:flex; align-items:center;">
+              <img src="certification_award_icon_0_female.png" alt="icon"
+                style="width:30px; height:30px; margin-right:8px;">
+              <b style="color:#000;">Jumlah Tagihan:</b>&nbsp;
+              <span style="color:#e91e63; font-weight: bold; margin-left:5px;" id="jumlahTagihan">Rp 500.000</span>
+            </p>
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+          <!-- Info Wajib Top Up -->
+          <!-- Box Info Aktivasi -->
+          <div id="aktivasiBox"
+            style="display:none; background:#fff3f3; border:1px solid #f5c2c2; padding:15px; border-radius:8px; margin-top:10px;">
+            <p id="aktivasiText" style="font-size:13px; margin:0;"></p>
+          </div>
+
+          <!-- Form Top Up -->
+          <h3 style="margin-bottom:10px; margin-top: 25px; color:#7f3586; text-align:center;">Form Deposit</h3>
+          <form id="formTopup">
+            <input type="text" name="namaPengirim" placeholder="Nama Pengirim" required style="
+      width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;
+    ">
+            <input type="text" name="bank" placeholder="Nama Bank / E-Wallet" required style="
+      width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;
+    ">
+            <div style="position:relative; margin-bottom:15px;">
+              <input type="number" id="nominalInput" name="nominal" placeholder="Nominal (Rp)" required
+                style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;">
+              <small id="nominalError"
+                style="color:red; font-size:12px; display:none; position:absolute; bottom:-18px; left:0;">
+                Minimal deposit Rp 500.000
+              </small>
+            </div>
+
+            <button type="submit" style="
+  background:#7f3586; color:#fff; padding:12px; border:none; border-radius:6px; width:100%; font-size:16px;
+">Kirim</button>
+
+            <!-- Tombol Tutup -->
+            <button onclick="document.getElementById('popupTopup').style.display='none';" style="
+    margin-top:12px; padding:12px; width:100%; background:#ccc; border:none; border-radius:6px; font-size:16px; cursor:pointer;
+  ">Tutup</button>
+        </div>
+
+        <script>
+
+
+          // fungsi login dummy (biar bisa test tampilan)
+          function loginUser() {
+            document.getElementById("loginPage").style.display = "none";
+            document.getElementById("userPage").style.display = "block";
+            showPageNav('play');
+          }
+
+          // navigasi antar halaman
+          function showPageNav(page) {
+            // sembunyikan semua halaman
+            document.querySelectorAll(".navPage").forEach(el => el.style.display = "none");
+
+            // tampilkan halaman sesuai nav
+            const target = document.getElementById("page" + page.charAt(0).toUpperCase() + page.slice(1));
+            if (target) target.style.display = "block";
+
+            // khusus header
+            if (page === "play") {
+              document.getElementById("mainHeader").style.display = "flex";
+            } else {
+              document.getElementById("mainHeader").style.display = "none";
+            }
+          }
+
+
+
+
+          function openChat(type) {
+            document.querySelector(".chat-list").style.display = "none";
+            const chatContent = document.getElementById("chatContent");
+
+            chatContent.style.display = "block";
+
+            const title = document.getElementById("chatTitle");
+            const messages = document.getElementById("chatMessages");
+
+            messages.innerHTML = ""; // kosongkan dulu
+
+            let chatHTML = "";
+
+            if (type === "laporan") {
+              title.innerText = "Layanan Host";
+              chatHTML = `
+      <div style="display:flex; align-items:flex-start; margin:4px 0;">
+        <img src="cs.png" alt="Admin" style="width:30px; height:30px; border-radius:50%; margin-right:8px;">
+        <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block;">
+          <b>Admin Agency:</b> Selamat Datang Di Akun Host Baru Anda!
+        </div>
+      </div>
+    `;
+            } else if (type === "pengumuman") {
+              title.innerText = "Notifikasi";
+              chatHTML = `
+      <div style="display:flex; align-items:flex-start; margin:4px 0;">
+        <img src="account.png" alt="App" style="width:30px; height:30px; border-radius:50%; margin-right:8px;">
+        <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block;">
+          <b>Aplikasi:</b> Manda mengunjungi saya 12 kali
+        </div>
+      </div>
+    `;
+            } else if (type === "user1") {
+              title.innerText = "Riks";
+              chatHTML = `
+      <div style="display:flex; align-items:flex-start; margin:4px 0;">
+        <img src="cewek11.jpeg" alt="Riks" style="width:30px; height:30px; border-radius:50%; margin-right:8px;">
+        <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block;">
+          <b>Riks:</b> Hai, lagi apa?
+        </div>
+      </div>
+    `;
+            } else if (type === "user2") {
+              title.innerText = "Puspita";
+              chatHTML = `
+      <div style="display:flex; align-items:flex-start; margin:4px 0;">
+        <img src="cewek10.jpeg" alt="Puspita" style="width:30px; height:30px; border-radius:50%; margin-right:8px;">
+        <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block;">
+          <b>Puspita:</b> Tinggal dimana bang
+        </div>
+      </div>
+    `;
+            } else if (type === "user3") {
+              title.innerText = "Manda";
+              chatHTML = `
+      <div style="display:flex; align-items:flex-start; margin:4px 0;">
+        <img src="cewek27.jpeg" alt="Manda" style="width:30px; height:30px; border-radius:50%; margin-right:8px;">
+        <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block;">
+          <b>Manda:</b> Kamu daftar dimana akun host?
+        </div>
+      </div>
+    `;
+            }
+
+            messages.innerHTML = chatHTML;
+          }
+
+          function backToList() {
+            document.querySelector(".chat-list").style.display = "block";
+            document.getElementById("chatContent").style.display = "none";
+          }
+
+          function sendMessage() {
+            const input = document.getElementById("messageInput");
+            if (input.value.trim() !== "") {
+              alert("Anda belum memenuhi syarat untuk membalas.");
+              input.value = ""; // kosongkan input setelah kirim
+            }
+          }
+
+
+          function setActiveNav(el) {
+            document.querySelectorAll("#bottomNav .nav-item").forEach(item => {
+              item.classList.remove("active");
+            });
+            el.classList.add("active");
+          }
+
+
+          document.addEventListener('DOMContentLoaded', () => {
+            const historyBtn = document.getElementById('historyBtn');
+            const historyPopup = document.getElementById('historyPopup');
+
+            // Buka popup History
+            historyBtn?.addEventListener('click', () => {
+              historyPopup.style.display = 'block';
+              // Kunci scroll halaman saat popup terbuka (opsional)
+              document.body.style.overflow = 'hidden';
+            });
+
+            // Tutup popup saat klik tombol "Tutup" (ID btnClosePopup di dalam #historyPopup)
+            document.addEventListener('click', (e) => {
+              if (e.target.id === 'btnClosePopup' && e.target.closest('#historyPopup')) {
+                closeHistoryPopup();
+              }
+            });
+
+            // Tutup popup saat klik area gelap di luar panel
+            historyPopup?.addEventListener('click', (e) => {
+              if (e.target === historyPopup) {
+                closeHistoryPopup();
+              }
+            });
+
+            // Tutup popup saat tekan ESC
+            document.addEventListener('keydown', (e) => {
+              if (e.key === 'Escape' && historyPopup?.style.display === 'block') {
+                closeHistoryPopup();
+              }
+            });
+
+            function closeHistoryPopup() {
+              historyPopup.style.display = 'none';
+              document.body.style.overflow = ''; // balikin scroll
+            }
+          });
+          // Contoh data history (bisa diganti dari Firestore)
+          const dataHistory = [
+            { nama: "Belum ada panggilan", waktu: new Date(), durasi: "0 menit", coin: 0 },
+            { nama: "Belum ada panggilan", waktu: new Date(), durasi: "0 menit", coin: 0 },
+          ];
+
+          historyBtn.addEventListener("click", () => {
+            // kosongkan list
+            callHistory.innerHTML = "";
+
+            // masukkan data
+            dataHistory.forEach(item => {
+              const li = document.createElement("li");
+              li.style.padding = "10px";
+              li.style.borderBottom = "1px solid #eee";
+              li.innerHTML = `
+        <b>${item.nama}</b><br>
+        ${item.waktu.toLocaleString()}<br>
+        Durasi: ${item.durasi}<br>
+        Pendapatan Coin: <span style="color:green">${item.coin}</span>
+      `;
+              callHistory.appendChild(li);
+            });
+
+            // tampilkan popup
+            historyPopup.style.display = "block";
+          });
+
+          function closePopup() {
+            historyPopup.style.display = "none";
+          }
+
+
+          const videoBtn = document.getElementById("videoBtn");
+          const videoPopup = document.getElementById("videoPopup");
+
+          videoBtn.addEventListener("click", () => {
+            videoPopup.style.display = "block";
+          });
+
+          function closeVideoPopup() {
+            videoPopup.style.display = "none";
+          }
+
+          // Tambahan: klik area luar popup untuk menutup
+          window.addEventListener("click", (e) => {
+            if (e.target === videoPopup) {
+              closeVideoPopup();
+            }
+          });
+
+
+
+          const playPage = document.getElementById("pagePlay");
+          const playPopup = document.getElementById("playPopup");
+
+          // cari semua user-card di dalam pagePlay
+          playPage.querySelectorAll(".user-card").forEach(card => {
+            card.addEventListener("click", () => {
+              playPopup.style.display = "block";
+            });
+          });
+
+          function closePlayPopup() {
+            playPopup.style.display = "none";
+          }
+
+          // klik area luar popup = close
+          window.addEventListener("click", (e) => {
+            if (e.target === playPopup) {
+              closePlayPopup();
+            }
+          });
+
+
+
+
+          function showPesta() {
+            document.getElementById('pestaPage').style.display = 'block';
+            // sembunyikan tab atau konten lain jika perlu
+          }
+
+          function backFromPesta() {
+            document.getElementById('pestaPage').style.display = 'none';
+          }
+
+
+
+
+          function showAccountNotif(message, icon = null, showHelp = false) {
+            const notifBox = document.getElementById('accountNotif');
+            const notifMsg = document.getElementById('notifMessage');
+            const notifIcon = document.getElementById('notifIcon');
+
+            // Tampilkan pesan (boleh HTML)
+            notifMsg.innerHTML = message;
+
+            // Tampilkan icon jika ada
+            if (icon) {
+              notifIcon.src = icon;
+              notifIcon.style.display = 'block';
+              notifIcon.style.margin = '0 auto'; // tengah
+              notifIcon.style.display = 'block';
+            } else {
+              notifIcon.style.display = 'none';
+            }
+
+            // Hapus tombol lama jika ada
+            const oldBtn = document.querySelector('#accountNotif .help-btn');
+            if (oldBtn) oldBtn.remove();
+
+            // Tambahkan tombol "Hubungi Admin" jika showHelp = true
+            if (showHelp) {
+              const helpBtn = document.createElement('button');
+              helpBtn.textContent = 'Hubungi Admin';
+              helpBtn.classList.add('help-btn');
+              helpBtn.style.cssText = `
+      display:block;
+      margin:10px auto 0;
+      padding:8px 15px;
+      background:#25D366;
+      color:#fff;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      font-size:14px;
+    `;
+              helpBtn.onclick = function () {
+                window.open('https://wa.me/6281234567890?text=Halo%20Admin,%20saya%20butuh%20bantuan%20karena%20akun%20saya%20dihapus.', '_blank');
+              };
+
+              notifBox.appendChild(helpBtn);
+            }
+
+            // Tampilkan notif
+            notifBox.style.display = 'block';
+
+            // Auto hide setelah 30 detik
+            setTimeout(() => {
+              notifBox.style.display = 'none';
+            }, 30000);
+          }
+
+
+
+          function closeAccountNotif() {
+            document.getElementById("accountNotif").style.display = "none";
+            document.body.style.overflow = "auto";
+          }
+
+          document.addEventListener('DOMContentLoaded', () => {
+            const overlay = document.getElementById('overlay');
+            const popup = document.getElementById('countryPopup');
+            const countrySelector = document.getElementById('countrySelector');
+            const selectedCountryIcon = document.getElementById('selectedCountryIcon');
+            const countryItems = document.querySelectorAll('.country-item');
+
+            const defaultIcon = 'country_filter_icon.png'; // ✅ Icon default filter
+
+            // ✅ Klik icon header → buka popup
+            countrySelector.addEventListener('click', () => {
+              overlay.style.display = 'block';
+              popup.style.display = 'block';
+            });
+
+            // ✅ Pilih negara
+            countryItems.forEach(item => {
+              item.addEventListener('click', () => {
+                const icon = item.getAttribute('data-icon');
+
+                // Update icon header ke icon negara yang dipilih
+                selectedCountryIcon.src = icon;
+
+                // Simpan hanya icon ke localStorage (opsional)
+                localStorage.setItem('selectedCountryIcon', icon);
+
+                closePopup();
+              });
+            });
+
+            // ✅ Reset icon ke default saat reload
+            selectedCountryIcon.src = defaultIcon;
+
+            // ✅ Fungsi close popup
+            window.closePopup = function () {
+              overlay.style.display = 'none';
+              popup.style.display = 'none';
+            }
+          });
+
+
+
+
+
+        </script>
+</body>
+
+</html>

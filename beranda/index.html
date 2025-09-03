@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Halaman Orang</title>
+  <style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+}
+
+/* kalau header fixed tingginya 50px */
+main, .content, .navPage {
+  padding-top: 60px; /* kasih ruang supaya isi tidak ketutup header */
+}
+
+    /* Header */
+.header {
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px 15px;
+  font-size: 20px;
+  font-weight: bold;
+
+  position: fixed;   /* biar nempel di atas */
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: #fff;  /* kasih background biar jelas */
+  z-index: 1000;     /* biar di atas konten */
+  border-bottom: 0px solid #ddd; /* opsional, garis bawah */
+}
+
+    .header span {
+      margin-right: 15px;
+      color: #000;
+    }
+
+    .header span.inactive {
+      color: #aaa;
+      font-weight: normal;
+    }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 10px;
+  padding-top: 50px;
+}
+
+/* Card */
+.card {
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  background: #eee;
+}
+
+.card img {
+  width: 100%;
+  aspect-ratio: 3 / 4;    /* konsisten portrait */
+  object-fit: cover;
+  display: block;
+}
+
+/* Info dalam card */
+.card .info {
+  position: absolute;
+  bottom: 0;   /* dari 10px -> 0px */
+  left: 10px;
+  right: 10px;
+  color: #fff;
+  font-size: 14px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  padding-bottom: 3px; /* opsional biar ada sedikit ruang */
+}
+
+/* Titik status */
+.card .info .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0dcaf0;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+/* Baris nama */
+.name {
+  display: flex;
+  align-items: center;
+  gap: 0px;
+  margin-bottom: -3px;  /* lebih pas */
+}
+
+/* Baris negara + chat */
+.country {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.country span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+}
+
+/* Ikon-ikon kecil */
+.status-icon {
+  width: 19px !important;   /* paksa override */
+  height: 19px !important;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+.chat-icon {
+  width: 46px !important;
+  height: 46px !important;
+  object-fit: cover;     /* cover biar pas kotak */
+  flex-shrink: 0;        /* cegah ketarik */
+}
+
+.vip-icon {
+  width: 22px !important;
+  height: 14px !important;
+  margin-left: 4px;
+  border-radius: 3px;
+  object-fit: cover;     /* cover biar ga gepeng */
+  flex-shrink: 0;        /* jangan biarin flex ngubah ukuran */
+}
+/* Header kanan */
+/* Header kanan */
+.header-right {
+  margin-left: auto;   /* dorong ke kanan */
+  padding-right: 0;    /* hapus padding kanan */
+}
+
+.header-right img {
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+  display: block;
+  margin-right: 30px;  /* geser lebih ke kiri */
+}
+    /* Navbar bawah */
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-top: 0px solid #ccc;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    .navbar img {
+      width: 38px;
+      height: 38px;
+      opacity: 0.6;
+    }
+
+    .navbar img.active {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+  <div class="header-left">
+    <span>Orang</span>
+    <span class="inactive">Pesta</span>
+  </div>
+  <div class="header-right">
+    <img src="country_filter_icon.png" alt="Menu" class="menu-icon">
+  </div>
+</div>
+
+<!-- Grid -->
+<div class="grid">
+  <div class="card">
+    <img src="c1.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> kikjs
+        
+      
+
+<div style="background:#ff3366; 
+            color:white; 
+            font-weight:bold; 
+            padding:2px 8px; 
+            border-radius:8px; 
+            display:inline-block;
+            font-size: 9px;">
+  HOST
+
+</div>
+</div>
+
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="c2.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> TKS
+        <img src="vip_tag.png" class="vip-icon" alt="vip">
+      </div>
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="c3.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> chandra
+        <div style="background:#ff3366; 
+            color:white; 
+            font-weight:bold; 
+            padding:2px 8px; 
+            border-radius:8px; 
+            display:inline-block;
+            font-size: 9px;">
+  HOST
+
+</div>
+</div>
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="c4.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> malik sali
+      </div>
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="c5.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> Dikalis
+      </div>
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="c6.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> Harto...
+<div style="background:#ff3366; 
+            color:white; 
+            font-weight:bold; 
+            padding:2px 8px; 
+            border-radius:8px; 
+            display:inline-block;
+            font-size: 9px;">
+  HOST
+
+</div>
+</div>
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="c7.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> Ali san...
+<div style="background:#ff3366; 
+            color:white; 
+            font-weight:bold; 
+            padding:2px 8px; 
+            border-radius:8px; 
+            display:inline-block;
+            font-size: 9px;">
+  HOST
+
+</div>
+</div>
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="c8.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> Ardi
+        <img src="vip_tag.png" class="vip-icon" alt="vip">
+      </div>
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="c9.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> rudi
+</div>
+      <div class="country">
+        <span>
+            <img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+    <div class="card">
+    <img src="c10.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> usercoli
+        <img src="vip_tag.png" class="vip-icon" alt="vip">
+      </div>
+      <div class="country">
+        <span>
+            <img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+
+
+    <div class="card">
+    <img src="c11.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> carijodoh
+        <img src="vip_tag.png" class="vip-icon" alt="vip">
+      </div>
+      <div class="country">
+        <span>
+            <img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+
+
+    <div class="card">
+    <img src="c12.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> mangga1
+  <div style="background:#ff3366; 
+            color:white; 
+            font-weight:bold; 
+            padding:2px 8px; 
+            border-radius:8px; 
+            display:inline-block;
+            font-size: 9px;">
+  HOST
+
+</div>
+</div>
+      <div class="country">
+        <span>
+            <img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+
+
+
+    <div class="card">
+    <img src="c13.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> sandi
+      </div>
+      <div class="country">
+        <span>
+            <img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+
+
+    <div class="card">
+    <img src="c14.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> cucusima
+<div style="background:#ff3366; 
+            color:white; 
+            font-weight:bold; 
+            padding:2px 8px; 
+            border-radius:8px; 
+            display:inline-block;
+            font-size: 9px;">
+  HOST
+
+</div>
+</div>
+      <div class="country">
+        <span>
+            <img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+
+
+
+    <div class="card">
+    <img src="c15.webp" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> kandi
+      </div>
+      <div class="country">
+        <span>
+            <img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+
+
+    <div class="card">
+    <img src="c16.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> usergfe
+        <img src="vip_tag.png" class="vip-icon" alt="vip">
+      </div>
+      <div class="country">
+        <span>
+            <img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+
+
+    <div class="card">
+    <img src="c17.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> user7091
+<div style="background:#ff3366; 
+            color:white; 
+            font-weight:bold; 
+            padding:2px 8px; 
+            border-radius:8px; 
+            display:inline-block;
+            font-size: 9px;">
+  HOST
+
+</div>
+</div>
+      <div class="country">
+        <span>
+            <img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+
+
+    <div class="card">
+    <img src="c18.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> samiun
+        <img src="vip_tag.png" class="vip-icon" alt="vip">
+      </div>
+      <div class="country">
+        <span>
+            <img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="c19.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> Sanro ca...
+        <img src="vip_tag.png" class="vip-icon" alt="vip">
+      </div>
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+    <img src="c20.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> jawa
+<div style="background:#ff3366; 
+            color:white; 
+            font-weight:bold; 
+            padding:2px 8px; 
+            border-radius:8px; 
+            display:inline-block;
+            font-size: 9px;">
+  HOST
+
+</div>
+</div>
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+
+    <div class="card">
+    <img src="c22.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> hai dek
+        <img src="vip_tag.png" class="vip-icon" alt="vip">
+      </div>
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+
+    <div class="card">
+    <img src="c23.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> rizal w...
+<div style="background:#ff3366; 
+            color:white; 
+            font-weight:bold; 
+            padding:2px 8px; 
+            border-radius:8px; 
+            display:inline-block;
+            font-size: 9px;">
+  HOST
+
+</div>
+</div>
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+
+
+    <div class="card">
+    <img src="c24.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span>sahrul
+        <img src="vip_tag.png" class="vip-icon" alt="vip">
+      </div>
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+
+
+    <div class="card">
+    <img src="c25.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> wanna
+        <img src="vip_tag.png" class="vip-icon" alt="vip">
+      </div>
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+      </div>
+    </div>
+  </div>
+
+    <div class="card">
+    <img src="c26.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> bima
+        <img src="vip_tag.png" class="vip-icon" alt="vip">
+      </div>
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+
+
+
+</div>
+
+
+   
+
+
+
+
+
+
+
+
+
+ 
+
+
+ 
+
+
+  <!-- Navbar bawah -->
+  <div class="navbar">
+    <img src="destiny_icon_selected.png" class="active">
+    <img src="match_icon_normal.png">
+    <img src="msg_icon_normal.png">
+    <img src="mine_icon_normal.png">
+  </div>
+
+</body>
+</html>
