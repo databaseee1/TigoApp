@@ -48,9 +48,10 @@ main, .content, .navPage {
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  gap: 7px;
   padding: 10px;
   padding-top: 60px;
+  padding-bottom: 60px; /* ruang buat navbar bawah */
 }
 
 /* Card */
@@ -71,13 +72,12 @@ main, .content, .navPage {
 /* Info dalam card */
 .card .info {
   position: absolute;
-  bottom: 0;   /* dari 10px -> 0px */
+  bottom: -13px;   /* lebih turun 5px */
   left: 10px;
-  right: 10px;
+  right: 5px;
   color: #fff;
   font-size: 14px;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-  padding-bottom: 3px; /* opsional biar ada sedikit ruang */
+  padding-bottom: 20px;
 }
 
 /* Titik status */
@@ -85,7 +85,7 @@ main, .content, .navPage {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #0dcaf0;
+  background: #20ff00;
   display: inline-block;
   margin-right: 5px;
 }
@@ -94,8 +94,10 @@ main, .content, .navPage {
 .name {
   display: flex;
   align-items: center;
-  gap: 0px;
-  margin-bottom: -3px;  /* lebih pas */
+  gap: 3px;
+  margin-bottom: 7px;  /* lebih pas */
+  font-weight: bold;
+  font-size: 13px;
 }
 
 /* Baris negara + chat */
@@ -108,23 +110,27 @@ main, .content, .navPage {
 .country span {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 2px;
   font-size: 12px;
 }
 
 /* Ikon-ikon kecil */
 .status-icon {
-  width: 19px !important;   /* paksa override */
-  height: 19px !important;
+  width: 13px !important;   /* paksa override */
+  height: 13px !important;
   border-radius: 50%;
   object-fit: cover;
   display: block;
 }
+
+
 .chat-icon {
-  width: 46px !important;
-  height: 46px !important;
-  object-fit: cover;     /* cover biar pas kotak */
-  flex-shrink: 0;        /* cegah ketarik */
+  width: 36px !important;
+  height: 36px !important;
+  object-fit: cover;
+  flex-shrink: 0;
+  align-self: flex-start;   /* Bikin posisinya naik ke atas */ 
+  margin-top: -20px;       /* Kalau mau lebih naik, atur nilai negatif */
 }
 
 .vip-icon {
@@ -645,7 +651,6 @@ main, .content, .navPage {
     <div class="info">
       <div class="name">
         <span class="dot"></span> bima
-        <img src="vip_tag.png" class="vip-icon" alt="vip">
       </div>
       <div class="country">
         <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
@@ -653,6 +658,33 @@ main, .content, .navPage {
       </div>
     </div>
   </div>
+
+
+
+    <div class="card">
+    <img src="c27.jpg" alt="">
+    <div class="info">
+      <div class="name">
+        <span class="dot"></span> arinja
+<div style="background:#f15a7f; 
+            color:#fffffff2; 
+            font-weight:bold; 
+            padding:2px 3px; 
+            border-radius:4px; 
+            display:inline-block;
+            font-size: 9px;">
+  HOST
+
+</div>
+</div>
+      <div class="country">
+        <span><img src="indonesialogo.png" class="status-icon" alt=""> Indonesia</span>
+        <img src="destiny_icon_msg_chat.png" class="chat-icon" alt="pesan">
+      </div>
+    </div>
+  </div>
+
+
 
 
 
