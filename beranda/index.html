@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#fff">
+  <meta name="theme-color" content="#ffffff" />
 
   <title>Halaman Orang</title>
   <style>
@@ -720,20 +720,19 @@ main, .content, .navPage {
 
 
 
-
-
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const bodyColor = getComputedStyle(document.body).backgroundColor;
-    let meta = document.querySelector("meta[name='theme-color']");
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "theme-color";
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", bodyColor);
-  });
+document.addEventListener("DOMContentLoaded", () => {
+  const bg = getComputedStyle(document.body).backgroundColor;
+  let meta = document.querySelector("meta[name=theme-color]");
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.setAttribute("name", "theme-color");
+    document.head.appendChild(meta);
+  }
+  meta.setAttribute("content", bg);
+});
 </script>
+
 
 
 
