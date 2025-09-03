@@ -716,5 +716,24 @@ main, .content, .navPage {
     <img src="mine_icon_normal.png">
   </div>
 
+
+
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const bodyColor = getComputedStyle(document.body).backgroundColor;
+    let meta = document.querySelector("meta[name='theme-color']");
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.name = "theme-color";
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute("content", bodyColor);
+  });
+</script>
+
+
+
 </body>
 </html>
