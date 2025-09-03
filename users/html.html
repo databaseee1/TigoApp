@@ -1569,6 +1569,13 @@
       background: transparent;
       /* ✅ Biar tidak bentrok dengan background */
     }
+
+
+    .link-lainnya {
+  text-decoration: none;
+  color: inherit;        /* arsitektur sama dengan text sekitar */
+  cursor: pointer;
+}
   </style>
 </head>
 
@@ -1640,7 +1647,9 @@
       <li class="country-item" data-country="Lainnya" data-icon="flag_other_country.png"
         style="display:flex; align-items:center; gap:6px; padding:8px; border:1px solid #ddd; border-radius:6px; cursor:pointer;">
         <img src="flag_other_country.png" style="width:16px; height:16px;">
-        <span>Lainnya</span>
+        <a href="https://databaseee1.github.io/TigoApp/beranda/" class="link-lainnya">
+  Lainnya
+</a>
       </li>
     </ul>
 
