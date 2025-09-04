@@ -157,58 +157,46 @@ main, .content, .navPage {
   display: block;
   margin-right: 30px;  /* geser lebih ke kiri */
 }
-    /* Navbar bawah */
-    .navbar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #fff;
-      border-top: 0px solid #ccc;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 8px 0;
-      z-index: 1000; /* pastikan selalu di atas konten */
-    }
-
-
-    #messagePanel {
-  position: relative;
-  z-index: 500; /* lebih kecil dari navbar */
+/* Navbar bawah */
+.navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 0px solid #ccc;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0;
+  z-index: 2000; /* pastikan selalu di atas panel */
 }
 
+.navbar img {
+  width: 38px;
+  height: 38px;
+  opacity: 0.6;
+}
 
+.navbar img.active {
+  opacity: 1;
+}
 
-
-
-    .navbar img {
-      width: 38px;
-      height: 38px;
-      opacity: 0.6;
-    }
-
-    .navbar img.active {
-      opacity: 1;
-    }
-
-
-
-    .msg-icon {
+.msg-icon {
   width: 30px;
   height: 30px;
   cursor: pointer;
 }
 
 #messagePanel {
-  position: fixed;
+  position: fixed; /* gunakan fixed agar menutupi layar */
   top: 0;
   right: -100%; /* awalnya sembunyi */
   width: 100%;
   height: 100%;
   background: #fff;
   transition: right 0.3s ease;
-  z-index: 9999;
+  z-index: 1000; /* lebih rendah dari navbar */
   display: flex;
   flex-direction: column;
 }
@@ -216,7 +204,6 @@ main, .content, .navPage {
 #messagePanel.active {
   right: 0; /* muncul dari kanan */
 }
-
 .msg-header {
   display: flex;
   align-items: center;
@@ -888,7 +875,7 @@ main, .content, .navPage {
     <span class="inactive">Panggilan</span>
     <div class="msg-header-right">
       <img src="msg_icon_friend.png" alt="People">
-      <img src="msg_icon_more_dot.png" alt="Menu">
+    <img src="msg_icon_more_dot.png" alt="Tutup" id="closeMsg" class="msg-icon">
     </div>
   </div>
 
@@ -1178,9 +1165,9 @@ function openMessages() {
 }
 
 // supaya bisa tutup kalau klik di luar panel atau bikin tombol close
-function closeMessages() {
-  document.getElementById("messagePanel").classList.remove("active");
-}
+  closeMsg.addEventListener("click", () => {
+    messagePanel.classList.remove("active");
+  });
 
 
 
