@@ -883,7 +883,7 @@ main, .content, .navPage {
     <span class="inactive">Panggilan</span>
     <div class="msg-header-right">
       <img src="msg_icon_friend.png" alt="People">
-    <img src="msg_icon_more_dot.png" alt="Tutup" id="closeMsg" class="msg-icon">
+      <img src="msg_icon_more_dot.png" alt="Tutup" id="closeMsg" class="msg-icon">
     </div>
   </div>
 
@@ -920,77 +920,47 @@ main, .content, .navPage {
     <div class="chat-list">
 
       <!-- Chat 1 -->
-      <div class="chat-item">
+      <div class="chat-item" data-user="reyhan">
         <img src="c12.jpg" class="avatar">
         <div class="chat-info">
           <div class="chat-name">
             reyhan 
-            <div style="background:#f15a7f; 
-                        color:#fffffff2; 
-                        font-weight:bold; 
-                        padding:1px 2px; 
-                        border-radius:4px; 
-                        display:inline-block;
-                        font-size: 8px;">
-              HOST
-            </div>
+            <div style="background:#f15a7f;color:#fffffff2;font-weight:bold;padding:1px 2px;border-radius:4px;display:inline-block;font-size:8px;">HOST</div>
           </div>
           <div class="chat-msg">coin udah 4209 mau wd ni ntar lagi...</div>
         </div>
         <span class="badge">2</span>
-        <div class="chat-meta">
-          <div class="chat-time">09.49</div>
-        </div>
+        <div class="chat-meta"><div class="chat-time">09.49</div></div>
       </div>
 
       <!-- Chat 2 -->
-      <div class="chat-item">
+      <div class="chat-item" data-user="Raffli">
         <img src="c13.jpg" class="avatar">
         <div class="chat-info">
           <div class="chat-name">
-            Raffli 
-            <div style="background:#f15a7f; 
-                        color:#fffffff2; 
-                        font-weight:bold; 
-                        padding:1px 2px; 
-                        border-radius:4px; 
-                        display:inline-block;
-                        font-size: 8px;">
-              HOST
-            </div>
+            Raffli
+            <div style="background:#f15a7f;color:#fffffff2;font-weight:bold;padding:1px 2px;border-radius:4px;display:inline-block;font-size:8px;">HOST</div>
           </div>
           <div class="chat-msg">kejar jam tayang lagi.nanggung 200...</div>
         </div>
-        <div class="chat-meta">
-          <div class="chat-time">09.44</div>
-        </div>
+        <div class="chat-meta"><div class="chat-time">09.44</div></div>
       </div>
 
       <!-- Chat 3 -->
-      <div class="chat-item">
+      <div class="chat-item" data-user="Andrean">
         <img src="c14.jpg" class="avatar">
         <div class="chat-info">
           <div class="chat-name">
             Andrean
-            <div style="background:#f15a7f; 
-                        color:#fffffff2; 
-                        font-weight:bold; 
-                        padding:1px 2px; 
-                        border-radius:4px; 
-                        display:inline-block;
-                        font-size: 8px;">
-              HOST
-            </div>
+            <div style="background:#f15a7f;color:#fffffff2;font-weight:bold;padding:1px 2px;border-radius:4px;display:inline-block;font-size:8px;">HOST</div>
           </div>
           <div class="chat-msg">Kirim rek una,dah tarik hasil live ni ...</div>
         </div>
-        <div class="chat-meta">
-          <div class="chat-time">09.41</div>
-        </div>
+        <div class="chat-meta"><div class="chat-time">09.41</div></div>
         <span class="badge">10</span>
       </div>
 
-    </div><!-- end chat-list -->
+
 
 
       <!-- Chat 4 -->
@@ -1176,6 +1146,23 @@ function openMessages() {
   closeMsg.addEventListener("click", () => {
     messagePanel.classList.remove("active");
   });
+
+
+
+
+  document.querySelectorAll(".chat-item").forEach(item => {
+    item.addEventListener("click", () => {
+      const user = item.getAttribute("data-user") || "unknown";
+      // arahkan ke file lokal pesan/index.html
+      window.location.href = "pesan/index.html?user=" + encodeURIComponent(user);
+    });
+  });
+
+
+
+
+
+
 
 
 
