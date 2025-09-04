@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
   <title>Dashboard Analisis Tigohost Indonesia</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -151,6 +151,27 @@
 
 
   <style>
+
+
+  /* Nonaktifkan seleksi & drag di seluruh halaman */
+  html, body {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none;     /* IE/Edge */
+    user-select: none;         /* Standar */
+    -webkit-touch-callout: none;
+    touch-action: manipulation; /* kurangi gesture zoom/double-tap */
+  }
+
+  /* Jika kamu ingin input/textarea tetap bisa dipilih, aktifkan ini */
+  /* input, textarea {
+    -webkit-user-select: text !important;
+    user-select: text !important;
+  } */
+
+
+
+
+
     :root {
       --bg: #0b1020;
       --card: #121a34;
@@ -311,6 +332,61 @@ background: radial-gradient(1200px 800px at 80% -10%, #d449e0 0%, #322448 35%, #
 function goToAdmin() {
   window.location.href = "https://databaseee1.github.io/TigoApp/";
 }
+
+
+
+  // ===== Blokir klik kanan =====
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+  // ===== Blokir copy/cut/select/drag =====
+  ['copy','cut','selectstart','dragstart'].forEach(evt => {
+    document.addEventListener(evt, (e) => e.preventDefault());
+  });
+
+  // ===== Blokir shortcut umum: Ctrl/Cmd + (C, X, A, S, P, U, +, -, 0, =) =====
+  document.addEventListener('keydown', (e) => {
+    const k = e.key.toLowerCase();
+    const withMod = e.ctrlKey || e.metaKey;
+
+    // blok zoom keyboard
+    const zoomKeys = ['+', '-', '0', '='];
+    if (withMod && (['c','x','a','s','p','u'].includes(k) || zoomKeys.includes(k))) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    // juga blok Ctrl/Shift/Meta + +
+    if ((withMod || e.shiftKey) && (k === '+' || k === '=')) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, {capture:true});
+
+  // ===== Blokir zoom via Ctrl/⌘ + scroll =====
+  document.addEventListener('wheel', (e) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+    }
+  }, {passive:false});
+
+  // ===== Blokir pinch zoom (Safari/iOS) =====
+  document.addEventListener('gesturestart', (e) => e.preventDefault());
+  document.addEventListener('gesturechange', (e) => e.preventDefault());
+  document.addEventListener('gestureend', (e) => e.preventDefault());
+
+  // ===== Opsional: cegah double-tap zoom di iOS lama =====
+  let lastTouch = 0;
+  document.addEventListener('touchend', (e) => {
+    const now = Date.now();
+    if (now - lastTouch <= 300) {
+      e.preventDefault();
+    }
+    lastTouch = now;
+  }, {passive:false});
+
+
+
+
 
   </script>
 </body>
