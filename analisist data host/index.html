@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Analisis Tigohost Indonesia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #121a34;
+      --muted: #9aa4b2;
+      --text: #eaf0ff;
+      --green: #16a34a;
+      --red: #ef4444;
+      --ring: #1f2a52;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 800px at 80% -10%, #1a2458 0%, #0b1020 35%, #0b1020 100%);
+      color: var(--text);
+    }
+    .wrap { max-width: 1200px; margin: 24px auto; padding: 16px; }
+    header { display:flex; flex-direction:column; gap:10px; margin-bottom: 20px; }
+    h1 { font-size: 22px; margin: 0; font-weight: 800; letter-spacing: .2px; }
+    #clock { font-size:14px; color:var(--muted); font-weight:600; }
+    .cards { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px; padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .card h3 { margin: 0 0 8px; font-size: 14px; color: var(--muted); font-weight: 600; }
+    .stat { font-size: 28px; font-weight: 800; letter-spacing: .3px; margin: 0; }
+    .sub { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+    .span-4 { grid-column: span 4; }
+    .span-6 { grid-column: span 6; }
+    .span-12 { grid-column: span 12; }
+    @media (max-width: 960px) { .span-6,.span-4 {grid-column: span 12} }
+    .legend { display:flex; gap:12px; flex-wrap:wrap; margin-top:10px; }
+    .badge { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
+    .dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+    .row { display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    .controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .input {
+      background: #0f1530; color: var(--text); border:1px solid #27325c; border-radius:10px;
+      padding:8px 10px; font-size:12px; outline:none;
+    }
+    button { cursor:pointer; background:#243066; color:#dfe7ff; border:1px solid #2d3a78; padding:8px 12px; border-radius:10px; }
+    button:hover { filter: brightness(1.1); }
+    canvas { max-height: 280px; }
+    .footnote { color:var(--muted); font-size:12px; margin-top:8px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Dashboard Analisis Tigohost Indonesia</h1>
+      <div id="clock"></div>
+      
+    </header>
+
+    <!-- Ringkasan keuangan -->
+    <section class="cards">
+      <div class="card span-6">
+        <h3>Analisis Pengeluaran & Pemasukan</h3>
+        <p class="stat" id="saldoText">Rp 0</p>
+        <p class="sub">Saldo = Pemasukan − Pengeluaran gaji host</p>
+        <div class="row">
+          <div style="flex:1; min-width:260px;">
+            <canvas id="financePie"></canvas>
+            <div class="legend">
+              <span class="badge"><span class="dot" style="background:var(--red)"></span>Pengeluaran</span>
+              <span class="badge"><span class="dot" style="background:var(--green)"></span>Pemasukan</span>
+            </div>
+          </div>
+          <div style="flex:1; min-width:220px;">
+            <div class="card" style="padding:12px;">
+              <h3>Total Pengeluaran Gaji</h3>
+              <p class="stat" id="outText">Rp 0</p>
+              <p class="sub">Merah = pengeluaran</p>
+            </div>
+            <div class="card" style="padding:12px; margin-top:12px;">
+              <h3>Total Pemasukan</h3>
+              <p class="stat" id="inText">Rp 0</p>
+              <p class="sub">Hijau = pemasukan</p>
+            </div>
+          </div>
+        </div>
+        <div class="footnote">*Termasuk stabil dan normal lebih tinggi dari sebelumnya.".</div>
+      </div>
+
+      <!-- Pengembangan user host -->
+      <div class="card span-6">
+        <h3>Pengembangan Total User Host</h3>
+        <p class="stat" id="userTotalText">0 pengguna</p>
+        <p class="sub">Hijau = bagus, Merah = buruk</p>
+        <canvas id="userPie"></canvas>
+        <div class="legend">
+          <span class="badge"><span class="dot" style="background:var(--green)"></span>Bagus</span>
+          <span class="badge"><span class="dot" style="background:var(--red)"></span>Buruk</span>
+        </div>
+      </div>
+
+      <!-- Kepuasan host -->
+      <div class="card span-12">
+        <div class="row">
+          <div style="flex:1; min-width:260px;">
+            <h3>Total Kepuasan Host</h3>
+            <p class="stat" id="puasText">152.670.394</p>
+            <p class="sub">Hijau = Puas</p>
+            <canvas id="satisfactionYes"></canvas>
+          </div>
+          <div style="flex:1; min-width:260px;">
+            <h3>Total Ketidakpuasan Host</h3>
+            <p class="stat" id="tidakPuasText">125.670 Host</p>
+            <p class="sub">Merah = Tidak Puas</p>
+            <canvas id="satisfactionNo"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+
+  // ===== Util Rupiah =====
+  function toRupiah(n){
+    if (isNaN(n)) return 'Rp 0';
+    return 'Rp ' + n.toLocaleString('id-ID');
+  }
+
+  // ===== Realtime Clock =====
+  function updateClock(){
+    const now = new Date();
+    const options = { 
+      year:'numeric', month:'long', day:'numeric', 
+      hour:'2-digit', minute:'2-digit', second:'2-digit'
+    };
+    document.getElementById("clock").textContent = now.toLocaleDateString("id-ID", options);
+  }
+  setInterval(updateClock,1000);
+  updateClock();
+
+  // ===== Load/Save Data from LocalStorage =====
+  function loadData(){
+    return JSON.parse(localStorage.getItem("dashboardData")) || {
+      pemasukan: 0, pengeluaran: 0, userBagus: 0, userBuruk: 0,
+      totalPuas: 0, totalTidakPuas: 0
+    };
+  }
+
+  function saveData(){
+    const data = { pemasukan, pengeluaran, userBagus, userBuruk, totalPuas, totalTidakPuas };
+    localStorage.setItem("dashboardData", JSON.stringify(data));
+  }
+
+  // ===== Vars =====
+  let { pemasukan, pengeluaran, userBagus, userBuruk, totalPuas, totalTidakPuas } = loadData();
+
+  // ===== Charts =====
+  Chart.defaults.color = '#cdd6f4';
+  Chart.defaults.font.family = 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif';
+
+  // Pengeluaran & Pemasukan
+  const financeChart = new Chart(document.getElementById('financePie'), {
+    type: 'doughnut',
+    data: { 
+      labels: ['Pengeluaran','Pemasukan'],
+      datasets:[{ 
+        data:[pengeluaran || 0.0001, pemasukan || 0.0001], 
+        backgroundColor:['var(--red)','var(--green)'], 
+        borderWidth:0, cutout:'64%' 
+      }]
+    },
+    options:{ plugins:{legend:{display:false}} }
+  });
+
+  // User Bagus vs Buruk
+  const userPie = new Chart(document.getElementById('userPie'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Buruk', 'Bagus'],
+      datasets: [{
+        data: [userBuruk || 0.0001, userBagus || 0.0001],
+        backgroundColor: ['var(--red)','var(--green)'],
+        borderWidth: 0,
+        cutout: '64%'
+      }]
+    },
+    options: { plugins: { legend: { display: false } } }
+  });
+
+  // Kepuasan Host (gabungan)
+  const satChart = new Chart(document.getElementById('satisfactionPie'), {
+    type:'doughnut',
+    data:{ 
+      labels:['Puas','Tidak Puas'],
+      datasets:[{ 
+        data:[totalPuas || 0.0001, totalTidakPuas || 0.0001], 
+        backgroundColor:['var(--green)','var(--red)'], 
+        borderWidth:0, cutout:'64%'
+      }]
+    },
+    options:{ plugins:{legend:{display:false}} }
+  });
+
+  // ===== Text binders =====
+  function renderTexts(){
+    document.getElementById('saldoText').textContent = toRupiah(pemasukan - pengeluaran);
+    document.getElementById('outText').textContent = toRupiah(pengeluaran);
+    document.getElementById('inText').textContent = toRupiah(pemasukan);
+    document.getElementById('userTotalText').textContent = (userBagus + userBuruk).toLocaleString('id-ID') + ' pengguna';
+    document.getElementById('puasText').textContent = totalPuas.toLocaleString('id-ID');
+    document.getElementById('tidakPuasText').textContent = totalTidakPuas.toLocaleString('id-ID');
+  }
+  renderTexts();
+
+  // ===== Apply controls =====
+  document.getElementById('apply').addEventListener('click', () => {
+    pemasukan   = Number(document.getElementById('nominalPemasukan').value) || pemasukan;
+    pengeluaran = Number(document.getElementById('nominalGaji').value) || pengeluaran;
+    userBagus   = Number(document.getElementById('totalUserBagus').value) || userBagus;
+    userBuruk   = Number(document.getElementById('totalUserBuruk').value) || userBuruk;
+    totalPuas   = Number(document.getElementById('puas').value) || totalPuas;
+    totalTidakPuas = Number(document.getElementById('tidakPuas').value) || totalTidakPuas;
+
+    financeChart.data.datasets[0].data = [pengeluaran || 0.0001, pemasukan || 0.0001];
+    financeChart.update();
+
+    userPie.data.datasets[0].data = [userBuruk || 0.0001, userBagus || 0.0001];
+    userPie.update();
+
+    satChart.data.datasets[0].data = [totalPuas || 0.0001, totalTidakPuas || 0.0001];
+    satChart.update();
+
+    renderTexts();
+    saveData();
+  });
+
+
+  </script>
+</body>
+</html>

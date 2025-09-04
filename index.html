@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
   <title>PT. AGENCY TIGOHOST INDONESIA</title>
- 
+ <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
   <style>
 :root{
   --primary:#7c3aed;       /* ungu utama */
@@ -2649,9 +2650,10 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <div class="text">
 
 
-      <!-- Rating di atas nama -->
+
+<!-- Rating -->
 <strong>Total Rating :</strong>
-<div id="raatiing"> 
+<div id="raatiing" style="cursor:pointer;"> 
   <span class="star gong">★</span> 
   <span class="star gong">★</span> 
   <span class="star gong">★</span> 
@@ -2659,6 +2661,37 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
   <span class="star gengg">☆</span> 
   <span class="sccror">4.6</span> 
 </div>
+
+<!-- Popup -->
+<div id="popupOverlay" style="
+  display:none; 
+  position:fixed; 
+  top:0; left:0; right:0; bottom:0; 
+  background:rgba(0,0,0,0.6); 
+  justify-content:center; 
+  align-items:center;
+  z-index:9999;">
+  <div id="analysisBox" style="padding:16px; background:#2c2c2c; border-radius:12px; width:240px; text-align:center; color:white;">
+    <h4 style="margin:0 0 10px;">Analisis Kepuasan</h4>
+    <canvas id="analysisChart" style="max-height:200px;"></canvas>
+    <div style="display:flex; gap:12px; margin-top:10px; font-size:14px; justify-content:center;">
+      <span style="display:flex; align-items:center; gap:6px;">
+        <span style="width:12px;height:12px;background:#16a34a;border-radius:50%;display:inline-block;"></span> Puas
+      </span>
+      <span style="display:flex; align-items:center; gap:6px;">
+        <span style="width:12px;height:12px;background:#ef4444;border-radius:50%;display:inline-block;"></span> Tidak Puas
+      </span>
+    </div>
+    <button id="closePopup" style="margin-top:12px; padding:6px 12px; border:none; border-radius:6px; background:#444; color:white; cursor:pointer;">Tutup</button>
+  </div>
+</div>
+
+
+
+
+
+
+
 
       <!-- Nama + status -->
       <div class="name-with-status">
@@ -2689,7 +2722,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <div class="text">
 
 <strong>Rizky Maulana</strong>
-<div class="rating">
+<div class="rating" style="cursor:pointer;">
   <span class="stars">
     <span class="star filled">★</span>
     <span class="star filled">★</span>
@@ -2698,6 +2731,27 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <span class="star">★</span>
   </span>
   <span class="score">4.1</span>
+</div>
+
+<!-- POPUP 2 (untuk .rating / Rizky Maulana) -->
+<div id="popupOverlay2" 
+     style="display:none; position:fixed; inset:0; 
+            background:rgba(0,0,0,0.6); 
+            justify-content:center; align-items:center; 
+            z-index:9999;">
+    <div style="padding:14px; background:#a4a4a4; border-radius:12px; width:260px; text-align:center; position:relative;">
+    <button id="closePopup2" style="position:absolute; top:6px; right:8px; border:none; background:#ef4444; color:#fff; border-radius:50%; width:24px; height:24px; cursor:pointer;">✕</button>
+    <h4 style="margin:0 0 10px;">Analisis Kepuasan</h4>
+    <canvas id="analysisChartPopup2" style="max-height:200px;"></canvas>
+    <div style="display:flex; gap:12px; margin-top:10px; font-size:14px; justify-content:center;">
+      <span style="display:flex; color: #fff; align-items:center; gap:6px;">
+        <span style="width:12px;height:12px;background:#16a34a;border-radius:50%;display:inline-block;"></span> Puas
+      </span>
+      <span style="display:flex; color: #fff; align-items:center; gap:6px;">
+        <span style="width:12px;height:12px; background:#ef4444;border-radius:50%;display:inline-block;"></span> Tidak Puas
+      </span>
+    </div>
+  </div>
 </div>
 
       <p>Aplikasinya bagus banyak wanita dari berbagai negara...</p>
@@ -2750,7 +2804,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 
 
 <strong>Mila Agustin</strong>
-<div class="rating">
+<div class="rating" style="cursor:pointer;">
   <span class="stars">
     <span class="star filled">★</span>
     <span class="star filled">★</span>
@@ -2760,6 +2814,29 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
   </span>
   <span class="score">3.0</span>
 </div>
+
+<!-- POPUP 2 (untuk .rating / Rizky Maulana) -->
+<div id="popupOverlay2" 
+     style="display:none; position:fixed; inset:0; 
+            background:rgba(0,0,0,0.6); 
+            justify-content:center; align-items:center; 
+            z-index:9999;">
+    <div style="padding:14px; background:#a4a4a4; border-radius:12px; width:260px; text-align:center; position:relative;">
+    <button id="closePopup2" style="position:absolute; top:6px; right:8px; border:none; background:#ef4444; color:#fff; border-radius:50%; width:24px; height:24px; cursor:pointer;">✕</button>
+    <h4 style="margin:0 0 10px;">Analisis Kepuasan</h4>
+    <canvas id="analysisChartPopup2" style="max-height:200px;"></canvas>
+    <div style="display:flex; gap:12px; margin-top:10px; font-size:14px; justify-content:center;">
+      <span style="display:flex; color: #fff; align-items:center; gap:6px;">
+        <span style="width:12px;height:12px;background:#16a34a;border-radius:50%;display:inline-block;"></span> Puas
+      </span>
+      <span style="display:flex; color: #fff; align-items:center; gap:6px;">
+        <span style="width:12px;height:12px; background:#ef4444;border-radius:50%;display:inline-block;"></span> Tidak Puas
+      </span>
+    </div>
+  </div>
+</div>
+
+
 
         <p>maaf user yang gak di tampakin mukanya+ga pasang foto profil ga kena pelanggaran dan host yang ga pasang foto profil dan ga nampakin wajah saat vidio call kena peringatan. jadi user seenaknya buat kejahatan ke host host mau  akun saya</p>
       <div class="meta">
@@ -3099,7 +3176,6 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 
 
 
-
       
 <!-- ===== Bottom Navigation ===== -->
 <nav class="nav">
@@ -3221,7 +3297,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 <div id="paymentLogo" style="margin-top:10px;"></div>
 
 
-  <button type="submit" style="background-color:#6A0DAD; color:white; padding:10px 16px; border:none; border-radius:6px; cursor:pointer;">
+  <button type="submit" style="background: #5509a6; color:white; padding:10px 16px; border:none; border-radius:6px; cursor:pointer;">
     Beli Koin
   </button>
   <div id="pembayaran"></div>
@@ -4217,7 +4293,205 @@ document.addEventListener("DOMContentLoaded", () => {
   modal.addEventListener("click", (e) => { if (e.target === modal) close(); });
 });
 
-</script>
+
+
+
+  // Data dummy
+  let dataPuas = 7800000;     // 7,8 jt
+  let dataTidakPuas = 832000; // 832 rb
+  let analysisChart = null;   // biar tidak langsung render
+
+  // Format angka ke jt/rb
+  function formatSingkat(num) {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1).replace('.', ',') + ' jt';
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(0) + ' rb';
+    }
+    return num;
+  }
+
+  // Klik rating → buka popup + render chart
+  document.getElementById("raatiing").addEventListener("click", () => {
+    document.getElementById("popupOverlay").style.display = "flex";
+
+    const ctx = document.getElementById('analysisChart').getContext('2d');
+
+    if (!analysisChart) {
+      // Buat chart pertama kali
+      analysisChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Puas', 'Tidak Puas'],
+          datasets: [{
+            data: [dataPuas, dataTidakPuas],
+            backgroundColor: ['#16a34a', '#ef4444'],
+            borderWidth: 0,
+            cutout: '65%'
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  let value = context.raw;
+                  return context.label + ": " + formatSingkat(value);
+                }
+              }
+            }
+          },
+          animation: {
+            animateRotate: true,
+            duration: 1500
+          }
+        }
+      });
+    } else {
+      // Kalau sudah ada chart → reset animasi
+      analysisChart.data.datasets[0].data = [dataPuas, dataTidakPuas];
+      analysisChart.update({
+        duration: 1500,
+        easing: 'easeOutBounce'
+      });
+    }
+  });
+
+
+  
+
+  // Klik tombol tutup
+  document.getElementById("closePopup").addEventListener("click", () => {
+    document.getElementById("popupOverlay").style.display = "none";
+  });
+
+
+
+
+let chart2 = null;
+
+function buatChart(canvasId, dataPuas, dataTidakPuas) {
+  const ctx = document.getElementById(canvasId).getContext("2d");
+  return new Chart(ctx, {
+    type: "doughnut",
+    data: {
+      labels: ["Puas", "Tidak Puas"],
+      datasets: [{
+        data: [dataPuas, dataTidakPuas],
+        backgroundColor: ["#16a34a", "#ef4444"],
+        borderWidth: 0,
+        cutout: "65%"
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      animation: { animateRotate: true, duration: 1500 }
+    }
+  });
+}
+
+
+// 🔹 Popup 2 (class .rating)
+document.querySelector(".rating").addEventListener("click", () => {
+  document.getElementById("popupOverlay2").style.display = "flex";
+  if (!chart2) {
+    chart2 = buatChart("analysisChartPopup2", 5200000, 1200000);
+  }
+});
+document.getElementById("closePopup2").addEventListener("click", () => {
+  document.getElementById("popupOverlay2").style.display = "none";
+});
+
+
+
+
+
+
+
+// Fungsi buka popup
+function bukaPopup() {
+  const overlay = document.getElementById("popupOverlay");
+  overlay.style.display = "flex";
+
+  setTimeout(() => {
+    const ctx = document.getElementById("analysisChartPopup").getContext("2d");
+
+    if (!chartPopup) {
+      // Buat chart sekali saja
+      chartPopup = new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: ["Puas", "Tidak Puas"],
+          datasets: [{
+            data: [dataPuas, dataTidakPuas],
+            backgroundColor: ["#16a34a", "#ef4444"],
+            borderWidth: 0,
+            cutout: "65%"
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  let value = context.raw;
+                  return context.label + ": " + formatSingkat(value);
+                }
+              }
+            }
+          },
+          animation: {
+            animateRotate: true,
+            duration: 1500
+          }
+        }
+      });
+    } else {
+      // Kalau sudah ada chart → update data
+      chartPopup.data.datasets[0].data = [dataPuas, dataTidakPuas];
+      chartPopup.update({
+        duration: 1500,
+        easing: "easeOutBounce"
+      });
+    }
+  }, 100);
+}
+
+// Tutup popup
+document.getElementById("closePopup").addEventListener("click", () => {
+  document.getElementById("popupOverlay").style.display = "none";
+});
+
+// 🔗 Semua elemen rating bisa klik popup
+document.querySelectorAll(".rating, #raatiing").forEach(el => {
+  el.addEventListener("click", bukaPopup);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
 
 
 
