@@ -6,6 +6,158 @@
   <meta name="theme-color" content="#fff" />
 
   <title>Halaman Orang</title>
+
+
+<script type="module">
+import { 
+    collection, query, where, getDocs, orderBy, onSnapshot, addDoc, serverTimestamp 
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+  // ✅ Config kamu sendiri
+  const firebaseConfig = {
+    apiKey: "AIzaSy....", 
+    authDomain: "users-96dc5.firebaseapp.com",
+    projectId: "users-96dc5",
+    storageBucket: "users-96dc5.appspot.com",
+    messagingSenderId: "483322415863",
+    appId: "1:483322415863:web:xxxxxx"
+  };
+
+  // Init
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  let selectedUserId = null; // ID user yang dipilih dari pencarian
+
+  // 🔍 Cari user dari koleksi "pendaftaran"
+  const searchInput = document.getElementById("searchUser");
+  const searchResults = document.getElementById("searchResults");
+
+  searchInput.addEventListener("input", async () => {
+    const keyword = searchInput.value.trim();
+    if (!keyword) {
+      searchResults.innerHTML = "";
+      return;
+    }
+
+    try {
+      const q = query(
+        collection(db, "pendaftaran"),
+        where("nama", ">=", keyword),
+        where("nama", "<=", keyword + "\uf8ff")
+      );
+
+      const snap = await getDocs(q);
+      searchResults.innerHTML = "";
+
+      if (snap.empty) {
+        searchResults.innerHTML = `<div style="color:gray;padding:5px;">Tidak ada hasil</div>`;
+        return;
+      }
+
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
+
+        const div = document.createElement("div");
+        div.className = "result-item";
+        div.style.cursor = "pointer";
+        div.style.padding = "5px";
+        div.style.borderBottom = "1px solid #eee";
+
+        div.innerHTML = `
+          <img src="${data.avatar || 'default.jpg'}" width="30" height="30" 
+               style="border-radius:50%;margin-right:8px;vertical-align:middle;">
+          ${data.nama}
+        `;
+
+        // ✅ Klik user → buka chat
+        div.addEventListener("click", () => {
+          selectedUserId = docSnap.id; 
+          loadChat(selectedUserId);
+          searchResults.innerHTML = ""; 
+          searchInput.value = data.nama; 
+        });
+
+        searchResults.appendChild(div);
+      });
+    } catch (err) {
+      console.error("Error cari user:", err);
+    }
+  });
+
+  // 📥 Load chat realtime dari Firestore
+  function loadChat(userId) {
+    const chatBox = document.getElementById("chatBox");
+    chatBox.innerHTML = "";
+
+    const messagesRef = collection(db, "chats", userId, "messages");
+    const q = query(messagesRef, orderBy("time", "asc"));
+
+    onSnapshot(q, snapshot => {
+      chatBox.innerHTML = "";
+      snapshot.forEach(docSnap => {
+        const msg = docSnap.data();
+        const msgDiv = document.createElement("div");
+
+        // tampilkan posisi kiri/kanan sesuai sender
+        msgDiv.className = msg.sender === "Saya" ? "msg right" : "msg left";
+        msgDiv.innerHTML = `
+          <div class="bubble">${msg.text}</div>
+          <small>${msg.time?.toDate().toLocaleString() || ""}</small>
+        `;
+        chatBox.appendChild(msgDiv);
+      });
+
+      // auto scroll ke bawah
+      chatBox.scrollTop = chatBox.scrollHeight;
+    });
+  }
+
+  // 📤 Kirim pesan ke Firestore
+  document.getElementById("sendBtn").addEventListener("click", async () => {
+    if (!selectedUserId) {
+      alert("Pilih user dulu lewat pencarian!");
+      return;
+    }
+
+    const input = document.getElementById("messageInput");
+    const text = input.value.trim();
+    if (!text) return;
+
+    const messagesRef = collection(db, "chats", selectedUserId, "messages");
+    await addDoc(messagesRef, {
+      sender: "Saya",   // 👉 nanti ganti dengan user login ID/email
+      text: text,
+      time: serverTimestamp()
+    });
+
+    input.value = "";
+  });
+
+</script>
+
+
+
+
+
+
+
+
+
   <style>
 body {
   font-family: Arial, sans-serif;
@@ -863,12 +1015,24 @@ main, .content, .navPage {
 
 
 
+<input type="text" id="searchUser" placeholder="Cari user...">
+<div id="searchResults"></div>
 
+<div id="chatBox"></div>
+
+<div class="input-bar">
+  <input type="text" id="messageInput" placeholder="Tulis pesan...">
+  <button id="sendBtn">Kirim</button>
+</div>
 
 </div>
 
 
+
+
+
    
+
 
 
 
@@ -907,6 +1071,7 @@ main, .content, .navPage {
     </div>
 
     <!-- Item: Notifikasi -->
+     <div class="chat-list">
     <div class="msg-item">
       <img src="notifikasi.png" class="msg-avatar">
       <div class="msg-text">
@@ -917,7 +1082,6 @@ main, .content, .navPage {
     </div>
 
     <!-- Daftar Chat -->
-    <div class="chat-list">
 
       <!-- Chat 1 -->
       <div class="chat-item" data-user="reyhan">

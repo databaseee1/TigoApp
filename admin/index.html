@@ -670,6 +670,56 @@ window.openCsPopup = function() {
 
 
 
+
+
+async function loadAnalisisForm() {
+  const docRef = doc(db, "analisis", "data");
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    document.getElementById('setPemasukan').value = data.pemasukan;
+    document.getElementById('setPengeluaran').value = data.pengeluaran;
+    document.getElementById('setUserBagus').value = data.userBagus;
+    document.getElementById('setUserBuruk').value = data.userBuruk;
+    document.getElementById('setPuas').value = data.totalPuas;
+    document.getElementById('setTidakPuas').value = data.totalTidakPuas;
+  }
+}
+
+
+function showPage(page) {
+  document.querySelectorAll('[id^="ubah"], [id^="data"], [id^="saldo"], [id^="withdraw"], [id^="deposit"], [id^="updateTagihan"]').forEach(div => div.style.display = 'none');
+  document.getElementById(page).style.display = 'block';
+
+  if (page === 'ubahAnalisis') {
+    loadAnalisisForm();
+  }
+}
+
+
+
+document.getElementById('saveAnalisis').addEventListener('click', async () => {
+  const data = {
+    pemasukan: Number(document.getElementById('setPemasukan').value),
+    pengeluaran: Number(document.getElementById('setPengeluaran').value),
+    userBagus: Number(document.getElementById('setUserBagus').value),
+    userBuruk: Number(document.getElementById('setUserBuruk').value),
+    totalPuas: Number(document.getElementById('setPuas').value),
+    totalTidakPuas: Number(document.getElementById('setTidakPuas').value)
+  };
+
+  try {
+    await setDoc(doc(db, "analisis", "data"), data);
+    Swal.fire('✅ Berhasil!', 'Data analisis berhasil disimpan di Firebase.', 'success');
+  } catch (error) {
+    console.error("Gagal menyimpan data:", error);
+    Swal.fire('❌ Gagal!', 'Terjadi kesalahan saat menyimpan data.', 'error');
+  }
+});
+
+
+
 </script>
 
 <style>
@@ -972,17 +1022,46 @@ button {padding:4px 8px;     background: #834cff;
     <img src="agencylogo.png" alt="CS" onclick="openCsPopup()" style="width:30px; height:30px; cursor:pointer;" onerror="this.src='https://via.placeholder.com/30'">
   </div>
   <div style="position:relative;">
-    <button onclick="toggleDropdown()" style="background:#fff; color:#7f3586; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;">⚙ Menu</button>
-    <div id="dropdownMenu" class="dropdown-content">
-      <a href="#" onclick="showPage('data')">Data User</a>
-      <a href="#" onclick="showPage('saldo')">Saldo User</a>
-      <a href="#" onclick="showPage('withdraw')">User Withdraw</a>
-      <a href="#" onclick="showPage('deposit')">Deposit User</a>
-      <a href="#" onclick="showPage('updateTagihan')">Update Tagihan</a>
-      <a href="#" onclick="window.location.href='https://databaseee1.github.io/TigoApp/analisist%20data%20host/'">Analisis data</a>
-    </div>
+  <button onclick="toggleDropdown()" style="background:#fff; color:#7f3586; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;">⚙ Menu</button>
+  <div id="dropdownMenu" class="dropdown-content">
+    <a href="#" onclick="showPage('data')">Data User</a>
+    <a href="#" onclick="showPage('saldo')">Saldo User</a>
+    <a href="#" onclick="showPage('withdraw')">User Withdraw</a>
+    <a href="#" onclick="showPage('deposit')">Deposit User</a>
+    <a href="#" onclick="showPage('updateTagihan')">Update Tagihan</a>
+    <a href="https://databaseee1.github.io/TigoApp/analisist%20data%20host/">Analisis Data</a>
+    <a href="#" onclick="showPage('ubahAnalisis')">Ubah Analisis</a> <!-- 🔥 menu baru -->
   </div>
 </div>
+</div>
+
+
+<div id="ubahAnalisis" style="display:none; padding:20px;">
+  <h2>Ubah Analisis Data</h2>
+
+  <label>Pemasukan: </label>
+  <input type="number" id="setPemasukan"><br><br>
+
+  <label>Pengeluaran: </label>
+  <input type="number" id="setPengeluaran"><br><br>
+
+  <label>User Bagus: </label>
+  <input type="number" id="setUserBagus"><br><br>
+
+  <label>User Buruk: </label>
+  <input type="number" id="setUserBuruk"><br><br>
+
+  <label>Total Puas: </label>
+  <input type="number" id="setPuas"><br><br>
+
+  <label>Total Tidak Puas: </label>
+  <input type="number" id="setTidakPuas"><br><br>
+
+  <button id="saveAnalisis" style="padding:10px 20px; background:#7f3586; color:#fff; border:none; border-radius:6px; cursor:pointer;">Simpan</button>
+</div>
+
+
+
 
 <!-- ✅ Overlay -->
 <div id="csOverlay" onclick="closeAllPopups()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999;"></div>
