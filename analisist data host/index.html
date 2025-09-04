@@ -207,9 +207,29 @@ background: radial-gradient(1200px 800px at 80% -10%, #d449e0 0%, #322448 35%, #
 <body>
   <div class="wrap">
     <header>
-<button onclick="goToAdmin()" style="background:none; border:none; cursor:pointer; padding:5px;">
-  <img src="back_gray.png" alt="Kembali" style="width:28px; height:28px;">
-</button>
+<div style="display:flex; justify-content:center; margin-top:20px;">
+  <button onclick="goToAdmin()" 
+    style="
+      display:flex; 
+      align-items:center; 
+      justify-content:center; 
+      gap:8px;
+      padding:10px 16px;
+      background:#4A148C;
+      color:#fff;
+      font-size:16px;
+      font-weight:500;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      box-shadow:0 4px 6px rgba(0,0,0,0.2);
+      transition:all 0.3s ease;
+    ">
+    <img src="back_gray.png" alt="Kembali" style="width:24px; height:24px; filter:invert(1);">
+    Kembali
+  </button>
+</div>
+
       <div style="display: flex; align-items: center; gap: 10px; justify-content: center;">
   <img src="servant_icon.png" alt="Logo Tigohost" style="width:50px; height:50px;">
   <h1>Dashboard Analisis Tigohost Indonesia</h1>
