@@ -4680,7 +4680,7 @@ let idx = 0;
 // Fungsi untuk memformat teks (Host merah + Rp hijau)
 function formatMessage(msg) {
   return msg
-    .replace('Host', '<span style="color:red;">Host</span>')
+    .replace('Host', '<span style="color:#FFD700;">Host</span>')
     .replace(/Rp\s[\d.,]+/, match => `<span style="color:lime;">${match}</span>`);
 }
 
