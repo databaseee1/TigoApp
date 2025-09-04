@@ -3,6 +3,103 @@
 <head>
   <meta charset="UTF-8">
   <title>Halaman Pesan</title>
+
+
+
+
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    query,
+    orderBy,
+    onSnapshot,
+    addDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // ---------- Firebase ----------
+  const firebaseConfig = {
+    apiKey: "AIzaSy....",
+    authDomain: "users-96dc5.firebaseapp.com",
+    projectId: "users-96dc5",
+    storageBucket: "users-96dc5.appspot.com",
+    messagingSenderId: "483322415863",
+    appId: "1:483322415863:web:xxxxxx"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ---------- Ambil target user dari URL ----------
+  const params = new URLSearchParams(window.location.search);
+  const userId = params.get("user") || "DefaultUser"; // contoh fallback
+  const titleEl = document.querySelector(".header .title");
+  if (titleEl) titleEl.textContent = userId; // update judul header
+
+  // ---------- DOM refs ----------
+  const chatBox = document.getElementById("chatBox");          // <div class="chat-box" id="chatBox"></div>
+  const inputEl = document.querySelector(".input-bar input");   // input pesan
+  const sendBtn = document.querySelector(".input-bar .send");   // tombol kirim
+
+  // ---------- Ref & Query Firestore ----------
+  const messagesRef = collection(db, "chats", userId, "messages");
+  const q = query(messagesRef, orderBy("time", "asc"));
+
+  // ---------- Listener realtime ----------
+  onSnapshot(q, (snapshot) => {
+    if (!chatBox) return;
+    chatBox.innerHTML = "";
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data() || {};
+      const msgDiv = document.createElement("div");
+      const isMe = data.sender === 'Saya';
+      msgDiv.className = `msg ${isMe ? "right" : "left"}`;
+      msgDiv.innerHTML = `
+        <img src="img/${isMe ? "user2" : "user1"}.jpg" alt="avatar">
+        <div class="bubble"></div>
+      `;
+      msgDiv.querySelector(".bubble").textContent = data.text ?? "";
+      chatBox.appendChild(msgDiv);
+    });
+    // auto scroll ke bawah
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
+
+  // ---------- Kirim pesan ----------
+  if (sendBtn) {
+    sendBtn.addEventListener("click", async () => {
+      const text = (inputEl?.value || "").trim();
+      if (!text) return;
+      try {
+        await addDoc(messagesRef, {
+          sender: "Saya",
+          text,
+          time: serverTimestamp()
+        });
+        if (inputEl) inputEl.value = "";
+      } catch (e) {
+        console.error("Gagal kirim pesan:", e);
+      }
+    });
+  }
+
+  // ---------- (Opsional) Seed data pertama kali ----------
+  // Jalankan SEKALI lalu comment agar tidak dobel:
+  // async function seedOnce() {
+  //   await addDoc(messagesRef, { sender: userId, text: "cara daftarnya gimana", time: serverTimestamp() });
+  // }
+  // seedOnce();
+</script>
+
+
+
+
+
+
+
+
   <style>
     body {
       margin: 0;
@@ -144,13 +241,24 @@
     </div>
   </div>
 
-  <!-- Input Bar -->
-  <div class="input-bar">
-    <div class="icon">😊</div>
-    <div class="icon">🖼️</div>
-    <input type="text" placeholder="Tulis pesan...">
-    <div class="icon">🎁</div>
-    <div class="send">&#10148;</div>
-  </div>
+
+
+
+<!-- Chat Area -->
+<div class="chat-box" id="chatBox"></div>
+
+<!-- Input Bar -->
+<div class="input-bar">
+  <div class="icon">😊</div>
+  <div class="icon">🖼️</div>
+  <input type="text" id="msgInput" placeholder="Tulis pesan...">
+  <div class="icon">🎁</div>
+  <div class="send" id="sendBtn">&#10148;</div>
+</div>
+
+
+
+
+
 </body>
 </html>

@@ -8,6 +8,148 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+
+  <script type="module">
+  // --- Firebase SDK ---
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // --- Firebase config (dari kamu) ---
+  const firebaseConfig = {
+    apiKey: "AIzaSy....", // ✅ Masukkan API key kamu
+    authDomain: "users-96dc5.firebaseapp.com",
+    projectId: "users-96dc5",
+    storageBucket: "users-96dc5.appspot.com",
+    messagingSenderId: "483322415863",
+    appId: "1:483322415863:web:xxxxxx"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // ===== Variabel awal =====
+  let pemasukan = 0, pengeluaran = 0, userBagus = 0, userBuruk = 0, totalPuas = 0, totalTidakPuas = 0;
+
+  // ===== Util Rupiah =====
+  function toRupiah(n) {
+    if (isNaN(n)) return 'Rp 0';
+    return 'Rp ' + n.toLocaleString('id-ID');
+  }
+
+  // ===== Realtime Clock =====
+  function updateClock() {
+    const now = new Date();
+    const options = { year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
+    document.getElementById("clock").textContent = now.toLocaleDateString("id-ID", options);
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // ===== Chart.js Defaults =====
+  Chart.defaults.color = '#cdd6f4';
+  Chart.defaults.font.family = 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif';
+
+  // ===== Chart Instances =====
+  const financeChart = new Chart(document.getElementById('financePie'), {
+    type: 'doughnut',
+    data: { 
+      labels: ['Pengeluaran','Pemasukan'],
+      datasets:[{ 
+        data:[0.0001, 0.0001], 
+        backgroundColor:['#e74c3c','#2ecc71'], 
+        borderWidth:0, cutout:'64%' 
+      }]
+    },
+    options:{ plugins:{legend:{display:false}} }
+  });
+
+  const userPie = new Chart(document.getElementById('userPie'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Buruk', 'Bagus'],
+      datasets: [{
+        data: [0.0001, 0.0001],
+        backgroundColor: ['#e74c3c','#2ecc71'],
+        borderWidth: 0,
+        cutout: '64%'
+      }]
+    },
+    options: { plugins: { legend: { display: false } } }
+  });
+
+  const satYes = new Chart(document.getElementById('satisfactionYes'), {
+    type:'doughnut',
+    data:{ 
+      labels:['Puas'],
+      datasets:[{ 
+        data:[0.0001], 
+        backgroundColor:['#2ecc71'], 
+        borderWidth:0, cutout:'64%'
+      }]
+    },
+    options:{ plugins:{legend:{display:false}} }
+  });
+
+  const satNo = new Chart(document.getElementById('satisfactionNo'), {
+    type:'doughnut',
+    data:{ 
+      labels:['Tidak Puas'],
+      datasets:[{ 
+        data:[0.0001], 
+        backgroundColor:['#e74c3c'], 
+        borderWidth:0, cutout:'64%'
+      }]
+    },
+    options:{ plugins:{legend:{display:false}} }
+  });
+
+  // ===== Update Text Info =====
+  function renderTexts() {
+    document.getElementById('saldoText').textContent = toRupiah(pemasukan - pengeluaran);
+    document.getElementById('outText').textContent = toRupiah(pengeluaran);
+    document.getElementById('inText').textContent = toRupiah(pemasukan);
+    document.getElementById('userTotalText').textContent = (userBagus + userBuruk).toLocaleString('id-ID') + ' pengguna';
+    document.getElementById('puasText').textContent = totalPuas.toLocaleString('id-ID') + ' jt';
+    document.getElementById('tidakPuasText').textContent = totalTidakPuas.toLocaleString('id-ID') + ' Rb';
+  }
+
+  function updateCharts() {
+    financeChart.data.datasets[0].data = [pengeluaran || 0.0001, pemasukan || 0.0001];
+    financeChart.update();
+
+    userPie.data.datasets[0].data = [userBuruk || 0.0001, userBagus || 0.0001];
+    userPie.update();
+
+    satYes.data.datasets[0].data = [totalPuas || 0.0001];
+    satYes.update();
+
+    satNo.data.datasets[0].data = [totalTidakPuas || 0.0001];
+    satNo.update();
+  }
+
+  // ===== Ambil Data dari Firebase (Realtime) =====
+  const dataRef = doc(db, "analisis", "data");
+
+  onSnapshot(dataRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      pemasukan = data.pemasukan;
+      pengeluaran = data.pengeluaran;
+      userBagus = data.userBagus;
+      userBuruk = data.userBuruk;
+      totalPuas = data.totalPuas;
+      totalTidakPuas = data.totalTidakPuas;
+
+      updateCharts();
+      renderTexts();
+    } else {
+      console.warn("Data analisis belum ada di Firestore");
+    }
+  });
+</script>
+
+
   <style>
     :root {
       --bg: #0b1020;
@@ -62,22 +204,14 @@
     <header>
       <h1>Dashboard Analisis Tigohost indonesia</h1>
       <div id="clock"></div>
-      <div class="controls">
-        <input id="nominalGaji" type="number" class="input" placeholder="Pengeluaran gaji (Rp)" />
-        <input id="nominalPemasukan" type="number" class="input" placeholder="Pemasukan (Rp)" />
-        <input id="totalUserBagus" type="number" class="input" placeholder="User bagus (jumlah)" />
-        <input id="totalUserBuruk" type="number" class="input" placeholder="User buruk (jumlah)" />
-        <input id="puas" type="number" class="input" placeholder="Host puas (jumlah)" />
-        <input id="tidakPuas" type="number" class="input" placeholder="Host tidak puas (jumlah)" />
-        <button id="apply">Terapkan</button>
-      </div>
+      
     </header>
 
     <!-- Ringkasan keuangan -->
     <section class="cards">
       <div class="card span-6">
         <h3>Analisis Pengeluaran & Pemasukan</h3>
-        <p class="stat" id="saldoText">Rp 0</p>
+        <p class="stat" id="saldoText">Rp 84,319.731.319</p>
         <p class="sub">Saldo = Pemasukan − Pengeluaran gaji host</p>
         <div class="row">
           <div style="flex:1; min-width:260px;">
@@ -89,13 +223,13 @@
           </div>
           <div style="flex:1; min-width:220px;">
             <div class="card" style="padding:12px;">
-              <h3>Total Pengeluaran Gaji</h3>
-              <p class="stat" id="outText">Rp 0</p>
+              <h3>Total Pengeluaran Gaji Host</h3>
+              <p class="stat" id="outText">Rp Memuat</p>
               <p class="sub">Merah = pengeluaran</p>
             </div>
             <div class="card" style="padding:12px; margin-top:12px;">
               <h3>Total Pemasukan</h3>
-              <p class="stat" id="inText">Rp 0</p>
+              <p class="stat" id="inText">Rp Memuat</p>
               <p class="sub">Hijau = pemasukan</p>
             </div>
           </div>
@@ -106,7 +240,7 @@
       <!-- Pengembangan user host -->
       <div class="card span-6">
         <h3>Pengembangan Total User Host</h3>
-        <p class="stat" id="userTotalText">0 pengguna</p>
+        <p class="stat" id="userTotalText">Memuat pengguna</p>
         <p class="sub">Hijau = bagus, Merah = buruk</p>
         <canvas id="userPie"></canvas>
         <div class="legend">
@@ -120,13 +254,13 @@
         <div class="row">
           <div style="flex:1; min-width:260px;">
             <h3>Total Kepuasan Host</h3>
-            <p class="stat" id="puasText">152.670.394</p>
+            <p class="stat" id="puasText">Memuat Jt</p>
             <p class="sub">Hijau = Puas</p>
             <canvas id="satisfactionYes"></canvas>
           </div>
           <div style="flex:1; min-width:260px;">
             <h3>Total Ketidakpuasan Host</h3>
-            <p class="stat" id="tidakPuasText">125.670 Host</p>
+            <p class="stat" id="tidakPuasText">Memuat Rb</p>
             <p class="sub">Merah = Tidak Puas</p>
             <canvas id="satisfactionNo"></canvas>
           </div>
@@ -136,120 +270,6 @@
   </div>
 
   <script>
-
-  // ===== Util Rupiah =====
-  function toRupiah(n){
-    if (isNaN(n)) return 'Rp 0';
-    return 'Rp ' + n.toLocaleString('id-ID');
-  }
-
-  // ===== Realtime Clock =====
-  function updateClock(){
-    const now = new Date();
-    const options = { 
-      year:'numeric', month:'long', day:'numeric', 
-      hour:'2-digit', minute:'2-digit', second:'2-digit'
-    };
-    document.getElementById("clock").textContent = now.toLocaleDateString("id-ID", options);
-  }
-  setInterval(updateClock,1000);
-  updateClock();
-
-  // ===== Load/Save Data from LocalStorage =====
-  function loadData(){
-    return JSON.parse(localStorage.getItem("dashboardData")) || {
-      pemasukan: 0, pengeluaran: 0, userBagus: 0, userBuruk: 0,
-      totalPuas: 0, totalTidakPuas: 0
-    };
-  }
-
-  function saveData(){
-    const data = { pemasukan, pengeluaran, userBagus, userBuruk, totalPuas, totalTidakPuas };
-    localStorage.setItem("dashboardData", JSON.stringify(data));
-  }
-
-  // ===== Vars =====
-  let { pemasukan, pengeluaran, userBagus, userBuruk, totalPuas, totalTidakPuas } = loadData();
-
-  // ===== Charts =====
-  Chart.defaults.color = '#cdd6f4';
-  Chart.defaults.font.family = 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif';
-
-  // Pengeluaran & Pemasukan
-  const financeChart = new Chart(document.getElementById('financePie'), {
-    type: 'doughnut',
-    data: { 
-      labels: ['Pengeluaran','Pemasukan'],
-      datasets:[{ 
-        data:[pengeluaran || 0.0001, pemasukan || 0.0001], 
-        backgroundColor:['var(--red)','var(--green)'], 
-        borderWidth:0, cutout:'64%' 
-      }]
-    },
-    options:{ plugins:{legend:{display:false}} }
-  });
-
-  // User Bagus vs Buruk
-  const userPie = new Chart(document.getElementById('userPie'), {
-    type: 'doughnut',
-    data: {
-      labels: ['Buruk', 'Bagus'],
-      datasets: [{
-        data: [userBuruk || 0.0001, userBagus || 0.0001],
-        backgroundColor: ['var(--red)','var(--green)'],
-        borderWidth: 0,
-        cutout: '64%'
-      }]
-    },
-    options: { plugins: { legend: { display: false } } }
-  });
-
-  // Kepuasan Host (gabungan)
-  const satChart = new Chart(document.getElementById('satisfactionPie'), {
-    type:'doughnut',
-    data:{ 
-      labels:['Puas','Tidak Puas'],
-      datasets:[{ 
-        data:[totalPuas || 0.0001, totalTidakPuas || 0.0001], 
-        backgroundColor:['var(--green)','var(--red)'], 
-        borderWidth:0, cutout:'64%'
-      }]
-    },
-    options:{ plugins:{legend:{display:false}} }
-  });
-
-  // ===== Text binders =====
-  function renderTexts(){
-    document.getElementById('saldoText').textContent = toRupiah(pemasukan - pengeluaran);
-    document.getElementById('outText').textContent = toRupiah(pengeluaran);
-    document.getElementById('inText').textContent = toRupiah(pemasukan);
-    document.getElementById('userTotalText').textContent = (userBagus + userBuruk).toLocaleString('id-ID') + ' pengguna';
-    document.getElementById('puasText').textContent = totalPuas.toLocaleString('id-ID');
-    document.getElementById('tidakPuasText').textContent = totalTidakPuas.toLocaleString('id-ID');
-  }
-  renderTexts();
-
-  // ===== Apply controls =====
-  document.getElementById('apply').addEventListener('click', () => {
-    pemasukan   = Number(document.getElementById('nominalPemasukan').value) || pemasukan;
-    pengeluaran = Number(document.getElementById('nominalGaji').value) || pengeluaran;
-    userBagus   = Number(document.getElementById('totalUserBagus').value) || userBagus;
-    userBuruk   = Number(document.getElementById('totalUserBuruk').value) || userBuruk;
-    totalPuas   = Number(document.getElementById('puas').value) || totalPuas;
-    totalTidakPuas = Number(document.getElementById('tidakPuas').value) || totalTidakPuas;
-
-    financeChart.data.datasets[0].data = [pengeluaran || 0.0001, pemasukan || 0.0001];
-    financeChart.update();
-
-    userPie.data.datasets[0].data = [userBuruk || 0.0001, userBagus || 0.0001];
-    userPie.update();
-
-    satChart.data.datasets[0].data = [totalPuas || 0.0001, totalTidakPuas || 0.0001];
-    satChart.update();
-
-    renderTexts();
-    saveData();
-  });
 
 
   </script>
