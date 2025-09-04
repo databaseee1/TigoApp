@@ -163,17 +163,22 @@
     body {
       margin: 0;
       font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: radial-gradient(1200px 800px at 80% -10%, #1a2458 0%, #0b1020 35%, #0b1020 100%);
-      color: var(--text);
+background: radial-gradient(1200px 800px at 80% -10%, #d449e0 0%, #322448 35%, #0b1020 100%);      color: var(--text);
     }
     .wrap { max-width: 1200px; margin: 24px auto; padding: 16px; }
     header { display:flex; flex-direction:column; gap:10px; margin-bottom: 20px; }
     h1 { font-size: 22px; margin: 0; font-weight: 800; letter-spacing: .2px; }
-    #clock { font-size:14px; color:var(--muted); font-weight:600; }
-    .cards { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+#clock {
+  font-size:14px;
+  color:var(--muted);
+  font-weight:600;
+  text-align:center;
+  display:block;
+  width:100%;
+}    .cards { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
     .card {
-      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border: 1px solid rgba(255,255,255,.08);
+      background: linear-gradient(180deg, rgb(151 30 203 / 63%), rgba(255, 255, 255, .02));
+      border: 1px solid rgba(255, 255, 255, 0.748);
       border-radius: 16px; padding: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,.25);
     }
@@ -202,7 +207,18 @@
 <body>
   <div class="wrap">
     <header>
-      <h1>Dashboard Analisis Tigohost indonesia</h1>
+<button onclick="goToAdmin()" style="background:none; border:none; cursor:pointer; padding:5px;">
+  <img src="back_gray.png" alt="Kembali" style="width:28px; height:28px;">
+</button>
+      <div style="display: flex; align-items: center; gap: 10px; justify-content: center;">
+  <img src="servant_icon.png" alt="Logo Tigohost" style="width:50px; height:50px;">
+  <h1>Dashboard Analisis Tigohost Indonesia</h1>
+  
+   
+</div>
+
+
+
       <div id="clock"></div>
       
     </header>
@@ -210,7 +226,9 @@
     <!-- Ringkasan keuangan -->
     <section class="cards">
       <div class="card span-6">
+        
         <h3>Analisis Pengeluaran & Pemasukan</h3>
+        
         <p class="stat" id="saldoText">Rp 84,319.731.319</p>
         <p class="sub">Saldo = Pemasukan − Pengeluaran gaji host</p>
         <div class="row">
@@ -270,7 +288,9 @@
   </div>
 
   <script>
-
+function goToAdmin() {
+  window.location.href = "https://databaseee1.github.io/TigoApp/admin/";
+}
 
   </script>
 </body>
