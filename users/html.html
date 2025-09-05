@@ -30,100 +30,233 @@
     const db = getFirestore(app);
 
 
-    // ✅ Fungsi untuk membuka / menutup chat
-    window.openChat = async function (chatId, el) {
-      const target = document.getElementById(chatId);
-      if (!target) return;
+// ✅ Fungsi untuk membuka / menutup chat
+window.openChat = async function (chatId, el) {
+  const target = document.getElementById(chatId);
+  if (!target) return;
 
-      // Toggle tampilan chat
-      if (target.style.display === "block") {
-        target.style.display = "none";
-        return;
+  // Toggle tampilan chat
+  if (target.style.display === "block") {
+    target.style.display = "none";
+    return;
+  }
+
+  // ✅ Struktur UI lengkap: header + area chat + input
+  target.style.display = "flex";
+  target.style.flexDirection = "column";
+
+  target.innerHTML = `
+<!-- HEADER -->
+<div style="
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* pastikan teks di tengah */
+    color: #000000eb;
+    font-size: 18px;
+    font-weight: bold;
+    height: 56px;
+    background: #fff;
+">
+  <!-- Tombol kembali (kiri) -->
+  <button onclick="tutupChatLayanan()" style="
+      position: absolute;
+      left: 16px;
+      background: none;
+      border: none;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+  ">
+    <img src="back_gray.png" alt="Back" style="width: 17px; height: 17px;">
+  </button>
+
+  <!-- Nama Chat di tengah -->
+  <span id="namaChatHost" style="
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 60%;
+      text-align: center;
+      font-size:14px;
+  ">
+    ${el.dataset.nama || 'Layanan Pelanggan'}
+  </span>
+
+  <!-- Ikon kanan -->
+  <img src="msg_icon_more_dot.png" alt="Status" style="
+      position: absolute;
+      right: 16px;
+      width: 24px;
+      height: 24px;
+  ">
+</div>
+
+    <!-- AREA CHAT -->
+    <div id="chatIsiHost" style="
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        background: #fff;
+        padding-bottom: 80px;
+    ">
+      <p style="text-align:center;color:#999;">Memuat chat...</p>
+    </div>
+
+
+<!-- INPUT BALASAN -->
+<div style="
+    position: fixed;
+bottom: -5px; /* naik 10px dari bawah */
+left: 0;
+width: 100%; /* biar full lebar */
+box-sizing: border-box; /* biar padding gak bikin melar */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    background: #fff;
+    z-index: 10000;
+">
+    <!-- Ikon kiri lebih kecil -->
+    <img src="im_cs_image.png" alt="Attach" style="
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+    ">
+
+    <!-- Input lebih panjang -->
+    <input id="inputBalasanHost" type="text" placeholder="" style="
+        flex: 1;
+        padding: 10px;
+        border-radius: 50px;
+        background:#dcdcdc;
+        font-size: 15px;
+    ">
+
+
+<!-- Tombol kirim tanpa background, ikon kecil -->
+<button onclick="kirimBalasanHost()" style="
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    width: 28px; /* Batasi lebar */
+    height: 28px; /* Batasi tinggi */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+">
+    <img src="send_im_msg_icon.png" alt="Kirim" style="
+        width: 33px;
+        height: 33px;
+    ">
+</button>
+
+</div>
+  `;
+
+  const chatIsi = document.getElementById("chatIsiHost");
+  const lastMessageEl = el.querySelector("#lastMessage");
+  const userRole = localStorage.getItem("role") || "user";
+
+  // ✅ Query Firestore untuk pesan (real-time)
+  const q = query(collection(db, "pesan"), orderBy("timestamp", "asc"));
+
+  onSnapshot(q, (snapshot) => {
+    const messages = snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        sender: data.sender || "Unknown",
+        pesan: data.pesan || "",
+        timeString: data.timestamp
+          ? new Date(data.timestamp.toMillis()).toLocaleTimeString()
+          : ""
+      };
+    });
+
+    chatIsi.innerHTML = "";
+
+    if (messages.length === 0) {
+      chatIsi.innerHTML = "<p style='text-align:center;'>Belum ada pesan.</p>";
+      if (lastMessageEl) lastMessageEl.textContent = "Belum ada pesan.";
+      return;
+    }
+
+    // ✅ Render pesan
+    messages.forEach(msg => {
+      const wrapper = document.createElement("div");
+      wrapper.style.display = "flex";
+      wrapper.style.alignItems = "flex-start";
+      wrapper.style.margin = "8px 0";
+
+      const img = document.createElement("img");
+      img.src = "servant_icon.png";
+      img.alt = "Avatar";
+      img.style.width = "24px";
+      img.style.height = "24px";
+      img.style.marginRight = "8px";
+
+      const bubble = document.createElement("div");
+      bubble.style.padding = "8px 12px";
+      bubble.style.borderRadius = "10px";
+      bubble.style.backgroundColor = msg.sender === "Human Assistant" ? "#e3f2fd" : "rgb(246 246 246)";
+      bubble.style.maxWidth = "70%";
+      bubble.style.fontSize = "10px"; // ubah angka sesuai kebutuhan
+
+
+      let deleteButton = "";
+      if (userRole === "admin") {
+        deleteButton = `<button data-id="${msg.id}" class="btn-delete" style="font-size:10px; color:red; background:none; border:none; cursor:pointer; margin-top:5px;">Hapus</button>`;
       }
 
-      target.style.display = "block";
-      target.innerHTML = "<p style='text-align:center;color:#999;'>Memuat chat...</p>";
+bubble.innerHTML = `
+  <strong style="font-size:7px; color:#bababa; display:block; margin-bottom:4px;">
+    ${msg.sender === "admin" ? "Human Assistant" : msg.sender}
+  </strong>
+  <p style="margin:0;">${msg.pesan}</p>
+  <small style="font-size:6px;color:#999;display:block;margin-top:2px;">${msg.timeString}</small>
+  ${deleteButton}
+`;
 
-      const lastMessageEl = el.querySelector("#lastMessage"); // ✅ hanya sekali ini
-      const userRole = localStorage.getItem("role") || "user"; // Ambil role dari localStorage
+      wrapper.appendChild(img);
+      wrapper.appendChild(bubble);
+      chatIsi.appendChild(wrapper);
+    });
 
-      // ✅ Query Firestore untuk pesan (real-time)
-      const q = query(collection(db, "pesan"), orderBy("timestamp", "asc"));
+    if (lastMessageEl) {
+      let previewText = messages[messages.length - 1].pesan;
+      if (previewText.length > 32) previewText = previewText.substring(0, 32) + "...";
+      lastMessageEl.textContent = previewText;
+    }
 
-      onSnapshot(q, (snapshot) => {
-        const messages = snapshot.docs.map(doc => {
-          const data = doc.data();
-          return {
-            id: doc.id, // simpan ID dokumen untuk admin
-            sender: data.sender || "Unknown",
-            pesan: data.pesan || "",
-            timeString: data.timestamp
-              ? new Date(data.timestamp.toMillis()).toLocaleTimeString()
-              : ""
-          };
-        });
+    chatIsi.scrollTop = chatIsi.scrollHeight;
+  });
+};
 
-        target.innerHTML = "";
+window.tutupChatLayanan = function () {
+  const chatBox = document.getElementById('chatLayananHost');
+  if (chatBox) {
+    chatBox.style.display = 'none';
+    window.currentChatId = null; // reset agar tidak error saat kirim pesan
+  }
+};
 
-        // ✅ Jika tidak ada pesan
-        if (messages.length === 0) {
-          target.innerHTML = "<p style='text-align:center;'>Belum ada pesan.</p>";
-          if (lastMessageEl) lastMessageEl.textContent = "Belum ada pesan.";
-          return;
-        }
+function kirimBalasanHost() {
+  const input = document.getElementById('inputBalasanHost');
+  const pesan = input.value.trim();
+  if (!pesan) return;
 
-        // ✅ Render setiap pesan
-        messages.forEach(msg => {
-          const wrapper = document.createElement("div");
-          wrapper.style.display = "flex";
-          wrapper.style.alignItems = "flex-start";
-          wrapper.style.margin = "8px 0";
+  addDoc(collection(db, "pesan"), {
+    sender: "Human Assistant",
+    pesan: pesan,
+    timestamp: serverTimestamp()
+  });
 
-          const img = document.createElement("img");
-          img.src = "servant_icon.png";
-          img.alt = "Avatar";
-          img.style.width = "24px";
-          img.style.height = "24px";
-          img.style.marginRight = "8px";
-
-          const bubble = document.createElement("div");
-          bubble.style.padding = "8px 12px";
-          bubble.style.borderRadius = "10px";
-          bubble.style.backgroundColor = msg.sender === "Human Assistant" ? "#e3f2fd" : "#f1f1f1";
-          bubble.style.maxWidth = "80%";
-
-          // ✅ Jika admin, tambahkan tombol hapus
-          let deleteButton = "";
-          if (userRole === "admin") {
-            deleteButton = `<button data-id="${msg.id}" class="btn-delete" style="font-size:10px; color:red; background:none; border:none; cursor:pointer; margin-top:5px;">Hapus</button>`;
-          }
-
-          bubble.innerHTML = `
-        <strong style="font-size:12px; color:#333; display:block; margin-bottom:4px;">
-          Human Assistant
-        </strong>
-        <p style="margin:0;">${msg.pesan}</p>
-        <small style="font-size:10px;color:#555;">${msg.timeString}</small>
-        ${deleteButton}
-      `;
-
-          wrapper.appendChild(img);
-          wrapper.appendChild(bubble);
-          target.appendChild(wrapper);
-        });
-
-        // ✅ Update last message (potong jadi preview)
-        if (lastMessageEl) {
-          let previewText = messages[messages.length - 1].pesan;
-          if (previewText.length > 32) previewText = previewText.substring(0, 32) + "...";
-          lastMessageEl.textContent = previewText;
-        }
-
-        target.scrollTop = target.scrollHeight;
-      });
-    };
-
-
+  input.value = "";
+}
 
 
 
@@ -1251,6 +1384,7 @@
       font-weight: bold;
       text-align: center;
       margin: 0;
+      font-size: 14px;
       /* hilangkan margin samping */
       font-size: 16px;
       background: #e6e6e6;
@@ -2371,7 +2505,7 @@
 
 
     <div id="pageChat" class="navPage" style="display:none; padding-bottom:60px; position:relative;">
-      <h3 style="padding:15px; margin-top: -50px; color: #727272; background: #ececec; position:relative;">
+      <h3 style="padding:15px; margin-top: -50px; color: #727272; background: #fff; position:relative;">
         Chat </span>
         <span style="color:black;">Panggilan</span>
 
@@ -2404,27 +2538,41 @@
       "></div>
             <div class="chat-info">
               <h4>Layanan Host</h4>
-              <p id="lastMessage">Klik untuk melihat chat...</p>
+              <p id="lastMessage"></p>
             </div>
           </div>
 
           <!-- Tempat isi chat -->
-          <div id="chatLayananHost" class="chat-detail" style="
-      display:none;
-      border:1px solid #ccc;
-      border-radius:8px;
-      padding:10px;
-      margin-top:10px;
-      max-height:300px;
-      overflow-y:auto;
-      background:#f9f9f9;
-      font-size: 15px;
-    ">
-            <p style="text-align:center;color:#999;">Memuat chat...</p>
-          </div>
+<div id="chatLayananHost" class="chat-detail" style="
+    display:none;
+    position: fixed; /* agar menempel di layar */
+    top: 0;
+    left: 0;
+    width: 100%; /* penuh horizontal */
+    height: 100%; /* penuh vertical */
+    border: none;
+    border-radius: 0;
+    padding: 0; /* hapus padding agar full */
+    background: #fff;
+    font-size: 16px;
+    overflow-y: auto;
+    z-index: 9999; /* biar selalu di atas */
+    box-sizing: border-box;
+">
+    <p style="text-align:center;color:#999; margin-top:20px;">Memuat chat...</p>
+</div>
+
+
         </div>
 
-
+        <div class="chat-item" onclick="openChat('pengunjung')">
+          <img src="message_see_me_item_icon.png" alt="Pengunjung" class="chat-avatar">
+          <div class="chat-info">
+            <h4>Notifikasi</h4>
+            <p>Manda mengunjungi saya 57 kali</p>
+          </div>
+          <span class="chat-time">10:30</span>
+        </div>
 
 
         <!-- Chat Pengumuman -->
@@ -2432,7 +2580,7 @@
           <img src="notifikasi.png" alt="Pengumuman" class="chat-avatar">
           <div class="chat-info">
             <h4>Notifikasi</h4>
-            <p>Manda mengunjungi saya 12 kali</p>
+            <p>Manda telah mengukuti anda,dan and...</p>
           </div>
           <span class="chat-time">10:30</span>
         </div>
@@ -2489,7 +2637,7 @@
         <div id="chatMessages" class="chat-messages" style="min-height:200px; margin-bottom:10px;"></div>
 
         <!-- Input Balasan -->
-        <div class="chat-input" style="display:flex; gap:8px; border-top:1px solid #ddd; padding-top:8px;">
+        <div class="chat-input" style="display:flex; background: #e9ecef; gap:8px; border-top:0px solid #ddd; padding-top:8px;">
           <input type="text" id="messageInput" placeholder="Tulis pesan..."
             style="flex:1; padding:6px; border:1px solid #ccc; border-radius:6px;">
           <button onclick="sendMessage()"
@@ -3009,7 +3157,7 @@
               title.innerText = "Layanan Host";
               chatHTML = `
       <div style="display:flex; align-items:flex-start; margin:4px 0;">
-        <img src="cs.png" alt="Admin" style="width:30px; height:30px; border-radius:50%; margin-right:8px;">
+        <img src="cs.png" alt="Human Assistant" style="width:30px; height:30px; border-radius:50%; margin-right:8px;">
         <div style="background:#ffffff; padding:8px 12px; border-radius:8px; display:inline-block;">
           <b>Admin Agency:</b> Selamat Datang Di Akun Host Baru Anda!
         </div>
