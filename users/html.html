@@ -908,12 +908,12 @@ function kirimBalasanHost() {
     .chat-btn {
       position: absolute;
       bottom: 6px;
-      right: 6px;
+      right: -7px;
       background: #6c5ce7;
       border: none;
       border-radius: 50%;
-      width: 28px;
-      height: 28px;
+      width: 48px;
+      height: 48px;
       padding: 0;
       display: flex;
       align-items: center;
@@ -990,7 +990,7 @@ function kirimBalasanHost() {
       align-items: center;
       padding: 12px 16px;
       background-color: #fff;
-      border-bottom: 1px solid #eee;
+
 
       /* Biar beku di atas */
       position: fixed;
@@ -1035,8 +1035,8 @@ function kirimBalasanHost() {
       align-items: center;
       padding: 12px 16px;
       background: white;
-      border-bottom: 1px solid #eee;
-      margin-top: -40px;
+      border-bottom: none;
+      margin-top: -60px;
     }
 
     .dunia-header .logo {
@@ -1080,7 +1080,7 @@ function kirimBalasanHost() {
 
     .user-card img {
       width: 100%;
-      height: 150px;
+      height: 250px;
       object-fit: cover;
     }
 
@@ -1108,11 +1108,11 @@ function kirimBalasanHost() {
       width: 80px;
       height: 80px;
       border-radius: 50%;
-      border: 4px solid #6a5acd;
+      border: none;
     }
 
     .video-btn {
-      margin-top: 15px;
+      margin-top: 110px;
       background: #6a5afd;
       color: #fff;
       border: none;
@@ -1130,9 +1130,54 @@ function kirimBalasanHost() {
 
 
 
+
+/*loading box*/
+
+.user-container {
+    width: 350px;
+    height: 124px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 100px;
+    margin-left: 10px;
+}
+
+.user-slider {
+    display: flex;
+    gap: 4px;
+    flex-wrap: nowrap;
+    transition: transform 0.5s ease-in-out;
+}
+
+.user-carddddd {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 80px;
+    transition: transform 0.3s ease;
+}
+
+.user-carddddd img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.user-carddddd.active img {
+    width: 100px;
+    height: 100px;
+    z-index: 10;
+}
+
+
+
+
     .search-loading {
       /* ukuran container */
-      height: 120px;
+      height: 250px;
       background-image: url('global_map.png');
       /* gambar di belakang */
       background-size: cover;
@@ -1141,7 +1186,7 @@ function kirimBalasanHost() {
   align-items: center;
   justify-content: center;
   border-radius: 0%;           /* buat bulat */
-      margin-bottom: 0px;
+      margin-bottom: 10px;
       /* jarak ke bawah */
     }
 
@@ -1833,6 +1878,127 @@ function kirimBalasanHost() {
     height: 14px;
 }
 
+
+.baim-badge {
+    position: absolute;
+    right: 12px;  /* sejajar kanan */
+    top: 719px;     /* geser ke atas */
+    background: #ff4646;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 0px 1px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 14px;
+    height: 14px;
+}
+
+
+
+.bram-badge {
+    position: absolute;
+    right: 12px;  /* sejajar kanan */
+    top: 789px;     /* geser ke atas */
+    background: #ff4646;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 0px 1px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 14px;
+    height: 14px;
+}
+
+
+
+.dudi-badge {
+    position: absolute;
+    right: 12px;  /* sejajar kanan */
+    top: 857px;     /* geser ke atas */
+    background: #ff4646;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 0px 1px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 14px;
+    height: 14px;
+}
+
+
+
+.parman-badge {
+    position: absolute;
+    right: 12px;  /* sejajar kanan */
+    top: 926px;     /* geser ke atas */
+    background: #ff4646;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 0px 1px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 14px;
+    height: 14px;
+}
+
+
+.alan-badge {
+    position: absolute;
+    right: 12px;  /* sejajar kanan */
+    top: 1616px;     /* geser ke atas */
+    background: #ff4646;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 0px 1px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 14px;
+    height: 14px;
+}
+
+
+
+
+
+.chat-cot {
+    position: absolute;
+    right: 12px;  /* Pojok kanan */
+    top: 8px;     /* Dekat bagian atas */
+    background: #ff4646;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 0px 1px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 14px;
+    height: 14px;
+}
+
+
+
+
+
+
+
+
 .notifi-badge {
     position: absolute;
     right: 12px;  /* sejajar kanan */
@@ -1858,6 +2024,129 @@ function kirimBalasanHost() {
     height: 10px;
 }
 
+
+/* wrapper: relative supaya badge bisa absolute terhadapnya */
+.icon-with-badge{
+  display: inline-block;
+  position: relative;
+  line-height: 0; /* hilangkan gap di beberapa browser */
+}
+
+/* gambar ikon */
+.icon-with-badge .friend-icon{
+  width: 30px;
+  height: 30px;
+  display: block;
+}
+
+/* badge -- lingkaran merah kecil */
+.icon-with-badge .badge{
+  position: absolute;
+  top: -6px;              /* geser ke atas sedikit */
+  right: -6px;            /* geser ke kanan sedikit */
+  min-width: 10px;        /* agar bisa memuat 2+ digit */
+  height: 15px;
+  padding: 0 5px;         /* untuk 2+ digit */
+  background: #e74c3c;    /* merah notifikasi */
+  color: white;
+  font-size:9px;
+  font-weight: 700;
+  line-height: 18px;      /* biar teks vertical center */
+  text-align: center;
+  border-radius: 999px;   /* bulat */
+  transform-origin: center;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  display: inline-block;
+}
+
+/* sembunyikan jika angkanya 0 (tambahkan class .hidden juga dari JS) */
+.icon-with-badge .badge.hidden{
+  opacity: 0;
+  transform: scale(0.6);
+  pointer-events: none;
+}
+
+
+
+#chattt3time3 {
+    font-size: 9px; /* Atur ukuran font sesuai kebutuhan */
+    color: grey;     /* Bisa juga pakai #888 atau rgb(128,128,128) */
+    font-weight: normal; /* Opsional: normal, bold */
+    font-family: Arial, sans-serif; /* Opsional */
+}
+
+#chatttttime2 {
+    font-size: 9px; /* Atur ukuran font sesuai kebutuhan */
+    color: grey;     /* Bisa juga pakai #888 atau rgb(128,128,128) */
+    font-weight: normal; /* Opsional: normal, bold */
+    font-family: Arial, sans-serif; /* Opsional */
+}
+
+#chatttttime4 {
+    font-size: 9px; /* Atur ukuran font sesuai kebutuhan */
+    color: grey;     /* Bisa juga pakai #888 atau rgb(128,128,128) */
+    font-weight: normal; /* Opsional: normal, bold */
+    font-family: Arial, sans-serif; /* Opsional */
+}
+
+
+
+#chatttttime5 {
+    font-size: 9px; /* Atur ukuran font sesuai kebutuhan */
+    color: grey;     /* Bisa juga pakai #888 atau rgb(128,128,128) */
+    font-weight: normal; /* Opsional: normal, bold */
+    font-family: Arial, sans-serif; /* Opsional */
+}
+
+
+#chatttttime6 {
+    font-size: 9px; /* Atur ukuran font sesuai kebutuhan */
+    color: grey;     /* Bisa juga pakai #888 atau rgb(128,128,128) */
+    font-weight: normal; /* Opsional: normal, bold */
+    font-family: Arial, sans-serif; /* Opsional */
+}
+
+#chatttttime7 {
+    font-size: 9px; /* Atur ukuran font sesuai kebutuhan */
+    color: grey;     /* Bisa juga pakai #888 atau rgb(128,128,128) */
+    font-weight: normal; /* Opsional: normal, bold */
+    font-family: Arial, sans-serif; /* Opsional */
+}
+
+#chatttttime8 {
+    font-size: 9px; /* Atur ukuran font sesuai kebutuhan */
+    color: grey;     /* Bisa juga pakai #888 atau rgb(128,128,128) */
+    font-weight: normal; /* Opsional: normal, bold */
+    font-family: Arial, sans-serif; /* Opsional */
+}
+
+#chatttttime9 {
+    font-size: 9px; /* Atur ukuran font sesuai kebutuhan */
+    color: grey;     /* Bisa juga pakai #888 atau rgb(128,128,128) */
+    font-weight: normal; /* Opsional: normal, bold */
+    font-family: Arial, sans-serif; /* Opsional */
+}
+
+
+
+#chatttttime10 {
+    font-size: 9px; /* Atur ukuran font sesuai kebutuhan */
+    color: grey;     /* Bisa juga pakai #888 atau rgb(128,128,128) */
+    font-weight: normal; /* Opsional: normal, bold */
+    font-family: Arial, sans-serif; /* Opsional */
+}
+
+
+
+.chat-ttime {
+    font-size: 9px; /* Ukuran font kecil */
+    color: grey; /* Warna abu-abu */
+    font-weight: normal; /* Bukan tebal */
+    font-family: Arial, sans-serif; /* Font rapi */
+}
+
+
+
   </style>
 </head>
 
@@ -1865,7 +2154,7 @@ function kirimBalasanHost() {
 
   <!-- ✅ HEADER (Hanya muncul setelah login) -->
   <div class="header" id="mainHeader"
-    style="display:none; justify-content:space-between; align-items:center; padding:10px; background:#f8f8f8;">
+    style="display:none; justify-content:space-between; align-items:center; padding:10px; background:#fff;">
     <div class="header-tabs">
       <div class="tab active">Orang</div>
       <div class="tab" onclick="showPesta()">Pesta</div>
@@ -2509,15 +2798,31 @@ function kirimBalasanHost() {
 
       <!-- Header -->
       <div class="dunia-header">
-        <div class="logo" style="display:flex; align-items:center; gap:8px;">
-          <!-- Ganti teks Tigo dengan gambar -->
-          <img src="add_tokens_icon.png" alt="Logo Tigo" style="height:24px; width:auto;">
+<div style="
+    display:flex;
+    align-items:center;
+    gap:8px;
+">
 
-          <!-- Tambahkan ikon offline di kiri angka -->
-          <span style="display:flex; align-items:center; gap:4px;">
-            <img src="match_ticket_icon.png" alt="Offline" style="width:23px; height:23px;">
-          </span>
-        </div>
+    <!-- Box Offline + 5000 -->
+    <div style="
+        display:flex;
+        align-items:center;
+        gap:6px;
+        background:#ffffff00; /* Warna kuning */
+        color:#3c3c3c;
+        font-size:14px;
+        font-weight:bold;
+        padding:8px 10px;
+        border-radius:20px;
+        cursor:pointer;
+        border: 1px solid #c1c1c1;
+    ">
+        <img src="score_icon_wrap.png" alt="Offline" style="width:18px; height:18px;">
+        <span style="font-family:Arial, sans-serif;">5000</span>
+    </div>
+
+</div>
         <div class="menu">
 
 
@@ -2575,48 +2880,121 @@ function kirimBalasanHost() {
         </div>
       </div>
 
-      <!-- Container -->
-      <div class="user-container">
-        <!-- Daftar User -->
-        <div class="user-grid">
-          <div class="user-card">
-            <img src="default_pic_100.png" alt="Charlotte">
+
+
+
+
+
+<div class="user-container">
+    <div class="user-slider">
+        <div id="user-carddddd-1" class="user-carddddd">
+            <img src="c60.jpg" alt="User 1">
             <div class="user-info">
-              <span class="name" style=" color:#0000007d;">Loading...</span>
-              <span class="status online">Online</span>
+                <span class="name">User 1</span>
+                <span class="status online">Online</span>
             </div>
-          </div>
-
-
-          <!-- duplikat list biar looping halus -->
-          <div class="user-card">
-            <img src="default_pic_100.png" alt="Charlotte">
-            <div class="user-info">
-              <span class="name" style=" color:#0000007d;">Loading...</span>
-              <span class="status online">Online</span>
-            </div>
-          </div>
-
-          <div class="user-card">
-            <img src="default_pic_100.png" alt="Charlotte">
-            <div class="user-info">
-              <span class="name" style=" color:#0000007d;">Loading...</span>
-              <span class="status online">Online</span>
-            </div>
-          </div>
-
-          <div class="user-card">
-            <img src="default_pic_100.png" alt="Charlotte">
-            <div class="user-info">
-              <span class="name" style=" color:#0000007d;">Loading...</span>
-              <span class="status online">Online</span>
-            </div>
-          </div>
-
-
-
         </div>
-      </div>
+        <div id="user-carddddd-2" class="user-carddddd">
+            <img src="c61.jpg" alt="User 2">
+            <div class="user-info">
+                <span class="name">User 2</span>
+                <span class="status online">Online</span>
+            </div>
+        </div>
+        <div id="user-carddddd-3" class="user-carddddd">
+            <img src="c62.jpg" alt="User 3">
+            <div class="user-info">
+                <span class="name">User 3</span>
+                <span class="status online">Online</span>
+            </div>
+        </div>
+
+                <div id="user-carddddd-4" class="user-carddddd">
+            <img src="c63.jpg" alt="User 4">
+            <div class="user-info">
+                <span class="name">User 4</span>
+                <span class="status online">Online</span>
+            </div>
+        </div>
+
+
+                <div id="user-carddddd-5" class="user-carddddd">
+            <img src="c64.jpg" alt="User 5">
+            <div class="user-info">
+                <span class="name">User 5</span>
+                <span class="status online">Online</span>
+            </div>
+        </div>
+
+
+
+                <div id="user-carddddd-6" class="user-carddddd">
+            <img src="c65.jpg" alt="User 6">
+            <div class="user-info">
+                <span class="name">User 6</span>
+                <span class="status online">Online</span>
+            </div>
+        </div>
+
+
+
+                <div id="user-carddddd-7" class="user-carddddd">
+            <img src="c66.jpg" alt="User 7">
+            <div class="user-info">
+                <span class="name">User 7</span>
+                <span class="status online">Online</span>
+            </div>
+        </div>
+
+
+                <div id="user-carddddd-8" class="user-carddddd">
+            <img src="c67.jpg" alt="User 8">
+            <div class="user-info">
+                <span class="name">User 8</span>
+                <span class="status online">Online</span>
+            </div>
+        </div>
+
+
+
+
+                <div id="user-carddddd-9" class="user-carddddd">
+            <img src="c68.jpg" alt="User 9">
+            <div class="user-info">
+                <span class="name">User 9</span>
+                <span class="status online">Online</span>
+            </div>
+        </div>
+
+
+
+                <div id="user-carddddd-10" class="user-carddddd">
+            <img src="cewek23.jpeg" alt="User 10">
+            <div class="user-info">
+                <span class="name">User 10</span>
+                <span class="status online">Online</span>
+            </div>
+        </div>
+
+
+
+                <div id="user-carddddd-11" class="user-carddddd">
+            <img src="c40.jpg" alt="User 11">
+            <div class="user-info">
+                <span class="name">User 11</span>
+                <span class="status online">Online</span>
+            </div>
+        </div>
+
+
+
+        <!-- Tambahkan sampai 10 gambar -->
+    </div>
+</div>
+
+
+
+
 
 
       <!-- Avatar tengah + tombol video -->
@@ -2669,7 +3047,10 @@ function kirimBalasanHost() {
     <span>Chat</span>
     <span style="margin-left: -170px; color:#727272">Panggilan</span>
     <span style="display:flex; align-items:center; gap:10px;">
-      <img src="msg_icon_friend.png" alt="Offline" style="width:30px; height:30px;">
+<div class="icon-with-badge" aria-live="polite" aria-atomic="true">
+  <img src="msg_icon_friend.png" alt="Permintaan pertemanan" class="friend-icon">
+  <span class="badge" id="friendBadge" aria-label="77 permintaan pertemanan">99+</span>
+</div>
       <img src="msg_icon_more_dot.png" alt="Offline" style="width:30px; height:30px;">
     </span>
   </h3>
@@ -2765,7 +3146,7 @@ function kirimBalasanHost() {
             <p>ini saya lagi live una,kamu lagi apa...</p>
           </div>
           <span class="chat-time">08:45</span>
-          <span class="chat-badge">6</span>
+          <span class="chat-badge">1</span>
         </div>
 
 
@@ -2779,8 +3160,8 @@ function kirimBalasanHost() {
             </h4>
             <p>dimana tu</p>
           </div>
-          <span class="chat-time">08:45</span>
-          <span class="robi-badge">6</span>
+<span class="chat-ttime" id="chatttttime2">02:36</span>
+          <span class="robi-badge">3</span>
         </div>
 
 
@@ -2794,8 +3175,8 @@ function kirimBalasanHost() {
     </h4>
     <p>yok vc</p>
   </div>
-  <span class="chat-time">08:45</span>
-  <span class="raffli-badge">6</span>
+<span class="chat-ttime" id="chattt3time3">02:36</span>
+  <span class="raffli-badge">1</span>
 </div>
 
 
@@ -2811,7 +3192,7 @@ function kirimBalasanHost() {
             </h4>
             <p>udah 4 bulan saya mbah jadi host</p>
           </div>
-          <span class="chat-time">08:45</span>
+<span class="chat-ttime" id="chatttttime4">02:36</span>
           <span class="dody-badge">2</span>
         </div>
 
@@ -2828,8 +3209,8 @@ function kirimBalasanHost() {
             </h4>
             <p>malam itme</p>
           </div>
-          <span class="chat-time">08:45</span>
-          <span class="userbr-badge">6</span>
+<span class="chat-ttime" id="chatttttime5">02:36</span>
+          <span class="userbr-badge">1</span>
         </div>
 
 
@@ -2843,8 +3224,8 @@ function kirimBalasanHost() {
             </h4>
             <p>p</p>
           </div>
-          <span class="chat-time">08:45</span>
-          <span class="chat-badge">6</span>
+<span class="chat-ttime" id="chatttttime6">02:36</span>
+          <span class="baim-badge">8</span>
         </div>
 
 
@@ -2859,8 +3240,8 @@ function kirimBalasanHost() {
             </h4>
             <p>oh kamu tinggal di jaksel</p>
           </div>
-          <span class="chat-time">08:45</span>
-          <span class="chat-badge">6</span>
+<span class="chat-ttime" id="chatttttime7">02:36</span>
+          <span class="bram-badge">1</span>
         </div>
 
 
@@ -2872,12 +3253,272 @@ function kirimBalasanHost() {
         <div class="chat-item" onclick="openChat('user3')">
           <img src="c48.jpg" alt="User" class="chat-avatar">
           <div class="chat-info">
-            <h4>Dudisantoso</h4>
+            <h4>Dudisantoso
+<span class="host-badge">HOST</span>
+            </h4>
             <p>aku kalimantan deks</p>
           </div>
-          <span class="chat-time">07:23</span>
-          <span class="chat-manda">6</span>
+<span class="chat-ttime" id="chatttttime8">02:36</span>
+          <span class="dudi-badge">1</span>
         </div>
+
+
+
+
+
+                <!-- Chat User 10 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c51.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>parman</h4>
+            <p>ehhehe ada2 aja kamu</p>
+          </div>
+<span class="chat-ttime" id="chatttttime9">02:36</span>
+          <span class="parman-badge">1</span>
+        </div>
+
+
+
+                <!-- Chat User 11 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="C53.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>cari kenalan
+ <img src="vip_tag.png" alt="Offline" class="offline-icon">
+</h4>
+            <p>sudah makan?</p>
+          </div>
+<span class="chat-ttime" id="chatttttime10">02:36</span>
+          <span class="chat-manda">1</span>
+        </div>
+
+
+
+                <!-- Chat User 12 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c54.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>fendi san</h4>
+            <p>abg juga perna kok kesana</p>
+          </div>
+<span class="chat-ttime" id="chatttttime8">02:36</span>
+          <span class="chat-manda">1</span>
+        </div>
+
+
+
+
+
+                        <!-- Chat User 13 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c55.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>matigan12
+<img src="vip_tag.png" alt="Offline" class="offline-icon">
+            </h4>
+            <p>aku medan dek</p>
+
+          </div>
+<span class="chat-ttime" id="chatttttime8">02:36</span>
+          <span class="chat-manda">1</span>
+        </div>
+
+
+
+
+                <!-- Chat User 14 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c68.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>sarjana eko</h4>
+            <p>sudah biasa itu kok beb</p>
+          </div>
+<span class="chat-ttime" data-offset="28">02:36</span>
+          <span class="chat-cot">1</span>
+        </div>
+
+
+
+
+
+
+                        <!-- Chat User 15 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c67.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>wandi</h4>
+            <p>udah tau ni</p>
+          </div>
+<span class="chat-ttime" data-offset="28">02:36</span>
+          <span class="chat-cot">1</span>
+        </div>
+
+
+
+                <!-- Chat User 16 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c56.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>surbakti wijaya</h4>
+            <p>dah berapa lama kamu mbak main aplik...</p>
+          </div>
+<span class="chat-ttime" data-offset="28">02:36</span>
+          <span class="chat-cot">1</span>
+        </div>
+
+
+
+
+
+                        <!-- Chat User 17 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c57.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>nawang supradi
+<span class="host-badge">HOST</span>
+            </h4>
+            <p>oke deh</p>
+          </div>
+<span class="chat-ttime" data-offset="28">02:36</span>
+          <span class="chat-cot">1</span>
+        </div>
+
+
+
+
+
+
+                        <!-- Chat User 18 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c58.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>sarwo</h4>
+            <p>sudah</p>
+          </div>
+<span class="chat-ttime" data-offset="28">02:36</span>
+          <span class="chat-cot">1</span>
+        </div>
+
+
+
+
+
+                        <!-- Chat User 19 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c59.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>oblok</h4>
+            <p>p</p>
+          </div>
+<span class="chat-ttime" data-offset="28">02:36</span>
+          <span class="chat-cot">1</span>
+        </div>
+
+
+
+
+
+
+
+                        <!-- Chat User 20 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c60.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>alan
+ <img src="vip_tag.png" alt="Offline" class="offline-icon">
+            </h4>
+            <p>hi</p>
+          </div>
+<span class="chat-ttime" data-offset="28">02:36</span>
+          <span class="alan-badge">1</span>
+        </div>
+
+
+
+
+
+
+
+                        <!-- Chat User 21 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c61.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>Eky
+<span class="host-badge">HOST</span>
+            </h4>
+            <p>saya jambi </p>
+          </div>
+<span class="chat-ttime" data-offset="28">02:36</span>
+          <span class="chat-cot">1</span>
+        </div>
+
+
+                        <!-- Chat User 22 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c62.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>rinto</h4>
+            <p>oke</p>
+          </div>
+<span class="chat-ttime" data-offset="28">02:36</span>
+          <span class="chat-cot">1</span>
+        </div>
+
+
+
+                                <!-- Chat User 23 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c63.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>bang jm bro</h4>
+            <p>mantap dek </p>
+          </div>
+<span class="chat-ttime" data-offset="28">02:36</span>
+          <span class="chat-cot">1</span>
+        </div>
+
+
+
+                        <!-- Chat User 24 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c64.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>budek budek
+<span class="host-badge">HOST</span>
+            </h4>
+            <p>bercandaaa</p>
+          </div>
+<span class="chat-ttime" data-offset="28">02:36</span>
+          <span class="chat-cot">1</span>
+        </div>
+
+
+
+                        <!-- Chat User 25 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c65.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>wahyu</h4>
+            <p>kamu perna ke bandung blm </p>
+          </div>
+<span class="chat-ttime" data-offset="28">02:36</span>
+          <span class="chat-cot">1</span>
+        </div>
+
+
+                       <!-- Chat User 26 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c66.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>gadilinsaaaa</h4>
+            <p>tadi sih</p>
+          </div>
+<span class="chat-ttime" data-offset="28">02:36</span>
+          <span class="chat-cot">1</span>
+        </div>
+
+
+
       </div>
 
 
@@ -3020,7 +3661,7 @@ function kirimBalasanHost() {
 
           <div class="bottom-row">
             <div class="level">
-              <img src="user_level_4_icon.png" alt="Offline" class="status-icon"> Level 4
+              <img src="user_level_4_icon.png" alt="Offline" class="status-icon"> Level 3
             </div>
 
             <div class="verify"
@@ -3746,6 +4387,330 @@ updateChatTime();
 
 // Update setiap 30 detik
 setInterval(updateChatTime, 30000);
+
+
+
+ // Contoh: update badge lewat JS
+  function setFriendBadge(count){
+    const badge = document.getElementById('friendBadge');
+    if (!badge) return;
+    if (!count || count <= 0) {
+      badge.classList.add('hidden');
+      badge.setAttribute('aria-hidden', 'true');
+    } else {
+      badge.classList.remove('hidden');
+      badge.removeAttribute('aria-hidden');
+      // batasi tampilannya (mis. 99+)
+      badge.textContent = count > 99 ? '99+' : String(count);
+      badge.setAttribute('aria-label', badge.textContent + ' permintaan pertemanan');
+    }
+  }
+
+
+
+
+
+
+
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    function pad(num) {
+        return num < 10 ? "0" + num : num;
+    }
+
+    function updateChatttttime2() {
+        const el = document.getElementById("chatttttime2");
+        if (!el) return;
+
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - 10); // mundur 10 menit
+
+        const hours = pad(now.getHours());
+        const minutes = pad(now.getMinutes());
+
+        el.textContent = `${hours}:${minutes}`;
+    }
+
+    // Jalankan pertama kali
+    updateChatttttime2();
+
+    // Update setiap detik agar real-time
+    setInterval(updateChatttttime2, 1000);
+});
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    function pad(num) {
+        return num < 10 ? "0" + num : num;
+    }
+
+    function updateChattt3time3() {
+        const el = document.getElementById("chattt3time3");
+        if (!el) return;
+
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - 11); // mundur 11 menit
+
+        const hours = pad(now.getHours());
+        const minutes = pad(now.getMinutes());
+
+        el.textContent = `${hours}:${minutes}`;
+    }
+
+    // Jalankan pertama kali
+    updateChattt3time3();
+
+    // Update setiap detik agar real-time
+    setInterval(updateChattt3time3, 1000);
+});
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    function pad(num) {
+        return num < 10 ? "0" + num : num;
+    }
+
+    function updateChatttttime4() {
+        const el = document.getElementById("chatttttime4");
+        if (!el) return;
+
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - 12); // mundur 12 menit
+
+        const hours = pad(now.getHours());
+        const minutes = pad(now.getMinutes());
+
+        el.textContent = `${hours}:${minutes}`;
+    }
+
+    // Jalankan pertama kali
+    updateChatttttime4();
+
+    // Update setiap detik
+    setInterval(updateChatttttime4, 1000);
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    function pad(num) {
+        return num < 10 ? "0" + num : num;
+    }
+
+    function updateChatttttime5() {
+        const el = document.getElementById("chatttttime5");
+        if (!el) return;
+
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - 15); // mundur 15 menit
+
+        const hours = pad(now.getHours());
+        const minutes = pad(now.getMinutes());
+
+        el.textContent = `${hours}:${minutes}`;
+    }
+
+    updateChatttttime5();               // jalankan pertama kali
+    setInterval(updateChatttttime5, 1000); // update tiap detik
+});
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    function pad(num) {
+        return num < 10 ? "0" + num : num;
+    }
+
+    function updateChatttttime6() {
+        const el = document.getElementById("chatttttime6");
+        if (!el) return;
+
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - 17); // mundur 17 menit
+
+        const hours = pad(now.getHours());
+        const minutes = pad(now.getMinutes());
+
+        el.textContent = `${hours}:${minutes}`;
+    }
+
+    updateChatttttime6();                // Jalankan pertama kali
+    setInterval(updateChatttttime6, 1000); // Update tiap detik
+});
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    function pad(num) {
+        return num < 10 ? "0" + num : num;
+    }
+
+    function updateChatttttime7() {
+        const el = document.getElementById("chatttttime7");
+        if (!el) return;
+
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - 20); // mundur 20 menit
+
+        const hours = pad(now.getHours());
+        const minutes = pad(now.getMinutes());
+
+        el.textContent = `${hours}:${minutes}`;
+    }
+
+    updateChatttttime7();                // Jalankan pertama kali
+    setInterval(updateChatttttime7, 1000); // Update setiap detik
+});
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    function pad(num) {
+        return num < 10 ? "0" + num : num;
+    }
+
+    function updateChatttttime8() {
+        const el = document.getElementById("chatttttime8");
+        if (!el) return;
+
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - 22); // mundur 22 menit
+
+        const hours = pad(now.getHours());
+        const minutes = pad(now.getMinutes());
+
+        el.textContent = `${hours}:${minutes}`;
+    }
+
+    updateChatttttime8();
+    setInterval(updateChatttttime8, 1000);
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    function pad(num) {
+        return num < 10 ? "0" + num : num;
+    }
+
+    function updateChatttttime9() {
+        const el = document.getElementById("chatttttime9");
+        if (!el) return;
+
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - 24); // mundur 24 menit
+
+        const hours = pad(now.getHours());
+        const minutes = pad(now.getMinutes());
+
+        el.textContent = `${hours}:${minutes}`;
+    }
+
+    updateChatttttime9();
+    setInterval(updateChatttttime9, 1000);
+});
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    function pad(num) {
+        return num < 10 ? "0" + num : num;
+    }
+
+    function updateChatttttime10() {
+        const el = document.getElementById("chatttttime10");
+        if (!el) return;
+
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - 25); // mundur 25 menit
+
+        const hours = pad(now.getHours());
+        const minutes = pad(now.getMinutes());
+
+        el.textContent = `${hours}:${minutes}`;
+    }
+
+    updateChatttttime10();
+    setInterval(updateChatttttime10, 1000);
+});
+
+
+
+
+
+
+
+
+
+//data untuk semua jam telat 28
+
+document.addEventListener("DOMContentLoaded", function () {
+    function pad(num) {
+        return num < 10 ? "0" + num : num;
+    }
+
+    function updateAllChatTimes() {
+        const now = new Date();
+        document.querySelectorAll(".chat-ttime").forEach(el => {
+            const offset = parseInt(el.dataset.offset || 0, 10);
+            const t = new Date(now.getTime() - offset * 60000);
+            el.textContent = pad(t.getHours()) + ":" + pad(t.getMinutes());
+        });
+    }
+
+    updateAllChatTimes();
+    setInterval(updateAllChatTimes, 60000); // update tiap 1 menit
+});
+
+
+
+
+
+
+const slider = document.querySelector('.user-slider');
+const cards = document.querySelectorAll('.user-carddddd');
+const container = document.querySelector('.user-container');
+
+const gap = 4; // gap antar card
+const cardWidth = 80; // ukuran default
+const containerWidth = container.offsetWidth;
+let index = 0;
+
+function updateActive() {
+    cards.forEach(card => card.classList.remove('active'));
+    cards[index % cards.length].classList.add('active');
+
+    // Geser slider agar foto aktif di tengah
+    let offset = (cardWidth + gap) * index - (containerWidth / 2 - cardWidth / 2);
+    slider.style.transform = `translateX(-${offset}px)`;
+    slider.style.transition = "transform 0.5s ease-in-out";
+}
+
+// Inisialisasi aktif
+updateActive();
+
+// Auto-slide
+setInterval(() => {
+    index++;
+    if (index >= cards.length) index = 0;
+    updateActive();
+}, 6000);
+
+
 
 
         </script>
