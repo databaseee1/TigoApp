@@ -61,7 +61,7 @@ window.openChat = async function (chatId, el) {
   <!-- Tombol kembali (kiri) -->
   <button onclick="tutupChatLayanan()" style="
       position: absolute;
-      left: 16px;
+      left: 5px;
       background: none;
       border: none;
       display: flex;
@@ -78,7 +78,7 @@ window.openChat = async function (chatId, el) {
       text-overflow: ellipsis;
       max-width: 60%;
       text-align: center;
-      font-size:14px;
+      font-size:16px;
   ">
     ${el.dataset.nama || 'Layanan Pelanggan'}
   </span>
@@ -204,7 +204,7 @@ box-sizing: border-box; /* biar padding gak bikin melar */
       bubble.style.borderRadius = "10px";
       bubble.style.backgroundColor = msg.sender === "Human Assistant" ? "#e3f2fd" : "rgb(246 246 246)";
       bubble.style.maxWidth = "70%";
-      bubble.style.fontSize = "10px"; // ubah angka sesuai kebutuhan
+      bubble.style.fontSize = "15px"; // ubah angka sesuai kebutuhan
 
 
       let deleteButton = "";
@@ -213,11 +213,11 @@ box-sizing: border-box; /* biar padding gak bikin melar */
       }
 
 bubble.innerHTML = `
-  <strong style="font-size:7px; color:#bababa; display:block; margin-bottom:4px;">
+  <strong style="font-size:10px; color:#bababa; display:block; margin-bottom:4px;">
     ${msg.sender === "admin" ? "Human Assistant" : msg.sender}
   </strong>
   <p style="margin:0;">${msg.pesan}</p>
-  <small style="font-size:6px;color:#999;display:block;margin-top:2px;">${msg.timeString}</small>
+  <small style="font-size:9px;color:#999;display:block;margin-top:2px;">${msg.timeString}</small>
   ${deleteButton}
 `;
 
@@ -769,7 +769,7 @@ function kirimBalasanHost() {
 
   <style>
     body {
-      font-family: Arial;
+      font-family: 'Poppins', sans-serif;
       background: #ffffff;
       margin: 0;
       padding: 0;
@@ -898,7 +898,6 @@ function kirimBalasanHost() {
       height: 18px;
       border-radius: 50%;
       background: linear-gradient(to bottom, #ff0000 50%, #ffffff 50%);
-      border: 1px solid #ccc;
       display: inline-block;
     }
 
@@ -1316,6 +1315,7 @@ function kirimBalasanHost() {
     .chat-list {
       display: flex;
       flex-direction: column;
+      margin-top: -20px;
     }
 
     /* Jarak antar chat item */
@@ -1323,17 +1323,16 @@ function kirimBalasanHost() {
       display: flex;
       align-items: center;
       padding: 8px 12px;
-      border-bottom: 1px solid #eee;
+      border-bottom:none;
       cursor: pointer;
       margin-bottom: 8px;
       /* beri jarak antar chat */
     }
 
-    /* Khusus untuk chat laporan agar lebih jauh */
-    .chat-item.laporan {
-      margin-bottom: 23px;
-      /* jarak lebih besar untuk laporan */
-    }
+.chat-item.laporan {
+  margin-bottom: 0px;
+  margin-left: -10px; /* geser ke kiri */
+}
 
     .chat-info {
       flex: 1;
@@ -1342,7 +1341,7 @@ function kirimBalasanHost() {
     }
 
     .chat-time {
-      font-size: 12px;
+      font-size: 9px;
       color: #999;
       margin-left: 8px;
       white-space: nowrap;
@@ -1361,13 +1360,16 @@ function kirimBalasanHost() {
     }
 
     .chat-info h4 {
+      font-family: 'Poppins', sans-serif;
       margin: 0;
       font-size: 15px;
     }
 
     .chat-info p {
+          font-family: 'Poppins', sans-serif;
+    font-weight: 400; /* normal */
       margin: 2px 0 0;
-      font-size: 13px;
+      font-size: 12px;
       color: gray;
     }
 
@@ -1710,6 +1712,153 @@ function kirimBalasanHost() {
   color: inherit;        /* arsitektur sama dengan text sekitar */
   cursor: pointer;
 }
+
+
+
+
+.host-badge {
+    background-color: red;
+    color: white;
+    font-size: 7px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 3px;
+    text-transform: uppercase;
+    position: relative;
+    top: -2px; /* Naikkan badge */
+}
+
+.chat-badge {
+    position: absolute;
+    right: 12px;  /* sejajar kanan */
+    top: 305px;     /* geser ke atas */
+    background: #ff4646;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 0px 1px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 14px;
+    height: 14px;
+}
+
+
+.chat-manda {
+    position: absolute;
+    right: 12px;  /* sejajar kanan */
+    top: 376px;     /* geser ke atas */
+    background: #ff4646;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 0px 1px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 14px;
+    height: 14px;
+}
+
+
+.robi-badge {
+    position: absolute;
+    right: 12px;  /* sejajar kanan */
+    top: 446px;     /* geser ke atas */
+    background: #ff4646;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 0px 1px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 14px;
+    height: 14px;
+}
+
+
+.raffli-badge {
+    position: absolute;
+    right: 12px;  /* sejajar kanan */
+    top: 515px;     /* geser ke atas */
+    background: #ff4646;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 0px 1px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 14px;
+    height: 14px;
+}
+
+.dody-badge {
+    position: absolute;
+    right: 12px;  /* sejajar kanan */
+    top: 583px;     /* geser ke atas */
+    background: #ff4646;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 0px 1px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 14px;
+    height: 14px;
+}
+
+.userbr-badge {
+    position: absolute;
+    right: 12px;  /* sejajar kanan */
+    top: 652px;     /* geser ke atas */
+    background: #ff4646;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 0px 1px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 14px;
+    height: 14px;
+}
+
+.notifi-badge {
+    position: absolute;
+    right: 12px;  /* sejajar kanan */
+    top: 165px;     /* geser ke atas */
+    background: #ff4646;
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 0px 1px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 17px;
+}
+
+
+
+
+.offline-icon {
+    width: 25px;
+    height: 10px;
+}
+
   </style>
 </head>
 
@@ -2505,15 +2654,17 @@ function kirimBalasanHost() {
 
 
     <div id="pageChat" class="navPage" style="display:none; padding-bottom:60px; position:relative;">
-      <h3 style="padding:15px; margin-top: -50px; color: #727272; background: #fff; position:relative;">
+      <h3 style="padding:15px; margin-top: -50px; color: black; background: #fff; position:relative;">
         Chat </span>
-        <span style="color:black;">Panggilan</span>
+        <span style="color:#727272">Panggilan</span>
 
         <span
           style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:12px; color:#999; display:flex; align-items:center; gap:4px;">
           <span
             style="position:absolute; right:12px; top:50%; transform:translateY(-50%); font-size:12px; color:#999; display:flex; align-items:center; gap:4px;">
-            <img src="contact_unfollow.png" alt="Offline" style="width:30px; height:30px;">
+            <img src="msg_icon_friend.png" alt="Offline" style="width:30px; height:30px;">
+              <img src="msg_icon_more_dot.png" alt="Offline" style="width:30px; height:30px; right:0; ">
+
           </span>
       </h3>
 
@@ -2537,7 +2688,7 @@ function kirimBalasanHost() {
         background-position: center;
       "></div>
             <div class="chat-info">
-              <h4>Layanan Host</h4>
+              <h4>Layanan Pelanggan</h4>
               <p id="lastMessage"></p>
             </div>
           </div>
@@ -2565,54 +2716,159 @@ function kirimBalasanHost() {
 
         </div>
 
-        <div class="chat-item" onclick="openChat('pengunjung')">
-          <img src="message_see_me_item_icon.png" alt="Pengunjung" class="chat-avatar">
-          <div class="chat-info">
-            <h4>Notifikasi</h4>
-            <p>Manda mengunjungi saya 57 kali</p>
-          </div>
-          <span class="chat-time">10:30</span>
-        </div>
+<div class="chat-item" onclick="openChat('pengunjung')">
+  <img src="message_see_me_item_icon.png" alt="Pengunjung" class="chat-avatar">
+  <div class="chat-info">
+    <h4>Notifikasi</h4>
+    <p>Manda mengunjungi saya 57 kali</p>
+  </div>
+    <span class="notifi-badge">99+</span>
+</div>
 
+<div class="chat-item" onclick="openChat('pengumuman')">
+  <img src="notifikasi.png" alt="Pengumuman" class="chat-avatar">
+  <div class="chat-info">
+    <h4>Notifikasi</h4>
+    <p>Manda telah mengikuti anda, dan and...</p>
+  </div>
+  <span class="chat-time">--:--</span>
+</div>
 
-        <!-- Chat Pengumuman -->
-        <div class="chat-item" onclick="openChat('pengumuman')">
-          <img src="notifikasi.png" alt="Pengumuman" class="chat-avatar">
-          <div class="chat-info">
-            <h4>Notifikasi</h4>
-            <p>Manda telah mengukuti anda,dan and...</p>
-          </div>
-          <span class="chat-time">10:30</span>
-        </div>
 
         <!-- Chat User 1 -->
         <div class="chat-item" onclick="openChat('user1')">
-          <img src="cewek11.jpeg" alt="User" class="chat-avatar">
+          <img src="c40.jpg" alt="User" class="chat-avatar">
           <div class="chat-info">
-            <h4>Riks</h4>
-            <p>Hai, lagi apa?</p>
+            <h4>Rendi sanrosi
+            <span class="host-badge">HOST</span>
+            </h4>
+            <p>Hai,udah wd saya 300rb ni una,krim rek km...</p>
           </div>
           <span class="chat-time">09:40</span>
         </div>
 
         <!-- Chat User 2 -->
         <div class="chat-item" onclick="openChat('user2')">
-          <img src="cewek10.jpeg" alt="User" class="chat-avatar">
+          <img src="c41.jpg" alt="User" class="chat-avatar">
           <div class="chat-info">
-            <h4>Puspita</h4>
-            <p>Tinggal dimana bang</p>
+            <h4>Bagas arsanto
+            <span class="host-badge">HOST</span>
+            </h4>
+            <p>ini saya lagi live una,kamu lagi apa...</p>
           </div>
           <span class="chat-time">08:45</span>
+          <span class="chat-badge">6</span>
         </div>
 
-        <!-- Chat User 3 -->
-        <div class="chat-item" onclick="openChat('user3')">
-          <img src="cewek27.jpeg" alt="User" class="chat-avatar">
+
+
+                <!-- Chat User 3 -->
+        <div class="chat-item" onclick="openChat('user2')">
+          <img src="c42.jpg" alt="User" class="chat-avatar">
           <div class="chat-info">
-            <h4>Manda</h4>
-            <p>Kamu daftar dimana akun host?</p>
+            <h4>Robi Lintang
+            <span class="host-badge">HOST</span>
+            </h4>
+            <p>dimana tu</p>
+          </div>
+          <span class="chat-time">08:45</span>
+          <span class="robi-badge">6</span>
+        </div>
+
+
+
+ <!-- Chat User 4 -->
+<div class="chat-item" onclick="openChat('user2')">
+  <img src="c43.jpg" alt="User" class="chat-avatar">
+  <div class="chat-info">
+    <h4>
+      Raffli
+    </h4>
+    <p>yok vc</p>
+  </div>
+  <span class="chat-time">08:45</span>
+  <span class="raffli-badge">6</span>
+</div>
+
+
+
+
+
+                <!-- Chat User 5 -->
+        <div class="chat-item" onclick="openChat('user2')">
+          <img src="c44.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>Dody
+            <span class="host-badge">HOST</span>
+            </h4>
+            <p>udah 4 bulan saya mbah jadi host</p>
+          </div>
+          <span class="chat-time">08:45</span>
+          <span class="dody-badge">2</span>
+        </div>
+
+
+
+                <!-- Chat User 6 -->
+        <div class="chat-item" onclick="openChat('user2')">
+          <img src="c45.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>Userbrrbj92
+            <img src="vip_tag.png" alt="Offline" class="offline-icon">
+
+
+            </h4>
+            <p>malam itme</p>
+          </div>
+          <span class="chat-time">08:45</span>
+          <span class="userbr-badge">6</span>
+        </div>
+
+
+
+
+                <!-- Chat User 7 -->
+        <div class="chat-item" onclick="openChat('user2')">
+          <img src="c46.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>Baim vas
+            </h4>
+            <p>p</p>
+          </div>
+          <span class="chat-time">08:45</span>
+          <span class="chat-badge">6</span>
+        </div>
+
+
+
+
+
+                <!-- Chat User 8 -->
+        <div class="chat-item" onclick="openChat('user2')">
+          <img src="c47.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>Bram
+            </h4>
+            <p>oh kamu tinggal di jaksel</p>
+          </div>
+          <span class="chat-time">08:45</span>
+          <span class="chat-badge">6</span>
+        </div>
+
+
+
+
+
+
+        <!-- Chat User 9 -->
+        <div class="chat-item" onclick="openChat('user3')">
+          <img src="c48.jpg" alt="User" class="chat-avatar">
+          <div class="chat-info">
+            <h4>Dudisantoso</h4>
+            <p>aku kalimantan deks</p>
           </div>
           <span class="chat-time">07:23</span>
+          <span class="chat-manda">6</span>
         </div>
       </div>
 
@@ -2793,7 +3049,7 @@ function kirimBalasanHost() {
     background:#fff; 
     border:1px solid #ddd; 
     border-radius:22px; 
-    padding:20px 15px; 
+    padding:30px 15px; 
     box-shadow:0 2px 6px rgba(0,0,0,0.1);
   ">
           <!-- Kiri: Icon + Saldo -->
@@ -2806,7 +3062,7 @@ function kirimBalasanHost() {
 
           <!-- Kanan: Tombol Credit -->
           <div id="creditBox" style="
-      padding:6px 12px; 
+      padding:12px 15px; 
       border:1px solid #5f00e3; 
       border-radius:11px; 
       background:#c00dff; 
@@ -2875,7 +3131,7 @@ function kirimBalasanHost() {
       </div>
 
       <!-- Menu List -->
-      <div style="border:1px solid #ddd; border-radius:8px; background:#fff; 
+      <div style="  background:#fff; 
             box-shadow:0 2px 4px rgba(0,0,0,0.05); color: #3f3737; overflow:hidden;">
 
         <!-- Token Saya -->
@@ -2899,7 +3155,7 @@ function kirimBalasanHost() {
 
         <!-- Setelan Obrolan -->
         <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+              padding:15px; border-top:1px; cursor:pointer;">
           <div style="display:flex; align-items:center; gap:10px;">
             <img src="setelenobrolan.png" style="width:25px; height:25px;">
             <span>Setelan Obrolan</span>
@@ -2909,7 +3165,7 @@ function kirimBalasanHost() {
 
         <!-- Level Saya -->
         <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+              padding:15px;  cursor:pointer;">
           <div style="display:flex; align-items:center; gap:10px;">
             <img src="levelsaya.png" style="width:25px; height:25px;">
             <span>Level Saya</span>
@@ -2919,7 +3175,7 @@ function kirimBalasanHost() {
 
         <!-- Rating Saya -->
         <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+              padding:15px; cursor:pointer;">
           <div style="display:flex; align-items:center; gap:10px;">
             <img src="ratingsaya.png" style="width:25px; height:25px;">
             <span>Rating Saya</span>
@@ -2929,7 +3185,7 @@ function kirimBalasanHost() {
 
         <!-- Menjadi VIP -->
         <div id="hasilAgencyBtn" style="display:flex; align-items:center; justify-content:space-between; 
-              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+              padding:15px;  cursor:pointer;">
           <div style="display:flex; align-items:center; gap:10px;">
             <img src="menjadivip.png" style="width:25px; height:25px;">
             <span>Hasil Agency</span>
@@ -2939,7 +3195,7 @@ function kirimBalasanHost() {
 
         <!-- Undang Untuk VIP -->
         <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+              padding:15px;  cursor:pointer;">
           <div style="display:flex; align-items:center; gap:10px;">
             <img src="undang.png" style="width:25px; height:25px;">
             <span>Undang Untuk VIP</span>
@@ -2949,7 +3205,7 @@ function kirimBalasanHost() {
 
         <!-- Setelan Aplikasi -->
         <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:15px; border-top:1px solid #eee; cursor:pointer;">
+              padding:15px;  cursor:pointer;">
           <div style="display:flex; align-items:center; gap:10px;">
             <img src="setelanaplikasi.png" style="width:25px; height:25px;">
             <span>Setelan Agency</span>
@@ -3459,6 +3715,30 @@ function kirimBalasanHost() {
 
 
 
+
+
+
+
+
+
+
+
+
+function updateChatTime() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+
+    document.querySelectorAll(".chat-time").forEach(el => {
+        el.textContent = `${hours}:${minutes}`;
+    });
+}
+
+// Jalankan pertama kali
+updateChatTime();
+
+// Update setiap 30 detik
+setInterval(updateChatTime, 30000);
 
 
         </script>
