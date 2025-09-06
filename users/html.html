@@ -363,7 +363,7 @@ function kirimBalasanHost() {
       const wa = document.getElementById("loginWA").value.trim();
       const statusEl = document.getElementById("loginStatus");
       if (!email || !wa) {
-        statusEl.innerText = "Isi email & WA!";
+        statusEl.innerText = "Isi acount host anda!";
         return;
       }
 
@@ -379,7 +379,7 @@ function kirimBalasanHost() {
           document.getElementById("userPage").style.display = "block";
           loadUserData(userDoc.id);
         } else {
-          statusEl.innerText = "❌ User tidak ditemukan!";
+          statusEl.innerText = "Host tidak Terdaftar!";
         }
       } catch (e) {
         console.error(e);
@@ -1139,7 +1139,7 @@ function kirimBalasanHost() {
     overflow: hidden;
     position: relative;
     border-radius: 100px;
-    margin-left: 25px;
+    margin-left: 28px;
 }
 
 .user-slider {
