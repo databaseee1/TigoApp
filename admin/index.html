@@ -316,30 +316,257 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Render User Data
   // ========================
   function renderUserRow(userId, data) {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${data.nama || '-'}</td>
-      <td>${data.umur || '-'}</td>
-      <td>${data.jk || '-'}</td>
-      <td>${data.wa || '-'}</td>
-      <td>${data.email || '-'}</td>
-      <td>${data.app || '-'}</td>
-      <td>${data.bank || '-'}</td>
-      <td>${data.namaRek || '-'}</td>
-      <td>${data.noRek || '-'}</td>
-      <td>${data.fotoURL ? `<img src="${data.fotoURL}" width="50">` : ''}</td>
-      <td>
-        ${data.verified 
-          ? `<span style="color:green;font-weight:bold;">Diverifikasi</span>` 
-          : `<span style="color:red;font-weight:bold;">Unverifikasi</span>`}
-      </td>
-      <td>
-        <button class="verify-btn" data-id="${userId}" data-status="true">Verifikasi</button>
-        <button class="verify-btn" data-id="${userId}" data-status="false">Batalkan</button>
-      </td>
-    `;
-    dataUserTable.appendChild(tr);
+  const tr = document.createElement("tr");
+  tr.dataset.userId = userId; // Tambahkan untuk referensi nanti
+
+  tr.innerHTML = `
+    <td>${data.nama || '-'}</td>
+    <td>${data.umur || '-'}</td>
+    <td>${data.jk || '-'}</td>
+    <td>${data.wa || '-'}</td>
+    <td>${data.email || '-'}</td>
+    <td>${data.app || '-'}</td>
+    <td>${data.bank || '-'}</td>
+    <td>${data.namaRek || '-'}</td>
+    <td>${data.noRek || '-'}</td>
+    <td>${data.fotoURL ? `<img src="${data.fotoURL}" width="50">` : ''}</td>
+    <td>
+      ${data.verified 
+        ? `<span style="color:green;font-weight:bold;">Diverifikasi</span>` 
+        : `<span style="color:red;font-weight:bold;">Unverifikasi</span>`}
+    </td>
+    <td>
+      <button class="verify-btn" data-id="${userId}" data-status="true">Verifikasi</button>
+      <button class="verify-btn" data-id="${userId}" data-status="false">Batalkan</button>
+      <button class="delete-btn" data-id="${userId}" style="color: #ffffff; background: red;">Hapus Data</button>
+      <button class="mark-btn" data-id="${userId}" style="background: orange; color: #fff;">Sudah</button>
+      <button class="note-btn" data-id="${userId}" data-nama="${data.nama || '-'}" style="background:#4caf50;color:#fff;">Catatan</button>
+      <div id="suuukkses-${userId}" class="suuukkses-btn" style="margin-top:5px;padding:5px 10px;background:#ddd;border-radius:4px;cursor:pointer;text-align:center;">
+        Sukses</div>
+    </td>
+  `;
+
+  // ✅ Jika statusHijau = true → seluruh baris hijau
+  if (data.statusHijau) {
+    tr.style.background = "#4caf50";  // hijau
+    tr.style.color = "#fff";          // teks putih
   }
+
+
+
+  
+document.addEventListener("click", async function(e) {
+  if (e.target.classList.contains("suuukkses-btn")) {
+    const userId = e.target.id.replace("suuukkses-", "");
+    const docRef = doc(db, "pendaftaran", userId);
+    const docSnap = await getDoc(docRef);
+
+    let statusHijau = false;
+    if (docSnap.exists()) {
+      statusHijau = docSnap.data().statusHijau || false;
+    }
+
+    // ✅ Update Firestore
+    await updateDoc(docRef, { statusHijau: !statusHijau });
+
+    // ✅ UI langsung berubah tanpa reload
+    const row = document.getElementById(`row-${userId}`);
+    if (!statusHijau) {
+      row.style.background = "#4caf50"; // hijau
+      row.style.color = "#fff";         // teks putih
+    } else {
+      row.style.background = "";  // kembali normal
+      row.style.color = "";
+    }
+  }
+});
+
+
+
+
+
+let currentUserId = null;
+let currentUserName = null;
+
+// ✅ Klik tombol "Catatan"
+document.addEventListener("click", function (e) {
+  if (e.target.classList.contains("note-btn")) {
+    currentUserId = e.target.dataset.id;
+    currentUserName = e.target.dataset.nama;
+
+    document.getElementById("userNamaModal").innerText = currentUserName;
+    openCatatan();
+    loadCatatan(currentUserId);
+  }
+});
+
+function openCatatan() {
+  document.getElementById("catatanModal").style.display = "flex";
+}
+
+function closeCatatan() {
+  document.getElementById("catatanModal").style.display = "none";
+}
+
+// ✅ Klik di luar modal untuk menutup
+document.getElementById("catatanModal").addEventListener("click", function (e) {
+  if (e.target === this) {
+    closeCatatan();
+  }
+});
+
+// ✅ Load catatan per user + tombol hapus pakai ID unik
+async function loadCatatan(userId) {
+  const catatanList = document.getElementById("catatanList");
+  catatanList.innerHTML = ""; // ✅ Reset agar tidak duplikat
+  document.getElementById("totalPembayaran").innerText = "Rp 0";
+
+  const q = query(collection(db, "pendaftaran", userId, "catatan"), orderBy("tanggal", "desc"));
+  const snapshot = await getDocs(q);
+
+  let total = 0;
+  let html = "<ul>";
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
+    total += data.nominal;
+
+    const tombolId = `hapus-catatan-${docSnap.id}`;
+
+    html += `
+      <li>
+        ${data.transaksi} - Rp ${data.nominal.toLocaleString()} (${data.namaPembayaran})
+        <button id="${tombolId}" style="margin-left:10px;color:#fff;background:red;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">Hapus</button>
+      </li>
+    `;
+  });
+  html += "</ul>";
+
+  catatanList.innerHTML = html;
+
+  document.getElementById("totalPembayaran").innerText = "Rp " + total.toLocaleString();
+
+  // ✅ Tambahkan event listener khusus untuk setiap tombol ID unik
+  snapshot.forEach(docSnap => {
+    const tombolId = `hapus-catatan-${docSnap.id}`;
+    document.getElementById(tombolId).onclick = async function () {
+      if (confirm("Yakin ingin menghapus catatan ini?")) {
+        await deleteDoc(doc(db, "pendaftaran", currentUserId, "catatan", docSnap.id));
+        loadCatatan(currentUserId);
+      }
+    };
+  });
+}
+
+// ✅ Tambah catatan (PER USER)
+document.getElementById("catatanForm").onsubmit = async function (e) {
+  e.preventDefault();
+
+  if (!currentUserId) {
+    alert("User tidak ditemukan!");
+    return;
+  }
+
+  const transaksi = document.getElementById("transaksi").value;
+  const nominal = parseFloat(document.getElementById("nominal").value);
+  const namaPembayaran = document.getElementById("namaPembayaran").value;
+
+  await addDoc(collection(db, "pendaftaran", currentUserId, "catatan"), {
+    transaksi,
+    nominal,
+    namaPembayaran,
+    tanggal: new Date()
+  });
+
+  this.reset();
+  loadCatatan(currentUserId);
+};
+
+
+
+
+
+
+
+
+
+
+  // ✅ Jika user sudah ditandai (marked === true), beri class
+  if (data.marked === true) {
+    tr.classList.add("marked");
+  }
+
+  dataUserTable.appendChild(tr);
+}
+
+
+document.addEventListener("click", async function(e) {
+  if (e.target.classList.contains("mark-btn")) {
+    const userId = e.target.dataset.id;
+    const row = e.target.closest("tr");
+
+    const isMarked = row.classList.contains("marked");
+    const newStatus = !isMarked;
+
+    try {
+      // ✅ Update Firestore field 'marked'
+      await updateDoc(doc(db, "pendaftaran", userId), {
+        marked: newStatus
+      });
+
+      // ✅ Update tampilan
+      if (newStatus) {
+        row.classList.add("marked");
+      } else {
+        row.classList.remove("marked");
+      }
+    } catch (error) {
+      console.error("Gagal update tanda:", error);
+    }
+  }
+});
+
+onSnapshot(usersRef, (snapshot) => {
+  dataUserTable.innerHTML = ""; // bersihkan tabel dulu
+  snapshot.forEach((docSnap) => {
+    renderUserRow(docSnap.id, docSnap.data());
+  });
+});
+
+
+
+
+
+
+// ========================
+// 🔹 Event Hapus Data
+// ========================
+document.addEventListener("click", async (e) => {
+  if (e.target.classList.contains("delete-btn")) {
+    const userId = e.target.dataset.id;
+
+    const konfirmasi = confirm("⚠️ Yakin mau hapus data user ini?");
+    if (!konfirmasi) return;
+
+    try {
+      await deleteDoc(doc(db, "pendaftaran", userId));
+
+      // hapus baris tabel
+      const row = e.target.closest("tr");
+      if (row) row.remove();
+
+      alert("🗑️ Data berhasil dihapus");
+    } catch (error) {
+      console.error("❌ Gagal hapus data:", error);
+      alert("❌ Gagal menghapus data. Cek koneksi atau Firestore rules.");
+    }
+  }
+});
+
+
+
+
+
+  
 
   // ========================
   // 🔹 Render Saldo
@@ -477,7 +704,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isNew) {
         notifBox.innerText = `🚨 User baru mendaftar: ${data.nama || 'User Baru'}`;
         notifBox.style.display = "block";
-        setTimeout(() => notifBox.style.display = "none", 5000);
+        setTimeout(() => notifBox.style.display = "none", 3000);
       }
     });
   });
@@ -786,8 +1013,8 @@ body {
 
 /* --- Main Content --- */
 .main {
-  margin-left:220px;
-  padding:70px 20px 20px; /* top padding biar tidak ketimpa navbar */
+  margin-left:0px;
+  padding:10px 20px 20px; /* top padding biar tidak ketimpa navbar */
   transition: margin-left 0.3s ease;
 }
 
@@ -804,9 +1031,13 @@ table th, table td {
   text-align:left;
   font-size:13px;
 }
+
 table th {
-  background:#9500be;
+  background-image: url('no_match_times_open_vip_bg.png');
+  background-size: cover;      /* biar nutup penuh */
+  background-position: center; /* fokus tengah */
   color: #ffffff;
+}
 
 
 
@@ -831,18 +1062,18 @@ table th {
 
 
 
-}
+
 #notif-box {
   display:none;
   position: fixed;
-  top:60px;
-  right:20px;
+  top:100px;
+  right:10px;
   background: #08751a;
   color:#fff;
   padding:10px 20px;
   border-radius:5px;
   z-index:1000;
-  font-size: 10px;
+  font-size: 20px;
 }
 .page {display:none;}
 .page.active {display:block;}
@@ -901,15 +1132,17 @@ button {padding:4px 8px;     background: #834cff;
     z-index: 1000;
   }
 
-  .dropdown-content a {
+.dropdown-content a {
     display: block;
+    width: 100%;             /* isi penuh kotak dropdown */
     padding: 10px;
-    color: #333;
+    color: #ffffff;
     text-decoration: none;
-  }
+    box-sizing: border-box;  /* padding tidak bikin overflow */
+}
 
   .dropdown-content a:hover {
-    background: #f0f0f0;
+    background: #ffd901;
   }
 
   .dropdown-content.show {
@@ -1010,27 +1243,147 @@ button {padding:4px 8px;     background: #834cff;
 }
 
 
+
+.marked {
+  background-color: #fff3cd !important; /* kuning soft */
+}
+
+#catatanModal {
+  display: none; 
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  background: rgba(0, 0, 0, 0.6); 
+  justify-content: center; 
+  align-items: center;
+  z-index: 9999;
+}
+#catatanModal.show {
+  display: flex;
+}
+
+
+
+
+
+
+#ststussssloginnnn, #stattauslogoutt {
+  background: #f8f8f8;
+  border-radius: 10px;
+  padding: 15px;
+
+  left: -0px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-10px); }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body>
 
+
+
+<!-- ✅ Form Login -->
+<div id="loginPage" style="display:flex;justify-content:center;align-items:center;height:100vh;flex-direction:column;">
+  <h2>Login Admin</h2>
+  <input type="text" id="adminEmail" placeholder="Email" style="margin-bottom:10px;padding:8px;">
+  <input type="password" id="adminPin" placeholder="PIN" style="margin-bottom:10px;padding:8px;">
+  <button id="loginBtn" style="padding:8px 16px;background:#4caf50;color:#fff;border:none;border-radius:4px;">Login</button>
+</div>
+
+<!-- ✅ Dashboard (Default: Hidden) -->
+<div id="dashboard" style="display:none;">
+  <button id="logoutBtn" style="background:red;color:#fff;padding:6px 12px;border:none;border-radius:4px;margin-bottom:10px;">Logout</button>
+  <table border="1" style="width:100%;border-collapse:collapse;">
+
+    <tbody id="dataUserTable"></tbody>
+  </table>
+
+
+
+<!-- ✅ Status Login -->
+<div id="ststussssloginnnn" style="display:none;margin:15px auto;">
+  <img id="statusImageLogin" src="offline.png" alt="Status" style="width:40px;height:40px;">
+  <div id="statusTextLogin" style="font-size:18px;font-weight:bold;color:#444;margin-top:8px;">Offline</div>
+  <div id="statusMessageLogin" style="font-size:14px;color:#666;"></div>
+</div>
+
+<!-- ✅ Status Logout -->
+<div id="stattauslogoutt" style="display:none;text-align:center;margin:15px auto;">
+  <img id="statusImageLogout" src="offline.png" alt="Status" style="width:40px;height:40px;">
+  <div id="statusTextLogout" style="font-size:18px;font-weight:bold;color:#444;margin-top:8px;">Offline</div>
+  <div id="statusMessageLogout" style="font-size:14px;color:#666;"></div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- ✅ NAVBAR -->
-<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#7f3586; color:#fff;">
+<div style="
+  display:flex; 
+  justify-content:space-between; 
+  align-items:center; 
+  padding:30px; 
+  background-image:url('no_match_times_charge_bg.png'); 
+  background-size:cover; 
+  background-position:center; 
+  color:#fff;
+  border-radius: 20px;
+">
   <div style="display:flex; align-items:center; gap:10px;">
-    <img src="agencylogo.png" alt="Logo" style="width:35px; height:35px; border-radius:50%;">
-    <span style="font-weight:bold;">ADMIN CS</span>
+    <img src="agencylogo.png" alt="Logo" style="width:55px; height:55px; border-radius:50%;">
+    <span style="font-weight:bold; font-size: 40px;">ADMIN CS</span>
     <img src="servant_icon.png" alt="CS" onclick="openCsPopup()" style="width:30px; height:30px; cursor:pointer;" onerror="this.src='https://via.placeholder.com/30'">
   </div>
-  <div style="position:relative;">
-  <button onclick="toggleDropdown()" style="background:#fff; color:#7f3586; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;">⚙ Menu</button>
-  <div id="dropdownMenu" class="dropdown-content">
-    <a href="#" onclick="showPage('data')">Data User</a>
-    <a href="#" onclick="showPage('saldo')">Saldo User</a>
-    <a href="#" onclick="showPage('withdraw')">User Withdraw</a>
-    <a href="#" onclick="showPage('deposit')">Deposit User</a>
-    <a href="#" onclick="showPage('updateTagihan')">Update Tagihan</a>
-    <a href="https://databaseee1.github.io/TigoApp/analisist%20data%20host/">Analisis Data</a>
-    <a href="#" onclick="showPage('ubahAnalisis')">Ubah Analisis</a> <!-- 🔥 menu baru -->
+ <div style="position:relative;">
+  <button onclick="toggleDropdown()" 
+          style="background:#fff; color:#7f3586; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;">
+    ⚙ Menu
+  </button>
+  <div id="dropdownMenu" class="dropdown-content" 
+       style="display:none; position:absolute; background:#7f3586; box-shadow:0 4px 8px rgb(255, 255, 255); border-radius:6px; padding:50px; z-index:999;">
+    <a href="#" onclick="showPage('data'); toggleDropdown();">Semua Data</a>
+    <a href="#" onclick="showPage('saldo'); toggleDropdown();">Credit</a>
+    <a href="#" onclick="showPage('withdraw'); toggleDropdown();">Request Withdraw</a>
+    <a href="#" onclick="showPage('deposit'); toggleDropdown();">Request Deposit</a>
+    <a href="#" onclick="showPage('updateTagihan'); toggleDropdown();">Tagihan</a>
+    <a href="https://databaseee1.github.io/TigoApp/analisist%20data%20host/" onclick="toggleDropdown();">Analisis Data</a>
+    <a href="#" onclick="showPage('ubahAnalisis'); toggleDropdown();">Ubah Analisis</a>
   </div>
 </div>
 </div>
@@ -1046,7 +1399,7 @@ button {padding:4px 8px;     background: #834cff;
 
   <div style="margin-bottom:15px;">
     <label style="font-weight:600; display:block; margin-bottom:6px;">Pemasukan:</label>
-    <input type="number" id="setPemasukan" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;">
+    <input type="number" id="setPemasukan" style="width:100%; padding:10px; border:1px solid #ff0000; border-radius:8px;">
   </div>
 
   <div style="margin-bottom:15px;">
@@ -1172,6 +1525,11 @@ button {padding:4px 8px;     background: #834cff;
 
   <div id="data" class="page active">
     <h1>Data User</h1>
+
+    <!-- ✅ Kolom Pencarian -->
+  <input type="text" id="searchInput" placeholder="Cari data..." 
+         style="margin-bottom:10px; border-radius: 10px; padding:8px; width:300px; font-size:16px;">
+
     <table>
 <thead>
   <tr>
@@ -1213,30 +1571,65 @@ button {padding:4px 8px;     background: #834cff;
   </div>
 </div>
 
+
+
+
+<div id="catatanModal" style="
+  display:none; 
+  position:fixed; 
+  top:0; left:0; width:100%; height:100%; 
+  background:rgba(0,0,0,0.6); 
+  justify-content:center; align-items:center; 
+  z-index:9999;">
+  <div style="background:#fff; padding:20px; border-radius:10px; width:400px; max-height:90vh; overflow:auto;">
+    <h3>Catatan Keuangan: <span id="userNamaModal"></span></h3>
+    <form id="catatanForm">
+      <label>Transaksi apa:</label>
+      <input type="text" id="transaksi" required style="width:100%;"><br><br>
+
+      <label>Nominal:</label>
+      <input type="number" id="nominal" required style="width:100%;"><br><br>
+
+      <label>Nama Pembayaran:</label>
+      <input type="text" id="namaPembayaran" required style="width:100%;"><br><br>
+
+      <button type="submit" style="background:#4caf50;color:#fff;padding:8px 12px;border:none;border-radius:5px;">Tambah Catatan</button>
+    </form>
+
+    <hr>
+    <h4>Riwayat Catatan:</h4>
+    <div id="catatanList"></div>
+
+    <h4>Total Pembayaran: <span id="totalPembayaran">Rp 0</span></h4>
+
+    <br>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>  <!-- ✅menu  tutup login  -->
 <script>
-function toggleSidebar() {
-  const sidebar = document.querySelector(".sidebar");
-  if (sidebar) {
-    sidebar.classList.toggle("active");
-  }
-}
+
+
 
 function toggleDropdown() {
-  const dropdown = document.getElementById("dropdownMenu");
-  if (!dropdown) {
-    console.error("Dropdown menu tidak ditemukan");
-    return;
-  }
-  dropdown.classList.toggle("show");
+  const menu = document.getElementById('dropdownMenu');
+  menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
 }
 
-// Klik di luar dropdown → tutup otomatis
-document.addEventListener("click", function (e) {
-  const dropdown = document.getElementById("dropdownMenu");
-  const button = e.target.closest("button");
+// ✅ Klik di luar menu untuk menutup dropdown
+document.addEventListener('click', function(event) {
+  const menu = document.getElementById('dropdownMenu');
+  const button = event.target.closest('button');
+  const insideMenu = event.target.closest('.dropdown-content');
 
-  if (dropdown && !dropdown.contains(e.target) && !button) {
-    dropdown.classList.remove("show");
+  if (!insideMenu && !button) {
+    menu.style.display = 'none';
   }
 });
 
@@ -1287,6 +1680,134 @@ document.addEventListener("click", function (e) {
   if (!dropdown.contains(e.target) && !button) {
     dropdown.classList.remove("show");
   }
+});
+
+
+
+document.getElementById('searchInput').addEventListener('keyup', function() {
+  const filter = this.value.toLowerCase();
+  const rows = document.querySelectorAll('#data-user-table tr');
+
+  rows.forEach(row => {
+    const text = row.innerText.toLowerCase();
+    if (text.includes(filter)) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+// ✅ Email & PIN Admin
+const ADMIN_EMAIL = "admin@gmail.com";
+const ADMIN_PIN = "1111";
+
+// ✅ Elemen Login & Dashboard
+const loginPage = document.getElementById("loginPage");
+const dashboard = document.getElementById("dashboard");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+
+// ✅ Elemen Status Login
+const statusBoxLogin = document.getElementById("ststussssloginnnn");
+const statusImageLogin = document.getElementById("statusImageLogin");
+const statusTextLogin = document.getElementById("statusTextLogin");
+const statusMessageLogin = document.getElementById("statusMessageLogin");
+
+// ✅ Elemen Status Logout
+const statusBoxLogout = document.getElementById("stattauslogoutt");
+const statusImageLogout = document.getElementById("statusImageLogout");
+const statusTextLogout = document.getElementById("statusTextLogout");
+const statusMessageLogout = document.getElementById("statusMessageLogout");
+
+// ✅ Tampilkan status login
+function setLoginStatus(type, message = "") {
+  statusBoxLogin.style.display = "block";
+
+  if (type === "online") {
+    statusImageLogin.src = "notifikasi.png";
+    statusTextLogin.textContent = "Online";
+    statusTextLogin.style.color = "green";
+  } else if (type === "error") {
+    statusImageLogin.src = "match_locked_icon.png";
+    statusTextLogin.textContent = "Error";
+    statusTextLogin.style.color = "orange";
+  } else {
+    statusImageLogin.src = "notifikasi.png";
+    statusTextLogin.textContent = "Offline";
+    statusTextLogin.style.color = "red";
+  }
+
+  statusMessageLogin.textContent = message;
+
+  // ✅ Semua status (online, error, offline) hilang setelah 3 detik
+  setTimeout(() => {
+    statusBoxLogin.style.display = "none";
+  }, 4000);
+}
+
+// ✅ Tampilkan status logout
+function setLogoutStatus(message = "") {
+  statusBoxLogout.style.display = "block";
+  statusImageLogout.src = "match_locked_icon.png";
+  statusTextLogout.textContent = "Logout";
+  statusTextLogout.style.color = "red";
+  statusMessageLogout.textContent = message;
+
+  setTimeout(() => statusBoxLogout.style.display = "none", 3000);
+}
+
+// ✅ Cek Status Login Saat Halaman Dibuka
+if (localStorage.getItem("isLoggedIn") === "true") {
+  showDashboard();
+  setLoginStatus("online", "Anda sedang login.");
+} else {
+  showLogin();
+  setLoginStatus("offline", "Silakan login untuk melanjutkan.");
+}
+
+// ✅ Fungsi Tampilkan Dashboard
+function showDashboard() {
+  loginPage.style.display = "none";
+  dashboard.style.display = "block";
+}
+
+// ✅ Fungsi Tampilkan Login
+function showLogin() {
+  loginPage.style.display = "flex";
+  dashboard.style.display = "none";
+}
+
+// ✅ Event Login
+loginBtn.addEventListener("click", function () {
+  const email = document.getElementById("adminEmail").value;
+  const pin = document.getElementById("adminPin").value;
+
+  if (email === ADMIN_EMAIL && pin === ADMIN_PIN) {
+    localStorage.setItem("isLoggedIn", "true");
+    showDashboard();
+    setLoginStatus("online", "Login berhasil!");
+  } else {
+    setLoginStatus("error", "Email atau PIN salah!");
+  }
+});
+
+// ✅ Event Logout
+logoutBtn.addEventListener("click", function () {
+  localStorage.removeItem("isLoggedIn");
+  showLogin();
+  setLogoutStatus("Anda telah logout.");
 });
 
 
