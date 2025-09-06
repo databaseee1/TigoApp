@@ -1339,11 +1339,36 @@ button {padding:4px 8px;     background: #834cff;
 
 
 <!-- ✅ Form Login -->
-<div id="loginPage" style="display:flex;justify-content:center;align-items:center;height:100vh;flex-direction:column;">
-  <h2>Login Admin</h2>
-  <input type="text" id="adminEmail" placeholder="Email" style="margin-bottom:10px;padding:8px;">
-  <input type="password" id="adminPin" placeholder="PIN" style="margin-bottom:10px;padding:8px;">
-  <button id="loginBtn" style="padding:8px 16px;background:#4caf50;color:#fff;border:none;border-radius:4px;">Login</button>
+<div id="loginPage" style="
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:95vh;
+    flex-direction:column;
+    background-image: url('no_match_times_charge_bg.png');  /* Ganti dengan path gambar offline */
+    background-size: cover;               /* Agar gambar penuh */
+    background-position: center;          /* Fokus di tengah */
+    background-repeat: no-repeat;         /* Tidak mengulang gambar */
+">
+  <!-- Box login -->
+    <div style="
+        position:relative;
+        z-index:2;
+        background:#974ff5;
+        padding:30px;
+        border-radius:12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        min-width:250px;
+        max-width:350px;
+        width:90%;
+        text-align:center;
+    ">
+        <img src="servant_icon.png" alt="Offline" style="width:50px; height:50px; margin-bottom:15px;">
+        <h2 style="margin-bottom:20px; color:#ffffff;">Login Admin</h2>
+        <input type="text" id="adminEmail" placeholder="Cingkong" style="margin-bottom:10px;padding:8px; border-radius: 10px; width:100%; box-sizing:border-box;">
+        <input type="password" id="adminPin" placeholder="Password" style="margin-bottom:10px;padding:8px;border-radius: 10px; width:100%; box-sizing:border-box;">
+        <button id="loginBtn" style="padding:10px 20px;background:#b709d0;color:#fff;border:none;border-radius:6px; cursor:pointer; width:100%;">Login</button>
+    </div>
 </div>
 
 <!-- ✅ Dashboard (Default: Hidden) -->
