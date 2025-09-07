@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Invoice - TIGOHOST AGENCY INDONESIA</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6fb;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 400px;
+            margin: 30px auto;
+            background: #fff;
+            border-radius: 18px 18px 12px 12px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .torn-paper {
+            width: 100%;
+            height: 32px;
+            background: url('images/torn-paper.png') repeat-x center;
+            background-size: contain;
+        }
+        .header {
+            background: #1a237e;
+            color: #fff;
+            padding: 18px 24px 10px 24px;
+            text-align: center;
+        }
+        form {
+            padding: 20px 24px 10px 24px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+        button {
+            width: 100%;
+            background: #1a237e;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .invoice-box {
+            margin: 24px 0 0 0;
+            background: #f9fafb;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            padding: 18px 20px;
+            position: relative;
+        }
+        .invoice-logo {
+            max-width: 100px;
+            margin: 0 auto 16px auto;
+            display: block;
+        }
+        .invoice-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .invoice-stamp {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+        .invoice-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .invoice-label {
+            color: #555;
+        }
+        .invoice-value {
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="torn-paper"></div>
+        <div class="header">
+            <h2>CEK PEMBAYARAN ANDA</h2>
+        </div>
+        <form id="invoiceForm">
+            <label for="nama">Nama Rekening</label>
+            <input type="text" id="nama" name="nama" required>
+
+            <label for="catatan">Catatan</label>
+            <textarea id="catatan" name="catatan" rows="2"></textarea>
+
+            <label for="jumlah">Jumlah (Rp)</label>
+            <input type="number" id="jumlah" name="jumlah" required>
+
+            <label for="metode">Metode Pembayaran</label>
+            <select id="metode" name="metode" required>
+                <option value="">Pilih Metode</option>
+                <option value="BCA">BCA</option>
+                <option value="BRI">BRI</option>
+                <option value="Mandiri">Mandiri</option>
+                <option value="Dana">Dana</option>
+                <option value="OVO">OVO</option>
+            </select>
+
+            <label for="aplikasi">Aplikasi</label>
+            <input type="text" id="aplikasi" name="aplikasi" required>
+
+            <label for="host">Nama Host</label>
+            <input type="text" id="host" name="host" required>
+
+            <label for="status">Status</label>
+            <select id="status" name="status" required>
+                <option value="">Pilih Status</option>
+                <option value="Lunas">Lunas</option>
+                <option value="Pending">Pending</option>
+            </select>
+
+            <label for="platform">Jenis Platform</label>
+            <input type="text" id="platform" name="platform" value="PT AGENCY TIGOHOST INDONESIA" readonly style="background:#f3f4f6;font-weight:bold;">
+
+            <button type="submit">Periksa Sekarang</button>
+        </form>
+        <div id="invoiceResult" style="display:none">
+            <div class="torn-paper"></div>
+            <div class="invoice-box">
+                <img src="logo agency.enc" alt="Logo" class="invoice-logo" id="logoCetak" onerror="this.style.display='none'">
+                <div class="invoice-title">INVOICE PEMBAYARAN</div>
+                <div class="invoice-stamp" id="invStamp">INVOICE</div>
+                <div class="invoice-row"><span class="invoice-label">Jenis Platform</span><span class="invoice-value">PT AGENCY TIGOHOST INDONESIA</span></div>
+                <div class="invoice-row"><span class="invoice-label">Nama Rekening</span><span class="invoice-value" id="invNama"></span></div>
+                <div class="invoice-row"><span class="invoice-label">Jam Tanggal</span><span class="invoice-value" id="invJam"></span></div>
+                <div class="invoice-row"><span class="invoice-label">Catatan</span><span class="invoice-value" id="invCatatan"></span></div>
+                <div class="invoice-row"><span class="invoice-label">Jumlah (Rp)</span><span class="invoice-value" id="invJumlah"></span></div>
+                <div class="invoice-row"><span class="invoice-label">Metode Pembayaran</span><span class="invoice-value" id="invMetode"></span></div>
+                <div class="invoice-row"><span class="invoice-label">Aplikasi</span><span class="invoice-value" id="invAplikasi"></span></div>
+                <div class="invoice-row"><span class="invoice-label">Nama Host</span><span class="invoice-value" id="invHost"></span></div>
+                <div class=    "invoice-row"><span class="invoice-label">Status</span><span class="invoice-value" id="invStatus"></span></div>
+                <div class="invoice-row" style="margin-top:24px; border-bottom:none;">
+                  <span class="invoice-label">Tanda Tangan</span>
+                  <span class="invoice-value" style="font-family:cursive;font-size:1.1em;">pusat Tigo app</span>
+                </div>
+                <button id="cetakPDF" style="margin:18px auto 0 auto;display:block;background:#1a237e;color:#fff;padding:10px 28px;border-radius:8px;font-size:1em;border:none;cursor:pointer;">Berhasil Transfer</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('invoiceForm').onsubmit = function(e) {
+            e.preventDefault();
+            document.getElementById('invoiceResult').style.display = 'block';
+            document.getElementById('invNama').textContent = document.getElementById('nama').value;
+            document.getElementById('invJam').textContent = new Date().toLocaleString('id-ID', { hour12: false });
+            document.getElementById('invCatatan').textContent = document.getElementById('catatan').value;
+            document.getElementById('invJumlah').textContent = 'Rp ' + Number(document.getElementById('jumlah').value).toLocaleString('id-ID');
+            document.getElementById('invMetode').textContent = document.getElementById('metode').value;
+            document.getElementById('invAplikasi').textContent = document.getElementById('aplikasi').value;
+            document.getElementById('invHost').textContent = document.getElementById('host').value;
+            document.getElementById('invStatus').textContent = document.getElementById('status').value;
+            // Badge status
+            var status = document.getElementById('status').value;
+            var stamp = document.getElementById('invStamp');
+          if(status === 'Lunas') {
+    stamp.textContent = 'LUNAS';
+    stamp.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)'; // hijau prioritas
+    stamp.style.color = '#fff';
+    stamp.style.fontWeight = 'bold';
+    stamp.style.borderRadius = '6px';
+    stamp.style.padding = '4px 10px';
+} else if(status === 'Pending') {
+    stamp.textContent = 'PENDING';
+    stamp.style.background = 'linear-gradient(135deg, #e53935, #b71c1c)'; // merah elegan
+    stamp.style.color = '#fff';
+    stamp.style.fontWeight = 'bold';
+    stamp.style.borderRadius = '6px';
+    stamp.style.padding = '4px 10px';
+} else {
+    stamp.textContent = 'INVOICE';
+    stamp.style.background = 'linear-gradient(135deg, #3949ab, #1a237e)'; // biru deep
+    stamp.style.color = '#fff';
+    stamp.style.fontWeight = 'bold';
+    stamp.style.borderRadius = '6px';
+    stamp.style.padding = '4px 10px';
+}
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        // Cetak ke PDF
+        document.addEventListener('DOMContentLoaded', function() {
+          var btnCetak = document.getElementById('cetakPDF');
+          if(btnCetak) {
+            btnCetak.onclick = function() {
+              var logo = document.getElementById('logoCetak');
+              if(logo) logo.style.display = 'none';
+              btnCetak.style.display = 'none';
+              window.print();
+              setTimeout(function(){
+                if(logo) logo.style.display = '';
+                btnCetak.style.display = '';
+              }, 1000);
+            };
+          }
+        });
+    </script>
+</body>
+</html>
