@@ -30,6 +30,12 @@
     const db = getFirestore(app);
 
 
+
+
+
+
+    
+
 // ✅ Fungsi untuk membuka / menutup chat
 window.openChat = async function (chatId, el) {
   const target = document.getElementById(chatId);
@@ -657,7 +663,7 @@ function kirimBalasanHost() {
           aktivasiBox.style.background = "#e8f8e8";
           aktivasiBox.style.border = "1px solid #b2e0b2";
           aktivasiText.style.color = "green";
-          aktivasiText.innerHTML = "Akun Anda sudah terverifikasi. Semua fitur sudah aktif.";
+          aktivasiText.innerHTML = "Akun Anda sudah terverifikasi. sedang dalam proses mambuka semua fitur.";
         } else {
           statusText.textContent = "Pergi Verifikasi";
           statusIcon.src = "profile_verify_icon.png";
@@ -2560,10 +2566,19 @@ function kirimBalasanHost() {
         <img src="match_icon_normal.png" alt="Dunia" style="width:38px;"><br>
         <small></small>
       </div>
-      <div class="nav-item" onclick="setActiveNav(this); showPageNav('chat')">
-        <img src="msg_icon_normal.png" alt="Chat" style="width:38px;"><br>
-        <small></small>
-      </div>
+  <div class="nav-item" onclick="showNotAllowedModal()">
+    <img src="msg_icon_normal.png" alt="Chat" style="width:38px;"><br>
+    <small></small>
+</div>
+
+<!-- Modal -->
+<div id="notAllowedModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
+    background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
+    <div style="background:white; padding:20px; border-radius:10px; max-width:400px; text-align:center;">
+        <p>Akun Anda saat ini tidak memenuhi syarat untuk membuka menu ini.</p>
+        <button onclick="closeModal()">Tutup</button>
+    </div>
+</div>
       <div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
         <img src="mine_icon_normal.png" alt="Saya" style="width:38px;"><br>
         <small></small>
@@ -2995,21 +3010,21 @@ function kirimBalasanHost() {
 <div class="user-container">
     <div class="user-slider">
         <div id="user-carddddd-1" class="user-carddddd">
-            <img src="c60.jpg" alt="User 1">
+            <img src="cewek10.jpeg" alt="User 1">
             <div class="user-info">
                 <span class="name">User 1</span>
                 <span class="status online">Online</span>
             </div>
         </div>
         <div id="user-carddddd-2" class="user-carddddd">
-            <img src="c61.jpg" alt="User 2">
+            <img src="cewek11.jpeg" alt="User 2">
             <div class="user-info">
                 <span class="name">User 2</span>
                 <span class="status online">Online</span>
             </div>
         </div>
         <div id="user-carddddd-3" class="user-carddddd">
-            <img src="c62.jpg" alt="User 3">
+            <img src="cewek13.jpeg" alt="User 3">
             <div class="user-info">
                 <span class="name">User 3</span>
                 <span class="status online">Online</span>
@@ -3017,7 +3032,7 @@ function kirimBalasanHost() {
         </div>
 
                 <div id="user-carddddd-4" class="user-carddddd">
-            <img src="c63.jpg" alt="User 4">
+            <img src="cewek14.jpeg" alt="User 4">
             <div class="user-info">
                 <span class="name">User 4</span>
                 <span class="status online">Online</span>
@@ -3026,7 +3041,7 @@ function kirimBalasanHost() {
 
 
                 <div id="user-carddddd-5" class="user-carddddd">
-            <img src="c64.jpg" alt="User 5">
+            <img src="cewek15.jpeg" alt="User 5">
             <div class="user-info">
                 <span class="name">User 5</span>
                 <span class="status online">Online</span>
@@ -3036,7 +3051,7 @@ function kirimBalasanHost() {
 
 
                 <div id="user-carddddd-6" class="user-carddddd">
-            <img src="c65.jpg" alt="User 6">
+            <img src="cewek20.jpg" alt="User 6">
             <div class="user-info">
                 <span class="name">User 6</span>
                 <span class="status online">Online</span>
@@ -3046,7 +3061,7 @@ function kirimBalasanHost() {
 
 
                 <div id="user-carddddd-7" class="user-carddddd">
-            <img src="c66.jpg" alt="User 7">
+            <img src="cewek21.jpeg" alt="User 7">
             <div class="user-info">
                 <span class="name">User 7</span>
                 <span class="status online">Online</span>
@@ -3055,7 +3070,7 @@ function kirimBalasanHost() {
 
 
                 <div id="user-carddddd-8" class="user-carddddd">
-            <img src="c67.jpg" alt="User 8">
+            <img src="cewek22.jpeg" alt="User 8">
             <div class="user-info">
                 <span class="name">User 8</span>
                 <span class="status online">Online</span>
@@ -3066,7 +3081,7 @@ function kirimBalasanHost() {
 
 
                 <div id="user-carddddd-9" class="user-carddddd">
-            <img src="c68.jpg" alt="User 9">
+            <img src="cewek25.jpeg" alt="User 9">
             <div class="user-info">
                 <span class="name">User 9</span>
                 <span class="status online">Online</span>
@@ -3086,7 +3101,7 @@ function kirimBalasanHost() {
 
 
                 <div id="user-carddddd-11" class="user-carddddd">
-            <img src="c40.jpg" alt="User 11">
+            <img src="cewek24.jpeg" alt="User 11">
             <div class="user-info">
                 <span class="name">User 11</span>
                 <span class="status online">Online</span>
@@ -4846,6 +4861,17 @@ setInterval(() => {
 
 
 
+function showNotAllowedModal() {
+    document.getElementById('notAllowedModal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('notAllowedModal').style.display = 'none';
+}
+
+
+
+ 
 
         </script>
 </body>
