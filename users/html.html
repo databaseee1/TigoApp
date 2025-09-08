@@ -28,6 +28,24 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+   
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
 
 
 
@@ -269,79 +287,104 @@ function kirimBalasanHost() {
 
 
 
-    const depositHistoryTable = document.getElementById("depositHistoryTable");
+const depositHistoryTable = document.getElementById("depositHistoryTable");
 
-    // ✅ Buka Popup History
-    window.openDepositHistoryPopup = function () {
-      document.getElementById("depositHistoryPopup").style.display = "block";
-      document.getElementById("depositHistoryOverlay").style.display = "block";
-      loadDepositHistoryData();
+// ✅ Buka Popup History
+window.openDepositHistoryPopup = function () {
+  if (!currentUserId) {
+    depositHistoryTable.innerHTML =
+      "<tr><td colspan='3' style='text-align:center; padding:10px;'>User belum login</td></tr>";
+    return;
+  }
+
+  document.getElementById("depositHistoryPopup").style.display = "block";
+  document.getElementById("depositHistoryOverlay").style.display = "block";
+  
+
+  loadDepositHistoryData(currentUserId); // ⬅️ kirim userId login
+};
+
+
+// ✅ Tutup Popup History
+window.closeDepositHistoryPopup = function () {
+  document.getElementById("depositHistoryPopup").style.display = "none";
+  document.getElementById("depositHistoryOverlay").style.display = "none";
+};
+
+
+// ✅ Ambil Data Riwayat Deposit khusus user login
+function loadDepositHistoryData(userId) {
+  depositHistoryTable.innerHTML =
+    "<tr><td colspan='3' style='text-align:center; padding:10px;'>Loading...</td></tr>";
+
+  if (!userId) {
+    depositHistoryTable.innerHTML =
+      "<tr><td colspan='3' style='text-align:center; padding:10px;'>User belum login</td></tr>";
+    return;
+  }
+
+  // 🔑 Query hanya untuk userId ini
+  const depositRef = query(
+    collection(db, "deposit"),
+    where("userId", "==", userId),
+    orderBy("createdAt", "desc")
+  );
+
+  onSnapshot(depositRef, (snapshot) => {
+    depositHistoryTable.innerHTML = "";
+
+    if (snapshot.empty) {
+      depositHistoryTable.innerHTML =
+        "<tr><td colspan='3' style='text-align:center; padding:10px;'>Tidak ada data</td></tr>";
+      return;
     }
 
-    // ✅ Tutup Popup History
-    window.closeDepositHistoryPopup = function () {
-      document.getElementById("depositHistoryPopup").style.display = "none";
-      document.getElementById("depositHistoryOverlay").style.display = "none";
-    }
+    snapshot.forEach((docSnap) => {
+      const d = docSnap.data();
 
-    // ✅ Ambil Data Riwayat Deposit sesuai user login
-    // ✅ Ambil Data Riwayat Deposit khusus user login
-    function loadDepositHistoryData() {
-      depositHistoryTable.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:10px;'>Loading...</td></tr>";
-
-      const currentUserId = localStorage.getItem("loggedUserId"); // ✅ pastikan sesuai
-      if (!currentUserId) {
-        depositHistoryTable.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:10px;'>User belum login</td></tr>";
-        return;
+      // Format tanggal
+      let tanggal = "-";
+      if (d.createdAt?.toDate) {
+        const date = d.createdAt.toDate();
+        const jam = date.toLocaleTimeString("id-ID", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        const tgl = date.toLocaleDateString("id-ID");
+        tanggal = `${tgl} ${jam}`;
       }
 
-      // 🔑 Query hanya untuk user ini
-      const depositRef = query(
-        collection(db, "deposit"),
-        where("userId", "==", currentUserId),
-        orderBy("createdAt", "desc")
-      );
+      // Warna status
+      const statusColor =
+        d.status === "approved"
+          ? "green"
+          : d.status === "pending"
+          ? "orange"
+          : "red";
+      const statusText =
+        d.status === "approved"
+          ? "Berhasil"
+          : d.status === "pending"
+          ? "Pending"
+          : "Ditolak";
 
-      onSnapshot(depositRef, (snapshot) => {
-        depositHistoryTable.innerHTML = "";
-
-        if (snapshot.empty) {
-          depositHistoryTable.innerHTML = "<tr><td colspan='3' style='text-align:center; padding:10px;'>Tidak ada data</td></tr>";
-          return;
-        }
-
-        snapshot.forEach(docSnap => {
-          const d = docSnap.data();
-
-          // Format tanggal
-          let tanggal = "-";
-          if (d.createdAt?.toDate) {
-            const date = d.createdAt.toDate();
-            const jam = date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            const tgl = date.toLocaleDateString('id-ID');
-            tanggal = `${tgl} ${jam}`;
-          }
-
-          // Warna status
-          const statusColor = d.status === 'approved' ? 'green' : (d.status === 'pending' ? 'orange' : 'red');
-          const statusText = d.status === 'approved' ? 'Berhasil' :
-            d.status === 'pending' ? 'Pending' : 'Ditolak';
-
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
+      // Tambah baris tabel
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
         <td style="padding:8px; border-bottom:1px solid #ddd;">
           <span style="display:inline-block; padding:4px 8px; border-radius:6px; background:#f4f4f4; font-weight:bold; color:#7f3586;">
-            Rp ${(d.nominal || 0).toLocaleString()}
+            Rp ${(d.nominal || 0).toLocaleString("id-ID")}
           </span>
         </td>
-        <td style="padding:8px; border-bottom:1px solid #ddd; color:${statusColor}; font-weight:bold;">${statusText}</td>
+        <td style="padding:8px; border-bottom:1px solid #ddd; color:${statusColor}; font-weight:bold;">
+          ${statusText}
+        </td>
         <td style="padding:8px; border-bottom:1px solid #ddd;">${tanggal}</td>
       `;
-          depositHistoryTable.appendChild(tr);
-        });
-      });
-    }
-
+      depositHistoryTable.appendChild(tr);
+    });
+  });
+}
     // =============================
     // ✅ Realtime Update Jumlah Tagihan
     // =============================
@@ -361,151 +404,185 @@ function kirimBalasanHost() {
 
 
 
-    let previousStatus = null; // Simpan status sebelumnya
+let previousStatus = null; // Simpan status sebelumnya
+let currentUserId = null;  // Simpan userId setelah login
 
-    // ===== LOGIN USER =====
-    window.loginUser = async function () {
-      const email = document.getElementById("loginEmail").value.trim();
-      const wa = document.getElementById("loginWA").value.trim();
-      const statusEl = document.getElementById("loginStatus");
-      if (!email || !wa) {
-        statusEl.innerText = "Masukan Acount Host Anda!";
+// ===== LOGIN USER =====
+window.loginUser = async function () {
+    const email = document.getElementById("loginEmail")?.value.trim();
+    const wa = document.getElementById("loginWA")?.value.trim();
+    const statusEl = document.getElementById("loginStatus");
+
+    if (!email || !wa) {
+        if (statusEl) statusEl.innerText = "Masukan Account Host Anda!";
         return;
-      }
+    }
 
-
-
-      try {
-        const q = query(collection(db, "pendaftaran"), where("email", "==", email), where("wa", "==", wa));
+    try {
+        // Cari user berdasarkan email dan wa
+        const q = query(collection(db, "pendaftaran"),
+            where("email", "==", email),
+            where("wa", "==", wa)
+        );
         const snap = await getDocs(q);
+
         if (!snap.empty) {
-          const userDoc = snap.docs[0];
-          localStorage.setItem("loggedUserId", userDoc.id);
-          document.getElementById("loginPage").style.display = "none";
-          document.getElementById("userPage").style.display = "block";
-          loadUserData(userDoc.id);
+            const userDoc = snap.docs[0];
+            currentUserId = userDoc.id; // ✅ simpan userId aktif
+
+            // Tampilkan halaman user
+            const loginPage = document.getElementById("loginPage");
+            const userPage = document.getElementById("userPage");
+            if (loginPage) loginPage.style.display = "none";
+            if (userPage) userPage.style.display = "block";
+
+            // ✅ Mulai realtime update
+            loadUserData(currentUserId);
+
+            // ✅ Load riwayat deposit khusus user
+            loadDepositHistoryData(currentUserId);
+
         } else {
-          statusEl.innerText = "Host tidak Terdaftar!";
+            if (statusEl) statusEl.innerText = "Host tidak Terdaftar!";
         }
-      } catch (e) {
+    } catch (e) {
         console.error(e);
-        statusEl.innerText = "❌ Terjadi kesalahan!";
-      }
-    };
+        if (statusEl) statusEl.innerText = "❌ Terjadi kesalahan!";
+    }
+};
 
-    // ===== LOAD USER DATA =====
-    async function loadUserData(userId) {
-      const userRef = doc(db, "pendaftaran", userId);
+// ===== LOAD USER DATA =====
+async function loadUserData(userId) {
+    const userRef = doc(db, "pendaftaran", userId);
 
-      onSnapshot(userRef, docSnap => {
-        const data = docSnap.data() || {};
+    onSnapshot(userRef, (docSnap) => {
+        if (!docSnap.exists()) {
+            console.warn("User tidak ditemukan!");
+            return;
+        }
+
+        const data = docSnap.data();
         const currentStatus = data.status || "aktif";
 
         // 🔍 Cek perubahan status
         if (previousStatus && previousStatus !== currentStatus) {
-          if (currentStatus === "aktif" && (previousStatus === "ditangguhkan" || previousStatus === "dihapus")) {
-            showAccountNotif("Akun Anda berhasil diaktifkan kembali.", "third_acoount_bound_iocn.png");
-          }
+            if (currentStatus === "aktif" && (previousStatus === "ditangguhkan" || previousStatus === "dihapus")) {
+                showAccountNotif("Akun Anda berhasil diaktifkan kembali.", "third_acoount_bound_iocn.png");
+            }
         }
-
-        // Simpan status terbaru
         previousStatus = currentStatus;
 
         // 🚫 Jika akun ditangguhkan
         if (currentStatus === "ditangguhkan") {
-          showAccountNotif("Akun Anda sedang ditangguhkan oleh pihak aplikasi.", "match_locked_icon.png");
-          setTimeout(() => logout(), 0);
-          return;
+            showAccountNotif("Akun Anda sedang ditangguhkan oleh pihak aplikasi.", "match_locked_icon.png");
+            setTimeout(() => logout(), 0);
+            return;
         }
 
         // ❌ Jika akun dihapus
         if (currentStatus === "dihapus") {
-          showAccountNotif("Akun Anda telah dihapus, Harap lapor jika butuh bantuan!.", "banned_icon.png");
-          setTimeout(() => logout(), 100);
-          return;
+            showAccountNotif("Akun Anda telah dihapus, Harap lapor jika butuh bantuan!.", "banned_icon.png");
+            setTimeout(() => logout(), 100);
+            return;
         }
 
-        // ✅ Tambah Nama dan Umur User di Header
-        document.getElementById("userName").textContent = data.nama || "User";
-        document.getElementById("userAge").textContent = (data.umur ? data.umur + " Tahun" : "0 Tahun");
+        // ✅ Update Nama & Umur
+        const userNameEl = document.getElementById("userName");
+        const userAgeEl = document.getElementById("userAge");
+        if (userNameEl) userNameEl.textContent = data.nama || "User";
+        if (userAgeEl) userAgeEl.textContent = data.umur ? `${data.umur} Tahun` : "0 Tahun";
 
+        // ✅ Update saldo Rupiah
+        const saldoNominalEl = document.getElementById("saldoNominal");
+        if (saldoNominalEl) saldoNominalEl.innerText = "Rp " + (data.saldo || 0).toLocaleString("id-ID");
 
-        // ✅ Jika akun aktif, tampilkan data
-        document.getElementById("saldoNominal").innerText = data.saldo || 0;
+        // ✅ Tambahin saldoHost khusus per user
+        const saldoHostEl = document.getElementById("saldoHost");
+        if (saldoHostEl) saldoHostEl.textContent = "Rp " + (data.saldo || 0).toLocaleString("id-ID");
 
+        // ✅ Saldo Credits (REAL-TIME per user)
+        const saldoCreditsEl = document.getElementById("saldoCredits");
+        if (saldoCreditsEl) saldoCreditsEl.textContent = (data.saldoCredit || 0).toLocaleString("id-ID");
+
+        // ✅ Update saldo Coin (REAL-TIME)
+        const saldoCoinEl = document.getElementById("saldoCoin");
+        if (saldoCoinEl) saldoCoinEl.textContent = (data.saldoCoin || 0) + " Coin";
+
+        // ✅ Update riwayat
         const riwayatList = document.getElementById("riwayatList");
-        riwayatList.innerHTML = "";
-        const riwayat = Array.isArray(data.riwayat) ? data.riwayat : [];
+        if (riwayatList) {
+            riwayatList.innerHTML = "";
+            const riwayat = Array.isArray(data.riwayat) ? data.riwayat : [];
 
-        riwayat.forEach((item, index) => {
-          const li = document.createElement("li");
-          li.innerHTML = `
-        ${item.jumlah} - ${item.bank} - 
-        <span style="color:${item.color || 'black'}">${item.status || ''}</span>
-      `;
-          riwayatList.appendChild(li);
-        });
-      });
-    }
+            riwayat.forEach((item) => {
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    ${item.jumlah} - ${item.bank} -
+                    <span style="color:${item.color || 'black'}">${item.status || ''}</span>
+                `;
+                riwayatList.appendChild(li);
+            });
+        }
+    });
+}
 
-    // ===== PROSES TARIK =====
-    window.prosesTarik = async function () {
-      const bank = document.getElementById("bank").value;
-      const norek = document.getElementById("norek").value.trim();
-      const namarek = document.getElementById("namarek").value.trim();
-      const jumlah = parseInt(document.getElementById("jumlah").value);
-      const statusP = document.getElementById("tarikStatus");
-      if (!bank || !norek || !namarek || isNaN(jumlah) || jumlah <= 0) { statusP.innerText = "Isi semua form dengan benar!"; return; }
 
-      const userId = localStorage.getItem("loggedUserId");
-      const userRef = doc(db, "pendaftaran", userId);
-      const userSnap = await getDoc(userRef);
-      const userData = userSnap.data() || {};
-      if ((userData.saldo || 0) < jumlah) { statusP.innerText = "Saldo tidak cukup!"; return; }
 
-      const riwayat = Array.isArray(userData.riwayat) ? userData.riwayat : [];
-      riwayat.push({ bank, norek, namarek, jumlah, status: "Proses", color: "orange", createdAt: new Date() });
 
-      await updateDoc(userRef, {
-        saldo: (userData.saldo || 0) - jumlah,
-        riwayat
-      });
 
-      statusP.innerText = "✅ Permintaan penarikan berhasil dikirim!";
-      document.getElementById("bank").value = "";
-      document.getElementById("norek").value = "";
-      document.getElementById("namarek").value = "";
-      document.getElementById("jumlah").value = "";
-    };
 
-    // ===== SET STATUS APPROVE / TOLAK =====
-    window.setStatus = async function (userId, index, status) {
-      const userRef = doc(db, "pendaftaran", userId);
-      const userSnap = await getDoc(userRef);
-      const userData = userSnap.data() || {};
 
-      // Pastikan riwayat selalu array
-      const riwayat = Array.isArray(userData.riwayat) ? [...userData.riwayat] : [];
 
-      if (!riwayat[index]) return;
+ // ====== PROSES TARIK CREDIT ======
+window.prosesTarikCredit = async function () {
+  const bank = document.getElementById("bankCredit").value;
+  const norek = document.getElementById("norekCredit").value.trim();
+  const namarek = document.getElementById("namarekCredit").value.trim();
+  const jumlah = parseInt(document.getElementById("jumlahCredit").value);
+  const statusP = document.getElementById("tarikCreditStatus");
 
-      // Update status dan warna
-      riwayat[index] = {
-        ...riwayat[index],
-        status: status,
-        color: status === "Berhasil" ? "green" : status === "Ditolak" ? "red" : "orange"
-      };
+  if (!bank || !norek || !namarek || isNaN(jumlah) || jumlah <= 0) {
+    statusP.innerText = "Isi semua form dengan benar!";
+    return;
+  }
 
-      // Hitung saldo baru jika ditolak
-      let newSaldo = userData.saldo || 0;
-      if (status === "Ditolak") newSaldo += riwayat[index].jumlah;
+  const userId = localStorage.getItem("loggedUserId");
+  if (!userId) {
+    statusP.innerText = "User tidak ditemukan!";
+    return;
+  }
 
-      // Update ke Firestore
-      await updateDoc(userRef, {
-        riwayat: riwayat,
-        saldo: newSaldo
-      });
-    };
+  const userRef = doc(db, "pendaftaran", userId);
+  const userSnap = await getDoc(userRef);
+  const userData = userSnap.data() || {};
+
+  if ((userData.saldoCredit || 0) < jumlah) {
+    statusP.innerText = "Saldo Credit tidak cukup!";
+    return;
+  }
+
+  // kurangi saldo
+  await updateDoc(userRef, {
+    saldoCredit: (userData.saldoCredit || 0) - jumlah
+  });
+
+  // simpan transaksi ke subcollection
+  await addDoc(collection(userRef, "riwayatCredit"), {
+    bank,
+    norek,
+    namarek,
+    jumlah,
+    status: "Proses",
+    color: "orange",
+    createdAt: serverTimestamp()
+  });
+
+  statusP.innerText = "✅ Permintaan penarikan credit berhasil dikirim!";
+};
+
+
+
+
 
     // ===== LOGOUT =====
     window.logout = function () {
@@ -605,171 +682,165 @@ function kirimBalasanHost() {
       }, 3000);
     }
 
+  document.addEventListener("DOMContentLoaded", () => {
+    const verifyDiv = document.querySelector(".verify");
+    const popupTopup = document.getElementById("popupTopup");
+    const saldoCoinEl = document.getElementById("saldoCoin");
+    const saldoNominalEl = document.getElementById("saldoNominal");
+    const saldoHostEl = document.getElementById("saldoHost");
+    const formTopup = document.getElementById("formTopup");
+    const hasilAgencyBtn = document.getElementById("hasilAgencyBtn");
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const verifyDiv = document.querySelector(".verify");
-      const popupTopup = document.getElementById("popupTopup");
-      const saldoHostEl = document.getElementById("saldoHost");
-      const saldoCoinEl = document.getElementById("saldoCoin");
-      const saldoNominal = document.getElementById("saldoNominal");
-      const formTopup = document.getElementById("formTopup");
-      const hasilAgencyBtn = document.getElementById("hasilAgencyBtn");
+    const userId = localStorage.getItem("loggedUserId"); // ✅ hanya untuk user login
+    const role = localStorage.getItem("role") || "user";
 
-      const userId = localStorage.getItem("loggedUserId");
-      const role = localStorage.getItem("role") || "user";
+    if (userId) {
+      const userRef = doc(db, "pendaftaran", userId);
 
-      // ✅ Cek status verifikasi real-time
-      if (userId) {
-        const userRef = doc(db, "pendaftaran", userId);
+      // ✅ Listener status verifikasi realtime
+      onSnapshot(userRef, { includeMetadataChanges: true }, (docSnap) => {
+        if (!docSnap.exists()) return;
+        if (docSnap.metadata.hasPendingWrites) return;
 
-        // ✅ Listener status verifikasi
-        onSnapshot(userRef, { includeMetadataChanges: true }, (docSnap) => {
-          if (!docSnap.exists()) return;
+        const data = docSnap.data();
+        updateUIStatusVerifikasi(data.verified === true);
+      });
 
-          if (docSnap.metadata.hasPendingWrites) return;
+      // ✅ Listener saldo realtime
+      onSnapshot(userRef, (docSnap) => {
+        if (!docSnap.exists()) return;
 
-          const data = docSnap.data();
-          updateUIStatusVerifikasi(data.verified === true);
-        });
+        const data = docSnap.data();
+        const saldoRupiah = data.saldoRupiah || 0;
+        const saldoCoin = data.saldoCoin || 0;
 
-        // ✅ Listener saldo real-time
-        onSnapshot(userRef, (docSnap) => {
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            const saldoRupiah = data.saldoRupiah || 0;
-            const saldoCoin = data.saldoCoin || 0;
+        if (saldoHostEl) saldoHostEl.textContent = "Rp " + saldoRupiah.toLocaleString("id-ID");
+        if (saldoCoinEl) saldoCoinEl.textContent = saldoCoin.toLocaleString("id-ID") + " Coin";
+        if (saldoNominalEl) saldoNominalEl.textContent = "Rp " + saldoRupiah.toLocaleString("id-ID");
+      });
+    }
 
-            if (saldoHostEl) saldoHostEl.textContent = "Rp " + saldoRupiah.toLocaleString();
-            if (saldoCoinEl) saldoCoinEl.textContent = saldoCoin.toLocaleString() + " Coin";
-            if (saldoNominal) saldoNominal.textContent = saldoRupiah.toLocaleString();
-          }
-        });
-      }
+    // ✅ Event klik untuk buka popup
+    if (verifyDiv) verifyDiv.addEventListener("click", showPopup);
+    if (hasilAgencyBtn) hasilAgencyBtn.addEventListener("click", showPopup);
 
-      function updateUIStatusVerifikasi(isVerified) {
-        const statusText = document.getElementById("statusVerifikasi");
-        const statusIcon = document.getElementById("statusIcon");
-        const aktivasiBox = document.getElementById("aktivasiBox");
-        const aktivasiText = document.getElementById("aktivasiText");
+    function showPopup() {
+      if (!popupTopup) return;
+      popupTopup.style.display = "flex";
+      popupTopup.style.opacity = "0";
+      setTimeout(() => {
+        popupTopup.style.transition = "opacity 0.3s ease";
+        popupTopup.style.opacity = "1";
+      }, 10);
+    }
 
-        if (!statusText || !statusIcon || !aktivasiBox || !aktivasiText) return;
-
-        if (isVerified) {
-          statusText.textContent = "Diverifikasi";
-          statusIcon.src = "verifikasi.png";
-          statusText.style.color = "#7f3586";
-
-          aktivasiBox.style.display = "block";
-          aktivasiBox.style.background = "#e8f8e8";
-          aktivasiBox.style.border = "1px solid #b2e0b2";
-          aktivasiText.style.color = "green";
-          aktivasiText.innerHTML = "Akun Anda sudah terverifikasi. sedang dalam proses mambuka semua fitur.";
-        } else {
-          statusText.textContent = "Pergi Verifikasi";
-          statusIcon.src = "profile_verify_icon.png";
-          statusText.style.color = "#dc3545";
-
-          aktivasiBox.style.display = "block";
-          aktivasiBox.style.background = "#fff3f3";
-          aktivasiBox.style.border = "1px solid #f5c2c2";
-          aktivasiText.style.color = "red";
-          aktivasiText.innerHTML = "Untuk mengaktifkan akun host Anda, wajib top up minimal <b>Rp 500.000</b> Saldo akan otomatis dimasukan pada saldo host dan dapat ditarik kembali pada rekening anda!.";
+    // ✅ Tutup popup saat klik luar
+    if (popupTopup) {
+      popupTopup.addEventListener("click", (e) => {
+        if (e.target === popupTopup) {
+          popupTopup.style.display = "none";
         }
-      }
+      });
+    }
 
-      // ✅ Event klik untuk buka popup
-      if (verifyDiv) {
-        verifyDiv.addEventListener("click", showPopup);
-      }
-      if (hasilAgencyBtn) {
-        hasilAgencyBtn.addEventListener("click", showPopup);
-      }
+    // ✅ Submit form top up
+    if (formTopup) {
+      formTopup.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-      function showPopup() {
-        if (!popupTopup) return;
-        popupTopup.style.display = "flex";
-        popupTopup.style.opacity = "0";
-        setTimeout(() => {
-          popupTopup.style.transition = "opacity 0.3s ease";
-          popupTopup.style.opacity = "1";
-        }, 10);
-      }
+        const namaPengirim = e.target.namaPengirim.value.trim();
+        const bank = e.target.bank.value.trim();
+        const nominal = parseInt(e.target.nominal.value);
 
-      // ✅ Tutup popup saat klik luar
-      if (popupTopup) {
-        popupTopup.addEventListener("click", (e) => {
-          if (e.target === popupTopup) {
-            popupTopup.style.display = "none";
-          }
-        });
-      }
+        const errorMsg = document.getElementById("nominalError");
+        if (isNaN(nominal) || nominal < 500000) {
+          if (errorMsg) errorMsg.style.display = "block";
+          e.target.nominal.style.borderColor = "red";
+          return;
+        } else {
+          if (errorMsg) errorMsg.style.display = "none";
+          e.target.nominal.style.borderColor = "#ccc";
+        }
 
-      // ✅ Submit form top up
-      if (formTopup) {
-        formTopup.addEventListener("submit", async (e) => {
-          e.preventDefault();
+        try {
+          await addDoc(collection(db, "deposit"), {
+            userId,
+            namaPengirim,
+            bank,
+            nominal,
+            status: "pending",
+            createdAt: Timestamp.now()
+          });
 
-          const namaPengirim = e.target.namaPengirim.value.trim();
-          const bank = e.target.bank.value.trim();
-          const nominal = parseInt(e.target.nominal.value);
+          Swal.fire({
+            icon: "success",
+            title: "Berhasil!",
+            text: "Permintaan berhasil dikirim. Tunggu konfirmasi admin.",
+            confirmButtonColor: "#7f3586",
+            width: "400px",
+            padding: "20px"
+          });
 
-          const errorMsg = document.getElementById("nominalError");
-          if (isNaN(nominal) || nominal < 500000) {
-            if (errorMsg) errorMsg.style.display = "block";
-            e.target.nominal.style.borderColor = "red";
-            return;
-          } else {
-            if (errorMsg) errorMsg.style.display = "none";
-            e.target.nominal.style.borderColor = "#ccc";
-          }
-
-          try {
-            await addDoc(collection(db, "deposit"), {
-              userId,
-              namaPengirim,
-              bank,
-              nominal,
-              status: "pending",
-              createdAt: Timestamp.now()
-            });
-
-            Swal.fire({
-              icon: "success",
-              title: "Berhasil!",
-              text: "Permintaan top up berhasil dikirim. Tunggu konfirmasi admin.",
-              confirmButtonColor: "#7f3586",
-              width: "400px",
-              padding: "20px"
-            });
-
-            popupTopup.style.display = "none";
-            formTopup.reset();
-          } catch (error) {
-            console.error("Gagal mengirim data top up:", error);
-            Swal.fire({
-              icon: "error",
-              title: "Gagal!",
-              text: "Terjadi kesalahan: " + error.message,
-              confirmButtonColor: "#dc3545"
-            });
-          }
-        });
-      }
-
-      // ✅ Logo bank hanya untuk user
-      if (role === "user") {
-        const bankSelect = document.getElementById("bank");
-        const bankLogo = document.getElementById("bankLogo");
-
-        if (bankSelect && bankLogo) {
-          bankSelect.addEventListener("change", function () {
-            const selectedOption = this.options[this.selectedIndex];
-            const logo = selectedOption.getAttribute("data-logo") || "bankcustomee.jpg";
-            bankLogo.src = logo;
+          popupTopup.style.display = "none";
+          formTopup.reset();
+        } catch (error) {
+          console.error("Gagal mengirim data top up:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Gagal!",
+            text: "Terjadi kesalahan: " + error.message,
+            confirmButtonColor: "#dc3545"
           });
         }
+      });
+    }
+
+    // ✅ Logo bank (khusus user)
+    if (role === "user") {
+      const bankSelect = document.getElementById("bank");
+      const bankLogo = document.getElementById("bankLogo");
+
+      if (bankSelect && bankLogo) {
+        bankSelect.addEventListener("change", function () {
+          const selectedOption = this.options[this.selectedIndex];
+          const logo = selectedOption.getAttribute("data-logo") || "bankcustomee.jpg";
+          bankLogo.src = logo;
+        });
       }
-    });
+    }
+  });
+
+  // ===== Helper untuk UI status verifikasi =====
+  function updateUIStatusVerifikasi(isVerified) {
+    const statusText = document.getElementById("statusVerifikasi");
+    const statusIcon = document.getElementById("statusIcon");
+    const aktivasiBox = document.getElementById("aktivasiBox");
+    const aktivasiText = document.getElementById("aktivasiText");
+
+    if (!statusText || !statusIcon || !aktivasiBox || !aktivasiText) return;
+
+    if (isVerified) {
+      statusText.textContent = "Diverifikasi";
+      statusIcon.src = "verifikasi.png";
+      statusText.style.color = "#7f3586";
+
+      aktivasiBox.style.display = "block";
+      aktivasiBox.style.background = "#e8f8e8";
+      aktivasiBox.style.border = "1px solid #b2e0b2";
+      aktivasiText.style.color = "green";
+      aktivasiText.innerHTML = "Akun Anda sudah terverifikasi. Semua fitur sudah aktif.";
+    } else {
+      statusText.textContent = "Pergi Verifikasi";
+      statusIcon.src = "profile_verify_icon.png";
+      statusText.style.color = "#dc3545";
+
+      aktivasiBox.style.display = "block";
+      aktivasiBox.style.background = "#fff3f3";
+      aktivasiBox.style.border = "1px solid #f5c2c2";
+      aktivasiText.style.color = "red";
+      aktivasiText.innerHTML = "Untuk mengaktifkan akun host Anda, wajib top up minimal <b>Rp 500.000</b>. Saldo akan otomatis masuk ke saldo host dan dapat ditarik kembali ke rekening Anda.";
+    }
+  }
 
   </script>
 
@@ -2566,19 +2637,10 @@ function kirimBalasanHost() {
         <img src="match_icon_normal.png" alt="Dunia" style="width:38px;"><br>
         <small></small>
       </div>
-  <div class="nav-item" onclick="showNotAllowedModal()">
-    <img src="msg_icon_normal.png" alt="Chat" style="width:38px;"><br>
-    <small></small>
-</div>
-
-<!-- Modal -->
-<div id="notAllowedModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
-    background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
-    <div style="background:white; padding:20px; border-radius:10px; max-width:400px; text-align:center;">
-        <p>Akun Anda saat ini tidak memenuhi syarat untuk membuka menu ini.</p>
-        <button onclick="closeModal()">Tutup</button>
-    </div>
-</div>
+      <div class="nav-item" onclick="setActiveNav(this); showPageNav('chat')">
+        <img src="msg_icon_normal.png" alt="Chat" style="width:38px;"><br>
+        <small></small>
+      </div>
       <div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
         <img src="mine_icon_normal.png" alt="Saya" style="width:38px;"><br>
         <small></small>
@@ -3010,21 +3072,21 @@ function kirimBalasanHost() {
 <div class="user-container">
     <div class="user-slider">
         <div id="user-carddddd-1" class="user-carddddd">
-            <img src="cewek10.jpeg" alt="User 1">
+            <img src="c60.jpg" alt="User 1">
             <div class="user-info">
                 <span class="name">User 1</span>
                 <span class="status online">Online</span>
             </div>
         </div>
         <div id="user-carddddd-2" class="user-carddddd">
-            <img src="cewek11.jpeg" alt="User 2">
+            <img src="c61.jpg" alt="User 2">
             <div class="user-info">
                 <span class="name">User 2</span>
                 <span class="status online">Online</span>
             </div>
         </div>
         <div id="user-carddddd-3" class="user-carddddd">
-            <img src="cewek13.jpeg" alt="User 3">
+            <img src="c62.jpg" alt="User 3">
             <div class="user-info">
                 <span class="name">User 3</span>
                 <span class="status online">Online</span>
@@ -3032,7 +3094,7 @@ function kirimBalasanHost() {
         </div>
 
                 <div id="user-carddddd-4" class="user-carddddd">
-            <img src="cewek14.jpeg" alt="User 4">
+            <img src="c63.jpg" alt="User 4">
             <div class="user-info">
                 <span class="name">User 4</span>
                 <span class="status online">Online</span>
@@ -3041,7 +3103,7 @@ function kirimBalasanHost() {
 
 
                 <div id="user-carddddd-5" class="user-carddddd">
-            <img src="cewek15.jpeg" alt="User 5">
+            <img src="c64.jpg" alt="User 5">
             <div class="user-info">
                 <span class="name">User 5</span>
                 <span class="status online">Online</span>
@@ -3051,7 +3113,7 @@ function kirimBalasanHost() {
 
 
                 <div id="user-carddddd-6" class="user-carddddd">
-            <img src="cewek20.jpg" alt="User 6">
+            <img src="c65.jpg" alt="User 6">
             <div class="user-info">
                 <span class="name">User 6</span>
                 <span class="status online">Online</span>
@@ -3061,7 +3123,7 @@ function kirimBalasanHost() {
 
 
                 <div id="user-carddddd-7" class="user-carddddd">
-            <img src="cewek21.jpeg" alt="User 7">
+            <img src="c66.jpg" alt="User 7">
             <div class="user-info">
                 <span class="name">User 7</span>
                 <span class="status online">Online</span>
@@ -3070,7 +3132,7 @@ function kirimBalasanHost() {
 
 
                 <div id="user-carddddd-8" class="user-carddddd">
-            <img src="cewek22.jpeg" alt="User 8">
+            <img src="c67.jpg" alt="User 8">
             <div class="user-info">
                 <span class="name">User 8</span>
                 <span class="status online">Online</span>
@@ -3081,7 +3143,7 @@ function kirimBalasanHost() {
 
 
                 <div id="user-carddddd-9" class="user-carddddd">
-            <img src="cewek25.jpeg" alt="User 9">
+            <img src="c68.jpg" alt="User 9">
             <div class="user-info">
                 <span class="name">User 9</span>
                 <span class="status online">Online</span>
@@ -3101,7 +3163,7 @@ function kirimBalasanHost() {
 
 
                 <div id="user-carddddd-11" class="user-carddddd">
-            <img src="cewek24.jpeg" alt="User 11">
+            <img src="c40.jpg" alt="User 11">
             <div class="user-info">
                 <span class="name">User 11</span>
                 <span class="status online">Online</span>
@@ -3824,15 +3886,14 @@ function kirimBalasanHost() {
     box-shadow:0 2px 6px rgba(0,0,0,0.1);
   ">
           <!-- Kiri: Icon + Saldo -->
-          <div style="display:flex; align-items:center;">
-            <img src="credit.png" alt="Offline" style="width:30px; height:30px; margin-right:8px;">
-            <span style="font-weight:bold; color:#5f00e3;">
-              <span id="saldoNominal">0</span>
-            </span>
-          </div>
-
+<div style="display:flex; align-items:center;">
+  <img src="credit.png" alt="Offline" style="width:30px; height:30px; margin-right:8px;">
+  <span style="font-weight:bold; color:#5f00e3;">
+    <span id="saldoCredits">0</span>
+  </span>
+</div>
           <!-- Kanan: Tombol Credit -->
-          <div id="creditBox" style="
+          <div id="creditBox" onclick="showPage('tarikCreditSection')" style="
       padding:12px 15px; 
       border-radius:50px; 
       background:#8100ff; 
@@ -3848,57 +3909,56 @@ function kirimBalasanHost() {
 
 
 
+<div id="tarikCreditSection" style="display:none; margin-top:15px;">
+  <div class="tarik-box"
+    style="text-align:center; max-width:400px; margin:auto; padding:15px; border:1px solid #ccc; border-radius:10px; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+    <h3 style="color:#000; text-align:center; margin-bottom:15px;">Form Penarikan Credit</h3>
 
-      <div id="tarikSection" style="display:none; margin-top:15px;">
-        <div class="tarik-box"
-          style="text-align:center; max-width:400px; margin:auto; padding:15px; border:1px solid #ccc; border-radius:10px; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-          <h3 style="color:#000; text-align:center; margin-bottom:15px;">Form Penarikan</h3>
+    <!-- Wrapper dengan logo -->
+    <div class="select-with-logo"
+      style="display:flex; align-items:center; border:1px solid #ccc; border-radius:5px; padding:5px;">
+      <img id="bankLogoCredit" src="transfer.png" alt="Logo Bank" style="width:40px; height:40px; margin-right:8px;">
+      <select id="bankCredit" style="flex:1; border:none; outline:none; font-size:14px;">
+        <option value="">-- Pilih Bank / E-Wallet --</option>
+        <option value="BCA" data-logo="bca.png">BCA</option>
+        <option value="DANA" data-logo="dana.png">DANA</option>
+        <option value="BRI" data-logo="bank-bri-logo-png_.png">BRI</option>
+        <option value="MANDIRI" data-logo="bank-bni-logo-png.png">MANDIRI</option>
+        <option value="GOPAY" data-logo="gopay.png">GOPAY</option>
+        <option value="LINKAJA" data-logo="link-aja-logo.png">LINKAJA</option>
+        <option value="CIMBNIAGA" data-logo="cimbniaga.jpg">CIMBNIAGA</option>
+        <option value="SUPERBANK" data-logo="Superbank.png">SUPERBANK</option>
+        <option value="OVO" data-logo="ovo.png">OVO</option>
+        <option value="JakOne" data-logo="abankbank.png">JakOne</option>
+        <option value="Bank China" data-logo="Bank-of-China-Logo.png">Bank China</option>
+        <option value="Shopeepay" data-logo="ShopeePay.png">Shopeepay</option>
+        <option value="Custom" data-logo="transfer.png">Custom</option>
+      </select>
+    </div>
 
-          <!-- Wrapper dengan logo -->
-          <div class="select-with-logo"
-            style="display:flex; align-items:center; border:1px solid #ccc; border-radius:5px; padding:5px; ">
-            <img id="bankLogo" src="transfer.png" alt="Logo Bank" style="width:40px; height:40px; margin-right:8px;">
-            <select id="bank" style="flex:1; border:none; outline:none; font-size:14px;">
-              <option value="">-- Pilih Bank --</option>
-              <option value="BCA" data-logo="bca.png">BCA</option>
-              <option value="DANA" data-logo="dana.png">DANA</option>
-              <option value="BRI" data-logo="bank-bri-logo-png_.png">BRI</option>
-              <option value="MANDIRI" data-logo="bank-bni-logo-png.png">MANDIRI</option>
-              <option value="GOPAY" data-logo="gopay.png">GOPAY</option>
-              <option value="LINKAJA" data-logo="link-aja-logo.png">LINKAJA</option>
-              <option value="CIMBNIAGA" data-logo="cimbniaga.jpg">CIMBNIAGA</option>
-              <option value="SUPERBANK" data-logo="Superbank.png">SUPERBANK</option>
-              <option value="OVO" data-logo="ovo.png">OVO</option>
-              <option value="JakOne" data-logo="abankbank.png">JakOne</option>
-              <option value="Bank China" data-logo="Bank-of-China-Logo.png">Bank China</option>
-              <option value="Shopeepay" data-logo="ShopeePay.png">Shopeepay</option>
-              <option value="Custom" data-logo="transfer.png">Custom</option>
-            </select>
-          </div>
+    <input type="text" id="norekCredit" placeholder="Nomor Rekening"
+      style="padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px; width:100%;">
+    <input type="text" id="namarekCredit" placeholder="Nama Rekening"
+      style="padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px; width:100%;">
+    <input type="number" id="jumlahCredit" placeholder="Jumlah Penarikan Credit"
+      style="padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px; width:100%;">
 
-          <input type="text" id="norek" placeholder="Nomor Rekening"
-            style=" padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
-          <input type="text" id="namarek" placeholder="Nama Rekening"
-            style=" padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
-          <input type="number" id="jumlah" placeholder="Jumlah Penarikan"
-            style=" padding:8px; margin:8px 0; border:1px solid #ccc; border-radius:5px;">
+    <button onclick="prosesTarikCredit()"
+      style="padding:10px; background:#6a5afd; color:#fff; border:none; border-radius:5px; font-size:14px; cursor:pointer;">
+      Tarik Credit
+    </button>
 
-          <button onclick="prosesTarik()"
-            style=" padding:10px; background:#6a5afd; color:#fff; border:none; border-radius:5px; font-size:14px; cursor:pointer;">Tarik
-            Sekarang</button>
+    <!-- ✅ disamakan dengan JS -->
+    <p id="tarikStatusCredit"
+      style="margin-top:10px; border-radius:10px; background:#fbf8f8; color:rgb(0, 157, 18); padding:8px;"></p>
+  </div>
 
-          <p id="tarikStatus"
-            style="margin-top:10px; border-radius:10px; background:#fbf8f8; color:rgb(0, 157, 18); padding:8px;"></p>
-        </div>
-
-
-
-        <!-- Riwayat -->
-        <div class="riwayat-box">
-          <h3>Riwayat Penarikan</h3>
-          <ul id="riwayatList"></ul>
-        </div>
-      </div>
+  <!-- Riwayat -->
+  <div class="riwayat-box" style="margin-top:20px;">
+    <h3>Riwayat Penarikan Credit</h3>
+    <ul id="riwayatwwCreditList"></ul>
+  </div>
+</div>
 
       <!-- Menu List -->
       <div style="  background:#fff; 
@@ -4078,6 +4138,7 @@ function kirimBalasanHost() {
               <b style="color:#000;">Saldo Host:</b>&nbsp;
               <span style="color:#e91e63; font-weight: bold; margin-left:5px;" id="saldoHost">Rp 0</span>
             </p>
+            
             <p style="margin:10px 0; display:flex; align-items:center;">
               <img src="super_pack_float_icon.png" alt="icon" style="width:20px; height:20px; margin-right:8px;">
               <b style="color:#000;">Saldo Coin:</b>&nbsp;
@@ -4861,16 +4922,30 @@ setInterval(() => {
 
 
 
-function showNotAllowedModal() {
-    document.getElementById('notAllowedModal').style.display = 'flex';
+
+let lastOpenedPage = null; // simpan id page yang terakhir dibuka
+
+function showPage(pageId) {
+  // kalau klik halaman yang sama lagi → tutup
+  if (lastOpenedPage === pageId) {
+    const target = document.getElementById(pageId);
+    if (target) target.style.display = "none";
+    lastOpenedPage = null; // reset
+    return;
+  }
+
+  // sembunyikan semua section
+  document.querySelectorAll(".page-section").forEach(sec => {
+    sec.style.display = "none";
+  });
+
+  // tampilkan section target
+  const target = document.getElementById(pageId);
+  if (target) target.style.display = "block";
+
+  // update state terakhir
+  lastOpenedPage = pageId;
 }
-
-function closeModal() {
-    document.getElementById('notAllowedModal').style.display = 'none';
-}
-
-
-
  
 
         </script>
