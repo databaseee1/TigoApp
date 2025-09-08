@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Popup Top Up / Form Penarikan</title>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, Timestamp,
+      doc, getDoc, updateDoc, onSnapshot, query, orderBy, where, getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+
+    const firebaseConfig = {
+      apiKey: "AIzaSy....",
+      authDomain: "users-96dc5.firebaseapp.com",
+      projectId: "users-96dc5",
+      storageBucket: "users-96dc5.appspot.com",
+      messagingSenderId: "483322415863",
+      appId: "1:483322415863:web:xxxxxx"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+   
+
+
+
+    // ===== SIMULASI USER LOGIN =====
+    const currentUserId = "user123"; // ganti sesuai userId yang login
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const btnKasKeluar = document.getElementById("btnKasKeluar");
+        const popup = document.getElementById("popupTopup");
+        const btnKirim = document.getElementById("btnKirim");
+        const nominalInput = document.getElementById("nominalInput");
+        const nominalError = document.getElementById("nominalError");
+        const formTopup = document.getElementById("formTopup");
+
+        // Tampilkan popup saat tombol Kas Keluar diklik
+        btnKasKeluar.addEventListener("click", () => {
+            popup.style.display = "flex";
+        });
+
+        // Tombol Kirim
+        btnKirim.addEventListener("click", async () => {
+            const namaPengirim = formTopup.namaPengirim.value.trim();
+            const bank = formTopup.bank.value.trim();
+            const nominal = parseInt(nominalInput.value, 10);
+
+            if (!namaPengirim || !bank) {
+                alert("Nama Pengirim dan Bank harus diisi!");
+                return;
+            }
+
+            if (!nominal || nominal < 500000) {
+                nominalError.style.display = "block";
+                return;
+            } else {
+                nominalError.style.display = "none";
+            }
+
+            try {
+                // Simpan ke historydeposit
+                await addDoc(collection(db, "historydeposit"), {
+                    userId: currentUserId,
+                    namaPengirim,
+                    bank,
+                    nominal,
+                    status: "pending",
+                    timestamp: Timestamp.now()
+                });
+
+                alert("✅ Form Penarikan berhasil dikirim!");
+                popup.style.display = "none";
+                formTopup.reset();
+            } catch (e) {
+                console.error("Gagal menyimpan:", e);
+                alert("❌ Terjadi kesalahan saat mengirim data!");
+            }
+        });
+    });
+  </script>
+</head>
+<body style="font-family:sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; gap:20px;">
+
+  <h2>Simulasi Popup Top Up / Form Penarikan</h2>
+  
+  <!-- Tombol Kas Keluar -->
+  <button id="btnKasKeluar" style="padding:12px 25px; background:#8100ff; color:#fff; border:none; border-radius:20px; cursor:pointer; font-size:16px;">
+    Kas Keluar
+  </button>
+
+  <!-- Popup Top Up / Form Penarikan -->
+  <div id="popupTopup" style="
+      display:none; 
+      position:fixed; 
+      top:0; left:0; 
+      width:100%; height:100%; 
+      background:rgba(0,0,0,0.5); 
+      z-index:9999; 
+      display:flex; justify-content:center; align-items:center; padding:20px;
+  ">
+      <div style="
+          border:1px solid #ccc; 
+          padding:20px; 
+          border-radius:10px; 
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
+          max-width:400px; 
+          width:100%; 
+          background:#fff;
+      ">
+          <!-- Box Info Aktivasi -->
+          <div id="aktivasiBox" style="display:none; background:#fff3f3; border:1px solid #f5c2c2; padding:15px; border-radius:8px; margin-bottom:15px;">
+              <p id="aktivasiText" style="font-size:13px; margin:0;"></p>
+          </div>
+
+          <h3 style="margin-bottom:15px; color:#7f3586; text-align:center;">Form Penarikan</h3>
+
+          <form id="formTopup" style="max-width:100%; margin:0 auto; padding:0 20px;">
+              <input type="text" name="namaPengirim" placeholder="Nama Pengirim" required
+                  style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; background:#f0f0f0; border-radius:15px;">
+              <input type="text" name="bank" placeholder="Nama Bank / E-Wallet" required
+                  style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; background:#f0f0f0; border-radius:15px;">
+              <div style="position:relative; margin-bottom:15px;">
+                  <input type="number" id="nominalInput" name="nominal" placeholder="Nominal (Rp)" required
+                      style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; background:#f0f0f0; border-radius:15px;">
+                  <small id="nominalError" style="color:red; font-size:12px; display:none; position:absolute; bottom:-18px; left:0;">
+                      Minimal deposit Rp 500.000
+                  </small>
+              </div>
+          </form>
+
+          <!-- Container Tombol -->
+          <div style="display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:15px;">
+              <button type="button" id="btnKirim" style="background:#8100ff; color:#fff; padding:12px 20px; border:none; border-radius:20px; font-size:16px; cursor:pointer; width:200px;">
+                  Kirim
+              </button>
+              <button type="button" onclick="document.getElementById('popupTopup').style.display='none'; document.getElementById('formTopup').reset();"
+                  style="padding:12px 20px; width:200px; background:#9540e9; border:none; border-radius:20px; font-size:16px; cursor:pointer;">
+                  Tutup
+              </button>
+          </div>
+      </div>
+  </div>
+
+</body>
+</html>

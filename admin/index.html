@@ -38,6 +38,17 @@ const db = getFirestore(app);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
  // Load user dari Firestore
   async function loadUsersCredit() {
     const tbody = document.getElementById("userCreditTable");
@@ -855,52 +866,77 @@ document.addEventListener("click", async (e) => {
 
   
 
-  // ========================
-  // 🔹 Render Saldo
-  // ========================
-  function renderSaldoRow(userId, data) {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${data.nama || '-'}</td>
-      <td>${data.email || '-'}</td>
-      <td>Rp ${(data.saldo || 0).toLocaleString()}</td>
-      <td>
-        <select class="status-select">
-          <option value="aktif" ${data.status=="aktif"?"selected":""}>Aktif</option>
-          <option value="ditangguhkan" ${data.status=="ditangguhkan"?"selected":""}>Ditangguhkan</option>
-          <option value="proses" ${data.status=="proses"?"selected":""}>Proses</option>
-          <option value="ditolak" ${data.status=="ditolak"?"selected":""}>Ditolak</option>
-          <option value="dihapus" ${data.status=="dihapus"?"selected":""}>Dihapus</option>
-        </select>
-      </td>
-      <td>
-        <button class="add-saldo">Tambah</button>
-        <button class="kurangi-saldo">Kurangi</button>
-      </td>
-    `;
-    saldoUserTable.appendChild(tr);
+const saldoUserTableBody = document.getElementById("saldoUserTableBody");
 
- // ✅ Event tambah saldo
-tr.querySelector(".add-saldo").onclick = async () => {
-  const val = parseInt(prompt("Masukkan jumlah tambah saldo:"));
-  if (!isNaN(val) && val > 0) {
-    await updateDoc(doc(db, "pendaftaran", userId), { saldoRupiah: (data.saldoRupiah || 0) + val });
-  }
-};
+// ========================
+// 🔹 Render Saldo
+// ========================
+function renderSaldoRow(userId, data) {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td style="padding:8px; border-bottom:1px solid #eee;">${data.nama || '-'}</td>
+    <td style="padding:8px; border-bottom:1px solid #eee;">${data.email || '-'}</td>
+    <td style="padding:8px; border-bottom:1px solid #eee;">Rp ${(data.saldoRupiah || 0).toLocaleString()}</td>
+    <td style="padding:8px; border-bottom:1px solid #eee;">
+      <select class="status-select" style="padding:4px; border-radius:4px; border:1px solid #ccc;">
+        <option value="aktif" ${data.status=="aktif"?"selected":""}>Aktif</option>
+        <option value="ditangguhkan" ${data.status=="ditangguhkan"?"selected":""}>Ditangguhkan</option>
+        <option value="proses" ${data.status=="proses"?"selected":""}>Proses</option>
+        <option value="ditolak" ${data.status=="ditolak"?"selected":""}>Ditolak</option>
+        <option value="dihapus" ${data.status=="dihapus"?"selected":""}>Dihapus</option>
+      </select>
+    </td>
+    <td style="padding:8px; border-bottom:1px solid #eee;">
+      <button class="add-saldo" style="background:#4caf50; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer;">Tambah</button>
+      <button class="kurangi-saldo" style="background:#f44336; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer; margin-left:5px;">Kurangi</button>
+    </td>
+  `;
+  saldoUserTableBody.appendChild(tr);
 
-// ✅ Event kurangi saldo
-tr.querySelector(".kurangi-saldo").onclick = async () => {
-  const val = parseInt(prompt("Masukkan jumlah kurangi saldo:"));
-  if (!isNaN(val) && val > 0) {
-    await updateDoc(doc(db, "pendaftaran", userId), { saldoRupiah: (data.saldoRupiah || 0) - val });
-  }
-};
+  // ✅ Event tambah saldo
+  tr.querySelector(".add-saldo").onclick = async () => {
+    const val = parseInt(prompt("Masukkan jumlah tambah saldo:"));
+    if (!isNaN(val) && val > 0) {
+      await updateDoc(doc(db, "pendaftaran", userId), { saldoRupiah: (data.saldoRupiah || 0) + val });
+    }
+  };
 
-    // ✅ Event ubah status
-tr.querySelector(".status-select").onchange = async (e) => {
-  await updateDoc(doc(db, "pendaftaran", userId), { status: e.target.value });
-};
-  }
+  // ✅ Event kurangi saldo
+  tr.querySelector(".kurangi-saldo").onclick = async () => {
+    const val = parseInt(prompt("Masukkan jumlah kurangi saldo:"));
+    if (!isNaN(val) && val > 0) {
+      await updateDoc(doc(db, "pendaftaran", userId), { saldoRupiah: (data.saldoRupiah || 0) - val });
+    }
+  };
+
+  // ✅ Event ubah status
+  tr.querySelector(".status-select").onchange = async (e) => {
+    await updateDoc(doc(db, "pendaftaran", userId), { status: e.target.value });
+  };
+}
+
+// ========================
+// 🔹 Load semua user ke tabel
+// ========================
+async function loadSaldoUsers() {
+  saldoUserTableBody.innerHTML = ""; // kosongkan dulu
+
+  const querySnapshot = await getDocs(collection(db, "pendaftaran"));
+  querySnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    renderSaldoRow(docSnap.id, {
+      nama: data.namaLengkap || data.username || "-",
+      email: data.email || "-",
+      saldoRupiah: data.saldoRupiah || 0,
+      status: data.status || "aktif"
+    });
+  });
+}
+
+// ✅ Panggil saat halaman pertama kali dibuka
+loadSaldoUsers();
+
+
 
   // ========================
   // 🔹 Render Withdraw
@@ -1726,7 +1762,7 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
     <a href="#" onclick="showPage('ubahAnalisis'); toggleDropdown();">Ubah Analisis</a>
     <a href="https://databaseee1.github.io/TigoApp/invoicedeposit/index.html" onclick="toggleDropdown();">Invoice</a>
     <a href="#" onclick="showPage('kelolaCoin'); toggleDropdown();">Kelola Coin</a>
-    <a href="#" onclick="openTambahCredit(); toggleDropdown();">Tambah Credit</a>
+    <a href="#" onclick="showPage('kelolaSaldo'); toggleDropdown();">Status akun</a> <!-- ✅ tambahan -->
 
 
     <div>
