@@ -504,9 +504,19 @@ async function loadUserData(userId) {
         const saldoCreditsEl = document.getElementById("saldoCredits");
         if (saldoCreditsEl) saldoCreditsEl.textContent = (data.saldoCredit || 0).toLocaleString("id-ID");
 
-        // ✅ Update saldo Coin (REAL-TIME)
-        const saldoCoinEl = document.getElementById("saldoCoin");
-        if (saldoCoinEl) saldoCoinEl.textContent = (data.saldoCoin || 0) + " Coin";
+// ✅ Update saldo Coin (REAL-TIME)
+const saldoCoinEl = document.getElementById("saldoCoin");
+if (saldoCoinEl) saldoCoinEl.textContent = (data.saldoCoin || 0) + " Coin";
+
+// ✅ Update konversi Coin → Rupiah
+const coinConversionEl = document.getElementById("coinConversion");
+if (coinConversionEl) {
+    const saldoCoin = data.saldoCoin || 0;
+    const kursPerCoin = 164.4; // 1 Coin = Rp 164,4
+    const rupiahKonversi = Math.floor(saldoCoin * kursPerCoin);
+
+    coinConversionEl.textContent = "IDR" + rupiahKonversi.toLocaleString("id-ID");
+}
 
         // ✅ Update riwayat
         const riwayatList = document.getElementById("riwayatList");
@@ -697,27 +707,37 @@ window.prosesTarikCredit = async function () {
     if (userId) {
       const userRef = doc(db, "pendaftaran", userId);
 
-      // ✅ Listener status verifikasi realtime
-      onSnapshot(userRef, { includeMetadataChanges: true }, (docSnap) => {
-        if (!docSnap.exists()) return;
-        if (docSnap.metadata.hasPendingWrites) return;
 
-        const data = docSnap.data();
-        updateUIStatusVerifikasi(data.verified === true);
-      });
 
-      // ✅ Listener saldo realtime
-      onSnapshot(userRef, (docSnap) => {
-        if (!docSnap.exists()) return;
 
-        const data = docSnap.data();
-        const saldoRupiah = data.saldoRupiah || 0;
-        const saldoCoin = data.saldoCoin || 0;
 
-        if (saldoHostEl) saldoHostEl.textContent = "Rp " + saldoRupiah.toLocaleString("id-ID");
-        if (saldoCoinEl) saldoCoinEl.textContent = saldoCoin.toLocaleString("id-ID") + " Coin";
-        if (saldoNominalEl) saldoNominalEl.textContent = "Rp " + saldoRupiah.toLocaleString("id-ID");
-      });
+
+if (userId) {
+  const userRef = doc(db, "pendaftaran", userId);
+
+  // ✅ Listener saldo realtime
+  onSnapshot(userRef, (docSnap) => {
+    if (!docSnap.exists()) return;
+
+    const data = docSnap.data();
+    const saldoRupiah = data.saldoRupiah || 0;
+    const saldoCoin = data.saldoCoin || 0;
+
+    if (saldoHostEl) saldoHostEl.textContent = "Rp " + saldoRupiah.toLocaleString("id-ID");
+    if (saldoCoinEl) saldoCoinEl.textContent = saldoCoin.toLocaleString("id-ID") + " Coin";
+    if (saldoNominalEl) saldoNominalEl.textContent = "Rp " + saldoRupiah.toLocaleString("id-ID");
+
+    // 🔹 tambahan: konversi coin ke rupiah
+    const coinConversionEl = document.getElementById("coinConversion");
+    if (coinConversionEl) {
+      const kursPerCoin = 164.4; // 1 coin = Rp 164,4
+      const rupiahKonversi = Math.floor(saldoCoin * kursPerCoin);
+      coinConversionEl.textContent = "Rp " + rupiahKonversi.toLocaleString("id-ID");
+    }
+  });
+}
+
+
     }
 
     // ✅ Event klik untuk buka popup
@@ -4068,7 +4088,7 @@ window.prosesTarikCredit = async function () {
     box-shadow:0 8px 16px rgba(0,0,0,0.2);
   ">
 
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+          <div style="display:flex;  justify-content:space-between; align-items:center; margin-bottom:15px;">
             <h2 style="color:#000; font-size:18px; text-align:center; position:relative;">
               Saldo & Riwayat Penarikan
               <img src="match_his_icon.png" onclick="openDepositHistoryPopup()" style="
@@ -4132,18 +4152,29 @@ window.prosesTarikCredit = async function () {
 
           <!-- Info Saldo -->
           <div
-            style="background:#fff; padding:15px 20px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); margin:15px 0; font-size:16px;">
+            style="background:#fff; padding:15px 20px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); margin:15px 0; font-size:17px;">
             <p style="margin:10px 0; display:flex; align-items:center;">
               <img src="score_icon_wrap.png" alt="icon" style="width:20px; height:20px; margin-right:8px;">
               <b style="color:#000;">Saldo Host:</b>&nbsp;
               <span style="color:#e91e63; font-weight: bold; margin-left:5px;" id="saldoHost">Rp 0</span>
             </p>
+
             
-            <p style="margin:10px 0; display:flex; align-items:center;">
-              <img src="super_pack_float_icon.png" alt="icon" style="width:20px; height:20px; margin-right:8px;">
-              <b style="color:#000;">Saldo Coin:</b>&nbsp;
-              <span style="color:#ffb700; font-weight: bold; margin-left:5px;" id="saldoCoin">0 Coin</span>
-            </p>
+            
+<p style="margin:10px 0; display:flex; align-items:center;">
+  <span style="display:flex; align-items:center;">
+    <img src="super_pack_float_icon.png" alt="icon" style="width:20px; height:20px; margin-right:8px;">
+    <b style="color:#000;">Saldo Coin:</b>&nbsp;
+    <span style="color:#ffb700; font-weight: bold; margin-left:5px;" id="saldoCoin">0 Coin</span>
+  </span>
+
+  <!-- 🔹 hasil konversi dengan garis separator -->
+  <span style="display:flex; align-items:center; margin-left:10px;">
+    <span style="border-left:2px solid #aaa; height:22px; margin-right:10px;"></span>
+    <span id="coinConversion" style="color:#333; font-size:17px;">IDR 0</span>
+  </span>
+</p>
+
             <p style="margin:10px 0; display:flex; align-items:center;">
               <img src="certification_award_icon_0_female.png" alt="icon"
                 style="width:30px; height:30px; margin-right:8px;">
@@ -4155,7 +4186,45 @@ window.prosesTarikCredit = async function () {
 
 
 
+<!-- Menu List -->
+<div style="border-radius:10px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
 
+  <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid #eee; cursor:pointer; background:#fff;">
+    <span style="display:flex; align-items:center; font-size:15px; font-weight:500;">
+      <img src="mine_rucksack_icon.png" alt="icon" style="width:20px; height:20px; margin-right:10px;">
+      Akun Uang Tunai
+    </span>
+    <span style="font-size:16px; color:#888;">›</span>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid #eee; cursor:pointer; background:#fff;">
+    <span style="display:flex; align-items:center; font-size:15px; font-weight:500;">
+      <img src="match_his_icon.png" alt="icon" style="width:20px; height:20px; margin-right:10px;">
+      Catatan Pembayaran
+    </span>
+    <span style="font-size:16px; color:#888;">›</span>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; cursor:pointer; background:#fff;">
+    <span style="display:flex; align-items:center; font-size:15px; font-weight:500;">
+      <img src="reset_rtc_icon.png" alt="icon" style="width:20px; height:20px; margin-right:10px;">
+      Menukarkan
+    </span>
+    <span style="font-size:16px; color:#888;">›</span>
+  </div>
+
+</div>
+
+<!-- Instruksi -->
+<div style="margin-top:20px;">
+  <h3 style="font-size:15px; margin-bottom:8px; color:#000;">instruksi</h3>
+  <ol style="padding-left:20px; font-size:14px; line-height:1.6; color:#333;">
+    <li>Akun dengan 2000+ Credits dapat diuangkan.</li>
+    <li>Jumlah penarikan akan bervariasi sesuai dengan nilai tukar.</li>
+    <li>Permintaan akan ditangani dalam 2 hari kerja.</li>
+    <li>Jika Anda memiliki pertanyaan, silahkan hubungi kami.</li>
+  </ol>
+</div>
 
 
 
@@ -4164,38 +4233,14 @@ window.prosesTarikCredit = async function () {
 
           <!-- Info Wajib Top Up -->
           <!-- Box Info Aktivasi -->
-          <div id="aktivasiBox"
-            style="display:none; background:#fff3f3; border:1px solid #f5c2c2; padding:15px; border-radius:8px; margin-top:10px;">
-            <p id="aktivasiText" style="font-size:13px; margin:0;"></p>
-          </div>
+       <div style="border:1px solid #ccc; padding:20px; border-radius:10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); max-width:400px; margin:auto; background:#fff;">
+  
+  <div id="aktivasiBox"
+       style="display:none; background:#fff3f3; border:1px solid #f5c2c2; padding:15px; border-radius:8px; margin-top:10px;">
+    <p id="aktivasiText" style="font-size:13px; margin:0;"></p>
+  </div>
 
-          <!-- Form Top Up -->
-          <h3 style="margin-bottom:10px; margin-top: 25px; color:#7f3586; text-align:center;">Form Penarikan</h3>
-          <form id="formTopup">
-            <input type="text" name="namaPengirim" placeholder="Nama Pengirim" required style="
-      width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;
-    ">
-            <input type="text" name="bank" placeholder="Nama Bank / E-Wallet" required style="
-      width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;
-    ">
-            <div style="position:relative; margin-bottom:15px;">
-              <input type="number" id="nominalInput" name="nominal" placeholder="Nominal (Rp)" required
-                style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; border-radius:6px;">
-              <small id="nominalError"
-                style="color:red; font-size:12px; display:none; position:absolute; bottom:-18px; left:0;">
-                Minimal deposit Rp 500.000
-              </small>
-            </div>
-
-            <button type="submit" style="
-  background:#7f3586; color:#fff; padding:12px; border:none; border-radius:6px; width:100%; font-size:16px;
-">Kirim</button>
-
-            <!-- Tombol Tutup -->
-            <button onclick="document.getElementById('popupTopup').style.display='none';" style="
-    margin-top:12px; padding:12px; width:100%; background:#ccc; border:none; border-radius:6px; font-size:16px; cursor:pointer;
-  ">Tutup</button>
-        </div>
+ 
 
         <script>
 

@@ -269,11 +269,13 @@ border-bottom-right-radius: 0;
 #coinsModal h2 {
   font-size: 15px;
   font-weight: 800;
+  color:#5f00dc;
 }
 
 #coinsModal h3 {
   font-size: 24px;
   font-weight: 700;
+  color: #730096;
 }
 
 /* Label */
@@ -335,7 +337,7 @@ border-bottom-right-radius: 0;
 .modal .inner{
   max-width:1000px; margin:0px auto;
   background:#fff; border:2px solid var(--primary);
-  border-radius:18px; padding:16px; color:#1f2937
+  border-radius:18px; padding:16px; color:#00ff3c
 }
 .closeX{float:right; cursor:pointer; font-weight:700; color:var(--primary)}
 .app{
@@ -632,16 +634,17 @@ input {
   border-radius: 6px;
   background: #550973db;
   padding: 1px;
-  width: 290px;
+  width: 310px;
 }
 
 .option {
   display: flex;
   align-items: center;
-  padding: 5px;
-  border-bottom: 1px solid #333;
+  padding: 7px;
+  border-bottom: 1px solid #ffffff;
   cursor: pointer;
   color: #fff;
+  border-radius: 30px;
 }
 
 .option:last-child {
@@ -1046,14 +1049,19 @@ button[onclick="prosesTarik()"] {
   transform: translateY(0);
 }
 
-.option.disabled-option {
-  opacity: 0.5;
-  pointer-events: none; /* tidak bisa diklik */
-  position: relative;
+.disabled-option {
+  display: block;
+  padding: 10px;
+  margin-bottom: 10px; /* Sama seperti option */
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #787878;
+  color: #aaa;
+  cursor: not-allowed;
 }
 
 .option .soldout {
-  color: red;
+  color: rgb(196, 196, 196);
   font-weight: bold;
   margin-left: 8px;
 }
@@ -3281,11 +3289,12 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 </div>
 
 
-    <div class="option" onclick="selectOption('1080 Coin', 'Rp 130.000', 'Diskon 10%')">
-      <img src="coin.png" class="coin-icon">
-      <span class="coin">1080 Coin</span> - Rp 130.000 
-      <span class="discount">Diskon 10%</span>
-    </div>
+<div class="option disabled-option">
+  <img src="coin.png" class="coin-icon">
+  <span class="coin">880 Coin</span> - Rp 33.000 
+  <span class="soldout">Habis Terjual</span>
+</div>
+
     <div class="option" onclick="selectOption('2500 Coin', 'Rp 250.000', 'Diskon 40%')">
       <img src="coin.png" class="coin-icon">
       <span class="coin">2500 Coin</span> - Rp 250.000 
