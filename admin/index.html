@@ -22,7 +22,6 @@ import {
 
 
 
-
 // --- Firebase config ---
 const firebaseConfig = {
   apiKey: "AIzaSy....",
@@ -35,6 +34,295 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+
+
+
+ // Load user dari Firestore
+  async function loadUsersCredit() {
+    const tbody = document.getElementById("userCreditTable");
+    tbody.innerHTML = "";
+    const snap = await getDocs(collection(db, "pendaftaran"));
+
+    snap.forEach(docSnap => {
+      const data = docSnap.data();
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${data.namarek || "-"}</td>
+        <td>${data.email || "-"}</td>
+        <td>${data.wa || "-"}</td>
+        <td id="credit-${docSnap.id}">${data.saldoCredit || 0}</td>
+        <td>
+          <input type="number" id="amount-${docSnap.id}" placeholder="Jumlah" style="width:80px;">
+          <button onclick="updateCredit('${docSnap.id}','add')">Tambah</button>
+          <button onclick="updateCredit('${docSnap.id}','reduce')">Kurangi</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  // Update credit
+  window.updateCredit = async function (userId, type) {
+    const amountField = document.getElementById(`amount-${userId}`);
+    const amount = parseInt(amountField.value);
+    if (isNaN(amount) || amount <= 0) {
+      alert("Masukkan jumlah valid!");
+      return;
+    }
+
+    const userRef = doc(db, "pendaftaran", userId);
+    const current = parseInt(document.getElementById(`credit-${userId}`).innerText);
+
+    let newCredit = current;
+    if (type === "add") {
+      newCredit += amount;
+    } else if (type === "reduce") {
+      if (current < amount) {
+        alert("Credit user tidak cukup!");
+        return;
+      }
+      newCredit -= amount;
+    }
+
+    await updateDoc(userRef, { saldoCredit: newCredit });
+    document.getElementById(`credit-${userId}`).innerText = newCredit;
+    amountField.value = "";
+    alert("Credit berhasil diupdate!");
+  }
+
+  // Dipanggil saat admin klik menu "Tambah Credit"
+  window.openTambahCredit = function () {
+    document.getElementById("tambahCreditSection").style.display = "block";
+    loadUsersCredit();
+  }
+
+
+
+
+
+ const saldoHostTable = document.getElementById("saldoHostTable").querySelector("tbody");
+
+  // ✅ Load semua user dari Firestore
+  async function loadSaldoHostData() {
+    const q = query(collection(db, "pendaftaran"));
+    onSnapshot(q, (snapshot) => {
+      saldoHostTable.innerHTML = "";
+      snapshot.forEach((docSnap) => {
+        const d = docSnap.data();
+        const id = docSnap.id;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td style="padding:8px; border-bottom:1px solid #ddd;">${d.nama || "-"}</td>
+          <td style="padding:8px; border-bottom:1px solid #ddd;">${d.email || "-"}</td>
+          <td style="padding:8px; border-bottom:1px solid #ddd;">${d.wa || "-"}</td>
+          <td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold; color:#7f3586;">
+            Rp ${(d.saldo || 0).toLocaleString("id-ID")}
+          </td>
+          <td style="padding:8px; border-bottom:1px solid #ddd;">
+            <button class="tambah-saldo" data-id="${id}" style="margin-right:6px; padding:5px 10px; background:green; color:#fff; border:none; border-radius:4px; cursor:pointer;">+ Tambah</button>
+            <button class="kurangi-saldo" data-id="${id}" style="padding:5px 10px; background:red; color:#fff; border:none; border-radius:4px; cursor:pointer;">- Kurangi</button>
+          </td>
+        `;
+        saldoHostTable.appendChild(tr);
+      });
+
+      // Tambahkan event listener ke tombol
+      document.querySelectorAll(".tambah-saldo").forEach((btn) => {
+        btn.addEventListener("click", () => ubahSaldo(btn.dataset.id, "tambah"));
+      });
+      document.querySelectorAll(".kurangi-saldo").forEach((btn) => {
+        btn.addEventListener("click", () => ubahSaldo(btn.dataset.id, "kurangi"));
+      });
+    });
+  }
+
+  // ✅ Fungsi tambah/kurangi saldoHost
+  async function ubahSaldo(userId, aksi) {
+    const jumlah = parseInt(prompt(`Masukkan jumlah saldo yang ingin di${aksi}:`));
+    if (isNaN(jumlah) || jumlah <= 0) {
+      alert("Jumlah tidak valid!");
+      return;
+    }
+
+    try {
+      const userRef = doc(db, "pendaftaran", userId);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        const saldoSekarang = userData.saldo || 0;
+        let saldoBaru = saldoSekarang;
+
+        if (aksi === "tambah") {
+          saldoBaru += jumlah;
+        } else if (aksi === "kurangi") {
+          saldoBaru -= jumlah;
+          if (saldoBaru < 0) saldoBaru = 0; // biar tidak minus
+        }
+
+        await updateDoc(userRef, { saldo: saldoBaru });
+        alert(`Saldo berhasil di${aksi === "tambah" ? "tambahkan" : "kurangi"}!`);
+      }
+    } catch (err) {
+      console.error("Error ubah saldo:", err);
+      alert("Gagal mengubah saldo!");
+    }
+  }
+
+  // ✅ Panggil saat halaman admin dibuka
+  loadSaldoHostData();
+
+
+
+
+
+
+
+
+// Elemen DOM
+const selectUser = document.getElementById("admin-selectUser");
+const userInfo = document.getElementById("admin-userInfo");
+const selectedUserIdEl = document.getElementById("admin-selectedUserId");
+const selectedUserNameEl = document.getElementById("admin-selectedUserName");
+const selectedUserCoinEl = document.getElementById("admin-selectedUserCoin");
+const selectedUserRekEl = document.getElementById("admin-selectedUserRek");
+
+let unsubscribe = null;
+
+// ✅ Ambil daftar user dari Firestore dan isi dropdown
+async function loadUsers() {
+    try {
+        const querySnapshot = await getDocs(collection(db, "pendaftaran"));
+        if (querySnapshot.empty) {
+            console.warn("Tidak ada user di koleksi pendaftaran!");
+            return;
+        }
+
+        querySnapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const namaRek = data.namaRek || "(Tanpa Rekening)";
+
+            const option = document.createElement("option");
+            option.value = docSnap.id;
+            option.textContent = namaRek; // ✅ hanya tampil Nama Rek
+            selectUser.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Gagal memuat user:", error);
+    }
+}
+
+// ✅ Jalankan loadUsers saat halaman dimuat
+loadUsers();
+
+// ✅ Event saat pilih user
+selectUser.addEventListener("change", () => {
+    const userId = selectUser.value;
+
+    if (!userId) {
+        userInfo.style.display = "none";
+        if (unsubscribe) unsubscribe();
+        return;
+    }
+
+    if (unsubscribe) unsubscribe();
+
+    const userRef = doc(db, "pendaftaran", userId);
+
+    // ✅ Listener realtime Firestore
+    unsubscribe = onSnapshot(userRef, (docSnap) => {
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+
+            const namaLengkap = data.namaLengkap || data.username || "-";
+            const namaRek = data.namaRek || "-";
+            const saldoCoin = data.saldoCoin || 0;
+
+            // isi ke elemen
+            selectedUserIdEl.textContent = userId;
+            selectedUserNameEl.textContent = namaLengkap;
+            selectedUserRekEl.textContent = namaRek;
+            selectedUserCoinEl.textContent = saldoCoin;
+
+            userInfo.style.display = "block";
+        } else {
+            console.warn("User tidak ditemukan");
+        }
+    });
+});
+
+
+
+// ✅ Fungsi: Tambah saldo coin
+window.tambahSaldoCoin = async function () {
+    const userId = selectUser.value;
+    if (!userId) return;
+
+    const val = parseInt(prompt("Masukkan jumlah coin yang ingin ditambah:"));
+    if (isNaN(val) || val <= 0) return;
+
+    try {
+        const userRef = doc(db, "pendaftaran", userId);
+        const docSnap = await getDoc(userRef);
+        if (!docSnap.exists()) return;
+
+        const data = docSnap.data();
+        const saldoCoin = data.saldoCoin || 0;
+        const newSaldo = saldoCoin + val;
+
+        await updateDoc(userRef, { saldoCoin: newSaldo });
+        alert("Saldo coin berhasil ditambah!");
+    } catch (error) {
+        console.error("Gagal menambah saldo:", error);
+    }
+};
+
+// ✅ Fungsi: Kurangi saldo coin
+window.kurangiSaldoCoin = async function () {
+    const userId = selectUser.value;
+    if (!userId) return;
+
+    const val = parseInt(prompt("Masukkan jumlah coin yang ingin dikurangi:"));
+    if (isNaN(val) || val <= 0) return;
+
+    try {
+        const userRef = doc(db, "pendaftaran", userId);
+        const docSnap = await getDoc(userRef);
+        if (!docSnap.exists()) return;
+
+        const data = docSnap.data();
+        const saldoCoin = data.saldoCoin || 0;
+        const newSaldo = Math.max(saldoCoin - val, 0);
+
+        await updateDoc(userRef, { saldoCoin: newSaldo });
+        alert("Saldo coin berhasil dikurangi!");
+    } catch (error) {
+        console.error("Gagal mengurangi saldo:", error);
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ✅ Ambil tabel deposit
 const depositTable = document.getElementById("deposit-table");
@@ -114,8 +402,7 @@ function loadDepositData() {
       // Masukkan semua tombol ke kolom aksi
       td5.appendChild(approveBtn);
       td5.appendChild(rejectBtn);
-      td5.appendChild(addSaldoBtn);
-      td5.appendChild(kurangiSaldoBtn);
+
 
       tr.appendChild(td5);
 
@@ -338,7 +625,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <td>
       <button class="verify-btn" data-id="${userId}" data-status="true">Verifikasi</button>
       <button class="verify-btn" data-id="${userId}" data-status="false">Batalkan</button>
-      <button class="delete-btn" data-id="${userId}" style="color: #ffffff; background: red;">Hapus Data</button>
+      <button class="delete-btn" data-id="${userId}" style="color: #ffffff; background: red;">Delete</button>
       <button class="mark-btn" data-id="${userId}" style="background: orange; color: #fff;">Sudah</button>
       <button class="note-btn" data-id="${userId}" data-nama="${data.nama || '-'}" style="background:#4caf50;color:#fff;">Catatan</button>
       <div id="suuukkses-${userId}" class="suuukkses-btn" style="margin-top:5px;padding:5px 10px;background:#ddd;border-radius:4px;cursor:pointer;text-align:center;">
@@ -373,7 +660,7 @@ document.addEventListener("click", async function(e) {
     const row = document.getElementById(`row-${userId}`);
     if (!statusHijau) {
       row.style.background = "#4caf50"; // hijau
-      row.style.color = "#fff";         // teks putih
+      row.style.color = "#4caf50";         // teks putih
     } else {
       row.style.background = "";  // kembali normal
       row.style.color = "";
@@ -593,26 +880,26 @@ document.addEventListener("click", async (e) => {
     `;
     saldoUserTable.appendChild(tr);
 
-    // ✅ Event tambah saldo
-    tr.querySelector(".add-saldo").onclick = async () => {
-      const val = parseInt(prompt("Masukkan jumlah tambah saldo:"));
-      if (!isNaN(val) && val > 0) {
-        await updateDoc(doc(db, "pendaftaran", userId), { saldo: (data.saldo || 0) + val });
-      }
-    };
+ // ✅ Event tambah saldo
+tr.querySelector(".add-saldo").onclick = async () => {
+  const val = parseInt(prompt("Masukkan jumlah tambah saldo:"));
+  if (!isNaN(val) && val > 0) {
+    await updateDoc(doc(db, "pendaftaran", userId), { saldoRupiah: (data.saldoRupiah || 0) + val });
+  }
+};
 
-    // ✅ Event kurangi saldo
-    tr.querySelector(".kurangi-saldo").onclick = async () => {
-      const val = parseInt(prompt("Masukkan jumlah kurangi saldo:"));
-      if (!isNaN(val) && val > 0) {
-        await updateDoc(doc(db, "pendaftaran", userId), { saldo: (data.saldo || 0) - val });
-      }
-    };
+// ✅ Event kurangi saldo
+tr.querySelector(".kurangi-saldo").onclick = async () => {
+  const val = parseInt(prompt("Masukkan jumlah kurangi saldo:"));
+  if (!isNaN(val) && val > 0) {
+    await updateDoc(doc(db, "pendaftaran", userId), { saldoRupiah: (data.saldoRupiah || 0) - val });
+  }
+};
 
     // ✅ Event ubah status
-    tr.querySelector(".status-select").onchange = async (e) => {
-      await updateDoc(doc(db, "pendaftaran", userId), { status: e.target.value });
-    };
+tr.querySelector(".status-select").onchange = async (e) => {
+  await updateDoc(doc(db, "pendaftaran", userId), { status: e.target.value });
+};
   }
 
   // ========================
@@ -1077,7 +1364,7 @@ table th {
 }
 .page {display:none;}
 .page.active {display:block;}
-button {padding:4px 8px;     background: #834cff;
+button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
     color: #ffff;  margin-right:4px;cursor:pointer;}
 .status-select {padding:4px;}
 
@@ -1415,7 +1702,7 @@ button {padding:4px 8px;     background: #834cff;
   background-size:cover; 
   background-position:center; 
   color:#fff;
-  width:150%;
+  width:100%;
   box-sizing:border-box;
 ">
   <div style="display:flex; align-items:center; gap:10px;">
@@ -1431,13 +1718,16 @@ button {padding:4px 8px;     background: #834cff;
   <div id="dropdownMenu" class="dropdown-content" 
        style="display:none; position:absolute; background:#7f3586; box-shadow:0 4px 8px rgb(255, 255, 255); border-radius:6px; padding:50px; z-index:999;">
     <a href="#" onclick="showPage('data'); toggleDropdown();">Semua Data</a>
-    <a href="#" onclick="showPage('saldo'); toggleDropdown();">Credit</a>
+    <a href="#" onclick="showPage('saldoHostAdmin'); toggleDropdown();">Saldo Host</a>
     <a href="#" onclick="showPage('withdraw'); toggleDropdown();">Request Withdraw</a>
     <a href="#" onclick="showPage('deposit'); toggleDropdown();">Request Deposit</a>
     <a href="#" onclick="showPage('updateTagihan'); toggleDropdown();">Tagihan</a>
     <a href="https://databaseee1.github.io/TigoApp/analisist%20data%20host/" onclick="toggleDropdown();">Analisis Data</a>
     <a href="#" onclick="showPage('ubahAnalisis'); toggleDropdown();">Ubah Analisis</a>
     <a href="https://databaseee1.github.io/TigoApp/invoicedeposit/index.html" onclick="toggleDropdown();">Invoice</a>
+    <a href="#" onclick="showPage('kelolaCoin'); toggleDropdown();">Kelola Coin</a>
+    <a href="#" onclick="openTambahCredit(); toggleDropdown();">Tambah Credit</a>
+
 
     <div>
     <button id="logoutBtn" style="background:red;color:#fff;padding:6px 12px;border:none;border-radius:4px;margin-bottom:10px;">Logout</button>
@@ -1445,6 +1735,44 @@ button {padding:4px 8px;     background: #834cff;
   </div>
 </div>
 </div>
+
+
+
+
+
+<!-- Tambah Credit Section (di dalam panel admin) -->
+<div id="tambahCreditSection" style="display:none; padding:20px;">
+  <h2>Manajemen Credit User</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="width:100%; margin-top:10px;">
+    <thead>
+      <tr>
+        <th>Nama</th>
+        <th>Email</th>
+        <th>WA</th>
+        <th>Saldo Credit</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="userCreditTable"></tbody>
+  </table>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1506,15 +1834,47 @@ button {padding:4px 8px;     background: #834cff;
 
 
 
+<!-- ================== Saldo Host (Admin) ================== -->
+<div id="saldoHostAdmin" style="display:none; padding:20px;">
+  <h2>Kelola Saldo Host</h2>
+  <table id="saldoHostTable" border="1" style="width:100%; border-collapse:collapse; margin-top:10px;">
+    <thead style="background:#7f3586; color:#fff;">
+      <tr>
+        <th style="padding:8px;">Nama</th>
+        <th style="padding:8px;">Email</th>
+        <th style="padding:8px;">WA</th>
+        <th style="padding:8px;">Saldo Host</th>
+        <th style="padding:8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+
+
+
+
+<!-- Halaman Update Tagihan -->
 <div id="updateTagihan" class="page" style="display:none;">
   <h2>Update Jumlah Tagihan</h2>
-  <input type="number" id="inputTagihan" placeholder="Masukkan nominal (Rp)">
+  <input type="number" id="inputTagihan" placeholder="Masukkan nominal (Rp)" 
+    style="padding:8px; width:100%; max-width:250px; border:1px solid #ccc; border-radius:5px;">
 
   <div style="margin-top:10px;">
-    <button id="saveTagihan" style="background:#4CAF50; color:#fff; padding:8px 12px; border:none; border-radius:5px; margin-right:5px;">Tambah Tagihan</button>
-    <button id="reduceTagihan" style="background:#F44336; color:#fff; padding:8px 12px; border:none; border-radius:5px;">Kurangi Tagihan</button>
+    <button id="saveTagihan" 
+      style="background:#4CAF50; color:#fff; padding:8px 12px; border:none; border-radius:5px; margin-right:5px; cursor:pointer;">
+      Tambah Tagihan
+    </button>
+    <button id="reduceTagihan" 
+      style="background:#F44336; color:#fff; padding:8px 12px; border:none; border-radius:5px; cursor:pointer;">
+      Kurangi Tagihan
+    </button>
   </div>
+
+  
 </div>
+
 
 
 
@@ -1670,8 +2030,114 @@ button {padding:4px 8px;     background: #834cff;
 
 
 
+
+
+
+
+
+
+<!-- Halaman Kelola Coin -->
+<div id="kelolaCoin" class="page" style="display:none; margin-top:20px; display:flex; justify-content:center;">
+
+  <div style="background:#fff; border-radius:12px; padding:20px 24px; box-shadow:0 4px 12px rgba(0,0,0,0.08); width:100%; max-width:420px; font-family:Arial, sans-serif;">
+
+    <h2 style="margin:0 0 18px; font-size:20px; font-weight:600; border-bottom:1px solid #eee; padding-bottom:10px; color:#333; text-align:center;">
+      Kelola Coin User
+    </h2>
+
+    <!-- Dropdown pilih user -->
+    <label for="admin-selectUser" style="font-size:14px; font-weight:600; color:#555;">Pilih User:</label>
+    <select id="admin-selectUser" onchange="showUserInfo()" 
+      style="width:100%; padding:10px; margin-top:6px; border-radius:8px; border:1px solid #ccc; font-size:14px;">
+
+      <option value="">-- Pilih User --</option>
+      <!-- opsi user diisi lewat JS -->
+    </select>
+
+    <!-- Info user -->
+    <div id="admin-userInfo" style="display:none; margin-top:20px; font-size:14px; color:#444;">
+      
+      <div style="margin:8px 0; display:flex; justify-content:space-between;">
+        <span><b>Nama Rek:</b></span> <span id="admin-selectedUserRek">-</span>
+      </div>
+      <div style="margin:8px 0; display:flex; justify-content:space-between;">
+        <span><b>ID User:</b></span> <span id="admin-selectedUserId">-</span>
+      </div>
+      <div style="margin:8px 0; display:flex; justify-content:space-between;">
+        <span><b>Nama:</b></span> <span id="admin-selectedUserName">-</span>
+      </div>
+      <div style="margin:8px 0; display:flex; justify-content:space-between;">
+        <span><b>Saldo Coin:</b></span> <span id="admin-selectedUserCoin">0</span>
+      </div>
+
+      <div style="margin-top:20px; display:flex; gap:12px;">
+        <button onclick="tambahSaldoCoin()" 
+          style="flex:1; padding:10px; border:none; border-radius:8px; cursor:pointer; font-weight:600; background:#4caf50; color:white; transition:0.2s;">
+          + Tambah
+        </button>
+        <button onclick="kurangiSaldoCoin()" 
+          style="flex:1; padding:10px; border:none; border-radius:8px; cursor:pointer; font-weight:600; background:#f44336; color:white; transition:0.2s;">
+          - Kurangi
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
+  
+</div>
+
+
+<!-- Halaman Kelola Saldo User -->
+<div id="kelolaSaldo" class="page" style="display:none; margin-top:20px;">
+
+  <div style="background:#fff; border-radius:12px; padding:20px; box-shadow:0 4px 10px rgba(0,0,0,0.1); font-family:Arial,sans-serif;">
+    <h2 style="margin-bottom:15px; font-size:20px; border-bottom:1px solid #eee; padding-bottom:8px; color:#333;">
+      Kelola Saldo User
+    </h2>
+
+    <table style="width:100%; border-collapse:collapse; font-size:14px; text-align:left;" id="saldoUserTable">
+      <thead>
+        <tr style="background:#f5f5f5;">
+          <th style="padding:10px; border-bottom:1px solid #ddd;">Nama</th>
+          <th style="padding:10px; border-bottom:1px solid #ddd;">Email</th>
+          <th style="padding:10px; border-bottom:1px solid #ddd;">Saldo (Rp)</th>
+          <th style="padding:10px; border-bottom:1px solid #ddd;">Status</th>
+          <th style="padding:10px; border-bottom:1px solid #ddd;">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="saldoUserTableBody">
+        <!-- ✅ Data user akan diisi otomatis lewat JS renderSaldoRow() -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+
+
+
 </div>  <!-- ✅menu  tutup login  -->
+
+
+
+
+
+
+
+
 <script>
+
+
+
+
+
+
+
+
 
 
 
@@ -1870,7 +2336,30 @@ logoutBtn.addEventListener("click", function () {
 
 
 
+function showPage(pageId) {
+  // Sembunyikan semua page
+  const pages = document.querySelectorAll('.page, #saldoHostAdmin, #tambahCreditSection, #kelolaCoinSection, #updateTagihan');
+  pages.forEach(page => page.style.display = 'none');
 
+  // Tampilkan page yang diinginkan
+  const selectedPage = document.getElementById(pageId);
+  if(selectedPage) selectedPage.style.display = 'block';
+}
+
+
+
+
+ function showUserInfo() {
+    const select = document.getElementById('admin-selectUser');
+    const info = document.getElementById('admin-userInfo');
+    if (select.value) {
+      info.style.display = 'block';
+      document.getElementById('admin-selectedUserId').innerText = select.value;
+      document.getElementById('admin-selectedUserName').innerText = "Nama User " + select.value;
+    } else {
+      info.style.display = 'none';
+    }
+  }
 
 
 </script>
