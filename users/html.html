@@ -612,17 +612,16 @@ window.prosesTarikCredit = async function () {
     // ===== FITUR EDIT PROFILE =====
 
     // BUKA MODAL
-    window.openEditModal = async function () {
-      const userId = localStorage.getItem("loggedUserId");
-      if (!userId) return alert("User belum login");
+  window.openEditModal = async function () {
+    if (!currentUserId) return alert("User belum login");
 
-      const userRef = doc(db, "pendaftaran", userId);
-      const docSnap = await getDoc(userRef);
+    const userRef = doc(db, "pendaftaran", currentUserId);
+    const docSnap = await getDoc(userRef);
 
-      if (docSnap.exists()) {
+    if (docSnap.exists()) {
         const data = docSnap.data();
 
-        // Data yang hanya ditampilkan (tidak bisa edit)
+        // Data hanya tampil
         document.getElementById("viewEmail").textContent = data.email || "-";
         document.getElementById("viewWA").textContent = data.wa || "-";
         document.getElementById("viewJK").textContent = data.jk || "-";
@@ -630,50 +629,40 @@ window.prosesTarikCredit = async function () {
         document.getElementById("viewNamaRek").textContent = data.namaRek || "-";
         document.getElementById("viewNoRek").textContent = data.noRek || "-";
 
-
-
-        // ✅ Isi input yang bisa di-edit
+        // Input yang bisa diedit
         document.getElementById("editNama").value = data.nama || "";
         document.getElementById("editUmur").value = data.umur || "";
 
         document.getElementById("editProfileModal").style.display = "block";
-      } else {
+    } else {
         alert("Data user tidak ditemukan!");
-      }
-    };
+    }
+};
 
     // ✅ Simpan perubahan Nama & Umur (dan opsional foto profil)
-    window.saveProfile = async function () {
-      const newNama = document.getElementById("editNama").value.trim();
-      const newUmur = document.getElementById("editUmur").value.trim();
+   window.saveProfile = async function () {
+    const newNama = document.getElementById("editNama").value.trim();
+    const newUmur = document.getElementById("editUmur").value.trim();
 
+    if (!newNama) return alert("Nama tidak boleh kosong!");
+    if (!newUmur) return alert("Umur tidak boleh kosong!");
+    if (!currentUserId) return alert("User belum login");
 
-      if (!newNama) return alert("Nama tidak boleh kosong!");
-      if (!newUmur) return alert("Umur tidak boleh kosong!");
+    const userRef = doc(db, "pendaftaran", currentUserId);
 
-      const userId = localStorage.getItem("loggedUserId");
-      if (!userId) return alert("User belum login");
-
-      const userRef = doc(db, "pendaftaran", userId);
-
-      try {
-        // ✅ Update Nama & Umur dulu
+    try {
         await updateDoc(userRef, {
-          nama: newNama,
-          umur: newUmur
+            nama: newNama,
+            umur: newUmur
         });
-
-
 
         showToast("✅ Profil berhasil diperbarui!", "success");
         document.getElementById("editProfileModal").style.display = "none";
-      } catch (error) {
+    } catch (error) {
         console.error("Gagal update profil:", error);
         showToast("❌ Terjadi kesalahan saat menyimpan profil.", "error");
-
-      }
-    };
-
+    }
+};
     // ✅ Tutup modal
     window.closeEditModal = function () {
       document.getElementById("editProfileModal").style.display = "none";
@@ -4156,7 +4145,7 @@ if (userId) {
             <p style="margin:10px 0; display:flex; align-items:center;">
               <img src="score_icon_wrap.png" alt="icon" style="width:20px; height:20px; margin-right:8px;">
               <b style="color:#000;">Saldo Host:</b>&nbsp;
-              <span style="color:#e91e63; font-weight: bold; margin-left:5px;" id="saldoHost">Rp 0</span>
+              <span style="color:#e91e63; font-size: 14px; font-weight: bold; margin-left:5px;" id="saldoHost">Rp 0</span>
             </p>
 
             
@@ -4165,13 +4154,13 @@ if (userId) {
   <span style="display:flex; align-items:center;">
     <img src="super_pack_float_icon.png" alt="icon" style="width:20px; height:20px; margin-right:8px;">
     <b style="color:#000;">Saldo Coin:</b>&nbsp;
-    <span style="color:#ffb700; font-weight: bold; margin-left:5px;" id="saldoCoin">0 Coin</span>
+    <span style="color:#ffb700; font-size: 14px; font-weight: bold; margin-left:5px;" id="saldoCoin">0 Coin</span>
   </span>
 
   <!-- 🔹 hasil konversi dengan garis separator -->
   <span style="display:flex; align-items:center; margin-left:10px;">
     <span style="border-left:2px solid #aaa; height:22px; margin-right:10px;"></span>
-    <span id="coinConversion" style="color:#333; font-size:17px;">IDR 0</span>
+    <span id="coinConversion" style="color:#333; font-size:13px;">IDR 0</span>
   </span>
 </p>
 
@@ -4179,9 +4168,65 @@ if (userId) {
               <img src="certification_award_icon_0_female.png" alt="icon"
                 style="width:30px; height:30px; margin-right:8px;">
               <b style="color:#000;">Jumlah Tagihan:</b>&nbsp;
-              <span style="color:#e91e63; font-weight: bold; margin-left:5px;" id="jumlahTagihan">Rp 500.000</span>
+              <span style="color:#e91e63; font-size: 14px; font-weight: bold; margin-left:5px;" id="jumlahTagihan">Rp 500.000</span>
             </p>
           </div>
+
+
+
+<!-- Tombol Kas Keluar -->
+<button id="btnKasKeluar" style="padding:12px 25px; background:#8100ff; color:#fff; border:none; border-radius:20px; cursor:pointer; font-size:16px;">
+    Kas Keluar
+</button>
+
+<!-- Popup Top Up / Form Penarikan -->
+<div id="popupTopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
+    background:rgba(0,0,0,0.5); z-index:9999; overflow:auto; padding-top:50px;">
+    
+    <div style="border:1px solid #ccc; padding:20px; border-radius:10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
+        max-width:400px; margin:auto; background:#fff;">
+        
+        <!-- Box Info Aktivasi -->
+        <div id="aktivasiBox" style="display:none; background:#fff3f3; border:1px solid #f5c2c2; padding:15px; border-radius:8px; margin-top:10px;">
+            <p id="aktivasiText" style="font-size:13px; margin:0;"></p>
+        </div>
+
+        <h3 style="margin-bottom:10px; margin-top: 25px; color:#7f3586; text-align:center;">Form Penarikan</h3>
+
+        <form id="formTopup" style="max-width:400px; margin:0 auto; padding:0 50px;">
+            <input type="text" name="namaPengirim" placeholder="Nama Pengirim" required
+                style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc;background: #f0f0f0; border-radius:15px;">
+            <input type="text" name="bank" placeholder="Nama Bank / E-Wallet" required
+                style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc;background: #f0f0f0; border-radius:15px;">
+            <div style="position:relative; margin-bottom:15px;">
+                <input type="number" id="nominalInput" name="nominal" placeholder="Nominal (Rp)" required
+                    style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; background: #f0f0f0; border-radius:15px;">
+                <small id="nominalError" style="color:red; font-size:12px; display:none; position:absolute; bottom:-18px; left:0;">
+                    Minimal deposit Rp 500.000
+                </small>
+            </div>
+        </form>
+
+        <!-- Tombol Kirim -->
+        <button id="btnKirim" style="background:#8100ff; color:#fff; padding:12px; border:none; border-radius:20px; width:200px; font-size:16px; display:block; margin:10px auto;">
+            Kirim
+        </button>
+
+        <!-- Tombol Tutup -->
+        <button onclick="document.getElementById('popupTopup').style.display='none';"
+            style="margin-top:12px; padding:12px; width:200px; background:#9540e9; border:none; border-radius:20px; font-size:16px; cursor:pointer; display:block; margin:auto;">
+            Tutup
+        </button>
+    </div>
+</div>
+
+
+
+
+
+
+
+
 
 
 
@@ -4992,6 +5037,24 @@ function showPage(pageId) {
   lastOpenedPage = pageId;
 }
  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         </script>
 </body>
