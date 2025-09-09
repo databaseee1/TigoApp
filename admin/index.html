@@ -39,7 +39,6 @@ const db = getFirestore(app);
 
 
 
-
 // ==========================
 // 🔹 Load User Deposit (userdpo)
 // ==========================
@@ -65,7 +64,9 @@ function loadUserDpo() {
 
       if (!userMap[key]) {
         userMap[key] = {
-          id: docSnap.id, // default id pertama
+          id: docSnap.id, // id global
+          uid: data.uid || "", // simpan uid user
+          subId: data.subId || "", // simpan id di subcollection
           nama: data.namaPengirim || '-',
           email: data.userEmail || '-',
           wa: data.userWA || '-',
@@ -81,49 +82,51 @@ function loadUserDpo() {
       if (data.timestamp?.toDate && (!userMap[key].lastTime || data.timestamp.toDate() > userMap[key].lastTime)) {
         userMap[key].lastTime = data.timestamp.toDate();
         userMap[key].status = data.status || 'pending';
-        userMap[key].id = docSnap.id; // ⬅️ simpan id transaksi terbaru
+        userMap[key].id = docSnap.id;
+        userMap[key].uid = data.uid || "";
+        userMap[key].subId = data.subId || "";
       }
     });
 
-// --- render tabel ---
-Object.values(userMap).forEach(u => {
-  grandTotal += u.total;
+    // --- render tabel ---
+    Object.values(userMap).forEach(u => {
+      grandTotal += u.total;
 
-  // 🔹 Tentukan warna status
-  let statusColor = "";
-  if (u.status === "approve") statusColor = "style='color:green;font-weight:bold;'";
-  else if (u.status === "pending") statusColor = "style='color:orange;font-weight:bold;'";
-  else if (u.status === "tolak") statusColor = "style='color:red;font-weight:bold;'";
+      // 🔹 Tentukan warna status
+      let statusColor = "";
+      if (u.status === "approve") statusColor = "style='color:green;font-weight:bold;'";
+      else if (u.status === "pending") statusColor = "style='color:orange;font-weight:bold;'";
+      else if (u.status === "tolak") statusColor = "style='color:red;font-weight:bold;'";
 
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td>${u.nama}</td>
-    <td>${u.email}</td>
-    <td>${u.wa}</td>
-    <td>Rp ${u.total.toLocaleString("id-ID")}</td>
-    <td>${u.lastTime ? u.lastTime.toLocaleString("id-ID") : '-'}</td>
-    <td ${statusColor}>${u.status}</td>
-    <td>
-      <button onclick="updateDepositStatus('${u.id}','approve')" 
-        style="background:green;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
-        Approve
-      </button>
-      <button onclick="updateDepositStatus('${u.id}','pending')" 
-        style="background:orange;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
-        Pending
-      </button>
-      <button onclick="updateDepositStatus('${u.id}','tolak')" 
-        style="background:red;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
-        Tolak
-      </button>
-      <button onclick="hapusDeposit('${u.id}')" 
-        style="background:gray;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
-        Hapus
-      </button>
-    </td>
-  `;
-  tbody.appendChild(tr);
-});
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${u.nama}</td>
+        <td>${u.email}</td>
+        <td>${u.wa}</td>
+        <td>Rp ${u.total.toLocaleString("id-ID")}</td>
+        <td>${u.lastTime ? u.lastTime.toLocaleString("id-ID") : '-'}</td>
+        <td ${statusColor}>${u.status}</td>
+        <td>
+          <button onclick="updateDepositStatus('${u.id}','${u.uid}','${u.subId}','approve')" 
+            style="background:green;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+            Approve
+          </button>
+          <button onclick="updateDepositStatus('${u.id}','${u.uid}','${u.subId}','pending')" 
+            style="background:orange;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+            Pending
+          </button>
+          <button onclick="updateDepositStatus('${u.id}','${u.uid}','${u.subId}','tolak')" 
+            style="background:red;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+            Tolak
+          </button>
+          <button onclick="hapusDeposit('${u.id}','${u.uid}','${u.subId}')" 
+            style="background:gray;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+            Hapus
+          </button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
 
     grandTotalEl.innerText = "Total Semua Deposit: Rp " + grandTotal.toLocaleString("id-ID");
   });
@@ -132,9 +135,16 @@ Object.values(userMap).forEach(u => {
 // ==========================
 // 🔹 Update Status
 // ==========================
-async function updateDepositStatus(docId, newStatus) {
+async function updateDepositStatus(docId, uid, subId, newStatus) {
   try {
+    // update global
     await updateDoc(doc(db, "historydeposit", docId), { status: newStatus });
+
+    // update subcollection user
+    if (uid && subId) {
+      await updateDoc(doc(db, "pendaftaran", uid, "historydeposit", subId), { status: newStatus });
+    }
+
     Swal.fire({ icon: 'success', text: 'Status berhasil diubah ke ' + newStatus });
   } catch (err) {
     console.error("Update status error:", err);
@@ -145,7 +155,7 @@ async function updateDepositStatus(docId, newStatus) {
 // ==========================
 // 🔹 Hapus Deposit
 // ==========================
-async function hapusDeposit(docId) {
+async function hapusDeposit(docId, uid, subId) {
   const konfirmasi = await Swal.fire({
     title: "Yakin hapus?",
     text: "Data deposit ini akan dihapus permanen.",
@@ -157,7 +167,14 @@ async function hapusDeposit(docId) {
 
   if (konfirmasi.isConfirmed) {
     try {
+      // hapus global
       await deleteDoc(doc(db, "historydeposit", docId));
+
+      // hapus juga dari subcollection user
+      if (uid && subId) {
+        await deleteDoc(doc(db, "pendaftaran", uid, "historydeposit", subId));
+      }
+
       Swal.fire({ icon: 'success', text: 'Deposit berhasil dihapus.' });
     } catch (err) {
       console.error("Hapus deposit error:", err);
@@ -173,7 +190,6 @@ window.loadUserDpo = loadUserDpo;
 if (document.getElementById("userdpo")) {
   loadUserDpo();
 }
-
 
 
 
