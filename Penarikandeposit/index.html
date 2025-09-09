@@ -241,12 +241,29 @@ label {
     font-size: 13px;
 }
 .status-pill {
-  font-size: 12px;
-  padding: 0px;
+  display: inline-block;
+  padding: 4px 10px;
   border-radius: 12px;
-  color: #ffffff00;
-  background: #f4f4f400;
+  font-size: 12px;
+  font-weight: bold;
+  color: #fff;
 }
+
+
+
+.status-pill.pending {
+
+  color: #ffffff00;
+}
+
+.status-pill.tolak {
+  background-color: red;
+}
+
+
+
+
+
 .close-btn {
   background: #fff;
   border: 1px solid #eee;
@@ -379,6 +396,35 @@ label {
   text-align: center;
   flex: 1;
 }
+
+
+
+
+
+
+
+
+.swal-rounded {
+  border-radius: 30px !important;
+  padding: 20px;
+}
+
+.detail-item {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background: #fff;
+}
+
+
+
+
+
+
+
+
+
 
   </style>
 </head>
@@ -647,6 +693,7 @@ const db = getFirestore(app);
 let currentUser = null;
 let unsubscribeSaldo = null;
 let unsubscribeHistory = null;
+let unsubscribeStatus = null;
 
 // ---------- ELEMENTS ----------
 const saldoHostEl   = document.getElementById("saldoHost");
@@ -723,6 +770,77 @@ btnLogin.addEventListener("click", async () => {
       userData = d.data();
     });
 
+
+
+
+
+// ---------- LISTEN STATUS AKUN ----------
+// ---------- LISTEN STATUS AKUN ----------
+function listenUserStatus(uid) {
+  if (unsubscribeStatus) unsubscribeStatus(); // hentikan listener lama
+
+  const userRef = doc(db, "pendaftaran", uid);
+  unsubscribeStatus = onSnapshot(userRef, (docSnap) => {
+    if (!docSnap.exists()) return;
+
+    const data = docSnap.data();
+    const status = data.statusAkun;
+
+
+
+
+
+if (status === "suspended") {
+  forceLogout(
+    `
+      <div style="text-align:center; line-height:1.6;">
+        Akun anda telah di <b style="color:orange;">SUSPENDED</b> oleh pihak aplikasi.<br>
+        Mohon patuhi kebijakan komunitas kami.<br><br>
+        <div style="margin-top:20px; font-weight:bold;">
+          Hubungi admin untuk ajukan banding
+        </div>
+      </div>
+    `,
+    "im_banned_icon.png",   // ganti dengan icon kamu, misal offline.png
+    "Akun Ditangguhkan"
+  );
+} 
+
+
+
+
+    else if (status === "deleted") {
+      forceLogout(
+        `
+          <div style="text-align:center; line-height:1.6;">
+            Akun anda telah di <b style="color:red;">BANNED</b> oleh pihak aplikasi.<br>
+            Mohon patuhi kebijakan komunitas kami.<br><br>
+            <div style="margin-top:20px; font-weight:bold;">
+              Hubungi admin untuk ajukan banding
+            </div>
+          </div>
+        `,
+        "banned_icon.png",
+        "ACOUNT IS BANN"
+      );
+    } 
+    else if (status === "active") {
+      Swal.fire({
+        title: "SELAMAT",
+        text: "Akun anda telah diaktifkan kembali oleh pihak aplikasi!",
+        imageUrl: "avatar_notice_right_icon.png",
+        imageWidth: 80,
+        imageHeight: 80,
+        confirmButtonText: "OK"
+      });
+    }
+  });
+}
+
+
+
+
+
     currentUser = { uid: userId, email, wa, ...userData };
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
@@ -730,6 +848,7 @@ btnLogin.addEventListener("click", async () => {
     actionCard.style.display = "block";
 
     listenSaldo(userId);
+    listenUserStatus(userId); // 🔹 Tambahan untuk cek status realtime
 
     Swal.fire({
       icon: "success",
@@ -758,19 +877,91 @@ function listenSaldo(uid) {
   });
 }
 
+
+
+
+// ---------- LISTEN STATUS AKUN ----------
+function listenUserStatus(uid) {
+  if (unsubscribeStatus) unsubscribeStatus(); // hentikan listener lama
+
+  const userRef = doc(db, "pendaftaran", uid);
+  unsubscribeStatus = onSnapshot(userRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+
+      if (data.statusAkun === "suspended") {
+        forceLogout("Akun anda telah di Tangguhkan oleh pihak aplikasi");
+      } else if (data.statusAkun === "deleted") {
+        forceLogout("Akun anda telah di Hapus oleh pihak aplikasi");
+      } else if (data.statusAkun === "active") {
+        Swal.fire({
+          title: "Akun Aktif",
+          text: "Akun anda telah diaktifkan kembali oleh pihak aplikasi",
+          imageUrl: "avatar_notice_right_icon.png",
+          imageWidth: 80,
+          imageHeight: 80,
+          confirmButtonText: "OK"
+        });
+      }
+    }
+  });
+}
+
+// ---------- LOGOUT PAKSA ----------
+// ---------- LOGOUT PAKSA ----------
+function forceLogout(pesanHTML, icon = "offline.png", title = "Pemberitahuan") {
+  currentUser = null;
+  localStorage.removeItem("currentUser");
+
+  if (unsubscribeSaldo) unsubscribeSaldo();
+  if (unsubscribeHistory) unsubscribeHistory();
+  if (unsubscribeStatus) unsubscribeStatus();
+
+  unsubscribeSaldo = null;
+  unsubscribeHistory = null;
+  unsubscribeStatus = null;
+
+  loginCard.style.display = "block";
+  actionCard.style.display = "none";
+  saldoHostEl.innerText = "Rp 0";
+
+  Swal.fire({
+    title: title,
+    html: pesanHTML, // ✅ gunakan html bukan text
+    imageUrl: icon,
+    imageWidth: 80,
+    imageHeight: 80,
+    confirmButtonText: "OK"
+  });
+}
+
+
+
+
+
+
+
+
+
+
 // ---------- LOGOUT ----------
 btnLogout.addEventListener("click", () => {
   currentUser = null;
   localStorage.removeItem("currentUser");
   if (unsubscribeSaldo) unsubscribeSaldo();
   if (unsubscribeHistory) unsubscribeHistory();
+  if (unsubscribeStatus) unsubscribeStatus();   // ⬅️ tambahin ini
   unsubscribeSaldo = null;
   unsubscribeHistory = null;
+  unsubscribeStatus = null;                      // ⬅️ dan ini
   loginCard.style.display = "block";
   actionCard.style.display = "none";
   saldoHostEl.innerText = "Rp 0";
   Swal.fire({ icon: "info", text: "Berhasil logout." });
 });
+
+
+
 
 // ---------- SUBMIT DEPOSIT ----------
 btnKirim.addEventListener("click", async () => {
@@ -795,8 +986,8 @@ btnKirim.addEventListener("click", async () => {
   }
 
   try {
-    // 🔹 Simpan ke subcollection user
-    await addDoc(
+    // 🔹 1. Simpan dulu ke subcollection user
+    const subRef = await addDoc(
       collection(db, "pendaftaran", currentUser.uid, "historydeposit"),
       {
         namaPengirim,
@@ -804,18 +995,23 @@ btnKirim.addEventListener("click", async () => {
         nominal,
         status: "pending",
         timestamp: Timestamp.now(),
+        userEmail: currentUser.email,
+        userWA: currentUser.wa,
+        uid: currentUser.uid,
       }
     );
 
-    // 🔹 Simpan juga ke global (opsional, biar admin gampang cek)
+    // 🔹 2. Simpan juga ke global dengan link ke subId
     await addDoc(collection(db, "historydeposit"), {
-      userEmail: currentUser.email,
-      userWA: currentUser.wa,
       namaPengirim,
       bank,
       nominal,
       status: "pending",
       timestamp: Timestamp.now(),
+      userEmail: currentUser.email,
+      userWA: currentUser.wa,
+      uid: currentUser.uid,
+      subId: subRef.id,   // simpan id subcollection
     });
 
     document.getElementById("depositForm").reset();
@@ -830,6 +1026,10 @@ btnKirim.addEventListener("click", async () => {
     Swal.fire({ icon: "error", text: "Gagal mengirim deposit." });
   }
 });
+
+
+
+
 
 // ---------- HISTORY POPUP ----------
 function openHistoryPopup() {
@@ -904,25 +1104,38 @@ function openHistoryPopup() {
         itemEl.appendChild(left);
         itemEl.appendChild(right);
 
-        itemEl.addEventListener("click", () => {
-          const html = `
-            <div style="text-align:left; line-height:1.6">
-              <p><strong>Nama Pengirim:</strong> ${item.namaPengirim || "-"}</p>
-              <p><strong>Bank:</strong> ${item.bank || "-"}</p>
-              <p><strong>Nominal:</strong> ${formatRpShort(item.nominal || 0)}</p>
-              <p><strong>Status:</strong> ${(item.status || "pending").toUpperCase()}</p>
-              <p><strong>Tanggal:</strong> ${formatDate(item.timestamp)}</p>
-            </div>
-          `;
-          Swal.fire({
-            title: "Detail Transaksi",
-            html,
-            showCloseButton: true,
-            showConfirmButton: false,
-            width: 400,
-          });
-        });
+itemEl.addEventListener("click", () => {
+  let status = (item.status || "pending").toLowerCase();
+  let statusColor = "";
 
+  if (status === "approve") statusColor = "#a8a8a8";
+  else if (status === "pending") statusColor = "#c9b38c";
+  else if (status === "tolak") statusColor = "#f61414";
+  else statusColor = "#a7a7a7";
+
+  const html = `
+    <div class="detail-item"><strong>Nama Pengirim:</strong> ${item.namaPengirim || "-"}</div>
+    <div class="detail-item"><strong>Bank:</strong> ${item.bank || "-"}</div>
+    <div class="detail-item"><strong>Nominal:</strong> ${formatRpShort(item.nominal || 0)}</div>
+    <div class="detail-item"><strong>Status:</strong> 
+      <span style="color:${statusColor}; font-weight:bold; text-transform:uppercase;">
+        ${status}
+      </span>
+    </div>
+    <div class="detail-item"><strong>Tanggal:</strong> ${formatDate(item.timestamp)}</div>
+  `;
+
+  Swal.fire({
+    title: "Detail Transaksi",
+    html,
+    showCloseButton: true,
+    showConfirmButton: false,
+    width: 400,
+    customClass: {
+      popup: 'swal-rounded'
+    }
+  });
+});
         txList.appendChild(itemEl);
       });
     },

@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin Panel - TigoHost</title>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="module" src="/js/admin.js"></script>
+
 
 <!-- Firebase SDK -->
 <script type="module">
@@ -39,6 +41,23 @@ const db = getFirestore(app);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ==========================
 // 🔹 Load User Deposit (userdpo)
 // ==========================
@@ -57,74 +76,61 @@ function loadUserDpo() {
       return;
     }
 
-    const userMap = {};
-    snap.forEach(docSnap => {
+    snap.forEach((docSnap) => {
       const data = docSnap.data();
-      const key = `${data.userEmail}_${data.userWA}`;
-
-      if (!userMap[key]) {
-        userMap[key] = {
-          id: docSnap.id, // id global
-          uid: data.uid || "", // simpan uid user
-          subId: data.subId || "", // simpan id di subcollection
-          nama: data.namaPengirim || '-',
-          email: data.userEmail || '-',
-          wa: data.userWA || '-',
-          total: 0,
-          lastTime: data.timestamp?.toDate ? data.timestamp.toDate() : null,
-          status: data.status || 'pending'
-        };
-      }
-
-      userMap[key].total += Number(data.nominal || 0);
-
-      // kalau transaksi ini lebih baru → update id & status
-      if (data.timestamp?.toDate && (!userMap[key].lastTime || data.timestamp.toDate() > userMap[key].lastTime)) {
-        userMap[key].lastTime = data.timestamp.toDate();
-        userMap[key].status = data.status || 'pending';
-        userMap[key].id = docSnap.id;
-        userMap[key].uid = data.uid || "";
-        userMap[key].subId = data.subId || "";
-      }
-    });
-
-    // --- render tabel ---
-    Object.values(userMap).forEach(u => {
-      grandTotal += u.total;
+      const nominal = Number(data.nominal || 0);
+      grandTotal += nominal;
 
       // 🔹 Tentukan warna status
       let statusColor = "";
-      if (u.status === "approve") statusColor = "style='color:green;font-weight:bold;'";
-      else if (u.status === "pending") statusColor = "style='color:orange;font-weight:bold;'";
-      else if (u.status === "tolak") statusColor = "style='color:red;font-weight:bold;'";
+      if (data.status === "approve") statusColor = "style='color:green;font-weight:bold;'";
+      else if (data.status === "pending") statusColor = "style='color:orange;font-weight:bold;'";
+      else if (data.status === "tolak") statusColor = "style='color:red;font-weight:bold;'";
 
       const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${u.nama}</td>
-        <td>${u.email}</td>
-        <td>${u.wa}</td>
-        <td>Rp ${u.total.toLocaleString("id-ID")}</td>
-        <td>${u.lastTime ? u.lastTime.toLocaleString("id-ID") : '-'}</td>
-        <td ${statusColor}>${u.status}</td>
-        <td>
-          <button onclick="updateDepositStatus('${u.id}','${u.uid}','${u.subId}','approve')" 
-            style="background:green;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
-            Approve
-          </button>
-          <button onclick="updateDepositStatus('${u.id}','${u.uid}','${u.subId}','pending')" 
-            style="background:orange;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
-            Pending
-          </button>
-          <button onclick="updateDepositStatus('${u.id}','${u.uid}','${u.subId}','tolak')" 
-            style="background:red;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
-            Tolak
-          </button>
-          <button onclick="hapusDeposit('${u.id}','${u.uid}','${u.subId}')" 
-            style="background:gray;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
-            Hapus
-          </button>
-        </td>
-      `;
+tr.innerHTML = `
+  <td>${data.namaPengirim || '-'}</td>
+  <td>${data.userEmail || '-'}</td>
+  <td>${data.userWA || '-'}</td>
+  <td>Rp ${nominal.toLocaleString("id-ID")}</td>
+  <td>${data.timestamp?.toDate ? data.timestamp.toDate().toLocaleString("id-ID") : '-'}</td>
+  <td ${statusColor}>${data.status || 'pending'}</td>
+  <td>
+    <button onclick="updateDepositStatus('${docSnap.id}','${data.uid}','${data.subId}','approve')" 
+      style="background:green;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+      Approve
+    </button>
+    <button onclick="updateDepositStatus('${docSnap.id}','${data.uid}','${data.subId}','pending')" 
+      style="background:orange;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+      Pending
+    </button>
+    <button onclick="updateDepositStatus('${docSnap.id}','${data.uid}','${data.subId}','tolak')" 
+      style="background:red;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+      Tolak
+    </button>
+    <button onclick="hapusDeposit('${docSnap.id}','${data.uid}','${data.subId}')" 
+      style="background:gray;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+      Hapus
+    </button>
+
+    <!-- 🔹 Tombol Aksi User -->
+    <button onclick="updateUserStatus('${data.uid}','active')" 
+      style="background:blue;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+      Aktifkan
+    </button>
+    <button onclick="updateUserStatus('${data.uid}','suspended')" 
+      style="background:orange;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+      Tangguhkan
+    </button>
+    <button onclick="updateUserStatus('${data.uid}','deleted')" 
+      style="background:red;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+      Hapus
+    </button>
+  </td>
+`;
+
+
+
       tbody.appendChild(tr);
     });
 
@@ -132,30 +138,35 @@ function loadUserDpo() {
   });
 }
 
+
+
 // ==========================
-// 🔹 Update Status
+// 🔹 Update Status (sync ke global + subcollection)
 // ==========================
-async function updateDepositStatus(docId, uid, subId, newStatus) {
+async function updateDepositStatus(globalId, uid, subId, newStatus) {
   try {
     // update global
-    await updateDoc(doc(db, "historydeposit", docId), { status: newStatus });
+    await updateDoc(doc(db, "historydeposit", globalId), { status: newStatus });
 
     // update subcollection user
     if (uid && subId) {
-      await updateDoc(doc(db, "pendaftaran", uid, "historydeposit", subId), { status: newStatus });
+      await updateDoc(doc(db, "pendaftaran", uid, "historydeposit", subId), {
+        status: newStatus,
+      });
     }
 
-    Swal.fire({ icon: 'success', text: 'Status berhasil diubah ke ' + newStatus });
+    Swal.fire({ icon: "success", text: "Status berhasil diubah ke " + newStatus });
   } catch (err) {
     console.error("Update status error:", err);
-    Swal.fire({ icon: 'error', text: 'Gagal mengubah status.' });
+    Swal.fire({ icon: "error", text: "Gagal mengubah status." });
   }
 }
 
-// ==========================
-// 🔹 Hapus Deposit
-// ==========================
-async function hapusDeposit(docId, uid, subId) {
+
+
+
+
+async function hapusDeposit(globalId, uid, subId) {
   const konfirmasi = await Swal.fire({
     title: "Yakin hapus?",
     text: "Data deposit ini akan dihapus permanen.",
@@ -167,18 +178,14 @@ async function hapusDeposit(docId, uid, subId) {
 
   if (konfirmasi.isConfirmed) {
     try {
-      // hapus global
-      await deleteDoc(doc(db, "historydeposit", docId));
-
-      // hapus juga dari subcollection user
+      await deleteDoc(doc(db, "historydeposit", globalId));
       if (uid && subId) {
         await deleteDoc(doc(db, "pendaftaran", uid, "historydeposit", subId));
       }
-
-      Swal.fire({ icon: 'success', text: 'Deposit berhasil dihapus.' });
+      Swal.fire({ icon: "success", text: "Deposit berhasil dihapus." });
     } catch (err) {
       console.error("Hapus deposit error:", err);
-      Swal.fire({ icon: 'error', text: 'Gagal menghapus deposit.' });
+      Swal.fire({ icon: "error", text: "Gagal menghapus deposit." });
     }
   }
 }
@@ -190,6 +197,24 @@ window.loadUserDpo = loadUserDpo;
 if (document.getElementById("userdpo")) {
   loadUserDpo();
 }
+
+
+async function updateUserStatus(uid, status) {
+  try {
+    await updateDoc(doc(db, "pendaftaran", uid), {
+      statusAkun: status
+    });
+    Swal.fire({ icon: "success", text: "Status akun diubah ke " + status });
+  } catch (err) {
+    console.error("Update user status error:", err);
+    Swal.fire({ icon: "error", text: "Gagal update status akun." });
+  }
+}
+
+window.updateUserStatus = updateUserStatus;
+
+
+
 
 
 
@@ -2469,6 +2494,17 @@ function showPage(pageId) {
       info.style.display = 'none';
     }
   }
+
+
+
+
+
+
+
+
+
+
+
 
 
 </script>
