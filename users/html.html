@@ -436,11 +436,15 @@ window.loginUser = async function () {
             if (loginPage) loginPage.style.display = "none";
             if (userPage) userPage.style.display = "block";
 
+
+            
+
             // ✅ Mulai realtime update
             loadUserData(currentUserId);
 
             // ✅ Load riwayat deposit khusus user
             loadDepositHistoryData(currentUserId);
+            
 
         } else {
             if (statusEl) statusEl.innerText = "Host tidak Terdaftar!";
@@ -450,6 +454,20 @@ window.loginUser = async function () {
         if (statusEl) statusEl.innerText = "❌ Terjadi kesalahan!";
     }
 };
+
+
+// ===== AUTO LOGIN SAAT REFRESH =====
+window.addEventListener("DOMContentLoaded", () => {
+    const savedId = localStorage.getItem("currentUserId");
+    if (savedId) {
+        currentUserId = savedId;
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("userPage").style.display = "block";
+
+        loadUserData(currentUserId);
+        loadDepositHistoryData(currentUserId);
+    }
+});
 
 // ===== LOAD USER DATA =====
 async function loadUserData(userId) {
@@ -594,13 +612,18 @@ window.prosesTarikCredit = async function () {
 
 
 
-    // ===== LOGOUT =====
-    window.logout = function () {
-      localStorage.removeItem("loggedUserId");
-      document.getElementById("userPage").style.display = "none";
-      document.getElementById("loginPage").style.display = "block";
-    };
+// ===== LOGOUT =====
+// ===== LOGOUT =====
+window.logout = function () {
+  localStorage.removeItem("loggedUserId");
+  document.getElementById("userPage").style.display = "none";
+  document.getElementById("loginPage").style.display = "block";
+};
 
+// ✅ Tambahkan alias supaya tombol <div onclick="logoutUser()"> bisa jalan
+window.logoutUser = function () {
+  logout();
+};
 
     document.getElementById("creditBox").addEventListener("click", () => {
       const tarikSection = document.getElementById("tarikSection");
@@ -2230,6 +2253,40 @@ if (userId) {
     font-family: Arial, sans-serif; /* Font rapi */
 }
 
+
+
+
+  .settings-item {
+    padding:15px;
+    border-bottom:1px;
+    font-size:16px;
+    cursor:pointer;
+  }
+  .settings-item:hover {
+    background:#f5f5f5;
+  }
+.settings-item.logout {
+  color: red;
+  font-weight: bold;
+  text-align: center;   /* ✅ teks di tengah */
+  margin-top: 30px;
+  padding: 12px 0;      /* ✅ tinggi tombol */
+  background: #f3f3f3;
+  border-radius: 50px;  /* ✅ biar bulat kiri-kanan */
+  width: 100%;          /* ✅ full lebar container */
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+
+.settings-item-baru {
+  background: #f4f4f4;
+  color: #7c7c7c;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+}
 
 
   </style>
@@ -4043,16 +4100,81 @@ if (userId) {
         </div>
 
         <!-- Setelan Aplikasi -->
-        <div style="display:flex; align-items:center; justify-content:space-between; 
-              padding:15px;  cursor:pointer;">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <img src="setelanaplikasi.png" style="width:25px; height:25px;">
-            <span>Setelan Agency</span>
-          </div>
-          <img src="right_arrow_gray.png" alt="Offline" style="width:18px; height:18px;">
-        </div>
+        <!-- Tombol Setelan -->
+<div onclick="openSettingsPopup()" 
+     style="display:flex; align-items:center; justify-content:space-between; 
+            padding:15px; cursor:pointer;">
+  <div style="display:flex; align-items:center; gap:10px;">
+    <img src="setelanaplikasi.png" style="width:25px; height:25px;">
+    <span>Setelan Agency</span>
+  </div>
+  <img src="right_arrow_gray.png" alt="arrow" style="width:18px; height:18px;">
+</div>
 
       </div>
+
+
+<!-- POPUP Full Layar -->
+<div id="settingsPopup" style="
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:#fff;
+  z-index:10000;
+  overflow-y:auto;
+  padding:20px;
+">
+  <!-- Header -->
+  <div style="display:flex; align-items:center; justify-content:center; position:relative; margin-bottom:20px;">
+    <!-- Tombol Close -->
+    <img src="back_gray.png" alt="Close" 
+         style="width:24px; height:24px; position:absolute; left:0; cursor:pointer;" 
+         onclick="closeSettingsPopup()">
+    
+    <!-- Judul -->
+    <h2 style="font-size:20px; color:#000; font-weight:bold; margin:0;">
+      Setelan Agency
+    </h2>
+  </div>
+
+<div class="settings-item" onclick="alert('Atur Bahasa Aplikasi')">
+  Bahasa APP <span style="color: grey;">Otomatis (Indonesia)</span>
+</div>
+
+<div class="settings-item" onclick="alert('Atur Lokasi Match')">Atur Lokasi Match</div>
+  <div class="settings-item" onclick="alert('Ganti Password')">Ganti Password</div>
+  <div class="settings-item" onclick="alert('Ambil Link Referal')">Ambil Link Referal</div>
+  <div class="settings-item" onclick="alert('Atur Umur Lawan Bicara')">Atur Umur Lawan Bicara</div>
+  <div class="settings-item" onclick="alert('Periksa Skor Pelanggaran')">Periksa Skor Pelanggaran</div>
+  <div class="settings-item" onclick="alert('Cek Priode')">Cek Priode</div>
+  <div class="settings-item" onclick="alert('Periksa Status Akun')">Periksa Status Akun</div>
+
+  <!-- Tombol Logout -->
+  <div class="settings-item-baru" onclick="logout()">Priksa Pembaruan</div>
+  <div class="settings-item logout" onclick="logout()">LogOut</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
       <!-- Popup Top Up -->
@@ -5053,6 +5175,15 @@ function showPage(pageId) {
 
 
 
+
+  function openSettingsPopup() {
+    document.getElementById("settingsPopup").style.display = "block";
+  }
+
+
+function closeSettingsPopup() {
+  document.getElementById("settingsPopup").style.display = "none";
+}
 
 
 

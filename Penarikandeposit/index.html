@@ -826,20 +826,25 @@ function openHistoryPopup() {
 
   if (unsubscribeHistory) unsubscribeHistory();
 
-  const q = query(
-    collection(db, "historydeposit"),
-    where("userEmail", "==", currentUser.email),
-    where("userWA", "==", currentUser.wa)
-  );
+  // 🔹 Tambahkan orderBy biar terbaru di atas
+const q = query(
+  collection(db, "historydeposit"),
+  where("userEmail", "==", currentUser.email),
+  where("userWA", "==", currentUser.wa)
+);
 
-  unsubscribeHistory = onSnapshot(q, (snap) => {
-    const docs = [];
-    let totalRp = 0;
-    snap.forEach(doc => {
-      const data = doc.data();
-      docs.push({ id: doc.id, ...data });
-      if (data && data.nominal) totalRp += Number(data.nominal || 0);
-    });
+unsubscribeHistory = onSnapshot(q, (snap) => {
+  let docs = [];
+  let totalRp = 0;
+
+  snap.forEach(doc => {
+    const data = doc.data();
+    docs.push({ id: doc.id, ...data });
+    if (data && data.nominal) totalRp += Number(data.nominal || 0);
+  });
+
+    docs.sort((a, b) => b.timestamp?.toMillis() - a.timestamp?.toMillis());
+
 
     const d = new Date();
     historyHeader.innerText = `${d.getMonth() + 1}/${d.getFullYear()}`;
