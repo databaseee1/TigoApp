@@ -732,13 +732,13 @@ btnLogin.addEventListener("click", async () => {
 
     Swal.fire({
       icon: "success",
-      text: "Login sukses sebagai " + (userData.namarek || "User"),
+      text: "Login sukses sebagai " + (userData.namarek || "Host"),
       timer: 1500,
       showConfirmButton: false,
     });
   } catch (err) {
     console.error("Login error:", err);
-    Swal.fire({ icon: "error", text: "Gagal login. Cek console." });
+    Swal.fire({ icon: "error", text: "Gagal login. Sebagai Host." });
   }
 });
 
