@@ -622,12 +622,11 @@ label {
 
 
 
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { 
   getFirestore, collection, query, where, getDocs, addDoc,
-  doc, onSnapshot, updateDoc, increment, Timestamp
+  doc, onSnapshot, Timestamp, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // ---------- FIREBASE CONFIG ----------
@@ -667,9 +666,9 @@ const nomErr        = document.getElementById("nomErr");
 function formatRpShort(n) {
   if (!n && n !== 0) return "Rp0";
   const abs = Math.abs(n);
-  if (abs >= 1_000_000_000) return "Rp " + (n/1_000_000_000).toFixed(2) + "B";
-  if (abs >= 1_000_000) return "Rp " + (n/1_000_000).toFixed(2) + "JT";
-  if (abs >= 1000) return "Rp " + (n/1000).toFixed(2) + "K";
+  if (abs >= 1_000_000_000) return "Rp " + (n / 1_000_000_000).toFixed(2) + "B";
+  if (abs >= 1_000_000) return "Rp " + (n / 1_000_000).toFixed(2) + "JT";
+  if (abs >= 1000) return "Rp " + (n / 1000).toFixed(2) + "K";
   return "Rp " + n.toLocaleString("id-ID");
 }
 
@@ -680,6 +679,8 @@ function formatDate(ts) {
 }
 
 // ---------- AUTO LOGIN ----------
+
+
 window.addEventListener("DOMContentLoaded", async () => {
   const saved = localStorage.getItem("currentUser");
   if (saved) {
@@ -693,7 +694,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 // ---------- LOGIN ----------
 btnLogin.addEventListener("click", async () => {
   const email = document.getElementById("loginEmail").value.trim();
-  const wa    = document.getElementById("loginWA").value.trim();
+  const wa = document.getElementById("loginWA").value.trim();
 
   if (!email || !wa) {
     Swal.fire({ icon: "warning", text: "Isi email dan WA terlebih dahulu." });
@@ -701,6 +702,7 @@ btnLogin.addEventListener("click", async () => {
   }
 
   try {
+    // 🔹 Cari user di koleksi pendaftaran
     const q = query(
       collection(db, "pendaftaran"),
       where("email", "==", email),
@@ -715,7 +717,7 @@ btnLogin.addEventListener("click", async () => {
 
     let userId = "";
     let userData = {};
-    snap.forEach(d => {
+    snap.forEach((d) => {
       userId = d.id;
       userData = d.data();
     });
@@ -728,11 +730,11 @@ btnLogin.addEventListener("click", async () => {
 
     listenSaldo(userId);
 
-    Swal.fire({ 
-      icon: "success", 
+    Swal.fire({
+      icon: "success",
       text: "Login sukses sebagai " + (userData.namarek || "User"),
       timer: 1500,
-      showConfirmButton: false
+      showConfirmButton: false,
     });
   } catch (err) {
     console.error("Login error:", err);
@@ -747,7 +749,8 @@ function listenSaldo(uid) {
   unsubscribeSaldo = onSnapshot(saldoRef, (docSnap) => {
     if (docSnap.exists()) {
       const data = docSnap.data();
-      saldoHostEl.innerText = "Rp " + (data.saldo || 0).toLocaleString("id-ID");
+      saldoHostEl.innerText =
+        "Rp " + (data.saldo || 0).toLocaleString("id-ID");
     } else {
       saldoHostEl.innerText = "Rp 0";
     }
@@ -791,6 +794,19 @@ btnKirim.addEventListener("click", async () => {
   }
 
   try {
+    // 🔹 Simpan ke subcollection user
+    await addDoc(
+      collection(db, "pendaftaran", currentUser.uid, "historydeposit"),
+      {
+        namaPengirim,
+        bank,
+        nominal,
+        status: "pending",
+        timestamp: Timestamp.now(),
+      }
+    );
+
+    // 🔹 Simpan juga ke global (opsional, biar admin gampang cek)
     await addDoc(collection(db, "historydeposit"), {
       userEmail: currentUser.email,
       userWA: currentUser.wa,
@@ -798,15 +814,15 @@ btnKirim.addEventListener("click", async () => {
       bank,
       nominal,
       status: "pending",
-      timestamp: Timestamp.now()
+      timestamp: Timestamp.now(),
     });
 
     document.getElementById("depositForm").reset();
-    Swal.fire({ 
-      icon: "success", 
-      text: "Form Deposit berhasil dikirim (status: pending).", 
-      timer: 1500, 
-      showConfirmButton: false 
+    Swal.fire({
+      icon: "success",
+      text: "Form Deposit berhasil dikirim (status: pending).",
+      timer: 1500,
+      showConfirmButton: false,
     });
   } catch (err) {
     console.error("Deposit error:", err);
@@ -826,96 +842,96 @@ function openHistoryPopup() {
 
   if (unsubscribeHistory) unsubscribeHistory();
 
-  // 🔹 Tambahkan orderBy biar terbaru di atas
-const q = query(
-  collection(db, "historydeposit"),
-  where("userEmail", "==", currentUser.email),
-  where("userWA", "==", currentUser.wa)
-);
+  // 🔹 Query khusus subcollection user login
+  const q = query(
+    collection(db, "pendaftaran", currentUser.uid, "historydeposit")
+  );
 
-unsubscribeHistory = onSnapshot(q, (snap) => {
-  let docs = [];
-  let totalRp = 0;
+  unsubscribeHistory = onSnapshot(
+    q,
+    (snap) => {
+      let docs = [];
+      let totalRp = 0;
 
-  snap.forEach(doc => {
-    const data = doc.data();
-    docs.push({ id: doc.id, ...data });
-    if (data && data.nominal) totalRp += Number(data.nominal || 0);
-  });
-
-    docs.sort((a, b) => b.timestamp?.toMillis() - a.timestamp?.toMillis());
-
-
-    const d = new Date();
-    historyHeader.innerText = `${d.getMonth() + 1}/${d.getFullYear()}`;
-    historyTotal.innerText = `Total: ${formatRpShort(totalRp)}`;
-
-    txList.innerHTML = "";
-    if (docs.length === 0) {
-      txList.innerHTML = `<div style="padding:20px;text-align:center;color:#999">Belum ada riwayat.</div>`;
-      return;
-    }
-
-    docs.forEach(item => {
-      const itemEl = document.createElement("div");
-      itemEl.className = "tx-item";
-
-      const left = document.createElement("div");
-      left.className = "tx-left";
-      const main = document.createElement("div");
-      main.className = "tx-main";
-      main.textContent = "Punya Uang";
-      const sub = document.createElement("div");
-      sub.className = "tx-sub";
-      sub.textContent = formatDate(item.timestamp);
-
-      left.appendChild(main);
-      left.appendChild(sub);
-
-      const right = document.createElement("div");
-      right.style.textAlign = "right";
-      const amt = document.createElement("div");
-      amt.className = "tx-amount";
-      amt.textContent = formatRpShort(item.nominal);
-
-      const st = document.createElement("div");
-      st.className = `status-pill ${item.status || "pending"}`;
-      st.textContent = (item.status || "PENDING").toUpperCase();
-
-      right.appendChild(amt);
-      right.appendChild(st);
-
-      itemEl.appendChild(left);
-      itemEl.appendChild(right);
-
-      itemEl.addEventListener("click", () => {
-        const html = `
-          <div style="text-align:left; line-height:1.6">
-            <p><strong>Nama Pengirim:</strong> ${item.namaPengirim || "-"}</p>
-            <p><strong>Bank:</strong> ${item.bank || "-"}</p>
-            <p><strong>Nominal:</strong> ${formatRpShort(item.nominal || 0)}</p>
-            <p><strong>Status:</strong> ${(item.status || "pending").toUpperCase()}</p>
-            <p><strong>Tanggal:</strong> ${formatDate(item.timestamp)}</p>
-            <p><strong>Email:</strong> ${item.userEmail || "-"}</p>
-            <p><strong>WA:</strong> ${item.userWA || "-"}</p>
-          </div>
-        `;
-        Swal.fire({
-          title: "Detail Transaksi",
-          html,
-          showCloseButton: true,
-          showConfirmButton: false,
-          width: 400
-        });
+      snap.forEach((doc) => {
+        const data = doc.data();
+        docs.push({ id: doc.id, ...data });
+        if (data && data.nominal) totalRp += Number(data.nominal || 0);
       });
 
-      txList.appendChild(itemEl);
-    });
-  }, (err) => {
-    console.error("onSnapshot history error:", err);
-    txList.innerHTML = `<div style="padding:20px;color:red">Gagal memuat riwayat.</div>`;
-  });
+      docs.sort((a, b) => b.timestamp?.toMillis() - a.timestamp?.toMillis());
+
+      const d = new Date();
+      historyHeader.innerText = `${d.getMonth() + 1}/${d.getFullYear()}`;
+      historyTotal.innerText = `Total: ${formatRpShort(totalRp)}`;
+
+      txList.innerHTML = "";
+      if (docs.length === 0) {
+        txList.innerHTML = `<div style="padding:20px;text-align:center;color:#999">Belum ada riwayat.</div>`;
+        return;
+      }
+
+      docs.forEach((item) => {
+        const itemEl = document.createElement("div");
+        itemEl.className = "tx-item";
+
+        const left = document.createElement("div");
+        left.className = "tx-left";
+        const main = document.createElement("div");
+        main.className = "tx-main";
+        main.textContent = "Punya Uang";
+        const sub = document.createElement("div");
+        sub.className = "tx-sub";
+        sub.textContent = formatDate(item.timestamp);
+
+        left.appendChild(main);
+        left.appendChild(sub);
+
+        const right = document.createElement("div");
+        right.style.textAlign = "right";
+        const amt = document.createElement("div");
+        amt.className = "tx-amount";
+        amt.textContent = formatRpShort(item.nominal);
+
+        const st = document.createElement("div");
+        st.className = `status-pill ${item.status || "pending"}`;
+        st.textContent = (item.status || "PENDING").toUpperCase();
+
+        right.appendChild(amt);
+        right.appendChild(st);
+
+        itemEl.appendChild(left);
+        itemEl.appendChild(right);
+
+        itemEl.addEventListener("click", () => {
+          const html = `
+            <div style="text-align:left; line-height:1.6">
+              <p><strong>Nama Pengirim:</strong> ${item.namaPengirim || "-"}</p>
+              <p><strong>Bank:</strong> ${item.bank || "-"}</p>
+              <p><strong>Nominal:</strong> ${formatRpShort(item.nominal || 0)}</p>
+              <p><strong>Status:</strong> ${(item.status || "pending").toUpperCase()}</p>
+              <p><strong>Tanggal:</strong> ${formatDate(item.timestamp)}</p>
+            </div>
+          `;
+          Swal.fire({
+            title: "Detail Transaksi",
+            html,
+            showCloseButton: true,
+            showConfirmButton: false,
+            width: 400,
+          });
+        });
+
+        txList.appendChild(itemEl);
+      });
+    },
+    (err) => {
+      console.error("onSnapshot history error:", err);
+      txList.innerHTML = `<div style="padding:20px;color:red">Gagal memuat riwayat.</div>`;
+    }
+  );
 }
+
 
 // ---------- POPUP EVENTS ----------
 offlineBtn.addEventListener("click", openHistoryPopup);
@@ -925,6 +941,9 @@ closePopup.addEventListener("click", () => {
   if (unsubscribeHistory) unsubscribeHistory();
   unsubscribeHistory = null;
 });
+
+
+
 window.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     historyPopup.style.display = "none";
