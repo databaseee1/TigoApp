@@ -40,10 +40,139 @@ const db = getFirestore(app);
 
 
 
+// ==========================
+// 🔹 Load User Deposit (userdpo)
+// ==========================
+function loadUserDpo() {
+  const tbody = document.getElementById("userdpoTableBody");
+  const grandTotalEl = document.getElementById("grandTotal");
 
+  const q = query(collection(db, "historydeposit"), orderBy("timestamp", "desc"));
+  onSnapshot(q, (snap) => {
+    tbody.innerHTML = "";
+    let grandTotal = 0;
 
+    if (snap.empty) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Belum ada permintaan deposit.</td></tr>`;
+      grandTotalEl.innerText = "";
+      return;
+    }
 
+    const userMap = {};
+    snap.forEach(docSnap => {
+      const data = docSnap.data();
+      const key = `${data.userEmail}_${data.userWA}`;
 
+      if (!userMap[key]) {
+        userMap[key] = {
+          id: docSnap.id, // default id pertama
+          nama: data.namaPengirim || '-',
+          email: data.userEmail || '-',
+          wa: data.userWA || '-',
+          total: 0,
+          lastTime: data.timestamp?.toDate ? data.timestamp.toDate() : null,
+          status: data.status || 'pending'
+        };
+      }
+
+      userMap[key].total += Number(data.nominal || 0);
+
+      // kalau transaksi ini lebih baru → update id & status
+      if (data.timestamp?.toDate && (!userMap[key].lastTime || data.timestamp.toDate() > userMap[key].lastTime)) {
+        userMap[key].lastTime = data.timestamp.toDate();
+        userMap[key].status = data.status || 'pending';
+        userMap[key].id = docSnap.id; // ⬅️ simpan id transaksi terbaru
+      }
+    });
+
+// --- render tabel ---
+Object.values(userMap).forEach(u => {
+  grandTotal += u.total;
+
+  // 🔹 Tentukan warna status
+  let statusColor = "";
+  if (u.status === "approve") statusColor = "style='color:green;font-weight:bold;'";
+  else if (u.status === "pending") statusColor = "style='color:orange;font-weight:bold;'";
+  else if (u.status === "tolak") statusColor = "style='color:red;font-weight:bold;'";
+
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td>${u.nama}</td>
+    <td>${u.email}</td>
+    <td>${u.wa}</td>
+    <td>Rp ${u.total.toLocaleString("id-ID")}</td>
+    <td>${u.lastTime ? u.lastTime.toLocaleString("id-ID") : '-'}</td>
+    <td ${statusColor}>${u.status}</td>
+    <td>
+      <button onclick="updateDepositStatus('${u.id}','approve')" 
+        style="background:green;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+        Approve
+      </button>
+      <button onclick="updateDepositStatus('${u.id}','pending')" 
+        style="background:orange;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+        Pending
+      </button>
+      <button onclick="updateDepositStatus('${u.id}','tolak')" 
+        style="background:red;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+        Tolak
+      </button>
+      <button onclick="hapusDeposit('${u.id}')" 
+        style="background:gray;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+        Hapus
+      </button>
+    </td>
+  `;
+  tbody.appendChild(tr);
+});
+
+    grandTotalEl.innerText = "Total Semua Deposit: Rp " + grandTotal.toLocaleString("id-ID");
+  });
+}
+
+// ==========================
+// 🔹 Update Status
+// ==========================
+async function updateDepositStatus(docId, newStatus) {
+  try {
+    await updateDoc(doc(db, "historydeposit", docId), { status: newStatus });
+    Swal.fire({ icon: 'success', text: 'Status berhasil diubah ke ' + newStatus });
+  } catch (err) {
+    console.error("Update status error:", err);
+    Swal.fire({ icon: 'error', text: 'Gagal mengubah status.' });
+  }
+}
+
+// ==========================
+// 🔹 Hapus Deposit
+// ==========================
+async function hapusDeposit(docId) {
+  const konfirmasi = await Swal.fire({
+    title: "Yakin hapus?",
+    text: "Data deposit ini akan dihapus permanen.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Ya, hapus",
+    cancelButtonText: "Batal"
+  });
+
+  if (konfirmasi.isConfirmed) {
+    try {
+      await deleteDoc(doc(db, "historydeposit", docId));
+      Swal.fire({ icon: 'success', text: 'Deposit berhasil dihapus.' });
+    } catch (err) {
+      console.error("Hapus deposit error:", err);
+      Swal.fire({ icon: 'error', text: 'Gagal menghapus deposit.' });
+    }
+  }
+}
+
+window.updateDepositStatus = updateDepositStatus;
+window.hapusDeposit = hapusDeposit;
+window.loadUserDpo = loadUserDpo;
+
+if (document.getElementById("userdpo")) {
+  loadUserDpo();
+}
 
 
 
@@ -1663,333 +1792,269 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 
 <!-- ✅ Form Login -->
 <div id="loginPage" style="
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:95vh;
-    flex-direction:column;
-    background-image: url('no_match_times_charge_bg.png');  /* Ganti dengan path gambar offline */
-    background-size: cover;               /* Agar gambar penuh */
-    background-position: center;          /* Fokus di tengah */
-    background-repeat: no-repeat;         /* Tidak mengulang gambar */
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:95vh;
+  flex-direction:column;
+  background-image:url('no_match_times_charge_bg.png');
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
 ">
-  <!-- Box login -->
-    <div style="
-        position:relative;
-        z-index:2;
-        background:#974ff5;
-        padding:30px;
-        border-radius:12px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        min-width:250px;
-        max-width:350px;
-        width:90%;
-        text-align:center;
-    ">
-        <img src="servant_icon.png" alt="Offline" style="width:50px; height:50px; margin-bottom:15px;">
-        <h2 style="margin-bottom:20px; color:#ffffff;">Login Admin</h2>
-        <input type="text" id="adminEmail" placeholder="Cingkong" style="margin-bottom:10px;padding:8px; border-radius: 10px; width:100%; box-sizing:border-box;">
-        <input type="password" id="adminPin" placeholder="Password" style="margin-bottom:10px;padding:8px;border-radius: 10px; width:100%; box-sizing:border-box;">
-        <button id="loginBtn" style="padding:10px 20px;background:#b709d0;color:#fff;border:none;border-radius:6px; cursor:pointer; width:100%;">Login</button>
-    </div>
+  <div style="
+    position:relative;
+    z-index:2;
+    background:#974ff5;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 4px 15px rgba(0,0,0,0.3);
+    min-width:250px;
+    max-width:350px;
+    width:90%;
+    text-align:center;
+  ">
+    <img src="servant_icon.png" alt="Offline" style="width:50px;height:50px;margin-bottom:15px;">
+    <h2 style="margin-bottom:20px;color:#fff;">Login Admin</h2>
+    <input type="text" id="adminEmail" placeholder="Cingkong" style="margin-bottom:10px;padding:8px;border-radius:10px;width:100%;box-sizing:border-box;">
+    <input type="password" id="adminPin" placeholder="Password" style="margin-bottom:10px;padding:8px;border-radius:10px;width:100%;box-sizing:border-box;">
+    <button id="loginBtn" style="padding:10px 20px;background:#b709d0;color:#fff;border:none;border-radius:6px;cursor:pointer;width:100%;">Login</button>
+  </div>
 </div>
 
-<!-- ✅ Dashboard (Default: Hidden) -->
+<!-- ✅ Dashboard -->
 <div id="dashboard" style="display:none;">
+  <tbody id="dataUserTable"></tbody>
 
-    <tbody id="dataUserTable"></tbody>
-
-
-
-
-<!-- ✅ Status Login -->
-<div id="ststussssloginnnn" style="display:none;margin:15px auto;">
-  <img id="statusImageLogin" src="offline.png" alt="Status" style="width:40px;height:40px;">
-  <div id="statusTextLogin" style="font-size:18px;font-weight:bold;color:#444;margin-top:8px;">Offline</div>
-  <div id="statusMessageLogin" style="font-size:14px;color:#666;"></div>
-</div>
-
-<!-- ✅ Status Logout -->
-<div id="stattauslogoutt" style="display:none;text-align:center;margin:15px auto;">
-  <img id="statusImageLogout" src="offline.png" alt="Status" style="width:40px;height:40px;">
-  <div id="statusTextLogout" style="font-size:18px;font-weight:bold;color:#444;margin-top:8px;">Offline</div>
-  <div id="statusMessageLogout" style="font-size:14px;color:#666;"></div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- ✅ NAVBAR -->
-<div style="
-  display:flex; 
-  justify-content:space-between; 
-  align-items:center; 
-  flex-wrap:wrap;
-  padding:10px 15px; 
-  background-image:url('no_match_times_charge_bg.png'); 
-  background-size:cover; 
-  background-position:center; 
-  color:#fff;
-  width:100%;
-  box-sizing:border-box;
-">
-  <div style="display:flex; align-items:center; gap:10px;">
-    <img src="agencylogo.png" alt="Logo" style="width:25px; height:25px; border-radius:50%;">
-    <span style="font-weight:bold; font-size: 20px;">ADMIN CS</span>
-    <img src="servant_icon.png" alt="CS" onclick="openCsPopup()" style="width:30px; height:30px; cursor:pointer;" onerror="this.src='https://via.placeholder.com/30'">
+  <!-- ✅ Status Login -->
+  <div id="ststussssloginnnn" style="display:none;margin:15px auto;text-align:center;">
+    <img id="statusImageLogin" src="offline.png" alt="Status" style="width:40px;height:40px;">
+    <div id="statusTextLogin" style="font-size:18px;font-weight:bold;color:#444;margin-top:8px;">Offline</div>
+    <div id="statusMessageLogin" style="font-size:14px;color:#666;"></div>
   </div>
- <div style="position:relative;">
-  <button onclick="toggleDropdown()" 
-          style="background:#fff; color:#7f3586; border:none; padding:5px 10px; border-radius:6px; cursor:pointer;">
-    ⚙ Menu
-  </button>
-  <div id="dropdownMenu" class="dropdown-content" 
-       style="display:none; position:absolute; background:#7f3586; box-shadow:0 4px 8px rgb(255, 255, 255); border-radius:6px; padding:50px; z-index:999;">
-    <a href="#" onclick="showPage('data'); toggleDropdown();">Semua Data</a>
-    <a href="#" onclick="showPage('saldoHostAdmin'); toggleDropdown();">Saldo Host</a>
-    <a href="#" onclick="showPage('withdraw'); toggleDropdown();">Request Withdraw</a>
-    <a href="#" onclick="showPage('deposit'); toggleDropdown();">Request Deposit</a>
-    <a href="#" onclick="showPage('updateTagihan'); toggleDropdown();">Tagihan</a>
-    <a href="https://databaseee1.github.io/TigoApp/analisist%20data%20host/" onclick="toggleDropdown();">Analisis Data</a>
-    <a href="#" onclick="showPage('ubahAnalisis'); toggleDropdown();">Ubah Analisis</a>
-    <a href="https://databaseee1.github.io/TigoApp/invoicedeposit/index.html" onclick="toggleDropdown();">Invoice</a>
-    <a href="#" onclick="showPage('kelolaCoin'); toggleDropdown();">Kelola Coin</a>
-    <a href="#" onclick="showPage('kelolaSaldo'); toggleDropdown();">Status akun</a> <!-- ✅ tambahan -->
 
+  <!-- ✅ Status Logout -->
+  <div id="stattauslogoutt" style="display:none;text-align:center;margin:15px auto;">
+    <img id="statusImageLogout" src="offline.png" alt="Status" style="width:40px;height:40px;">
+    <div id="statusTextLogout" style="font-size:18px;font-weight:bold;color:#444;margin-top:8px;">Offline</div>
+    <div id="statusMessageLogout" style="font-size:14px;color:#666;"></div>
+  </div>
 
-    <div>
-    <button id="logoutBtn" style="background:red;color:#fff;padding:6px 12px;border:none;border-radius:4px;margin-bottom:10px;">Logout</button>
+  <!-- ✅ Navbar -->
+  <div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    padding:10px 15px;
+    background-image:url('no_match_times_charge_bg.png');
+    background-size:cover;
+    background-position:center;
+    color:#fff;
+    width:100%;
+    box-sizing:border-box;
+  ">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <img src="agencylogo.png" alt="Logo" style="width:25px;height:25px;border-radius:50%;">
+      <span style="font-weight:bold;font-size:20px;">ADMIN CS</span>
+      <img src="servant_icon.png" alt="CS" onclick="openCsPopup()" style="width:30px;height:30px;cursor:pointer;" onerror="this.src='https://via.placeholder.com/30'">
+    </div>
+    <div style="position:relative;">
+      <button onclick="toggleDropdown()" style="background:#fff;color:#7f3586;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;">⚙ Menu</button>
+      <div id="dropdownMenu" class="dropdown-content" style="display:none;position:absolute;background:#7f3586;box-shadow:0 4px 8px rgb(255,255,255);border-radius:6px;padding:50px;z-index:999;">
+        <a href="#" onclick="showPage('data'); toggleDropdown();">Semua Data</a>
+        <a href="#" onclick="showPage('saldoHostAdmin'); toggleDropdown();">Saldo Host</a>
+        <a href="#" onclick="showPage('withdraw'); toggleDropdown();">Request Withdraw</a>
+        <a href="#" onclick="showPage('deposit'); toggleDropdown();">Request Deposit</a>
+        <a href="#" onclick="showPage('updateTagihan'); toggleDropdown();">Tagihan</a>
+        <a href="https://databaseee1.github.io/TigoApp/analisist%20data%20host/" onclick="toggleDropdown();">Analisis Data</a>
+        <a href="#" onclick="showPage('ubahAnalisis'); toggleDropdown();">Ubah Analisis</a>
+        <a href="https://databaseee1.github.io/TigoApp/invoicedeposit/index.html" onclick="toggleDropdown();">Invoice</a>
+        <a href="#" onclick="showPage('kelolaCoin'); toggleDropdown();">Kelola Coin</a>
+        <a href="#" onclick="showPage('kelolaSaldo'); toggleDropdown();">Status akun</a>
+        <a href="#" onclick="showPage('userdpo'); toggleDropdown();">User DPO</a>
+        <div>
+          <button id="logoutBtn" style="background:red;color:#fff;padding:6px 12px;border:none;border-radius:4px;margin-top:10px;">Logout</button>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-</div>
 
-
-
-
-
-<!-- Tambah Credit Section (di dalam panel admin) -->
-<div id="tambahCreditSection" style="display:none; padding:20px;">
-  <h2>Manajemen Credit User</h2>
-  <table border="1" cellpadding="8" cellspacing="0" style="width:100%; margin-top:10px;">
-    <thead>
-      <tr>
-        <th>Nama</th>
-        <th>Email</th>
-        <th>WA</th>
-        <th>Saldo Credit</th>
-        <th>Aksi</th>
-      </tr>
-    </thead>
-    <tbody id="userCreditTable"></tbody>
-  </table>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- ✅ Overlay -->
-<div id="csOverlay" onclick="closeAllPopups()" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999;"></div>
-
-<!-- ✅ Popup CS -->
-<div id="csPopup" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:#fff; border-radius:10px; padding:20px; box-shadow:0 6px 12px rgba(0,0,0,0.2); z-index:10000; width:90%; max-width:500px;">
-  <h3 style="text-align:center; color:#7f3586; margin-top:0;">Daftar User</h3>
-  <div id="userList" style="max-height:300px; overflow-y:auto; margin-top:15px; border:1px solid #ddd; border-radius:6px; padding:5px;"></div>
-  <button onclick="closeCsPopup()" style="background:#ccc; border:none; padding:10px; width:100%; margin-top:10px; border-radius:6px; cursor:pointer;">Tutup</button>
-</div>
-
-<!-- ✅ Popup Kirim Pesan -->
-<div id="sendMessagePopup" style="
-  display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%);
-  background:#fff; width:90%; max-width:400px; border-radius:10px; padding:20px;
-  box-shadow:0 6px 12px rgba(0,0,0,0.2); z-index:10001;
-">
-  <h3 style="text-align:center; color:#7f3586;">Kirim Pesan</h3>
-  <div id="chatInfo" style="margin-bottom:10px; font-size:14px; color:#333;"></div>
-  <div id="chatHistory" style="max-height:150px; overflow-y:auto; border:1px solid #ccc; padding:8px; margin-bottom:10px; border-radius:6px;"></div>
-  <form id="sendMessageForm">
-    <input type="hidden" name="userId">
-    <textarea name="message" placeholder="Tulis pesan..." required style="
-      width:100%; padding:10px; margin-top:10px; border-radius:6px; border:1px solid #ccc; height:100px;
-    "></textarea>
-    <button type="submit" style="
-      background:#7f3586; color:#fff; padding:12px; border:none; border-radius:8px; width:100%; margin-top:10px;
-    ">Kirim</button>
-  </form>
-  <button onclick="closeSendMessagePopup()" style="
-    background:#ccc; border:none; padding:10px; width:100%; margin-top:10px; border-radius:6px;
-  ">Batal</button>
-</div>
-
-
-
-<!-- Halaman Deposit -->
-<div id="deposit" class="page" style="display:none;">
-  <h1>Deposit User</h1>
-  <table border="1" cellspacing="0" cellpadding="8" style="width:100%; border-collapse: collapse;">
-    <thead>
-      <tr>
-        <th>Nama Pengirim</th>
-        <th>Bank</th>
-        <th>Nominal</th>
-        <th>Status</th>
-        <th>Aksi</th>
-      </tr>
-    </thead>
-    <tbody id="deposit-table"></tbody>
-  </table>
-</div>
-
-
-
-
-<!-- ================== Saldo Host (Admin) ================== -->
-<div id="saldoHostAdmin" style="display:none; padding:20px;">
-  <h2>Kelola Saldo Host</h2>
-  <table id="saldoHostTable" border="1" style="width:100%; border-collapse:collapse; margin-top:10px;">
-    <thead style="background:#7f3586; color:#fff;">
-      <tr>
-        <th style="padding:8px;">Nama</th>
-        <th style="padding:8px;">Email</th>
-        <th style="padding:8px;">WA</th>
-        <th style="padding:8px;">Saldo Host</th>
-        <th style="padding:8px;">Aksi</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-</div>
-
-
-
-
-
-<!-- Halaman Update Tagihan -->
-<div id="updateTagihan" class="page" style="display:none;">
-  <h2>Update Jumlah Tagihan</h2>
-  <input type="number" id="inputTagihan" placeholder="Masukkan nominal (Rp)" 
-    style="padding:8px; width:100%; max-width:250px; border:1px solid #ccc; border-radius:5px;">
-
-  <div style="margin-top:10px;">
-    <button id="saveTagihan" 
-      style="background:#4CAF50; color:#fff; padding:8px 12px; border:none; border-radius:5px; margin-right:5px; cursor:pointer;">
-      Tambah Tagihan
-    </button>
-    <button id="reduceTagihan" 
-      style="background:#F44336; color:#fff; padding:8px 12px; border:none; border-radius:5px; cursor:pointer;">
-      Kurangi Tagihan
-    </button>
-  </div>
-
-  
-</div>
-
-
-
-
-<div class="main">
-  <div id="notif-box"></div>
-
-  <div id="saldo" class="page">
-    <h1>Saldo User</h1>
-    <table>
+  <!-- ✅ Tambah Credit Section -->
+  <div id="tambahCreditSection" style="display:none;padding:20px;">
+    <h2>Manajemen Credit User</h2>
+    <table border="1" cellpadding="8" cellspacing="0" style="width:100%;margin-top:10px;">
       <thead>
         <tr>
           <th>Nama</th>
           <th>Email</th>
-          <th>Saldo</th>
+          <th>WA</th>
+          <th>Saldo Credit</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="userCreditTable"></tbody>
+    </table>
+  </div>
+
+  <!-- ✅ User DPO -->
+  <div id="userdpo" style="display:none;padding:20px;">
+    <h2>Permintaan Deposit User</h2>
+    <table border="1" width="100%" style="border-collapse:collapse;text-align:center;">
+      <thead style="background:#eee;">
+        <tr>
+          <th>Nama Lengkap</th>
+          <th>Email</th>
+          <th>No WA</th>
+          <th>Total Deposit</th>
+          <th>Terakhir Deposit</th>
           <th>Status</th>
           <th>Aksi</th>
         </tr>
       </thead>
-      <tbody id="saldo-user-table"></tbody>
+      <tbody id="userdpoTableBody"></tbody>
     </table>
+    <div id="grandTotal" style="margin-top:15px;font-weight:bold;"></div>
   </div>
 
-  <div id="data" class="page active">
-    <h1>Data User</h1>
+  <!-- ✅ Overlay -->
+  <div id="csOverlay" onclick="closeAllPopups()" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;"></div>
 
-    <!-- ✅ Kolom Pencarian -->
-  <input type="text" id="searchInput" placeholder="Cari data..." 
-         style="margin-bottom:10px; border-radius: 10px; padding:8px; width:300px; font-size:16px;">
-
-    <table>
-<thead>
-  <tr>
-    <th>Nama</th>
-    <th>Umur</th>
-    <th>JK</th>
-    <th>WA</th>
-    <th>Email</th>
-    <th>Aplikasi</th>
-    <th>Bank</th>
-    <th>Nama Rek</th>
-    <th>No Rek</th>
-    <th>Foto</th>
-    <th>Status Verifikasi</th>
-    <th>Aksi</th> 
-  </tr>
-</thead>
-      <tbody id="data-user-table"></tbody>
-    </table>
+  <!-- ✅ Popup CS -->
+  <div id="csPopup" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:10px;padding:20px;box-shadow:0 6px 12px rgba(0,0,0,0.2);z-index:10000;width:90%;max-width:500px;">
+    <h3 style="text-align:center;color:#7f3586;margin-top:0;">Daftar User</h3>
+    <div id="userList" style="max-height:300px;overflow-y:auto;margin-top:15px;border:1px solid #ddd;border-radius:6px;padding:5px;"></div>
+    <button onclick="closeCsPopup()" style="background:#ccc;border:none;padding:10px;width:100%;margin-top:10px;border-radius:6px;cursor:pointer;">Tutup</button>
   </div>
 
-  <div id="withdraw" class="page">
-    <h1>User Withdraw</h1>
-    <table>
+  <!-- ✅ Popup Kirim Pesan -->
+  <div id="sendMessagePopup" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;width:90%;max-width:400px;border-radius:10px;padding:20px;box-shadow:0 6px 12px rgba(0,0,0,0.2);z-index:10001;">
+    <h3 style="text-align:center;color:#7f3586;">Kirim Pesan</h3>
+    <div id="chatInfo" style="margin-bottom:10px;font-size:14px;color:#333;"></div>
+    <div id="chatHistory" style="max-height:150px;overflow-y:auto;border:1px solid #ccc;padding:8px;margin-bottom:10px;border-radius:6px;"></div>
+    <form id="sendMessageForm">
+      <input type="hidden" name="userId">
+      <textarea name="message" placeholder="Tulis pesan..." required style="width:100%;padding:10px;margin-top:10px;border-radius:6px;border:1px solid #ccc;height:100px;"></textarea>
+      <button type="submit" style="background:#7f3586;color:#fff;padding:12px;border:none;border-radius:8px;width:100%;margin-top:10px;">Kirim</button>
+    </form>
+    <button onclick="closeSendMessagePopup()" style="background:#ccc;border:none;padding:10px;width:100%;margin-top:10px;border-radius:6px;">Batal</button>
+  </div>
+
+  <!-- ✅ Deposit -->
+  <div id="deposit" class="page" style="display:none;">
+    <h1>Deposit User</h1>
+    <table border="1" cellspacing="0" cellpadding="8" style="width:100%;border-collapse:collapse;">
       <thead>
         <tr>
-          <th>Nama</th>
-          <th>Email</th>
+          <th>Nama Pengirim</th>
           <th>Bank</th>
-          <th>No Rek</th>
-          <th>Nama Rek</th>
-          <th>Jumlah</th>
+          <th>Nominal</th>
           <th>Status</th>
           <th>Aksi</th>
         </tr>
       </thead>
-      <tbody id="withdraw-user-table"></tbody>
+      <tbody id="deposit-table"></tbody>
     </table>
   </div>
-</div>
+
+  <!-- ✅ Saldo Host -->
+  <div id="saldoHostAdmin" style="display:none;padding:20px;">
+    <h2>Kelola Saldo Host</h2>
+    <table id="saldoHostTable" border="1" style="width:100%;border-collapse:collapse;margin-top:10px;">
+      <thead style="background:#7f3586;color:#fff;">
+        <tr>
+          <th style="padding:8px;">Nama</th>
+          <th style="padding:8px;">Email</th>
+          <th style="padding:8px;">WA</th>
+          <th style="padding:8px;">Saldo Host</th>
+          <th style="padding:8px;">Aksi</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- ✅ Update Tagihan -->
+  <div id="updateTagihan" class="page" style="display:none;">
+    <h2>Update Jumlah Tagihan</h2>
+    <input type="number" id="inputTagihan" placeholder="Masukkan nominal (Rp)" style="padding:8px;width:100%;max-width:250px;border:1px solid #ccc;border-radius:5px;">
+    <div style="margin-top:10px;">
+      <button id="saveTagihan" style="background:#4CAF50;color:#fff;padding:8px 12px;border:none;border-radius:5px;margin-right:5px;cursor:pointer;">Tambah Tagihan</button>
+      <button id="reduceTagihan" style="background:#F44336;color:#fff;padding:8px 12px;border:none;border-radius:5px;cursor:pointer;">Kurangi Tagihan</button>
+    </div>
+  </div>
+
+  <!-- ✅ Main Content -->
+  <div class="main">
+    <div id="notif-box"></div>
+
+    <div id="saldo" class="page">
+      <h1>Saldo User</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Nama</th>
+            <th>Email</th>
+            <th>Saldo</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="saldo-user-table"></tbody>
+      </table>
+    </div>
+
+    <div id="data" class="page active">
+      <h1>Data User</h1>
+      <input type="text" id="searchInput" placeholder="Cari data..." style="margin-bottom:10px;border-radius:10px;padding:8px;width:300px;font-size:16px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Nama</th>
+            <th>Umur</th>
+            <th>JK</th>
+            <th>WA</th>
+            <th>Email</th>
+            <th>Aplikasi</th>
+            <th>Bank</th>
+            <th>Nama Rek</th>
+            <th>No Rek</th>
+            <th>Foto</th>
+            <th>Status Verifikasi</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="data-user-table"></tbody>
+      </table>
+    </div>
+
+    <div id="withdraw" class="page">
+      <h1>User Withdraw</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Nama</th>
+            <th>Email</th>
+            <th>Bank</th>
+            <th>No Rek</th>
+            <th>Nama Rek</th>
+            <th>Jumlah</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="withdraw-user-table"></tbody>
+      </table>
+    </div>
+  </div>
 
 
 
 
+<!-- ✅ Catatan Modal -->
 <div id="catatanModal" style="
-  display:none; 
-  position:fixed; 
-  top:0; left:0; width:100%; height:100%; 
-  background:rgba(0,0,0,0.6); 
-  justify-content:center; align-items:center; 
+  display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.6); justify-content:center; align-items:center;
   z-index:9999;">
   <div style="background:#fff; padding:20px; border-radius:10px; width:400px; max-height:90vh; overflow:auto;">
     <h3>Catatan Keuangan: <span id="userNamaModal"></span></h3>
@@ -2003,67 +2068,58 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
       <label>Nama Pembayaran:</label>
       <input type="text" id="namaPembayaran" required style="width:100%;"><br><br>
 
-      <button type="submit" style="background:#4caf50;color:#fff;padding:8px 12px;border:none;border-radius:5px;">Tambah Catatan</button>
+      <button type="submit" style="background:#4caf50;color:#fff;padding:8px 12px;border:none;border-radius:5px;">
+        Tambah Catatan
+      </button>
     </form>
 
     <hr>
     <h4>Riwayat Catatan:</h4>
     <div id="catatanList"></div>
-
     <h4>Total Pembayaran: <span id="totalPembayaran">Rp 0</span></h4>
-
-    <br>
   </div>
 </div>
 
-
+<!-- ✅ Ubah Analisis -->
 <div id="ubahAnalisis" style="
-  display:none; padding:20px; max-width:500px; margin:20px auto; 
-  background:#fff; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); font-family:Arial,sans-serif;
-">
+  display:none; padding:20px; max-width:500px; margin:20px auto;
+  background:#fff; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  font-family:Arial,sans-serif;">
   <h2 style="margin-bottom:20px; text-align:center; font-size:20px; color:#333;">
     Ubah Analisis Data
   </h2>
 
   <div style="margin-bottom:15px;">
-    <label style="font-weight:600; display:block; margin-bottom:6px;">Pemasukan:</label>
-    <input type="number" id="setPemasukan" style="width:100%; padding:10px; border:1px solid #ff0000; border-radius:8px;">
+    <label>Pemasukan:</label>
+    <input type="number" id="setPemasukan" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;">
   </div>
-
   <div style="margin-bottom:15px;">
-    <label style="font-weight:600; display:block; margin-bottom:6px;">Pengeluaran:</label>
+    <label>Pengeluaran:</label>
     <input type="number" id="setPengeluaran" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;">
   </div>
-
   <div style="margin-bottom:15px;">
-    <label style="font-weight:600; display:block; margin-bottom:6px;">User Bagus:</label>
+    <label>User Bagus:</label>
     <input type="number" id="setUserBagus" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;">
   </div>
-
   <div style="margin-bottom:15px;">
-    <label style="font-weight:600; display:block; margin-bottom:6px;">User Buruk:</label>
+    <label>User Buruk:</label>
     <input type="number" id="setUserBuruk" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;">
   </div>
-
   <div style="margin-bottom:15px;">
-    <label style="font-weight:600; display:block; margin-bottom:6px;">Total Puas:</label>
+    <label>Total Puas:</label>
     <input type="number" id="setPuas" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;">
   </div>
-
   <div style="margin-bottom:20px;">
-    <label style="font-weight:600; display:block; margin-bottom:6px;">Total Tidak Puas:</label>
+    <label>Total Tidak Puas:</label>
     <input type="number" id="setTidakPuas" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;">
   </div>
 
   <button id="saveAnalisis" style="
-    width:100%; padding:12px; background:#7f3586; color:#fff; border:none; 
-    border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;
-  " onmouseover="this.style.background='#692d6e'" onmouseout="this.style.background='#7f3586'">
+    width:100%; padding:12px; background:#7f3586; color:#fff; border:none;
+    border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">
     Simpan
   </button>
 </div>
-
-
 
 
 
@@ -2159,7 +2215,8 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 </div>  <!-- ✅menu  tutup login  -->
 
 
-
+<!-- ✅ Tutup Wrapper Dashboard -->
+</div> <!-- End of Dashboard -->
 
 
 

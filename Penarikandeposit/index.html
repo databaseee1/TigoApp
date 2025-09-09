@@ -1,153 +1,1023 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Popup Top Up / Form Penarikan</title>
- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getFirestore, collection, addDoc, Timestamp,
-      doc, getDoc, updateDoc, onSnapshot, query, orderBy, where, getDocs
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-
-
-    const firebaseConfig = {
-      apiKey: "AIzaSy....",
-      authDomain: "users-96dc5.firebaseapp.com",
-      projectId: "users-96dc5",
-      storageBucket: "users-96dc5.appspot.com",
-      messagingSenderId: "483322415863",
-      appId: "1:483322415863:web:xxxxxx"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-   
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Topup & History (Simulasi)</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    :root{
+      --primary:#7f3586;
+      --accent:#8100ff;
+      --muted:#f0f0f0;
+      --card:#ffffff;
+      --text:#222;
+      --soft:#f7f7f7;
+    }
+    body {
+  font-family: Inter, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  background: linear-gradient(180deg, #fff 0%, #fbfbfb 100%);
+  color: var(--text);
+}
 
 
 
-    // ===== SIMULASI USER LOGIN =====
-    const currentUserId = "user123"; // ganti sesuai userId yang login
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const btnKasKeluar = document.getElementById("btnKasKeluar");
-        const popup = document.getElementById("popupTopup");
-        const btnKirim = document.getElementById("btnKirim");
-        const nominalInput = document.getElementById("nominalInput");
-        const nominalError = document.getElementById("nominalError");
-        const formTopup = document.getElementById("formTopup");
-
-        // Tampilkan popup saat tombol Kas Keluar diklik
-        btnKasKeluar.addEventListener("click", () => {
-            popup.style.display = "flex";
-        });
-
-        // Tombol Kirim
-        btnKirim.addEventListener("click", async () => {
-            const namaPengirim = formTopup.namaPengirim.value.trim();
-            const bank = formTopup.bank.value.trim();
-            const nominal = parseInt(nominalInput.value, 10);
-
-            if (!namaPengirim || !bank) {
-                alert("Nama Pengirim dan Bank harus diisi!");
-                return;
-            }
-
-            if (!nominal || nominal < 500000) {
-                nominalError.style.display = "block";
-                return;
-            } else {
-                nominalError.style.display = "none";
-            }
-
-            try {
-                // Simpan ke historydeposit
-                await addDoc(collection(db, "historydeposit"), {
-                    userId: currentUserId,
-                    namaPengirim,
-                    bank,
-                    nominal,
-                    status: "pending",
-                    timestamp: Timestamp.now()
-                });
-
-                alert("✅ Form Penarikan berhasil dikirim!");
-                popup.style.display = "none";
-                formTopup.reset();
-            } catch (e) {
-                console.error("Gagal menyimpan:", e);
-                alert("❌ Terjadi kesalahan saat mengirim data!");
-            }
-        });
-    });
-  </script>
-</head>
-<body style="font-family:sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; gap:20px;">
-
-  <h2>Simulasi Popup Top Up / Form Penarikan</h2>
+/* Pastikan Swal selalu di paling depan */
+.swal2-container {
+  z-index: 99999 !important;
   
-  <!-- Tombol Kas Keluar -->
-  <button id="btnKasKeluar" style="padding:12px 25px; background:#8100ff; color:#fff; border:none; border-radius:20px; cursor:pointer; font-size:16px;">
-    Kas Keluar
-  </button>
+}
 
-  <!-- Popup Top Up / Form Penarikan -->
-  <div id="popupTopup" style="
-      display:none; 
-      position:fixed; 
-      top:0; left:0; 
-      width:100%; height:100%; 
-      background:rgba(0,0,0,0.5); 
-      z-index:9999; 
-      display:flex; justify-content:center; align-items:center; padding:20px;
-  ">
-      <div style="
-          border:1px solid #ccc; 
-          padding:20px; 
-          border-radius:10px; 
-          box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
-          max-width:400px; 
-          width:100%; 
-          background:#fff;
-      ">
-          <!-- Box Info Aktivasi -->
-          <div id="aktivasiBox" style="display:none; background:#fff3f3; border:1px solid #f5c2c2; padding:15px; border-radius:8px; margin-bottom:15px;">
-              <p id="aktivasiText" style="font-size:13px; margin:0;"></p>
-          </div>
 
-          <h3 style="margin-bottom:15px; color:#7f3586; text-align:center;">Form Penarikan</h3>
+/* Header beku */
+.sticky-header {
+  position: sticky;   /* kalau cuma mau ikut scroll */
+  top: 0;
+  z-index: 1000;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
 
-          <form id="formTopup" style="max-width:100%; margin:0 auto; padding:0 20px;">
-              <input type="text" name="namaPengirim" placeholder="Nama Pengirim" required
-                  style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; background:#f0f0f0; border-radius:15px;">
-              <input type="text" name="bank" placeholder="Nama Bank / E-Wallet" required
-                  style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; background:#f0f0f0; border-radius:15px;">
-              <div style="position:relative; margin-bottom:15px;">
-                  <input type="number" id="nominalInput" name="nominal" placeholder="Nominal (Rp)" required
-                      style="width:100%; padding:10px; margin:10px 0; border:1px solid #ccc; background:#f0f0f0; border-radius:15px;">
-                  <small id="nominalError" style="color:red; font-size:12px; display:none; position:absolute; bottom:-18px; left:0;">
-                      Minimal deposit Rp 500.000
-                  </small>
-              </div>
-          </form>
+/* Kalau mau selalu nempel atas (tidak ikut scroll), ganti dengan: */
+/* 
+.sticky-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+*/
 
-          <!-- Container Tombol -->
-          <div style="display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:15px;">
-              <button type="button" id="btnKirim" style="background:#8100ff; color:#fff; padding:12px 20px; border:none; border-radius:20px; font-size:16px; cursor:pointer; width:200px;">
-                  Kirim
-              </button>
-              <button type="button" onclick="document.getElementById('popupTopup').style.display='none'; document.getElementById('formTopup').reset();"
-                  style="padding:12px 20px; width:200px; background:#9540e9; border:none; border-radius:20px; font-size:16px; cursor:pointer;">
-                  Tutup
-              </button>
-          </div>
+/* Kotak saldo */
+.saldo-box {
+  background: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin: 5px 10px 10px; /* kasih jarak biar tidak ketiban header */
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.saldo-box img {
+  width: 18px;
+  height: 18px;
+}
+
+.saldo-box b {
+  color: #000;
+}
+
+.saldo-box #saldoHost {
+  color: #e91e63;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* Container */
+.container {
+  max-width: 420px;
+  margin: 18px auto;
+  padding: 16px;
+}
+
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+header h1 {
+  font-size: 16px;
+  margin: 0;
+  color: #323232;
+  font-weight: 600;
+}
+
+/* Cards */
+.login-card,
+.action-card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+  margin-bottom: 12px;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #e6e6e6;
+  background: var(--muted);
+  box-sizing: border-box;
+}
+label {
+  font-size: 13px;
+  color: #666;
+}
+
+
+
+
+
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-muted {
+  background: #ececec;
+  color: #333;
+}
+.row {
+  display: flex;
+  gap: 8px;
+}
+
+/* Offline Icon */
+.offline-icon {
+  width: 25px;
+  height: 25px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #fff;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+}
+
+/* Fullscreen Popup */
+.history-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgb(255, 255, 255);
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0px;
+  overflow: auto;
+}
+.history-panel {
+  background: #ffffff;
+  border-radius: 12px;
+  max-width: 760px;
+  width: 100%;
+  padding: 12px 12px 24px;
+}
+
+/* History Section */
+.history-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 8px;
+  border-bottom: 1px solid #e0e0e0;
+  border-radius: 10px;
+  background: #ececec;
+}
+.history-title {
+  font-weight: 600;
+  color: var(--primary);
+  font-size: 15px;
+}
+.total-box {
+  font-size: 14px;
+  color: #333;
+}
+.month-row {
+  color: #999;
+  font-size: 13px;
+  padding: 8px 6px;
+}
+.tx-list {
+  padding: 6px;
+}
+.tx-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 8px;
+  border-bottom: 1px solid #ebebeb;
+  border-radius:2px;
+  
+}
+.tx-left {
+  display: flex;
+  flex-direction: column;
+}
+.tx-main {
+  font-weight: 400;
+}
+.tx-sub {
+  font-size: 12px;
+  color: #9b9b9b;
+  margin-top: 6px;
+}
+.tx-amount {
+    
+  font-weight: 400;
+    color: #555;
+    font-size: 13px;
+}
+.status-pill {
+  font-size: 12px;
+  padding: 0px;
+  border-radius: 12px;
+  color: #ffffff00;
+  background: #f4f4f400;
+}
+.close-btn {
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 8px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .container {
+    padding: 12px;
+  }
+  .history-panel {
+    padding: 8px;
+  }
+}
+
+
+
+
+
+#conbank {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center; /* tengah secara horizontal */
+  
+  margin: 20px 0;
+  max-width: 100%;
+  
+  overflow-x: auto;    /* scroll horizontal tetap aktif */
+  overflow-y: hidden;
+  box-sizing: border-box;
+  white-space: nowrap;
+  padding-left: 0;
+  padding-right: 0;
+
+  /* opsional: smooth scroll */
+  scroll-behavior: smooth;
+}
+
+#conbank img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  background: #fff;
+  padding: 5px;
+  flex-shrink: 0;
+}
+
+#conbank img.active {
+  border: 2px solid #007bff; /* warna biru saat aktif */
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.6);
+  background: #e6f0ff;       /* background sedikit biru */
+}
+
+
+
+
+.slider-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  text-align: center;
+}
+
+.slider {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+.slider::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.slider img {
+  flex: 0 0 auto;
+  width: 100px;
+  height: auto;
+  margin: 10px;
+  scroll-snap-align: center;
+}
+
+/* dots */
+.dots {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+.dots span {
+  width: 10px;
+  height: 10px;
+  background: #ccc;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dots span.active {
+  background: #333;
+}
+
+
+
+
+ /* Navigasi bawah */
+#bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  z-index: 9999; /* biar selalu di atas konten */
+  border-top: 1px solid #ffffff;
+}
+
+#bottomNav img {
+  width: 38px; /* sesuai permintaan kamu */
+}
+
+#bottomNav .nav-item {
+  text-align: center;
+  flex: 1;
+}
+
+  </style>
+</head>
+<body>
+
+
+
+
+
+
+
+
+
+
+<div class="container">
+  <!-- HEADER BEKU -->
+  <header class="sticky-header">
+    <h1>Credits Withdraw</h1>
+    <div style="display:flex;gap:10px;align-items:center">
+      <img id="offlineBtn" class="offline-icon" src="match_his_icon.png" alt="offline" title="Buka History" />
+    </div>
+  </header>
+
+  <!-- ✅ Box saldo host -->
+  <div class="saldo-box">
+    <img src="score_icon_wrap.png" alt="icon" />
+    <b>Saldo Host:</b>
+    <span id="saldoHost">Rp 0</span>
+  </div>
+</div>
+
+      
+<div class="slider-container">
+  <div id="conbank" class="slider">
+    <img src="tigogambar.webp" alt="icon1">
+    <img src="TenderUlogo.webp" alt="icon2">
+    <img src="weelivelogo.webp" alt="icon3">
+    <img src="bling.webp" alt="icon4">
+    <img src="ayarlogo.webp" alt="icon5">
+    <img src="meegologo.webp" alt="icon6">
+    <img src="makologo.webp" alt="icon7">
+        <img src="tigogambar.webp" alt="icon1">
+    <img src="TenderUlogo.webp" alt="icon2">
+    <img src="weelivelogo.webp" alt="icon3">
+    <img src="bling.webp" alt="icon4">
+    <img src="ti.livelogo.webp" alt="icon5">
+    <img src="chatologo.webp" alt="icon6">
+  </div>
+  <div class="dots"></div>
+</div>
+
+
+
+
+
+
+  <!-- ✅ Login card -->
+  <div id="loginCard" class="login-card">
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+      <div style="width:44px; height:44px; border-radius:10px; overflow:hidden; background:var(--soft); display:flex; align-items:center; justify-content:center;">
+        <img src="servant_icon.png" alt="Offline" style="width:100%; height:100%; object-fit:cover;" />
       </div>
+      <div>
+        <div style="font-weight:700">LOGIN PENARIKAN</div>
+        <div style="font-size:12px;color:#888">Demi keamanan, harap masukan akun host anda kembali!</div>
+      </div>
+    </div>
+
+    <label>Email</label>
+    <input id="loginEmail" type="text" placeholder="email@example.com" style="font-size:10px;" />
+    <label style="margin-top:8px">Password</label>
+    <input id="loginWA" type="text" placeholder="xxxx(tanpa +)" style="font-size:10px;" />
+    <div style="margin-top:10px;display:flex;gap:8px">
+      <button id="btnLogin" class="btn btn-primary">Masuk</button>
+      <button id="btnClear" class="btn btn-muted">Reset</button>
+    </div>
+  </div>
+</div>
+
+    <!-- Action (deposit) -->
+    <div id="actionCard" class="action-card" style="display:none">
+      <div style="justify-content:space-between;align-items:center;margin-bottom:130px">
+        <div>
+<!-- 🔹 Box untuk Form Deposit -->
+<div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 4px 16px rgba(0,0,0,0.08); max-width:420px; margin:20px auto;">
+
+  <h3 style="margin-top:0; font-size:16px; font-weight:600; color:#333; text-align:center;">
+    Form Penarikan
+  </h3>
+
+<!-- 🔹 Form Deposit -->
+<form id="depositForm" onsubmit="return false;" style="max-width:420px; margin:auto;">
+
+  <!-- Nama Pengirim -->
+  <div style="margin-bottom:12px;">
+    <label for="namaPengirim" style="display:block; margin-bottom:4px;">Nama Pengirim</label>
+    <input id="namaPengirim" type="text" placeholder="Nama pengirim" required 
+           style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;" />
   </div>
 
+  <!-- Bank / E-Wallet -->
+  <div style="margin-bottom:12px;">
+    <label for="bank" style="display:block; margin-bottom:4px;">Bank / E-Wallet</label>
+    <div style="position:relative; display:flex; align-items:center;">
+      <img src="dana.png" alt="icon" 
+           style="position:absolute; left:10px; width:50px; height:50px; opacity:0.7;" />
+      <input id="bank" type="text" placeholder="" required
+             style="padding-left:40px; width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;" />
+    </div>
+  </div>
+
+  <!-- Nominal -->
+  <div style="margin-bottom:8px;">
+    <label for="nominal" style="display:block; margin-bottom:4px;">Nominal (Rp)</label>
+    <input id="nominal" type="number" placeholder="500000" min="0" required
+           style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;" />
+    <small id="nomErr" style="color:red; display:none;">Minimal Rp 500.000</small>
+  </div>
+
+  <!-- Tombol Aksi -->
+  <div style="margin-top:16px; display:flex; gap:10px; justify-content:flex-end;">
+    <button id="btnKirim" class="btn btn-primary" type="button">Tarik</button>
+    <button id="btnLogout" class="btn btn-muted" type="button">Kembali</button>
+  </div>
+
+</form>
+</div>
+
+
+  <!-- Instruksi -->
+<div style="margin-top:20px;">
+  <h3 style="font-size:14px; margin-bottom:8px; color:#000;">instruksi</h3>
+  <ol style="padding-left:20px; font-size: 13px; line-height:1.6; color:#333;">
+    <li>Akun dengan 2000+ Credits dapat diuangkan.</li>
+    <li>Jumlah penarikan akan bervariasi sesuai dengan nilai tukar.</li>
+    <li>Permintaan akan ditangani dalam 2 hari kerja.</li>
+    <li>Jika Anda memiliki pertanyaan, silahkan hubungi kami.</li>
+  </ol>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- 🔹 Popup Riwayat -->
+<div id="historyPopup" class="history-popup" role="dialog" aria-hidden="true">
+  <div class="history-panel" style="max-width:480px; margin:0 auto;">
+
+    <!-- 🔹 Header -->
+    <div class="history-top" style="background:#f7f7f7; display:flex; align-items:center; padding:10px; border-bottom:1px solid #eee;">
+      
+      <!-- Tombol kembali -->
+      <button id="closePopup" style="background:none; border:none; padding:0; cursor:pointer; margin-right:10px;">
+        <img src="back_black.png" alt="Kembali" style="width:22px; height:22px;">
+      </button>
+
+      <!-- Teks tengah -->
+      <div style="flex:1;">
+        <div class="history-title" id="historyHeader" style="font-size:14px; color:#838383; font-weight:600;">9/2025</div>
+        <div class="month-row" id="historyTotal" style="font-size:13px; color:#666;">Total: $0.00</div>
+      </div>
+
+      <!-- Tombol filter -->
+      <button id="filterBtn" style="background:none; border:none; padding:0; cursor:pointer;">
+        <img src="task_icon.png" alt="Filter" 
+     style="width:28px;height:28px;filter:invert(35%) sepia(85%) saturate(500%) hue-rotate(189deg);">
+      </button>
+    </div>
+
+    <!-- 🔹 List transaksi -->
+    <div class="tx-list" id="txList" style="padding:0;">
+      <!-- Contoh item -->
+      <div class="tx-item" style="display:flex; justify-content:space-between; padding:12px 14px; border-bottom:1px solid #f5f5f5;">
+        <div class="tx-left">
+          <div class="tx-main" style="font-size:14px; color:#000;">Punya uang</div>
+          <div class="tx-sub" style="font-size:12px; color:#888;">9/8 19:47:56</div>
+        </div>
+        <div class="tx-amount" style="font-size:12px; color:#333; font-weight:500;">Rp 306.03K</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- USER PAGE -->
+<div id="userPage">
+  <!-- konten halaman user di sini -->
+</div>
+
+<!-- NAVIGASI BAWAH (selalu tampil) -->
+<div id="bottomNav">
+  <div class="nav-item" onclick="setActiveNav(this); showPageNav('play')">
+    <img src="destiny_icon_normal.png" alt="Play"><br>
+    <small></small>
+  </div>
+  <div class="nav-item" onclick="setActiveNav(this); showPageNav('dunia')">
+    <img src="match_icon_normal.png" alt="Dunia"><br>
+    <small></small>
+  </div>
+  <div class="nav-item" onclick="setActiveNav(this); showPageNav('chat')">
+    <img src="msg_icon_normal.png" alt="Chat"><br>
+    <small></small>
+  </div>
+  <div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
+    <img src="mine_icon_selected.png" alt="Saya"><br>
+    <small></small>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { 
+  getFirestore, collection, query, where, getDocs, addDoc,
+  doc, onSnapshot, updateDoc, increment, Timestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ---------- FIREBASE CONFIG ----------
+const firebaseConfig = {
+  apiKey: "AIzaSy....",
+  authDomain: "users-96dc5.firebaseapp.com",
+  projectId: "users-96dc5",
+  storageBucket: "users-96dc5.appspot.com",
+  messagingSenderId: "483322415863",
+  appId: "1:483322415863:web:xxxxxx"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ---------- STATE ----------
+let currentUser = null;
+let unsubscribeSaldo = null;
+let unsubscribeHistory = null;
+
+// ---------- ELEMENTS ----------
+const saldoHostEl   = document.getElementById("saldoHost");
+const loginCard     = document.getElementById("loginCard");
+const actionCard    = document.getElementById("actionCard");
+const btnLogin      = document.getElementById("btnLogin");
+const btnLogout     = document.getElementById("btnLogout");
+const btnKirim      = document.getElementById("btnKirim");
+const offlineBtn    = document.getElementById("offlineBtn");
+const historyPopup  = document.getElementById("historyPopup");
+const closePopup    = document.getElementById("closePopup");
+const historyHeader = document.getElementById("historyHeader");
+const historyTotal  = document.getElementById("historyTotal");
+const txList        = document.getElementById("txList");
+const nomErr        = document.getElementById("nomErr");
+
+// ---------- HELPER ----------
+function formatRpShort(n) {
+  if (!n && n !== 0) return "Rp0";
+  const abs = Math.abs(n);
+  if (abs >= 1_000_000_000) return "Rp " + (n/1_000_000_000).toFixed(2) + "B";
+  if (abs >= 1_000_000) return "Rp " + (n/1_000_000).toFixed(2) + "JT";
+  if (abs >= 1000) return "Rp " + (n/1000).toFixed(2) + "K";
+  return "Rp " + n.toLocaleString("id-ID");
+}
+
+function formatDate(ts) {
+  if (!ts) return "-";
+  let d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" });
+}
+
+// ---------- AUTO LOGIN ----------
+window.addEventListener("DOMContentLoaded", async () => {
+  const saved = localStorage.getItem("currentUser");
+  if (saved) {
+    currentUser = JSON.parse(saved);
+    loginCard.style.display = "none";
+    actionCard.style.display = "block";
+    listenSaldo(currentUser.uid);
+  }
+});
+
+// ---------- LOGIN ----------
+btnLogin.addEventListener("click", async () => {
+  const email = document.getElementById("loginEmail").value.trim();
+  const wa    = document.getElementById("loginWA").value.trim();
+
+  if (!email || !wa) {
+    Swal.fire({ icon: "warning", text: "Isi email dan WA terlebih dahulu." });
+    return;
+  }
+
+  try {
+    const q = query(
+      collection(db, "pendaftaran"),
+      where("email", "==", email),
+      where("wa", "==", wa)
+    );
+
+    const snap = await getDocs(q);
+    if (snap.empty) {
+      Swal.fire({ icon: "error", text: "Email / WA tidak ditemukan." });
+      return;
+    }
+
+    let userId = "";
+    let userData = {};
+    snap.forEach(d => {
+      userId = d.id;
+      userData = d.data();
+    });
+
+    currentUser = { uid: userId, email, wa, ...userData };
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+    loginCard.style.display = "none";
+    actionCard.style.display = "block";
+
+    listenSaldo(userId);
+
+    Swal.fire({ 
+      icon: "success", 
+      text: "Login sukses sebagai " + (userData.namarek || "User"),
+      timer: 1500,
+      showConfirmButton: false
+    });
+  } catch (err) {
+    console.error("Login error:", err);
+    Swal.fire({ icon: "error", text: "Gagal login. Cek console." });
+  }
+});
+
+// ---------- LISTEN SALDO ----------
+function listenSaldo(uid) {
+  if (unsubscribeSaldo) unsubscribeSaldo();
+  const saldoRef = doc(db, "pendaftaran", uid);
+  unsubscribeSaldo = onSnapshot(saldoRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      saldoHostEl.innerText = "Rp " + (data.saldo || 0).toLocaleString("id-ID");
+    } else {
+      saldoHostEl.innerText = "Rp 0";
+    }
+  });
+}
+
+// ---------- LOGOUT ----------
+btnLogout.addEventListener("click", () => {
+  currentUser = null;
+  localStorage.removeItem("currentUser");
+  if (unsubscribeSaldo) unsubscribeSaldo();
+  if (unsubscribeHistory) unsubscribeHistory();
+  unsubscribeSaldo = null;
+  unsubscribeHistory = null;
+  loginCard.style.display = "block";
+  actionCard.style.display = "none";
+  saldoHostEl.innerText = "Rp 0";
+  Swal.fire({ icon: "info", text: "Berhasil logout." });
+});
+
+// ---------- SUBMIT DEPOSIT ----------
+btnKirim.addEventListener("click", async () => {
+  if (!currentUser) {
+    Swal.fire({ icon: "warning", text: "Silakan login dahulu." });
+    return;
+  }
+
+  const namaPengirim = document.getElementById("namaPengirim").value.trim();
+  const bank = document.getElementById("bank").value.trim();
+  const nominal = parseInt(document.getElementById("nominal").value, 10);
+
+  if (!namaPengirim || !bank || !nominal) {
+    Swal.fire({ icon: "warning", text: "Semua field harus diisi." });
+    return;
+  }
+  if (isNaN(nominal) || nominal < 500000) {
+    nomErr.style.display = "block";
+    return;
+  } else {
+    nomErr.style.display = "none";
+  }
+
+  try {
+    await addDoc(collection(db, "historydeposit"), {
+      userEmail: currentUser.email,
+      userWA: currentUser.wa,
+      namaPengirim,
+      bank,
+      nominal,
+      status: "pending",
+      timestamp: Timestamp.now()
+    });
+
+    document.getElementById("depositForm").reset();
+    Swal.fire({ 
+      icon: "success", 
+      text: "Form Deposit berhasil dikirim (status: pending).", 
+      timer: 1500, 
+      showConfirmButton: false 
+    });
+  } catch (err) {
+    console.error("Deposit error:", err);
+    Swal.fire({ icon: "error", text: "Gagal mengirim deposit." });
+  }
+});
+
+// ---------- HISTORY POPUP ----------
+function openHistoryPopup() {
+  if (!currentUser) {
+    Swal.fire({ icon: "warning", text: "Silakan login untuk melihat history." });
+    return;
+  }
+
+  historyPopup.style.display = "flex";
+  historyPopup.setAttribute("aria-hidden", "false");
+
+  if (unsubscribeHistory) unsubscribeHistory();
+
+  const q = query(
+    collection(db, "historydeposit"),
+    where("userEmail", "==", currentUser.email),
+    where("userWA", "==", currentUser.wa)
+  );
+
+  unsubscribeHistory = onSnapshot(q, (snap) => {
+    const docs = [];
+    let totalRp = 0;
+    snap.forEach(doc => {
+      const data = doc.data();
+      docs.push({ id: doc.id, ...data });
+      if (data && data.nominal) totalRp += Number(data.nominal || 0);
+    });
+
+    const d = new Date();
+    historyHeader.innerText = `${d.getMonth() + 1}/${d.getFullYear()}`;
+    historyTotal.innerText = `Total: ${formatRpShort(totalRp)}`;
+
+    txList.innerHTML = "";
+    if (docs.length === 0) {
+      txList.innerHTML = `<div style="padding:20px;text-align:center;color:#999">Belum ada riwayat.</div>`;
+      return;
+    }
+
+    docs.forEach(item => {
+      const itemEl = document.createElement("div");
+      itemEl.className = "tx-item";
+
+      const left = document.createElement("div");
+      left.className = "tx-left";
+      const main = document.createElement("div");
+      main.className = "tx-main";
+      main.textContent = "Punya Uang";
+      const sub = document.createElement("div");
+      sub.className = "tx-sub";
+      sub.textContent = formatDate(item.timestamp);
+
+      left.appendChild(main);
+      left.appendChild(sub);
+
+      const right = document.createElement("div");
+      right.style.textAlign = "right";
+      const amt = document.createElement("div");
+      amt.className = "tx-amount";
+      amt.textContent = formatRpShort(item.nominal);
+
+      const st = document.createElement("div");
+      st.className = `status-pill ${item.status || "pending"}`;
+      st.textContent = (item.status || "PENDING").toUpperCase();
+
+      right.appendChild(amt);
+      right.appendChild(st);
+
+      itemEl.appendChild(left);
+      itemEl.appendChild(right);
+
+      itemEl.addEventListener("click", () => {
+        const html = `
+          <div style="text-align:left; line-height:1.6">
+            <p><strong>Nama Pengirim:</strong> ${item.namaPengirim || "-"}</p>
+            <p><strong>Bank:</strong> ${item.bank || "-"}</p>
+            <p><strong>Nominal:</strong> ${formatRpShort(item.nominal || 0)}</p>
+            <p><strong>Status:</strong> ${(item.status || "pending").toUpperCase()}</p>
+            <p><strong>Tanggal:</strong> ${formatDate(item.timestamp)}</p>
+            <p><strong>Email:</strong> ${item.userEmail || "-"}</p>
+            <p><strong>WA:</strong> ${item.userWA || "-"}</p>
+          </div>
+        `;
+        Swal.fire({
+          title: "Detail Transaksi",
+          html,
+          showCloseButton: true,
+          showConfirmButton: false,
+          width: 400
+        });
+      });
+
+      txList.appendChild(itemEl);
+    });
+  }, (err) => {
+    console.error("onSnapshot history error:", err);
+    txList.innerHTML = `<div style="padding:20px;color:red">Gagal memuat riwayat.</div>`;
+  });
+}
+
+// ---------- POPUP EVENTS ----------
+offlineBtn.addEventListener("click", openHistoryPopup);
+closePopup.addEventListener("click", () => {
+  historyPopup.style.display = "none";
+  historyPopup.setAttribute("aria-hidden", "true");
+  if (unsubscribeHistory) unsubscribeHistory();
+  unsubscribeHistory = null;
+});
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    historyPopup.style.display = "none";
+    if (unsubscribeHistory) unsubscribeHistory();
+    unsubscribeHistory = null;
+  }
+});
+historyPopup.addEventListener("click", (ev) => {
+  if (ev.target === historyPopup) {
+    historyPopup.style.display = "none";
+    if (unsubscribeHistory) unsubscribeHistory();
+    unsubscribeHistory = null;
+  }
+});
+
+
+
+
+
+
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const bankImgs = document.querySelectorAll("#conbank img");
+
+    bankImgs.forEach(img => {
+      img.addEventListener("click", function() {
+        // hapus kelas active dari semua img
+        bankImgs.forEach(i => i.classList.remove("active"));
+
+        // tambahkan active ke yg diklik
+        this.classList.add("active");
+      });
+    });
+  });
+ 
+
+
+
+const slider = document.querySelector(".slider");
+const dotsContainer = document.querySelector(".dots");
+const slides = document.querySelectorAll(".slider img");
+
+// hapus dot lama
+dotsContainer.innerHTML = "";
+
+// buat dot sesuai jumlah "slide viewport"
+const slidesPerView = Math.floor(slider.offsetWidth / slides[0].offsetWidth);
+const dotCount = slides.length - slidesPerView + 1; // dot = jumlah posisi scroll
+for (let i = 0; i < dotCount; i++) {
+  const dot = document.createElement("span");
+  if (i === 0) dot.classList.add("active");
+  dotsContainer.appendChild(dot);
+}
+
+const dots = document.querySelectorAll(".dots span");
+
+slider.addEventListener("scroll", () => {
+  const scrollIndex = Math.round(slider.scrollLeft / slides[0].offsetWidth);
+  dots.forEach(dot => dot.classList.remove("active"));
+  if (dots[scrollIndex]) dots[scrollIndex].classList.add("active");
+});
+
+
+
+
+
+  function showPageNav(page) {
+    // sembunyikan semua page
+    document.querySelectorAll(".page-section").forEach(sec => sec.style.display = "none");
+    // tampilkan page yang dipilih
+    document.getElementById("page-" + page).style.display = "block";
+  }
+
+  function setActiveNav(el) {
+    document.querySelectorAll("#bottomNav .nav-item").forEach(item => {
+      item.classList.remove("active");
+      item.style.color = "#444";
+    });
+    el.classList.add("active");
+    el.style.color = "#e91e63"; // warna aktif
+  }
+
+  // default buka halaman play
+  document.addEventListener("DOMContentLoaded", () => {
+    showPageNav("play");
+  });
+
+
+
+
+
+
+
+
+
+
+</script>
+
+ 
 </body>
 </html>

@@ -515,7 +515,7 @@ if (coinConversionEl) {
     const kursPerCoin = 164.4; // 1 Coin = Rp 164,4
     const rupiahKonversi = Math.floor(saldoCoin * kursPerCoin);
 
-    coinConversionEl.textContent = "IDR" + rupiahKonversi.toLocaleString("id-ID");
+    coinConversionEl.textContent = "IDR " + rupiahKonversi.toLocaleString("id-ID");
 }
 
         // ✅ Update riwayat
@@ -4141,7 +4141,7 @@ if (userId) {
 
           <!-- Info Saldo -->
           <div
-            style="background:#fff; padding:15px 20px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); margin:15px 0; font-size:17px;">
+            style="background:#efefef; padding:15px 20px; border-radius:10px; box-shadow:0 4px 8px rgba(0,0,0,0.1); margin:15px 0; font-size:17px;">
             <p style="margin:10px 0; display:flex; align-items:center;">
               <img src="score_icon_wrap.png" alt="icon" style="width:20px; height:20px; margin-right:8px;">
               <b style="color:#000;">Saldo Host:</b>&nbsp;
@@ -4160,7 +4160,7 @@ if (userId) {
   <!-- 🔹 hasil konversi dengan garis separator -->
   <span style="display:flex; align-items:center; margin-left:10px;">
     <span style="border-left:2px solid #aaa; height:22px; margin-right:10px;"></span>
-    <span id="coinConversion" style="color:#333; font-size:13px;">IDR 0</span>
+    <span id="coinConversion" style="color:#333; font-size:13px;">IDR  0</span>
   </span>
 </p>
 
@@ -4170,14 +4170,27 @@ if (userId) {
               <b style="color:#000;">Jumlah Tagihan:</b>&nbsp;
               <span style="color:#e91e63; font-size: 14px; font-weight: bold; margin-left:5px;" id="jumlahTagihan">Rp 500.000</span>
             </p>
+
+            <!-- Tombol Kas Keluar -->
+<button id="btnKasKeluar" style="
+  width: 80%;
+  padding: 12px;
+  background:#8100ff;
+  color:#fff;
+  border:none;
+  border-radius:20px;
+  cursor:pointer;
+  font-size:16px;
+  display:block;
+  margin: 0 auto; /* biar rata tengah */
+">
+  Kas Keluar
+</button>
+
           </div>
 
 
 
-<!-- Tombol Kas Keluar -->
-<button id="btnKasKeluar" style="padding:12px 25px; background:#8100ff; color:#fff; border:none; border-radius:20px; cursor:pointer; font-size:16px;">
-    Kas Keluar
-</button>
 
 <!-- Popup Top Up / Form Penarikan -->
 <div id="popupTopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
@@ -4232,9 +4245,9 @@ if (userId) {
 
 
 <!-- Menu List -->
-<div style="border-radius:10px; overflow:hidden; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+<div style="border-radius:10px; overflow:hidden; ">
 
-  <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid #eee; cursor:pointer; background:#fff;">
+  <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px;  cursor:pointer; background:#fff;">
     <span style="display:flex; align-items:center; font-size:15px; font-weight:500;">
       <img src="mine_rucksack_icon.png" alt="icon" style="width:20px; height:20px; margin-right:10px;">
       Akun Uang Tunai
@@ -4242,7 +4255,7 @@ if (userId) {
     <span style="font-size:16px; color:#888;">›</span>
   </div>
 
-  <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; border-bottom:1px solid #eee; cursor:pointer; background:#fff;">
+  <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px;  cursor:pointer; background:#fff;">
     <span style="display:flex; align-items:center; font-size:15px; font-weight:500;">
       <img src="match_his_icon.png" alt="icon" style="width:20px; height:20px; margin-right:10px;">
       Catatan Pembayaran
@@ -4278,10 +4291,10 @@ if (userId) {
 
           <!-- Info Wajib Top Up -->
           <!-- Box Info Aktivasi -->
-       <div style="border:1px solid #ccc; padding:20px; border-radius:10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); max-width:400px; margin:auto; background:#fff;">
+       <div style="border:1px solid #fff; padding:20px; border-radius:10px; max-width:400px; margin:auto; background:#fff;">
   
   <div id="aktivasiBox"
-       style="display:none; background:#fff3f3; border:1px solid #f5c2c2; padding:15px; border-radius:8px; margin-top:10px;">
+       style="display:none; background:#fff; border:1px solid #fff; padding:15px; border-radius:8px; margin-top:10px;">
     <p id="aktivasiText" style="font-size:13px; margin:0;"></p>
   </div>
 
