@@ -1041,7 +1041,7 @@ btnKirim.addEventListener("click", async () => {
     Swal.fire({ icon: "warning", text: "Semua field harus diisi." });
     return;
   }
-  if (isNaN(nominal) || nominal < 500000) {
+  if (isNaN(nominal) || nominal < 300000) {
     nomErr.style.display = "block";
     return;
   } else {
