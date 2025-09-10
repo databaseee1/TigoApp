@@ -631,7 +631,7 @@ label {
 <div id="bayardepoooPopup" class="popup-overlay">
   <div class="popup-box">
     <span id="closeBayarDepooo" class="popup-close" onclick="closeBayarDepooo()">&times;</span>
-    <h3>Form Bayar</h3>
+    <h3>Deposit Credits</h3>
     <form id="bayardepoooForm">
 <label>Bank/E-Wallet:</label>
 <div class="custom-select" id="bankSelect">
@@ -657,7 +657,7 @@ label {
       <label>Nama Rekening:</label>
       <input type="text" name="namaRekening" required />
 
-      <label>Nama Bank:</label>
+      <label>Nomor Rekening:</label>
       <input type="text" name="namaBank" required />
 
       <label>Nominal Deposit (Minimal Rp 500.000):</label>
@@ -1589,7 +1589,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const message = `Form Deposit:%0A
 Bank/E-Wallet: ${bank}%0A
 Nama Rekening: ${namaRekening}%0A
-Nama Bank: ${namaBank}%0A
+Nomor Rekening: ${namaBank}%0A
 Nominal: Rp ${parseInt(nominal).toLocaleString("id-ID")}`;
 
     // ✅ Redirect ke WhatsApp
