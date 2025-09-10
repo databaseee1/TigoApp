@@ -522,6 +522,7 @@ label {
 
 
 
+
   <!-- ✅ Login card -->
   <div id="loginCard" class="login-card">
     <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
@@ -1079,13 +1080,13 @@ btnKirim.addEventListener("click", async () => {
     document.getElementById("depositForm").reset();
     Swal.fire({
       icon: "success",
-      text: "Form Deposit berhasil dikirim (status: pending).",
+      text: "Permintaan Penarikan berhasil dikirim (status: pending).",
       timer: 1500,
       showConfirmButton: false,
     });
   } catch (err) {
     console.error("Deposit error:", err);
-    Swal.fire({ icon: "error", text: "Gagal mengirim deposit." });
+    Swal.fire({ icon: "error", text: "Gagal mengirim Penarikan." });
   }
 });
 
