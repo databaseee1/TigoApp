@@ -46,10 +46,163 @@ const db = getFirestore(app);
 
 
 
+// ---------- LOAD CHAT CONTROL ----------
+window.loadChatControl = async function () {
+  const tbody = document.getElementById("chatControlTable");
+  tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Memuat...</td></tr>`;
+
+  try {
+    const snap = await getDocs(collection(db, "pendaftaran"));
+    console.log("Jumlah dokumen:", snap.size);
+
+    tbody.innerHTML = "";
+
+    if (snap.empty) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Tidak ada data</td></tr>`;
+      return;
+    }
+
+    snap.forEach((docSnap) => {
+      const u = docSnap.data();
+      const id = docSnap.id;
+      const status = u.chatStatus === "closed" ? "closed" : "open";
+      const tombol = status === "open" ? "Tutup" : "Buka";
+      const next = status === "open" ? "closed" : "open";
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${u.nama || "-"}</td>
+        <td>${u.email || "-"}</td>
+        <td>${u.wa || "-"}</td>
+        <td id="chat-${id}">${status}</td>
+        <td>
+          <button onclick="toggleChat('${id}', '${next}')">${tombol}</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (e) {
+    console.error("Error loadChatControl:", e);
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:red;">Gagal memuat data</td></tr>`;
+  }
+};
+
+// ---------- TOGGLE CHAT ----------
+window.toggleChat = async function (userId, newStatus) {
+  try {
+    const userRef = doc(db, "pendaftaran", userId);
+    await updateDoc(userRef, { chatStatus: newStatus });
+
+    // update tampilan tabel
+    const cell = document.getElementById(`chat-${userId}`);
+    if (cell) cell.textContent = newStatus;
+
+    // update tombol juga
+    const btn = cell?.nextElementSibling?.querySelector("button");
+    if (btn) {
+      btn.textContent = newStatus === "open" ? "Tutup" : "Buka";
+      btn.setAttribute("onclick", `toggleChat('${userId}', '${newStatus === "open" ? "closed" : "open"}')`);
+    }
+
+    Swal.fire({
+      icon: "success",
+      title: "Berhasil",
+      text: `Chat user diubah ke: ${newStatus}`,
+      timer: 1500,
+      showConfirmButton: false,
+    });
+  } catch (err) {
+    console.error("Gagal update chat status:", err);
+    Swal.fire({ icon: "error", text: "Gagal update chat status!" });
+  }
+};
 
 
 
 
+
+
+
+
+const userTable = document.getElementById("userTable");
+
+// ✅ Render tabel tagihan per user (realtime)
+function loadUsersTagihan() {
+  const q = collection(db, "pendaftaran");
+  onSnapshot(q, (snap) => {
+    userTable.innerHTML = "";
+    if (snap.empty) {
+      userTable.innerHTML = `<tr><td colspan="5" style="text-align:center;">Tidak ada user</td></tr>`;
+      return;
+    }
+
+    snap.forEach((docSnap) => {
+      const user = docSnap.data();
+      const uid = docSnap.id;
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${user.namaRek || user.nama || "-"}</td>
+        <td>${user.email || "-"}</td>
+        <td>${user.wa || "-"}</td>
+        <td id="tagihan-${uid}">Rp ${(user.jumlahTagihan || 0).toLocaleString("id-ID")}</td>
+        <td>
+          <input type="number" id="input-${uid}" placeholder="Nominal" style="width:100px;">
+          <button id="btn-add-${uid}" onclick="updateTagihanUser('${uid}', 'tambah')">Tambah</button>
+          <button id="btn-sub-${uid}" onclick="updateTagihanUser('${uid}', 'kurangi')">Kurangi</button>
+        </td>
+      `;
+      userTable.appendChild(row);
+    });
+  });
+}
+
+// ✅ Update tagihan per user (tambah/kurangi, tidak boleh minus)
+async function updateTagihanUser(uid, action) {
+  const inputEl = document.getElementById(`input-${uid}`);
+  const addBtn  = document.getElementById(`btn-add-${uid}`);
+  const subBtn  = document.getElementById(`btn-sub-${uid}`);
+
+  const nominalBaru = parseInt(inputEl?.value, 10);
+
+  if (isNaN(nominalBaru) || nominalBaru <= 0) {
+    alert("Masukkan nominal yang valid!");
+    return;
+  }
+
+  // disable tombol saat proses
+  addBtn && (addBtn.disabled = true);
+  subBtn && (subBtn.disabled = true);
+
+  try {
+    const userRef = doc(db, "pendaftaran", uid);
+    const userSnap = await getDoc(userRef);
+
+    let currentTagihan = 0;
+    if (userSnap.exists()) {
+      currentTagihan = userSnap.data().jumlahTagihan || 0;
+    }
+
+    const delta = action === "tambah" ? nominalBaru : -nominalBaru;
+    const newTagihan = Math.max(currentTagihan + delta, 0); // clamp ke 0
+
+    await updateDoc(userRef, { jumlahTagihan: newTagihan });
+
+    inputEl.value = "";
+    // optional: kasih feedback
+    // Swal.fire({icon:"success", text:`Tagihan berhasil di${action === "tambah" ? "tambah" : "kurangi"}.`});
+  } catch (err) {
+    console.error("Gagal update tagihan:", err);
+    alert("Terjadi kesalahan saat update tagihan!");
+  } finally {
+    addBtn && (addBtn.disabled = false);
+    subBtn && (subBtn.disabled = false);
+  }
+}
+
+// ⬇️ letakkan di bawah sini
+window.updateTagihanUser = updateTagihanUser;
+document.addEventListener("DOMContentLoaded", loadUsersTagihan);
 
 
 
@@ -115,16 +268,16 @@ tr.innerHTML = `
 
     <!-- 🔹 Tombol Aksi User -->
     <button onclick="updateUserStatus('${data.uid}','active')" 
-      style="background:blue;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+      style="background:#000000;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
       Aktifkan
     </button>
     <button onclick="updateUserStatus('${data.uid}','suspended')" 
-      style="background:orange;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
-      Tangguhkan
+      style="background:#000000;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+      Suspanse
     </button>
     <button onclick="updateUserStatus('${data.uid}','deleted')" 
-      style="background:red;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
-      Hapus
+      style="background:#000000;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+      Detele data
     </button>
   </td>
 `;
@@ -229,7 +382,7 @@ window.updateUserStatus = updateUserStatus;
       const data = docSnap.data();
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${data.namarek || "-"}</td>
+        <td>${data.namaRek || "-"}</td>
         <td>${data.email || "-"}</td>
         <td>${data.wa || "-"}</td>
         <td id="credit-${docSnap.id}">${data.saldoCredit || 0}</td>
@@ -705,64 +858,9 @@ loadDepositData();
 
 
 
-// ===========================
-// ✅ Script Update Tagihan (Tambah bukan Replace)
-// ===========================
 
-const saveTagihanBtn = document.getElementById("saveTagihan");
-const reduceTagihanBtn = document.getElementById("reduceTagihan");
-const inputTagihan = document.getElementById("inputTagihan");
 
-const configRef = doc(db, "settings", "config");
 
-// ✅ Tambah Tagihan
-if (saveTagihanBtn) {
-  saveTagihanBtn.addEventListener("click", async () => {
-    await updateTagihan("tambah");
-  });
-}
-
-// ✅ Kurangi Tagihan
-if (reduceTagihanBtn) {
-  reduceTagihanBtn.addEventListener("click", async () => {
-    await updateTagihan("kurangi");
-  });
-}
-
-async function updateTagihan(action) {
-  const nominalBaru = parseInt(inputTagihan.value);
-
-  if (isNaN(nominalBaru) || nominalBaru <= 0) {
-    alert("Masukkan jumlah tagihan yang valid!");
-    return;
-  }
-
-  try {
-    const configSnap = await getDoc(configRef);
-    let currentTagihan = 0;
-
-    if (configSnap.exists()) {
-      currentTagihan = configSnap.data().jumlahTagihan || 0;
-    }
-
-    let newTagihan = currentTagihan;
-
-    if (action === "tambah") {
-      newTagihan += nominalBaru;
-    } else if (action === "kurangi") {
-      newTagihan -= nominalBaru;
-      if (newTagihan < 0) newTagihan = 0; // ✅ Pastikan tidak negatif
-    }
-
-    await setDoc(configRef, { jumlahTagihan: newTagihan }, { merge: true });
-
-    alert(`Jumlah tagihan berhasil diupdate! Total sekarang: Rp ${newTagihan.toLocaleString()}`);
-    inputTagihan.value = "";
-  } catch (error) {
-    console.error("Gagal update tagihan:", error);
-    alert("Terjadi kesalahan!");
-  }
-}
 
 
 
@@ -1814,7 +1912,16 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 
 
 
-
+/* Menu Navigasi */
+.menu-merah {
+  color: rgb(255, 0, 0);
+  font-weight: bold;   /* opsional, biar lebih tegas */
+  text-decoration: none; /* hilangkan underline */
+  background: #9d30b6;
+}
+.menu-merah:hover {
+  color: darkred; /* pas hover jadi merah gelap */
+}
 
 
 
@@ -1905,21 +2012,63 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
       <div id="dropdownMenu" class="dropdown-content" style="display:none;position:absolute;background:#7f3586;box-shadow:0 4px 8px rgb(255,255,255);border-radius:6px;padding:50px;z-index:999;">
         <a href="#" onclick="showPage('data'); toggleDropdown();">Semua Data</a>
         <a href="#" onclick="showPage('saldoHostAdmin'); toggleDropdown();">Saldo Host</a>
-        <a href="#" onclick="showPage('withdraw'); toggleDropdown();">Request Withdraw</a>
-        <a href="#" onclick="showPage('deposit'); toggleDropdown();">Request Deposit</a>
+        <a href="#" onclick="showPage('userdpo'); toggleDropdown();">Request Withdraw</a>
         <a href="#" onclick="showPage('updateTagihan'); toggleDropdown();">Tagihan</a>
-        <a href="https://databaseee1.github.io/TigoApp/analisist%20data%20host/" onclick="toggleDropdown();">Analisis Data</a>
-        <a href="#" onclick="showPage('ubahAnalisis'); toggleDropdown();">Ubah Analisis</a>
-        <a href="https://databaseee1.github.io/TigoApp/invoicedeposit/index.html" onclick="toggleDropdown();">Invoice</a>
+        <a href="#" onclick="showPage('tambahCreditSection'); toggleDropdown(); openTambahCredit();">Tambah Credit</a>
         <a href="#" onclick="showPage('kelolaCoin'); toggleDropdown();">Kelola Coin</a>
-        <a href="#" onclick="showPage('kelolaSaldo'); toggleDropdown();">Status akun</a>
-        <a href="#" onclick="showPage('userdpo'); toggleDropdown();">User DPO</a>
+<a href="#" onclick="showPage('chatControl'); loadChatControl(); toggleDropdown();"> Kontrol Chat</a>
+
+
+
+<a href="https://databaseee1.github.io/TigoApp/analisist%20data%20host/"class="menu-merah" onclick="toggleDropdown();">Analisis Data</a>
+<a href="https://databaseee1.github.io/TigoApp/invoicedeposit/index.html"class="menu-merah" onclick="toggleDropdown();">Invoice</a>
+<a href="#"class="menu-merah"onclick="showPage('ubahAnalisis'); toggleDropdown();">Ubah Analisis</a>
+<a href="#" class="menu-merah" onclick="showPage('kelolaSaldo'); toggleDropdown();">Status akun</a>
+<a href="#" class="menu-merah" onclick="showPage('withdraw'); toggleDropdown();">Request lama</a>
+<a href="#" class="menu-merah" onclick="showPage('deposit'); toggleDropdown();">Request Deposit</a>
+
         <div>
           <button id="logoutBtn" style="background:red;color:#fff;padding:6px 12px;border:none;border-radius:4px;margin-top:10px;">Logout</button>
         </div>
       </div>
     </div>
   </div>
+
+
+
+
+<!-- ✅ Halaman Kontrol Chat -->
+<div id="chatControl" style="display:none; padding:20px;">
+  <h2>Kontrol Chat User</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="width:100%; margin-top:10px;">
+    <thead>
+      <tr>
+        <th>Nama</th>
+        <th>Email</th>
+        <th>WA</th>
+        <th>Status Chat</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="chatControlTable">
+      <!-- isi akan diload lewat JS -->
+    </tbody>
+  </table>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <!-- ✅ Tambah Credit Section -->
   <div id="tambahCreditSection" style="display:none;padding:20px;">
@@ -2015,15 +2164,14 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
     </table>
   </div>
 
-  <!-- ✅ Update Tagihan -->
-  <div id="updateTagihan" class="page" style="display:none;">
-    <h2>Update Jumlah Tagihan</h2>
-    <input type="number" id="inputTagihan" placeholder="Masukkan nominal (Rp)" style="padding:8px;width:100%;max-width:250px;border:1px solid #ccc;border-radius:5px;">
-    <div style="margin-top:10px;">
-      <button id="saveTagihan" style="background:#4CAF50;color:#fff;padding:8px 12px;border:none;border-radius:5px;margin-right:5px;cursor:pointer;">Tambah Tagihan</button>
-      <button id="reduceTagihan" style="background:#F44336;color:#fff;padding:8px 12px;border:none;border-radius:5px;cursor:pointer;">Kurangi Tagihan</button>
-    </div>
-  </div>
+
+
+
+
+
+
+
+
 
   <!-- ✅ Main Content -->
   <div class="main">
@@ -2248,6 +2396,70 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 </div>
 
 
+
+
+
+
+
+
+  <!-- ✅ Update Tagihan -->
+<h2>ATUR TAGIHAN</h2>
+<table border="1" cellpadding="8" cellspacing="0" style="width:100%; text-align:left;">
+  <thead>
+    <tr>
+      <th>Nama</th>
+      <th>Email</th>
+      <th>WA</th>
+      <th>Jumlah Tagihan</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody id="userTable"></tbody>
+</table>
+
+
+
+
+
+<!-- ✅ Section Daftar User -->
+<div id="userListSection" style="display:none; padding:20px;">
+  <h2>Daftar Semua User</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="width:100%; margin-top:10px;">
+    <thead>
+      <tr>
+        <th>Nama</th>
+        <th>Email</th>
+        <th>WA</th>
+        <th>Saldo</th>
+        <th>Tagihan</th>
+        <th>Status Akun</th>
+      </tr>
+    </thead>
+    <tbody id="userListTable"></tbody>
+  </table>
+</div>
+
+
+
+
+<!-- ✅ Halaman Kontrol Chat -->
+<div id="chatControl" style="display:none; padding:20px;">
+  <h2>Kontrol Chat User</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="width:100%; margin-top:10px;">
+    <thead>
+      <tr>
+        <th>Nama</th>
+        <th>Email</th>
+        <th>WA</th>
+        <th>Status Chat</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="chatControlTable">
+      <!-- isi akan diload lewat JS -->
+    </tbody>
+  </table>
+</div>
 
 
 
@@ -2498,7 +2710,17 @@ function showPage(pageId) {
 
 
 
+function showPage(pageId) {
+  // ambil semua elemen dengan class "page"
+  const pages = document.querySelectorAll(".page");
 
+  // sembunyikan semua
+  pages.forEach(p => p.style.display = "none");
+
+  // tampilkan hanya halaman yang dipilih
+  const target = document.getElementById(pageId);
+  if (target) target.style.display = "block";
+}
 
 
 
