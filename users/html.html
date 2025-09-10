@@ -36,7 +36,7 @@
 
 
 
- 
+
 
 
 
@@ -385,27 +385,43 @@ function loadDepositHistoryData(userId) {
     });
   });
 }
-    // =============================
-    // ✅ Realtime Update Jumlah Tagihan
-    // =============================
-    const jumlahTagihanEl = document.getElementById("jumlahTagihan");
-
-    if (jumlahTagihanEl) {
-      onSnapshot(doc(db, "settings", "config"), (docSnap) => {
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          const jumlah = data.jumlahTagihan || 0;
-          jumlahTagihanEl.textContent = "Rp " + jumlah.toLocaleString();
-        } else {
-          jumlahTagihanEl.textContent = "Rp 0";
-        }
-      });
-    }
 
 
 
 let previousStatus = null; // Simpan status sebelumnya
 let currentUserId = null;  // Simpan userId setelah login
+let unsubscribeTagihan = null; // 🔹 tambahkan ini
+
+
+
+  const jumlahTagihanEl = document.getElementById("jumlahTagihan");
+  if (jumlahTagihanEl) jumlahTagihanEl.textContent = "Rp 0";
+
+
+
+function listenTagihan(uid) {
+  if (unsubscribeTagihan) unsubscribeTagihan();
+
+  const userRef = doc(db, "pendaftaran", uid);
+  unsubscribeTagihan = onSnapshot(userRef, (docSnap) => {
+    let jumlah = 0;
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      jumlah = data.jumlahTagihan || 0;
+    }
+
+    // update ke semua elemen yang punya id jumlahTagihan atau jumlahTagihanPage
+    const els = document.querySelectorAll("#jumlahTagihan, #jumlahTagihanPage");
+    els.forEach(el => {
+      el.textContent = "Rp " + jumlah.toLocaleString("id-ID");
+    });
+  });
+}
+
+
+
+
+
 
 // ===== LOGIN USER =====
 window.loginUser = async function () {
@@ -437,14 +453,22 @@ window.loginUser = async function () {
             if (userPage) userPage.style.display = "block";
 
 
+      localStorage.setItem("currentUserId", currentUserId);
+
+
+
             
 
             // ✅ Mulai realtime update
             loadUserData(currentUserId);
+            listenTagihan(currentUserId);   // <<< tambahkan ini
+
 
             // ✅ Load riwayat deposit khusus user
             loadDepositHistoryData(currentUserId);
             
+
+
 
         } else {
             if (statusEl) statusEl.innerText = "Host tidak Terdaftar!";
@@ -4286,12 +4310,12 @@ if (userId) {
   </span>
 </p>
 
-            <p style="margin:10px 0; display:flex; align-items:center;">
-              <img src="certification_award_icon_0_female.png" alt="icon"
-                style="width:30px; height:30px; margin-right:8px;">
-              <b style="color:#000;">Jumlah Tagihan:</b>&nbsp;
-              <span style="color:#e91e63; font-size: 14px; font-weight: bold; margin-left:5px;" id="jumlahTagihan">Rp 500.000</span>
-            </p>
+<p style="margin:10px 0; display:flex; align-items:center;">
+  <img src="certification_award_icon_0_female.png" alt="icon"
+    style="width:30px; height:30px; margin-right:8px;">
+  <b style="color:#000;">Jumlah Tagihan:</b>&nbsp;
+  <span style="color:#e91e63; font-size: 14px; font-weight: bold; margin-left:5px;" id="jumlahTagihanPage">Rp 0</span>
+</p>
 
 <button id="btnKasKeluar" style="
   width: 80%;

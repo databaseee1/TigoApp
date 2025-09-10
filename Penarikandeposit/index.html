@@ -419,10 +419,38 @@ label {
 
 
 
+.swal-btn {
+  border-radius: 20px !important;
+  padding: 8px 20px !important;
+  font-weight: bold;
+}
 
 
 
+.saldo-box,
+.tagihan-box {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px 15px;
+  margin: 10px 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
 
+.saldo-box img,
+.tagihan-box img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.tagihan-box span {
+  color: #e91e63;
+  font-size: 14px;
+  font-weight: bold;
+  margin-left: 5px;
+}
 
 
 
@@ -448,13 +476,27 @@ label {
     </div>
   </header>
 
-  <!-- ✅ Box saldo host -->
-  <div class="saldo-box">
-    <img src="score_icon_wrap.png" alt="icon" />
-    <b>Saldo Host:</b>
-    <span id="saldoHost">Rp 0</span>
-  </div>
+
+
+
+
+<!-- ✅ Box saldo host -->
+<div class="saldo-box">
+  <img src="score_icon_wrap.png" alt="icon" />
+  <b>Saldo Host:</b>
+  <span id="saldoHost">Rp 0</span>
 </div>
+
+<!-- ✅ Box jumlah tagihan -->
+<div class="tagihan-box">
+  <img src="certification_award_icon_0_female.png" alt="icon" />
+  <b>Jumlah Tagihan:</b>
+  <span id="jumlahTagihan">Rp 0</span>
+</div>
+
+
+
+
 
       
 <div class="slider-container">
@@ -480,7 +522,6 @@ label {
 
 
 
-
   <!-- ✅ Login card -->
   <div id="loginCard" class="login-card">
     <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
@@ -496,7 +537,7 @@ label {
     <label>Email</label>
     <input id="loginEmail" type="text" placeholder="email@example.com" style="font-size:10px;" />
     <label style="margin-top:8px">Password</label>
-    <input id="loginWA" type="text" placeholder="xxxx(tanpa +)" style="font-size:10px;" />
+    <input id="loginWA" type="text" placeholder="xxxx(ops!)" style="font-size:10px;" />
     <div style="margin-top:10px;display:flex;gap:8px">
       <button id="btnLogin" class="btn btn-primary">Masuk</button>
       <button id="btnClear" class="btn btn-muted">Reset</button>
@@ -694,6 +735,8 @@ let currentUser = null;
 let unsubscribeSaldo = null;
 let unsubscribeHistory = null;
 let unsubscribeStatus = null;
+let unsubscribeTagihan = null; // 🔹 tambahkan ini
+
 
 // ---------- ELEMENTS ----------
 const saldoHostEl   = document.getElementById("saldoHost");
@@ -726,7 +769,7 @@ function formatDate(ts) {
   return d.toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" });
 }
 
-// ---------- AUTO LOGIN ----------
+
 
 
 window.addEventListener("DOMContentLoaded", async () => {
@@ -739,18 +782,24 @@ window.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+
+
+
+
+
+
 // ---------- LOGIN ----------
 btnLogin.addEventListener("click", async () => {
   const email = document.getElementById("loginEmail").value.trim();
   const wa = document.getElementById("loginWA").value.trim();
 
   if (!email || !wa) {
-    Swal.fire({ icon: "warning", text: "Isi email dan WA terlebih dahulu." });
+    Swal.fire({ icon: "warning", text: "Masukan Akun Host Terlebih dahulu." });
     return;
   }
 
   try {
-    // 🔹 Cari user di koleksi pendaftaran
+    // cari user
     const q = query(
       collection(db, "pendaftaran"),
       where("email", "==", email),
@@ -759,7 +808,7 @@ btnLogin.addEventListener("click", async () => {
 
     const snap = await getDocs(q);
     if (snap.empty) {
-      Swal.fire({ icon: "error", text: "Email / WA tidak ditemukan." });
+      Swal.fire({ icon: "error", text: "Email Atau Password salah!" });
       return;
     }
 
@@ -770,7 +819,32 @@ btnLogin.addEventListener("click", async () => {
       userData = d.data();
     });
 
+    // set current user
+    currentUser = { uid: userId, email, wa, ...userData };
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
+    // tampilkan dashboard
+    loginCard.style.display = "none";
+    actionCard.style.display = "block";
+
+    // jalankan listener
+    listenSaldo(userId);
+    listenUserStatus(userId);
+    listenTagihan(userId);
+
+    // sukses
+    Swal.fire({
+      icon: "success",
+      text: "Login sukses sebagai " + (userData.namarek || "Host"),
+      timer: 1500,
+      showConfirmButton: false,
+    });
+
+  } catch (err) {
+    console.error("Login error:", err);
+    Swal.fire({ icon: "error", text: "Terjadi error saat login, cek console." });
+  }
+});
 
 
 
@@ -832,6 +906,8 @@ if (status === "suspended") {
         imageWidth: 80,
         imageHeight: 80,
         confirmButtonText: "OK"
+        
+        
       });
     }
   });
@@ -841,26 +917,29 @@ if (status === "suspended") {
 
 
 
-    currentUser = { uid: userId, email, wa, ...userData };
-    localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
-    loginCard.style.display = "none";
-    actionCard.style.display = "block";
 
-    listenSaldo(userId);
-    listenUserStatus(userId); // 🔹 Tambahan untuk cek status realtime
 
-    Swal.fire({
-      icon: "success",
-      text: "Login sukses sebagai " + (userData.namarek || "Host"),
-      timer: 1500,
-      showConfirmButton: false,
-    });
-  } catch (err) {
-    console.error("Login error:", err);
-    Swal.fire({ icon: "error", text: "Gagal login. Sebagai Host." });
-  }
-});
+function listenTagihan(uid) {
+  const jumlahTagihanEl = document.getElementById("jumlahTagihan");
+  if (!jumlahTagihanEl) return;
+
+  // hentikan listener lama
+  if (unsubscribeTagihan) unsubscribeTagihan();
+
+  const userRef = doc(db, "pendaftaran", uid);
+  unsubscribeTagihan = onSnapshot(userRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const jumlah = data.jumlahTagihan || 0;
+      jumlahTagihanEl.textContent = "Rp " + jumlah.toLocaleString("id-ID");
+    } else {
+      jumlahTagihanEl.textContent = "Rp 0";
+    }
+  });
+}
+
+
 
 // ---------- LISTEN SALDO ----------
 function listenSaldo(uid) {
@@ -880,32 +959,6 @@ function listenSaldo(uid) {
 
 
 
-// ---------- LISTEN STATUS AKUN ----------
-function listenUserStatus(uid) {
-  if (unsubscribeStatus) unsubscribeStatus(); // hentikan listener lama
-
-  const userRef = doc(db, "pendaftaran", uid);
-  unsubscribeStatus = onSnapshot(userRef, (docSnap) => {
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-
-      if (data.statusAkun === "suspended") {
-        forceLogout("Akun anda telah di Tangguhkan oleh pihak aplikasi");
-      } else if (data.statusAkun === "deleted") {
-        forceLogout("Akun anda telah di Hapus oleh pihak aplikasi");
-      } else if (data.statusAkun === "active") {
-        Swal.fire({
-          title: "Akun Aktif",
-          text: "Akun anda telah diaktifkan kembali oleh pihak aplikasi",
-          imageUrl: "avatar_notice_right_icon.png",
-          imageWidth: 80,
-          imageHeight: 80,
-          confirmButtonText: "OK"
-        });
-      }
-    }
-  });
-}
 
 // ---------- LOGOUT PAKSA ----------
 // ---------- LOGOUT PAKSA ----------
@@ -916,26 +969,35 @@ function forceLogout(pesanHTML, icon = "offline.png", title = "Pemberitahuan") {
   if (unsubscribeSaldo) unsubscribeSaldo();
   if (unsubscribeHistory) unsubscribeHistory();
   if (unsubscribeStatus) unsubscribeStatus();
+  if (unsubscribeTagihan) unsubscribeTagihan(); // 🔹 tambahkan ini
+
 
   unsubscribeSaldo = null;
   unsubscribeHistory = null;
   unsubscribeStatus = null;
+  unsubscribeTagihan = null; // 🔹 reset juga
+
 
   loginCard.style.display = "block";
   actionCard.style.display = "none";
   saldoHostEl.innerText = "Rp 0";
+  const jumlahTagihanEl = document.getElementById("jumlahTagihan");
+  if (jumlahTagihanEl) jumlahTagihanEl.textContent = "Rp 0";
 
   Swal.fire({
     title: title,
-    html: pesanHTML, // ✅ gunakan html bukan text
+    html: pesanHTML,
     imageUrl: icon,
     imageWidth: 80,
     imageHeight: 80,
-    confirmButtonText: "OK"
+    confirmButtonText: "OK",
+    width: 400,
+    customClass: {
+      popup: "swal-rounded",
+      confirmButton: "swal-btn"
+    }
   });
 }
-
-
 
 
 
@@ -1034,7 +1096,7 @@ btnKirim.addEventListener("click", async () => {
 // ---------- HISTORY POPUP ----------
 function openHistoryPopup() {
   if (!currentUser) {
-    Swal.fire({ icon: "warning", text: "Silakan login untuk melihat history." });
+    Swal.fire({ icon: "warning", text: "Silakan login host untuk melihat history." });
     return;
   }
 
