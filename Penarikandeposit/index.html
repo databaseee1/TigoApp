@@ -21,7 +21,13 @@
   color: var(--text);
 }
 
-
+  .nav-item.active {
+    color:#000; /* teks hitam */
+    font-weight:bold;
+  }
+  .nav-item.active img {
+    filter: brightness(0); /* bikin ikon jadi hitam */
+  }
 
 /* Pastikan Swal selalu di paling depan */
 .swal2-container {
@@ -34,7 +40,7 @@
 .sticky-header {
   position: sticky;   /* kalau cuma mau ikut scroll */
   top: 0;
-  z-index: 1000;
+  z-index: 999;
   background: #fff;
   display: flex;
   justify-content: space-between;
@@ -105,7 +111,7 @@ header h1 {
 /* Cards */
 .login-card,
 .action-card {
-  background: #efefef;
+  background: #fff;
   border-radius: 12px;
   padding: 14px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
@@ -440,8 +446,8 @@ label {
 
 .saldo-box img,
 .tagihan-box img {
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
   margin-right: 10px;
 }
 
@@ -451,6 +457,114 @@ label {
   font-weight: bold;
   margin-left: 5px;
 }
+
+.saldo-left {
+  display: flex;
+  align-items: center;
+  gap: 6px; /* jarak antar elemen kiri */
+}
+
+.saldo-left img {
+  width: 20px;
+  height: 20px;
+}
+
+.offlee-icon {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+ .offlee-icon { width:24px; height:24px; cursor:pointer; margin-left:8px; }
+  .popup-overlay { 
+    display:none; 
+    position:fixed; z-index:999; left:0; top:0; 
+    width:100%; height:100%; 
+    background:rgba(0,0,0,0.6); 
+    justify-content:center; align-items:center; 
+  }
+  .popup-box {
+    background:#fff; padding:20px; border-radius:12px; width:320px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.3); position:relative; text-align:left;
+  }
+  .popup-close {
+    position:absolute; right:10px; top:5px;
+    font-size:22px; cursor:pointer; color:#555;
+  }
+  .popup-box h3 { margin-top:0; text-align:center; }
+  .popup-box label { display:block; margin:8px 0 4px; font-weight:bold; }
+  .popup-box input, .popup-box select {
+    width:100%; padding:8px; border:1px solid #ccc; border-radius:6px;
+  }
+  .popup-box button {
+    margin-top:15px; width:100%; padding:10px;
+    background:var(--accent); color:#fff; border:none; border-radius:8px;
+    font-size:16px; cursor:pointer;
+  }
+  .popup-box button:hover { background:#4c089f; }
+
+.custom-select {
+  position: relative;
+  width: 100%;
+  font-size: 14px;
+}
+
+
+.custom-select img {
+  width: 20px;      /* lebar logo */
+  height: 20px;     /* tinggi logo */
+  object-fit: contain; /* biar proporsional */
+  vertical-align: middle; /* sejajar sama teks */
+  margin-right: 6px; /* jarak dengan tulisan */
+}
+
+.select-selected {
+  background: #fff;
+  padding: 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.select-items {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+  z-index: 99;
+  margin-top: 2px;
+}
+
+.select-items div {
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.select-items div:hover {
+  background: #f1f1f1;
+}
+
+.select-items img {
+  width: 18px;
+  height: 18px;
+}
+
+.select-hide {
+  display: none;
+}
+
 
 
 
@@ -480,12 +594,16 @@ label {
 
 
 
-<!-- ✅ Box saldo host -->
 <div class="saldo-box">
-  <img src="score_icon_wrap.png" alt="icon" />
-  <b>Saldo Host:</b>
-  <span id="saldoHost">Rp 0</span>
+  <div class="saldo-left">
+    <img src="score_icon_wrap.png" alt="icon" />
+    <b>Saldo Host:</b>
+    <span id="saldoHost">Rp 0</span>
+  </div>
+
+<img src="add_tokens_icon.png" alt="offlee" id="btnBayarDepooo" class="offlee-icon" />
 </div>
+
 
 <!-- ✅ Box jumlah tagihan -->
 <div class="tagihan-box">
@@ -493,6 +611,63 @@ label {
   <b>Jumlah Tagihan:</b>
   <span id="jumlahTagihan">Rp 0</span>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ✅ Popup Bayar Depooo -->
+<div id="bayardepoooPopup" class="popup-overlay">
+  <div class="popup-box">
+    <span id="closeBayarDepooo" class="popup-close" onclick="closeBayarDepooo()">&times;</span>
+    <h3>Form Bayar</h3>
+    <form id="bayardepoooForm">
+<label>Bank/E-Wallet:</label>
+<div class="custom-select" id="bankSelect">
+  <div class="select-selected">-- Pilih Bank/E-Wallet --</div>
+  <div class="select-items select-hide">
+    <div data-value="BRI"><img src="bri.png"> BRI</div>
+    <div data-value="DANA"><img src="dana.png"> DANA</div>
+    <div data-value="LINKAJA"><img src="link-aja-logo.png"> LINKAJA</div>
+    <div data-value="OVO"><img src="ovo.png"> OVO</div>
+    <div data-value="MANDIRI"><img src="mandiri.png"> MANDIRI</div>
+    <div data-value="BCA"><img src="bca.png"> BCA</div>
+    <div data-value="SHOPEEPAY"><img src="ShopeePay.png"> SHOPEEPAY</div>
+    <div data-value="BANK DKI"><img src="bankjakarta.svg"> BANK DKI</div>
+    <div data-value="BANK JAGO"><img src="bankjago.png"> BANK JAGO</div>
+    <div data-value="QRIS"><img src="qris.jpg"> QRIS</div>
+  </div>
+</div>
+
+<!-- hidden input untuk ambil value di JS -->
+<input type="hidden" name="bank" id="bankInput" required>
+
+
+      <label>Nama Rekening:</label>
+      <input type="text" name="namaRekening" required />
+
+      <label>Nama Bank:</label>
+      <input type="text" name="namaBank" required />
+
+      <label>Nominal Deposit (Minimal Rp 500.000):</label>
+      <input type="number" name="nominal" min="500000" required />
+
+      <button type="button" id="btnKirimBayar">Bayar Sekarang</button>
+    </form>
+  </div>
+</div>
+
 
 
 
@@ -666,25 +841,24 @@ label {
 
 
 
-<!-- USER PAGE -->
-<div id="userPage">
-  <!-- konten halaman user di sini -->
-</div>
-
 <!-- NAVIGASI BAWAH (selalu tampil) -->
 <div id="bottomNav">
-  <div class="nav-item" onclick="setActiveNav(this); showPageNav('play')">
+  <!-- Play (dibekukan) -->
+  <div class="nav-item" id="playFrozen">
     <img src="destiny_icon_normal.png" alt="Play"><br>
     <small></small>
   </div>
-  <div class="nav-item" onclick="setActiveNav(this); showPageNav('dunia')">
+  <!-- Dunia (dibekukan) -->
+  <div class="nav-item" id="duniaFrozen">
     <img src="match_icon_normal.png" alt="Dunia"><br>
     <small></small>
   </div>
-  <div class="nav-item" onclick="setActiveNav(this); showPageNav('chat')">
+  <!-- Chat (dibekukan) -->
+  <div class="nav-item" id="chatFrozen">
     <img src="msg_icon_normal.png" alt="Chat"><br>
     <small></small>
   </div>
+  <!-- Saya (fungsi lama jangan diubah) -->
   <div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
     <img src="mine_icon_selected.png" alt="Saya"><br>
     <small></small>
@@ -692,11 +866,20 @@ label {
 </div>
 
 
-
-
-
-
-
+<!-- POPUP CUSTOM -->
+<div id="frozenPopup" style="display:none;
+     position:fixed;top:0;left:0;width:100%;height:100%;
+     background:rgb(255, 255, 255);z-index:999;
+     justify-content:center;align-items:center;">
+  <div style="background:#fff;padding:20px;border-radius:12px;
+              max-width:300px;text-align:center;position:relative;
+              box-shadow:0 4px 10px rgba(0,0,0,0.3);">
+    <span id="closePopupplik" 
+          style="position:absolute;right:10px;top:5px;font-size:20px;cursor:pointer;">&times;</span>
+    <img src="cert_failed_similar_user.png" alt="Offline" style="width:80px;margin-bottom:15px;">
+    <p style="margin:0;">Halaman sedang dibekukan sementara!<br>Mohon hubungi layanan.</p>
+  </div>
+</div>
 
 
 
@@ -1038,7 +1221,7 @@ btnKirim.addEventListener("click", async () => {
   const nominal = parseInt(document.getElementById("nominal").value, 10);
 
   if (!namaPengirim || !bank || !nominal) {
-    Swal.fire({ icon: "warning", text: "Semua field harus diisi." });
+    Swal.fire({ icon: "warning", text: "Semua Form harus diisi." });
     return;
   }
   if (isNaN(nominal) || nominal < 300000) {
@@ -1311,12 +1494,144 @@ slider.addEventListener("scroll", () => {
 
 
 
+const frozenPopup = document.getElementById("frozenPopup");
+const navItems = document.querySelectorAll(".nav-item");
+
+// fungsi set nav aktif
+function setNavActive(el) {
+  navItems.forEach(item => item.classList.remove("active"));
+  el.classList.add("active");
+}
+
+// tombol dibekukan
+["playFrozen", "duniaFrozen", "chatFrozen"].forEach(id => {
+  document.getElementById(id).onclick = (e) => {
+    setNavActive(e.currentTarget); // bikin aktif
+    frozenPopup.style.display = "flex"; // munculin popup
+  };
+});
+
+// tombol close popup
+closePopup.onclick = () => frozenPopup.style.display = "none";
+frozenPopup.onclick = (e) => {
+  if (e.target === frozenPopup) frozenPopup.style.display = "none";
+};
+
+
+
+
+  // tutup popup via id yg kamu kasih
+  document.getElementById("closePopupplik").onclick = function() {
+    document.getElementById("frozenPopup").style.display = "none";
+  };
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const btnOpen = document.getElementById("btnBayarDepooo");
+  const popup = document.getElementById("bayardepoooPopup");
+  const btnClose = document.getElementById("closeBayarDepooo");
+  const btnKirim = document.getElementById("btnKirimBayar");
+  const form = document.getElementById("bayardepoooForm");
+
+  // ✅ Buka popup
+  btnOpen.addEventListener("click", () => {
+    popup.style.display = "flex";
+  });
+
+  // ✅ Tutup popup
+  btnClose.addEventListener("click", () => {
+    popup.style.display = "none";
+  });
+
+  // ✅ Klik Bayar Sekarang
+  btnKirim.addEventListener("click", () => {
+    const bank = form.bank.value;
+    const namaRekening = form.namaRekening.value;
+    const namaBank = form.namaBank.value;
+    const nominal = form.nominal.value;
+
+    if (!bank || !namaRekening || !namaBank || !nominal) {
+      alert("Harap isi semua Form!");
+      return;
+    }
+    if (nominal < 500000) {
+      alert("Minimal deposit Rp 500.000");
+      return;
+    }
+
+    const waNumber = "6283166927107"; // ✅ Nomor CS
+    const message = `Form Deposit:%0A
+Bank/E-Wallet: ${bank}%0A
+Nama Rekening: ${namaRekening}%0A
+Nama Bank: ${namaBank}%0A
+Nominal: Rp ${parseInt(nominal).toLocaleString("id-ID")}`;
+
+    // ✅ Redirect ke WhatsApp
+    window.open(`https://wa.me/${waNumber}?text=${message}`, "_blank");
+
+    // ✅ Tutup popup + reset form
+    popup.style.display = "none";
+    form.reset();
+  });
+});
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const select = document.getElementById("bankSelect");
+  const selected = select.querySelector(".select-selected");
+  const items = select.querySelector(".select-items");
+  const bankInput = document.getElementById("bankInput");
+
+  selected.addEventListener("click", () => {
+    items.classList.toggle("select-hide");
+  });
+
+  items.querySelectorAll("div").forEach(option => {
+    option.addEventListener("click", () => {
+      selected.innerHTML = option.innerHTML;
+      bankInput.value = option.getAttribute("data-value");
+      items.classList.add("select-hide");
+    });
+  });
+
+  // Klik di luar dropdown untuk menutup
+  document.addEventListener("click", (e) => {
+    if (!select.contains(e.target)) {
+      items.classList.add("select-hide");
+    }
+  });
+});
 </script>
 
  
