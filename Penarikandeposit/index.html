@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Topup & History (Simulasi)</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
@@ -14,6 +14,21 @@
       --text:#222;
       --soft:#f7f7f7;
     }
+
+
+    body {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    img {
+      pointer-events: none; /* gambar tidak bisa drag */
+    }
+
+
+
     body {
   font-family: Inter, "Segoe UI", Roboto, sans-serif;
   margin: 0;
@@ -1173,39 +1188,35 @@ label {
 
 <!-- NAVIGASI BAWAH (selalu tampil) -->
 <div id="bottomNav">
-<!-- Play -->
-<div class="nav-item" onclick="setActiveNav(this); openPlayPopup()">
-  <img src="destiny_icon_normal.png" alt="Play"><br>
-  <small></small>
-</div>
+  <!-- Play -->
+  <div class="nav-item" onclick="setActiveNav(this); openPlayPopup()">
+    <img src="destiny_icon_normal.png" alt="Play"><br>
+    <small></small>
+  </div>
 
-<!-- Dunia -->
-<!-- Dunia -->
-<div class="nav-item" onclick="setActiveNav(this); openDuniaPopup()">
-  <img src="match_icon_normal.png" alt="Dunia"><br>
-  <small></small>
-</div>
+  <!-- Dunia -->
+  <div class="nav-item" onclick="setActiveNav(this); openDuniaPopup()">
+    <img src="match_icon_normal.png" alt="Dunia"><br>
+    <small></small>
+  </div>
 
-<!-- Chat -->
-<!-- Sanpesan -->
-<div class="nav-item" onclick="setActiveNav(this); openSanpesanPopup()">
-  <img src="msg_icon_normal.png" alt="Sanpesan"><br>
-  <small></small>
-</div>
+  <!-- Chat -->
+  <div class="nav-item" onclick="setActiveNav(this); openSanpesanPopup()">
+    <img src="msg_icon_normal.png" alt="Sanpesan"><br>
+    <small></small>
+  </div>
 
-
-<!-- Saya -->
-<div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
-  <img src="mine_icon_normal.png" alt="Saya"><br>
-  <small></small>
+  <!-- Saya -->
+  <div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
+    <img src="mine_icon_normal.png" alt="Saya"><br>
+    <small></small>
+  </div>
 </div>
-</div>
-
 
 <!-- POPUP CUSTOM -->
 <div id="frozenPopup" style="display:none;
      position:fixed;top:0;left:0;width:100%;height:100%;
-     background:rgb(255, 255, 255);z-index:999;
+     background:#fff;z-index:999;
      justify-content:center;align-items:center;">
   <div style="background:#fff;padding:20px;border-radius:12px;
               max-width:300px;text-align:center;position:relative;
@@ -1216,16 +1227,6 @@ label {
     <p style="margin:0;">Halaman sedang dibekukan sementara!<br>Mohon hubungi layanan.</p>
   </div>
 </div>
-
-
-
-
-
-
-
-
-
-
 
 <!-- POPUP DUNIA -->
 <div id="duniaPopup" class="popup-overlay" style="
@@ -1238,19 +1239,18 @@ label {
     background:rgba(0,0,0,0.5); 
     justify-content:center; 
     align-items:center;
-    z-index:999;
-">
- <div class="popup-box" style="
-    background:#ffffff; 
-    border-radius:12px; 
-    padding:20px; 
-    width:100%; height:100%; 
-    max-width:none; 
-    display:flex; 
-    flex-direction:column; 
-    position:relative;
-    align-items:center;
-    justify-content:center;
+    z-index:999;">
+  <div class="popup-box" style="
+      background:#ffffff; 
+      border-radius:12px; 
+      padding:20px; 
+      width:100%; height:100%; 
+      max-width:none; 
+      display:flex; 
+      flex-direction:column; 
+      position:relative;
+      align-items:center;
+      justify-content:center;
   ">
 
     <!-- HEADER SALDO -->
@@ -1258,47 +1258,50 @@ label {
       position:absolute; 
       top:40px; 
       left:20px; right:20px;
-      background:#ffffff;              /* ganti jadi gelap biar kontras */
+      background:#ffffff;
       padding:6px 12px; 
       border-radius:12px; 
       font-weight:bold; 
       display:flex;
       align-items:center;
       justify-content:space-between;
-      color:#890086;
-    ">
+      color:#890086;">
       <div style="display:flex; align-items:center;">
         <img src="score_icon_wrap.png" alt="icon" 
              style="width:20px; height:20px; margin-right:6px;">
         <span id="saldoHostPopup3" class="saldo-text">Rp 0</span>
       </div>
-      <img src="match_his_icon.png" alt="hispanggilll" style="width:22px; cursor:pointer;">
-
-<div id="hispanggilll" style="
-  display:none; 
-  position:fixed; 
-  top:0; 
-  left:0; 
-  width:100%; 
-  height:100%; 
-  background:rgb(255, 255, 255); 
-  justify-content:center; 
-  align-items:center;
-  z-index:1000;
-">
-  <div style="background:#fff; border-radius:12px; padding:20px; max-width:400px; width:90%; text-align:center; position:relative;">
-    <span class="closePanggilan" style="position:absolute; top:-300px; right:15px; font-size:20px; color: #686868; cursor:pointer;">✖</span>
-    <img src="page_empty_icon.png" style="max: width 60px; height:60px;">
-    <p style="margin-top:10px; color: #212121; font-weight:bold;">Tidak ada history panggilan</p>
-  </div>
-</div>
-
-
-
-
-
-      
+      <!-- Icon history -->
+      <img id="openHistoryBtn" src="match_his_icon.png" alt="hispanggilll" style="width:22px; cursor:pointer;">
     </div>
+
+    <!-- POPUP HISTORY -->
+    <div id="hispanggilll" style="
+      display:none; 
+      position:fixed; 
+      top:0; 
+      left:0; 
+      width:100%; 
+      height:100%; 
+      background:#fff; 
+      justify-content:center; 
+      align-items:center;
+      z-index:1000;">
+      <div style="background:#fff; border-radius:12px; padding:20px; max-width:400px; width:90%; text-align:center; position:relative;">
+        <span class="closePanggilan" style="position:absolute; top:10px; right:15px; font-size:20px; color:#686868; cursor:pointer;">✖</span>
+        <img src="page_empty_icon.png" style="max-width:60px; height:60px;">
+        <p style="margin-top:10px; color:#212121; font-weight:bold;">Tidak ada history panggilan</p>
+      </div>
+
+
+
+
+
+
+    </div>
+
+
+
       
 <!-- Scroll Foto Profil Otomatis -->
 <!-- Scroll Foto Profil Otomatis -->
@@ -2480,6 +2483,51 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+
+
+
+
+
+ // 🔒 Disable klik kanan
+    document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+    // 🔒 Disable shortcut copy (CTRL+C, CTRL+X, CTRL+U, dll)
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey && ["c", "x", "u", "s", "a"].includes(e.key.toLowerCase())) || e.key === "PrintScreen") {
+        e.preventDefault();
+        return false;
+      }
+    });
+
+    // 🔒 Force viewport tetap (anti zoom pakai pinch)
+    document.addEventListener("gesturestart", function (e) {
+      e.preventDefault();
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
