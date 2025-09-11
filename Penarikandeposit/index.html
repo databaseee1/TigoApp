@@ -2746,24 +2746,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
- // 🔒 Disable klik kanan
-
-    // 🔒 Disable shortcut copy (CTRL+C, CTRL+X, CTRL+U, dll)
-    document.addEventListener("keydown", (e) => {
-      if ((e.ctrlKey && ["c", "x", "u", "s", "a"].includes(e.key.toLowerCase())) || e.key === "PrintScreen") {
-        e.preventDefault();
-        return false;
-      }
-    });
-
-    // 🔒 Force viewport tetap (anti zoom pakai pinch)
-    document.addEventListener("gesturestart", function (e) {
-      e.preventDefault();
-    });
-
-
-
-
 
     const btnKasKeluar = document.getElementById("btnKasKeluar");
     const formPenarikan = document.getElementById("formPenarikan");
@@ -2819,6 +2801,53 @@ document.getElementById("infoTagihan").addEventListener("click", () => {
     width: 400
   });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+// 🔒 Disable klik kanan
+document.addEventListener("contextmenu", (e) => {
+  e.preventDefault();
+  return false;
+});
+
+// 🔒 Disable shortcut copy & developer tools
+document.addEventListener("keydown", (e) => {
+  // Cek kombinasi CTRL + (C, X, U, S, A)
+  if (e.ctrlKey && ["c", "x", "u", "s", "a"].includes(e.key.toLowerCase())) {
+    e.preventDefault();
+    return false;
+  }
+
+  // 🔒 Blokir F12
+  if (e.key === "F12") {
+    e.preventDefault();
+    return false;
+  }
+
+  // 🔒 Blokir CTRL+SHIFT+I / CTRL+SHIFT+J / CTRL+SHIFT+C
+  if (e.ctrlKey && e.shiftKey && ["i", "j", "c"].includes(e.key.toLowerCase())) {
+    e.preventDefault();
+    return false;
+  }
+});
+
+// 🔒 Force viewport tetap (anti zoom pakai pinch)
+document.addEventListener("gesturestart", (e) => {
+  e.preventDefault();
+});
+
+
+
+
 
 
 
