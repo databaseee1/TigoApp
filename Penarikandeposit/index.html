@@ -1164,8 +1164,28 @@ label {
 
 
 
+ <!-- ✅ Overlay + Login Card -->
+<div id="loginOverlay" style="
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.3); /* semi-transparan */
+  backdrop-filter: blur(6px);  /* blur background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+">
   <!-- ✅ Login card -->
-  <div id="loginCard" class="login-card">
+  <div id="loginCard" class="login-card" style="
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    width: 300px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  ">
     <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
       <div style="width:44px; height:44px; border-radius:10px; overflow:hidden; background:var(--soft); display:flex; align-items:center; justify-content:center;">
         <img src="servant_icon.png" alt="Offline" style="width:100%; height:100%; object-fit:cover;" />
@@ -1176,13 +1196,16 @@ label {
       </div>
     </div>
 
-    <label>Email</label>
-    <input id="loginEmail" type="text" placeholder="email@example.com" style="font-size:10px;" />
-    <label style="margin-top:8px">Password</label>
-    <input id="loginWA" type="text" placeholder="xxxx(ops!)" style="font-size:10px;" />
-    <div style="margin-top:10px;display:flex;gap:8px">
+    <label style="font-size:14px; font-weight:600;">Email</label>
+<input id="loginEmail" type="text" placeholder="email@example.com" 
+  style="font-size:14px; width:100%; padding:10px 12px; margin-bottom:12px; border:1px solid #ccc; border-radius:8px;" />
+
+<label style="font-size:14px; font-weight:600;">Password</label>
+<input id="loginWA" type="text" placeholder="xxxx(ops!)" 
+  style="font-size:14px; width:100%; padding:10px 12px; border:1px solid #ccc; border-radius:8px;" />
+
+    <div style="margin-top:12px;display:flex;gap:8px; justify-content:flex-end;">
       <button id="btnLogin" class="btn btn-primary">Masuk</button>
-      <button id="btnClear" class="btn btn-muted">Reset</button>
     </div>
   </div>
 </div>
@@ -1782,6 +1805,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     loginCard.style.display = "none";
     actionCard.style.display = "block";
+     loginOverlay.style.display = "none"; 
     document.getElementById("menuList").style.display = "block";
 
     // 🔹 tampilkan saldo dari cache dulu biar tidak kosong
@@ -1864,8 +1888,11 @@ btnLogin.addEventListener("click", async () => {
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
     // tampilkan dashboard
+   
     loginCard.style.display = "none";
     actionCard.style.display = "block";
+     loginOverlay.style.display = "none"; 
+    
 
     // jalankan listener
     listenSaldo(userId);
@@ -2813,6 +2840,7 @@ document.getElementById("infoTagihan").addEventListener("click", () => {
 
 
 
+
 // 🔒 Disable klik kanan
 document.addEventListener("contextmenu", (e) => {
   e.preventDefault();
@@ -2844,6 +2872,7 @@ document.addEventListener("keydown", (e) => {
 document.addEventListener("gesturestart", (e) => {
   e.preventDefault();
 });
+
 
 
 
