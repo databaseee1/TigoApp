@@ -2641,7 +2641,7 @@ document.querySelectorAll(".giftOption").forEach(gift => {
 
     // bikin teks poin melayang
     const floatingPoints = document.createElement("div");
-    floatingPoints.textContent = `+${points}`;
+    floatingPoints.textContent = `-${points}`;
     floatingPoints.classList.add("points-flying");
     document.body.appendChild(floatingPoints);
 
@@ -2659,7 +2659,7 @@ document.querySelectorAll(".giftOption").forEach(gift => {
       wrapper.appendChild(clone);
 
       const pointSpan = document.createElement("span");
-      pointSpan.textContent = ` +${points}`;
+      pointSpan.textContent = ` -${points}`;
       pointSpan.style.marginLeft = "6px";
       pointSpan.style.color = "yellow";
       wrapper.appendChild(pointSpan);
