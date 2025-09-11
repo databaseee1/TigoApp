@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>Topup & History (Simulasi)</title>
+  <title>Acount & Pembayaran</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <style>
     :root{
@@ -75,7 +75,6 @@
   background: #fff;
   padding: 10px 14px;
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   margin: 5px 10px 10px; /* kasih jarak biar tidak ketiban header */
   font-size: 14px;
   display: flex;
@@ -303,90 +302,8 @@ label {
 
 
 
-#conbank {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: center; /* tengah secara horizontal */
-  
-  margin: 20px 0;
-  max-width: 100%;
-  
-  overflow-x: auto;    /* scroll horizontal tetap aktif */
-  overflow-y: hidden;
-  box-sizing: border-box;
-  white-space: nowrap;
-  padding-left: 0;
-  padding-right: 0;
-
-  /* opsional: smooth scroll */
-  scroll-behavior: smooth;
-}
-
-#conbank img {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  background: #fff;
-  padding: 5px;
-  flex-shrink: 0;
-}
-
-#conbank img.active {
-  border: 2px solid #007bff; /* warna biru saat aktif */
-  box-shadow: 0 0 10px rgba(0, 123, 255, 0.6);
-  background: #e6f0ff;       /* background sedikit biru */
-}
 
 
-
-
-.slider-container {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  text-align: center;
-}
-
-.slider {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; /* Firefox */
-}
-.slider::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
-}
-
-.slider img {
-  flex: 0 0 auto;
-  width: 100px;
-  height: auto;
-  margin: 10px;
-  scroll-snap-align: center;
-}
-
-/* dots */
-.dots {
-  margin-top: 8px;
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-}
-.dots span {
-  width: 10px;
-  height: 10px;
-  background: #ccc;
-  border-radius: 50%;
-  display: inline-block;
-}
-.dots span.active {
-  background: #333;
-  margin-bottom: 15px;
-}
 
 
 
@@ -452,7 +369,6 @@ label {
   border-radius: 12px;
   padding: 15px 18px;
   margin: 10px 0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .saldo-box img,
@@ -529,7 +445,7 @@ label {
   }
   .popup-box button {
     margin-top:15px; width:100%; padding:10px;
-    background:var(--accent); color:#fff; border:none; border-radius:8px;
+    background:#5f1ce2; color:#fff; border:none; border-radius:20px;
     font-size:16px; cursor:pointer;
   }
   .popup-box button:hover { background:#4c089f; }
@@ -772,30 +688,111 @@ label {
 
 
 
+<!-- ✅ Box Kas -->
+<div style="background:#f1f0f0; border-radius:12px; padding:20px;  max-width:400px; margin:auto;">
 
-<div class="saldo-box">
-  <div class="saldo-left">
-    <img src="score_icon_wrap.png" alt="icon" />
-    <b>Saldo Host:</b>
+  <!-- Saldo Host -->
+  <div class="saldo-box" style="display:flex; align-items:center; margin-bottom:12px;">
+    <img src="score_icon_wrap.png" alt="icon" style="width:28px; height:28px; margin-right:8px;" />
+    <b style="margin-right:6px;">Saldo Host:</b>
     <span id="saldoHost">Rp 0</span>
+    <img src="add_tokens_icon.png" alt="offlee" id="btnBayarDepooo" class="offlee-icon" style="margin-left:auto; width:24px; height:24px; cursor:pointer;" />
   </div>
 
-<img src="add_tokens_icon.png" alt="offlee" id="btnBayarDepooo" class="offlee-icon" />
-</div>
-
-
-<!-- ✅ Box jumlah tagihan -->
-<div class="tagihan-box">
-  <img src="certification_award_icon_0_female.png" alt="icon" />
-  <b>Jumlah Tagihan:</b>
+  <!-- Jumlah Tagihan -->
+<div class="tagihan-box" style="display:flex; align-items:center; margin-bottom:20px;">
+  <img src="certification_award_icon_0_female.png" alt="icon" style="width:28px; height:28px; margin-right:8px;" />
+  <b style="margin-right:6px;">Jumlah Tagihan:</b>
   <span id="jumlahTagihan">Rp 0</span>
+
+  <!-- ikon kecil info -->
+  <img 
+    src="chat_icon_send_failure.png" 
+    alt="info" 
+    id="infoTagihan" 
+    style="width:16px; height:16px; margin-left:6px; cursor:pointer; opacity:0.7;" 
+  />
 </div>
 
+<!-- ✅ Tombol Kas Keluar -->
+<button 
+  id="btnKasKeluar"
+  style="
+    background-color: #6a0dad; 
+    color: white; 
+    border: none; 
+    padding: 10px 18px; 
+    border-radius: 20px; 
+    cursor: pointer; 
+    font-size: 16px;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    width: 100%;
+  "
+  onmouseover="this.style.backgroundColor='#580a9e'"
+  onmouseout="this.style.backgroundColor='#6a0dad'">
+  Kas Keluar
+</button>
 
 
+<!-- 🔹 Box untuk Form Penarikan (disembunyikan dulu) -->
+<div id="formPenarikan" style="display:none;">
 
+  <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 4px 16px rgba(0,0,0,0.08); max-width:420px; margin:20px auto;">
+    <h3 style="margin-top:0; font-size:16px; font-weight:600; color:#333; text-align:center;">
+      Form Penarikan
+    </h3>
 
+    <!-- 🔹 Form Penarikan -->
+    <form id="depositForm" onsubmit="return false;" style="max-width:420px; margin:auto;">
 
+      <!-- Nama Pengirim -->
+      <div style="margin-bottom:12px;">
+        <label for="namaPengirim" style="display:block; margin-bottom:4px;">Nama Pengirim</label>
+        <input id="namaPengirim" type="text" placeholder="Nama pengirim" required 
+               style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;" />
+      </div>
+
+      <!-- Bank / E-Wallet -->
+      <div style="margin-bottom:12px;">
+        <label for="bank" style="display:block; margin-bottom:4px;">Bank / E-Wallet</label>
+        <div style="position:relative; display:flex; align-items:center;">
+          <img src="dana.png" alt="icon" 
+               style="position:absolute; left:10px; width:50px; height:50px; opacity:0.7;" />
+          <input id="bank" type="text" required
+                 style="padding-left:40px; width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;" />
+        </div>
+      </div>
+
+      <!-- Nominal -->
+      <div style="margin-bottom:8px;">
+        <label for="nominal" style="display:block; margin-bottom:4px;">Nominal (Rp)</label>
+        <input id="nominal" type="number" placeholder="500000" min="0" required
+               style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;" />
+        <small id="nomErr" style="color:red; display:none;">Minimal Rp 500.000</small>
+      </div>
+
+      <!-- Tombol Aksi -->
+      <div style="margin-top:16px; display:flex; gap:10px; justify-content:flex-end;">
+        <button id="btnKirim" class="btn btn-primary" type="button">Tarik</button>
+        <button id="btnKembali" class="btn btn-muted" type="button">Kembali</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Instruksi -->
+  <div style="margin-top:20px; max-width:420px; margin:auto;">
+    <h3 style="font-size:14px; margin-bottom:8px; color:#000;">Instruksi</h3>
+    <ol style="padding-left:20px; font-size: 13px; line-height:1.6; color:#333;">
+      <li>Akun dengan 2000+ Credits dapat diuangkan.</li>
+      <li>Jumlah penarikan akan bervariasi sesuai dengan nilai tukar.</li>
+      <li>Permintaan akan ditangani dalam 2 hari kerja.</li>
+      <li>Jika Anda memiliki pertanyaan, silahkan hubungi kami.</li>
+    </ol>
+  </div>
+</div>
+
+</div>
 
 
 
@@ -852,24 +849,297 @@ label {
 
 
 
-      
-<div class="slider-container">
-  <div id="conbank" class="slider">
-    <img src="TenderUlogo.webp" alt="icon2">
-    <img src="weelivelogo.webp" alt="icon3">
-    <img src="bling.webp" alt="icon4">
-    <img src="ayarlogo.webp" alt="icon5">
-    <img src="meegologo.webp" alt="icon6">
-    <img src="makologo.webp" alt="icon7">
-<img src="tigogambar.webp" alt="icon1" id="opee1">
-    <img src="TenderUlogo.webp" alt="icon2">
-    <img src="weelivelogo.webp" alt="icon3">
-    <img src="bling.webp" alt="icon4">
-    <img src="ti.livelogo.webp" alt="icon5">
-    <img src="chatologo.webp" alt="icon6">
+<!-- Menu List -->
+<div style="border-radius:10px; overflow:hidden; margin-top:30px; margin-bottom:30px; ">
+
+ <div id="btnAkunUangTunai" 
+       style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; cursor:pointer; background:#fff;">
+    <span style="display:flex; align-items:center; font-size:15px;">
+      <img src="mine_rucksack_icon.png" alt="icon" style="width:20px; height:20px; margin-right:10px;">
+      Akun Uang Tunai
+    </span>
+ <img src="right_arrow_gray.png" alt="arrow" style="width:18px; height:18px; opacity:0.6;">
   </div>
-  <div class="dots"></div>
+
+
+<!-- POPUP FULL LAYAR -->
+<div id="bankPopup" style="
+  display:none; 
+  position:fixed; top:0; left:0; width:100%; height:100%; 
+  background:#fff; z-index:9999;
+  justify-content:center; align-items:flex-start;
+  overflow-y:auto;
+">
+  <!-- Tombol gambar close/back -->
+  <img src="back_gray.png" id="imgCloseBank" alt="close" 
+       style="position:absolute; top:20px; left:15px; width:20px; height:20px; cursor:pointer; z-index:10000;" />
+
+  <div style="
+    background:#fff; 
+    width:90%; 
+    max-width:400px; 
+    border-radius:12px; 
+    padding:20px; 
+    position:relative;
+    margin-top:-10px;
+  ">
+    <h2 style="text-align:center; font-size: 15px; margin-bottom:20px;">Detail Rekening</h2>
+
+<div style="border:1px solid #ddd; border-radius:8px; padding:16px; background:#fff;">
+
+  <div style="margin-bottom:12px; display:flex; align-items:center; gap:10px;">
+    <img src="ic_checked.png" alt="icon" style="width:22px; height:22px;">
+    <div>
+      <b>Nama Bank :</b>
+      <div id="viewBank" style="color:#333; margin-top:4px;">-</div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:12px; display:flex; align-items:center; gap:10px;">
+    <img src="ic_checked.png" alt="icon" style="width:22px; height:22px;">
+    <div>
+      <b>Nama Rekening :</b>
+      <div id="viewNamaRek" style="color:#333; margin-top:4px;">-</div>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:10px;">
+    <img src="ic_checked.png" alt="icon" style="width:22px; height:22px;">
+    <div>
+      <b>Nomor Rekening :</b>
+      <div id="viewNoRek" style="color:#333; margin-top:4px;">-</div>
+    </div>
+  </div>
+
 </div>
+
+<!-- 🔹 Tombol Google -->
+<button style="
+  margin-top:20px; 
+  width:100%; 
+  padding:14px; 
+  display:flex; 
+  align-items:center; 
+  justify-content:space-between;
+  background:#ffffff; 
+  border:1px solid #ddddddc2; 
+  border-radius:8px; 
+  cursor:pointer;
+  font-size:16px; 
+  font-weight:600;
+">
+  <!-- Kiri: ikon + teks -->
+  <div style="display:flex; align-items:center; gap:10px;">
+    <img src="bind_google_icon.png" alt="icon" style="width:44px; height:44px;">
+    <span>Google</span>
+  </div>
+
+  <!-- Kanan: ikon kecil -->
+  <img src="delete_hashtag_icon.png" alt="icon"
+       style="width:15px; height:15px; filter: invert(27%) sepia(100%) saturate(7450%) hue-rotate(358deg) brightness(95%) contrast(119%);">
+</button>
+
+
+<!-- 🔹 Tombol Agency -->
+<button style="
+  margin-top:20px; 
+  width:100%; 
+  padding:14px; 
+  display:flex; 
+  align-items:center; 
+  justify-content:space-between;
+  background:#ffffff; 
+  border:1px solid #ddddddc2; 
+  border-radius:8px; 
+  cursor:pointer;
+  font-size:16px; 
+  font-weight:600;
+">
+  <!-- Kiri: ikon + teks -->
+  <div style="display:flex; align-items:center; gap:10px;">
+    <img src="agencylogo.png" alt="icon" style="width:44px; height:44px;">
+    <span>AGENCY TIGOHOST IDN</span>
+  </div>
+
+  <!-- Kanan: ikon kecil -->
+  <img src="third_acoount_bound_iocn.png" alt="icon" style="width:15px; height:15px;">
+</button>
+
+
+    <button id="closeBankPopup" style="
+      margin-top:20px; width:100%; padding:12px;
+      background:#ffffff00; color:#ffffff00; border:none; border-radius:8px;
+      font-size:16px; cursor:pointer;
+    ">Tutup</button>
+
+    <button id="btnLogout" class="btn btn-muted"style="
+      margin-top:20px; width:100%; padding:12px;
+      background:#e31515; color:#fff; border:none; border-radius:20px;
+      font-size:16px; cursor:pointer;
+    " type="button"> LogOut</button>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Menu Catatan Pembayaran -->
+<div id="offlineBtn2" 
+     style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; cursor:pointer; background:#fff; border-bottom:1px solid #eee;">
+  <span style="display:flex; align-items:center; font-size:15px;">
+    <img src="match_his_icon.png" alt="icon" style="width:20px; height:20px; margin-right:10px;">
+    Catatan Pembayaran
+  </span>
+ <img src="right_arrow_gray.png" alt="arrow" style="width:18px; height:18px; opacity:0.6;">
+</div>
+
+
+<!-- ===== Menu Tombol Menukar ===== -->
+<div id="btnRedeem" 
+     style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; cursor:pointer; background:#fff;">
+  <span style="display:flex; align-items:center; font-size:15px;">
+    <img src="reset_rtc_icon.png" alt="icon" style="width:20px; height:20px; margin-right:10px;">
+    Menukarkan
+  </span>
+ <img src="right_arrow_gray.png" alt="arrow" style="width:18px; height:18px; opacity:0.6;">
+</div>
+
+<!-- ===== POPUP FULLSCREEN ===== -->
+<div id="redeemPopup" style="
+  display:none;
+  position:fixed; top:0; left:0; right:0; bottom:0;
+  background:#fff; z-index:9999; 
+  overflow-y:auto;
+">
+  <!-- Header -->
+  <div style="display:flex; align-items:center; padding:16px; border-bottom:1px solid #eee;">
+    <img src="back_gray.png" id="closeRedeem" style="width:20px; height:20px; cursor:pointer; margin-right:10px;">
+    <h2 style="margin:0; font-size:16px;">Menukarkan</h2>
+  </div>
+
+  <!-- Saldo -->
+  <div style="padding:16px; display:flex; justify-content:space-between; align-items:center;">
+    <div style="display:flex; align-items:center;">
+      <img src="credit.png" style="width:20px; height:20px; margin-right:8px;">
+      <span style="font-size:16px; font-weight:bold;">0</span>
+    </div>
+    <span style="color:#888; font-size:13px;">1 Token = 1 Credits</span>
+  </div>
+
+<!-- Grid Pilihan -->
+<div style="display:grid; grid-template-columns:repeat(2,1fr); gap:12px; padding:16px;">
+  
+  <div style="background:#fff; border:1px solid #eee; border-radius:8px; padding:20px; text-align:center;">
+    <img src="token.png" style="width:40px; height:40px; margin-bottom:8px;">
+    <div style="font-size:14px;">100 Tokens</div>
+    <div style="display:inline-flex; align-items:center; justify-content:center;
+                background:#f1f1f1;  border-radius:6px;
+                padding:4px 8px; margin-top:6px;">
+      <img src="credit.png" style="width:16px; height:16px; margin-right:4px;">
+      <span style="font-weight:bold; color:#1e1c1f;">100</span>
+    </div>
+  </div>
+
+  <div style="background:#fff; border:1px solid #eee; border-radius:8px; padding:20px; text-align:center;">
+    <img src="token.png" style="width:40px; height:40px; margin-bottom:8px;">
+    <div style="font-size:14px;">500 Tokens</div>
+    <div style="display:inline-flex; align-items:center; justify-content:center;
+                background:#f1f1f1;  border-radius:6px;
+                padding:4px 8px; margin-top:6px;">
+      <img src="credit.png" style="width:16px; height:16px; margin-right:4px;">
+      <span style="font-weight:bold; color:#1e1c1f;">500</span>
+    </div>
+  </div>
+
+    <div style="background:#fff; border:1px solid #eee; border-radius:8px; padding:20px; text-align:center;">
+    <img src="token.png" style="width:40px; height:40px; margin-bottom:8px;">
+    <div style="font-size:14px;">1000 Tokens</div>
+    <div style="display:inline-flex; align-items:center; justify-content:center;
+                background:#f1f1f1;  border-radius:6px;
+                padding:4px 8px; margin-top:6px;">
+      <img src="credit.png" style="width:16px; height:16px; margin-right:4px;">
+      <span style="font-weight:bold; color:#1e1c1f;">1000</span>
+    </div>
+  </div>
+
+    <div style="background:#fff; border:1px solid #eee; border-radius:8px; padding:20px; text-align:center;">
+    <img src="token.png" style="width:40px; height:40px; margin-bottom:8px;">
+    <div style="font-size:14px;">5000 Tokens</div>
+    <div style="display:inline-flex; align-items:center; justify-content:center;
+                background:#f1f1f1;  border-radius:6px;
+                padding:4px 8px; margin-top:6px;">
+      <img src="credit.png" style="width:16px; height:16px; margin-right:4px;">
+      <span style="font-weight:bold; color:#1e1c1f;">5000</span>
+    </div>
+  </div>
+
+
+    <div style="background:#fff; border:1px solid #eee; border-radius:8px; padding:20px; text-align:center;">
+    <img src="token.png" style="width:40px; height:40px; margin-bottom:8px;">
+    <div style="font-size:14px;">8000 Tokens</div>
+    <div style="display:inline-flex; align-items:center; justify-content:center;
+                background:#f1f1f1;  border-radius:6px;
+                padding:4px 8px; margin-top:6px;">
+      <img src="credit.png" style="width:16px; height:16px; margin-right:4px;">
+      <span style="font-weight:bold; color:#1e1c1f;">8000</span>
+    </div>
+  </div>
+
+
+    <div style="background:#fff; border:1px solid #eee; border-radius:8px; padding:20px; text-align:center;">
+    <img src="token.png" style="width:40px; height:40px; margin-bottom:8px;">
+    <div style="font-size:14px;">10000 Tokens</div>
+    <div style="display:inline-flex; align-items:center; justify-content:center;
+                background:#f1f1f1;  border-radius:6px;
+                padding:4px 8px; margin-top:6px;">
+      <img src="credit.png" style="width:16px; height:16px; margin-right:4px;">
+      <span style="font-weight:bold; color:#1e1c1f;">10000</span>
+    </div>
+  </div>
+  <!-- Tambah paket lain sesuai kebutuhan -->
+
+</div>
+
+
+  <!-- Tombol Menukarkan -->
+  <div style="padding:16px;">
+    <button style="width:100%; padding:12px; background:#ccc; color:#fff; border:none; border-radius:20px; font-size:15px;">
+      Menukarkan
+    </button>
+  </div>
+</div>
+
+
+
+
+</div>
+
+<!-- Instruksi -->
+<div style="margin-top:20px;">
+  <h3 style="font-size:15px; margin-bottom:8px; color:#000;">instruksi</h3>
+  <ol style="padding-left:20px; font-size:14px; line-height:1.6; color:#333;">
+    <li>Akun dengan 2000+ Credits dapat diuangkan.</li>
+    <li>Jumlah penarikan akan bervariasi sesuai dengan nilai tukar.</li>
+    <li>Permintaan akan ditangani dalam 2 hari kerja.</li>
+    <li>Jika Anda memiliki pertanyaan, silahkan hubungi kami.</li>
+  </ol>
+</div>
+
+
+      
+
 
 
 
@@ -921,62 +1191,13 @@ label {
     <div id="actionCard" class="action-card" style="display:none">
       <div style="justify-content:space-between;align-items:center;margin-bottom:130px">
         <div>
-<!-- 🔹 Box untuk Form Deposit -->
-<div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 4px 16px rgba(0,0,0,0.08); max-width:420px; margin:20px auto;">
-
-  <h3 style="margin-top:0; font-size:16px; font-weight:600; color:#333; text-align:center;">
-    Form Penarikan
-  </h3>
-
-<!-- 🔹 Form Deposit -->
-<form id="depositForm" onsubmit="return false;" style="max-width:420px; margin:auto;">
-
-  <!-- Nama Pengirim -->
-  <div style="margin-bottom:12px;">
-    <label for="namaPengirim" style="display:block; margin-bottom:4px;">Nama Pengirim</label>
-    <input id="namaPengirim" type="text" placeholder="Nama pengirim" required 
-           style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;" />
-  </div>
-
-  <!-- Bank / E-Wallet -->
-  <div style="margin-bottom:12px;">
-    <label for="bank" style="display:block; margin-bottom:4px;">Bank / E-Wallet</label>
-    <div style="position:relative; display:flex; align-items:center;">
-      <img src="dana.png" alt="icon" 
-           style="position:absolute; left:10px; width:50px; height:50px; opacity:0.7;" />
-      <input id="bank" type="text" placeholder="" required
-             style="padding-left:40px; width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;" />
-    </div>
-  </div>
-
-  <!-- Nominal -->
-  <div style="margin-bottom:8px;">
-    <label for="nominal" style="display:block; margin-bottom:4px;">Nominal (Rp)</label>
-    <input id="nominal" type="number" placeholder="500000" min="0" required
-           style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;" />
-    <small id="nomErr" style="color:red; display:none;">Minimal Rp 500.000</small>
-  </div>
-
-  <!-- Tombol Aksi -->
-  <div style="margin-top:16px; display:flex; gap:10px; justify-content:flex-end;">
-    <button id="btnKirim" class="btn btn-primary" type="button">Tarik</button>
-    <button id="btnLogout" class="btn btn-muted" type="button">Kembali</button>
-  </div>
-
-</form>
-</div>
 
 
-  <!-- Instruksi -->
-<div style="margin-top:20px;">
-  <h3 style="font-size:14px; margin-bottom:8px; color:#000;">instruksi</h3>
-  <ol style="padding-left:20px; font-size: 13px; line-height:1.6; color:#333;">
-    <li>Akun dengan 2000+ Credits dapat diuangkan.</li>
-    <li>Jumlah penarikan akan bervariasi sesuai dengan nilai tukar.</li>
-    <li>Permintaan akan ditangani dalam 2 hari kerja.</li>
-    <li>Jika Anda memiliki pertanyaan, silahkan hubungi kami.</li>
-  </ol>
-</div>
+
+
+
+
+
 
 
 
@@ -1447,8 +1668,9 @@ label {
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { 
   getFirestore, collection, query, where, getDocs, addDoc,
-  doc, onSnapshot, Timestamp, orderBy
+  doc, getDoc, onSnapshot, Timestamp, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 
 // ---------- FIREBASE CONFIG ----------
 const firebaseConfig = {
@@ -1462,6 +1684,40 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+
+
+
+const btnAkunUangTunai = document.getElementById("btnAkunUangTunai");
+const bankPopup = document.getElementById("bankPopup");
+const closeBankPopup = document.getElementById("closeBankPopup");
+
+btnAkunUangTunai.addEventListener("click", async () => {
+  if (!currentUser) return;
+
+  try {
+    const userRef = doc(db, "pendaftaran", currentUser.uid);
+    const snap = await getDoc(userRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      document.getElementById("viewBank").textContent = data.bank || "-";
+      document.getElementById("viewNamaRek").textContent = data.namaRek || "-";
+      document.getElementById("viewNoRek").textContent = data.noRek || "-";
+    }
+
+    bankPopup.style.display = "flex";
+  } catch (err) {
+    console.error("Error ambil data bank:", err);
+    Swal.fire({ icon: "error", text: "Gagal ambil data rekening!" });
+  }
+});
+
+closeBankPopup.addEventListener("click", () => {
+  bankPopup.style.display = "none";
+});
+
+
+
 
 // ---------- STATE ----------
 let currentUser = null;
@@ -1479,6 +1735,7 @@ const btnLogin      = document.getElementById("btnLogin");
 const btnLogout     = document.getElementById("btnLogout");
 const btnKirim      = document.getElementById("btnKirim");
 const offlineBtn    = document.getElementById("offlineBtn");
+const offlineBtn2 = document.getElementById("offlineBtn2");
 const historyPopup  = document.getElementById("historyPopup");
 const closePopup    = document.getElementById("closePopup");
 const historyHeader = document.getElementById("historyHeader");
@@ -1505,17 +1762,66 @@ function formatDate(ts) {
 
 
 
+
+
+
+
 window.addEventListener("DOMContentLoaded", async () => {
+  // Default: hanya tampilkan login
+  loginCard.style.display = "block";
+  actionCard.style.display = "none";
+  document.getElementById("menuList").style.display = "none";
+  if (bankPopup) bankPopup.style.display = "none";
+
   const saved = localStorage.getItem("currentUser");
-  if (saved) {
+  const savedStatus = localStorage.getItem("statusAkun"); // ambil status terakhir
+
+  if (saved && savedStatus === "active") {
     currentUser = JSON.parse(saved);
+    console.log("Restore user:", currentUser);
+
     loginCard.style.display = "none";
     actionCard.style.display = "block";
+    document.getElementById("menuList").style.display = "block";
+
+    // 🔹 tampilkan saldo dari cache dulu biar tidak kosong
+    const saldoCache = localStorage.getItem("saldoUser");
+    if (saldoCache !== null) {
+      const saldoText = "Rp " + Number(saldoCache).toLocaleString("id-ID");
+      if (saldoHostEl) saldoHostEl.innerText = saldoText;
+
+      const saldoPopupEl = document.getElementById("saldoHostPopup");
+      if (saldoPopupEl) saldoPopupEl.innerText = saldoText;
+
+      const saldoPopupEl3 = document.getElementById("saldoHostPopup3");
+      if (saldoPopupEl3) saldoPopupEl3.innerText = saldoText;
+    }
+
+    // 🔥 jalankan ulang listener realtime
     listenSaldo(currentUser.uid);
-    listenTagihan(currentUser.uid);   // ✅ tambahkan ini
-    listenUserStatus(currentUser.uid); // ✅ biar status juga tetap jalan
+    listenTagihan(currentUser.uid);
+    listenUserStatus(currentUser.uid);
+
+  } else {
+    // Kalau belum login atau status bukan active → tampilkan login
+    loginCard.style.display = "block";
+    actionCard.style.display = "none";
+    document.getElementById("menuList").style.display = "none";
+    if (bankPopup) bankPopup.style.display = "none";
+
+    // kalau user ada tapi status bukan active, hapus aja datanya
+    if (saved && (savedStatus === "suspended" || savedStatus === "deleted")) {
+      localStorage.removeItem("currentUser");
+    }
   }
 });
+
+
+
+
+
+
+
 
 
 
@@ -1576,7 +1882,7 @@ btnLogin.addEventListener("click", async () => {
 
   } catch (err) {
     console.error("Login error:", err);
-    Swal.fire({ icon: "error", text: "Terjadi error saat login, cek console." });
+    Swal.fire({ icon: "error", text: "Terjadi error saat login,Periksa koneksi anda!." });
   }
 });
 
@@ -1594,29 +1900,24 @@ function listenUserStatus(uid) {
     const data = docSnap.data();
     const status = data.statusAkun;
 
+    // Simpan status ke localStorage biar bisa dipakai pas reload
+    localStorage.setItem("statusAkun", status);
 
-
-
-
-if (status === "suspended") {
-  forceLogout(
-    `
-      <div style="text-align:center; line-height:1.6;">
-        Akun anda telah di <b style="color:orange;">SUSPENDED</b> oleh pihak aplikasi.<br>
-        Mohon patuhi kebijakan komunitas kami.<br><br>
-        <div style="margin-top:20px; font-weight:bold;">
-          Hubungi admin untuk ajukan banding
-        </div>
-      </div>
-    `,
-    "im_banned_icon.png",   // ganti dengan icon kamu, misal offline.png
-    "Akun Ditangguhkan"
-  );
-} 
-
-
-
-
+    if (status === "suspended") {
+      forceLogout(
+        `
+          <div style="text-align:center; line-height:1.6;">
+            Akun anda telah di <b style="color:orange;">SUSPENDED</b> oleh pihak aplikasi.<br>
+            Mohon patuhi kebijakan komunitas kami.<br><br>
+            <div style="margin-top:20px; font-weight:bold;">
+              Hubungi admin untuk ajukan banding
+            </div>
+          </div>
+        `,
+        "im_banned_icon.png",
+        "Akun Ditangguhkan"
+      );
+    } 
     else if (status === "deleted") {
       forceLogout(
         `
@@ -1629,26 +1930,15 @@ if (status === "suspended") {
           </div>
         `,
         "banned_icon.png",
-        "ACOUNT IS BANN"
+        "Akun DIBANNED"
       );
     } 
     else if (status === "active") {
-      Swal.fire({
-        title: "SELAMAT",
-        text: "Akun anda telah diaktifkan kembali oleh pihak aplikasi!",
-        imageUrl: "avatar_notice_right_icon.png",
-        imageWidth: 80,
-        imageHeight: 80,
-        confirmButtonText: "OK"
-        
-        
-      });
+      // 🚀 jangan paksa logout lagi
+      console.log("User masih aktif, tetap login.");
     }
   });
 }
-
-
-
 
 
 
@@ -1676,38 +1966,41 @@ function listenTagihan(uid) {
 
 
 // ---------- LISTEN SALDO ----------
+// ---------- LISTEN SALDO ----------
 function listenSaldo(uid) {
   if (unsubscribeSaldo) unsubscribeSaldo();
   const saldoRef = doc(db, "pendaftaran", uid);
+
   unsubscribeSaldo = onSnapshot(saldoRef, (docSnap) => {
     if (docSnap.exists()) {
       const data = docSnap.data();
       const saldoNumber = Number(data.saldo || 0);
       const saldoText = "Rp " + saldoNumber.toLocaleString("id-ID");
 
-      // update ke dashboard utama
+      // update UI
       if (saldoHostEl) saldoHostEl.innerText = saldoText;
 
-      // update ke popup saldo 1
       const saldoPopupEl = document.getElementById("saldoHostPopup");
       if (saldoPopupEl) saldoPopupEl.innerText = saldoText;
 
-      // update ke popup saldo 3
       const saldoPopupEl3 = document.getElementById("saldoHostPopup3");
       if (saldoPopupEl3) saldoPopupEl3.innerText = saldoText;
 
+      // 🔥 simpan ke localStorage
+      localStorage.setItem("saldoUser", saldoNumber);
+
     } else {
       if (saldoHostEl) saldoHostEl.innerText = "Rp 0";
-
       const saldoPopupEl = document.getElementById("saldoHostPopup");
       if (saldoPopupEl) saldoPopupEl.innerText = "Rp 0";
-
       const saldoPopupEl3 = document.getElementById("saldoHostPopup3");
       if (saldoPopupEl3) saldoPopupEl3.innerText = "Rp 0";
+
+      // reset cache
+      localStorage.setItem("saldoUser", 0);
     }
   });
 }
-
 
 
 
@@ -1844,6 +2137,10 @@ btnKirim.addEventListener("click", async () => {
 
 
 
+
+
+
+
 // ---------- HISTORY POPUP ----------
 function openHistoryPopup() {
   if (!currentUser) {
@@ -1962,13 +2259,14 @@ itemEl.addEventListener("click", () => {
 
 // ---------- POPUP EVENTS ----------
 offlineBtn.addEventListener("click", openHistoryPopup);
+offlineBtn2.addEventListener("click", openHistoryPopup); // 🔹 tambahan
+
 closePopup.addEventListener("click", () => {
   historyPopup.style.display = "none";
   historyPopup.setAttribute("aria-hidden", "true");
   if (unsubscribeHistory) unsubscribeHistory();
   unsubscribeHistory = null;
 });
-
 
 
 window.addEventListener("keydown", (e) => {
@@ -1992,46 +2290,8 @@ historyPopup.addEventListener("click", (ev) => {
 
 
 
-  document.addEventListener("DOMContentLoaded", function() {
-    const bankImgs = document.querySelectorAll("#conbank img");
-
-    bankImgs.forEach(img => {
-      img.addEventListener("click", function() {
-        // hapus kelas active dari semua img
-        bankImgs.forEach(i => i.classList.remove("active"));
-
-        // tambahkan active ke yg diklik
-        this.classList.add("active");
-      });
-    });
-  });
- 
 
 
-
-const slider = document.querySelector(".slider");
-const dotsContainer = document.querySelector(".dots");
-const slides = document.querySelectorAll(".slider img");
-
-// hapus dot lama
-dotsContainer.innerHTML = "";
-
-// buat dot sesuai jumlah "slide viewport"
-const slidesPerView = Math.floor(slider.offsetWidth / slides[0].offsetWidth);
-const dotCount = slides.length - slidesPerView + 1; // dot = jumlah posisi scroll
-for (let i = 0; i < dotCount; i++) {
-  const dot = document.createElement("span");
-  if (i === 0) dot.classList.add("active");
-  dotsContainer.appendChild(dot);
-}
-
-const dots = document.querySelectorAll(".dots span");
-
-slider.addEventListener("scroll", () => {
-  const scrollIndex = Math.round(slider.scrollLeft / slides[0].offsetWidth);
-  dots.forEach(dot => dot.classList.remove("active"));
-  if (dots[scrollIndex]) dots[scrollIndex].classList.add("active");
-});
 
 
 
@@ -2487,7 +2747,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
  // 🔒 Disable klik kanan
-    document.addEventListener("contextmenu", (e) => e.preventDefault());
 
     // 🔒 Disable shortcut copy (CTRL+C, CTRL+X, CTRL+U, dll)
     document.addEventListener("keydown", (e) => {
@@ -2506,23 +2765,60 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+    const btnKasKeluar = document.getElementById("btnKasKeluar");
+    const formPenarikan = document.getElementById("formPenarikan");
+    const btnKembali = document.getElementById("btnKembali");
+
+
+// klik Kas Keluar => tampilkan form
+btnKasKeluar.addEventListener("click", () => {
+  formPenarikan.style.display = "block";
+  btnKasKeluar.style.display = "none";
+});
+
+// klik Kembali => sembunyikan form
+btnKembali.addEventListener("click", () => {
+  formPenarikan.style.display = "none";
+  btnKasKeluar.style.display = "block";
+});
+
+// klik gambar close => tutup popup bank
+document.getElementById("imgCloseBank").addEventListener("click", () => {
+  document.getElementById("bankPopup").style.display = "none";
+});
+
+
+
+const btnRedeem = document.getElementById("btnRedeem");
+const redeemPopup = document.getElementById("redeemPopup");
+const closeRedeem = document.getElementById("closeRedeem");
+
+btnRedeem.addEventListener("click", () => {
+  redeemPopup.style.display = "block";
+});
+
+closeRedeem.addEventListener("click", () => {
+  redeemPopup.style.display = "none";
+});
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+document.getElementById("infoTagihan").addEventListener("click", () => {
+  Swal.fire({
+    title: "Informasi Tagihan",
+    html: `
+      <div style="text-align:left; line-height:1.6;">
+        <p><b>Jumlah Tagihan</b> wajib diselesaikan sebelum melakukan penarikan.</p>
+        <p>Nilai ini otomatis diperbarui oleh sistem sesuai transaksi pembayaran lunas.</p>
+      </div>
+    `,
+    icon: "info",
+    confirmButtonText: "Mengerti",
+    width: 400
+  });
+});
 
 
 
