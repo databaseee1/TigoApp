@@ -477,7 +477,18 @@ label {
 }
 
 
+/* Animasi gift muncul lalu hilang */
+.gift-anim {
+  position: relative;
+  display: inline-block;
+  animation: floatUp 2.5s ease-out forwards;
+}
 
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  70%  { opacity: 0.8; transform: translateY(-40px) scale(1.2); }
+  100% { opacity: 0; transform: translateY(-80px) scale(0.5); }
+}
 
 
 
@@ -494,7 +505,7 @@ label {
   }
   .popup-box {
     background:#fff; padding:20px; border-radius:12px; width:320px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.3); position:relative; text-align:left;
+     position:relative; text-align:left;
   }
   .popup-close {
     position:absolute; right:10px; top:5px;
@@ -565,6 +576,162 @@ label {
 .select-hide {
   display: none;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+    /* Popup fullscreen */
+    #cam-popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      z-index: 9999;
+    }
+    #cam-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    /* Overlay */
+    .cam-overlay {
+      position: absolute;
+      z-index: 10000;
+      color: #fff;
+      font-weight: bold;
+    }
+    #cam-saldo {
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.6);
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+    #cam-logo {
+      top: 10px;
+      right: 10px;
+      width: 40px;
+    }
+    #cam-skip {
+      bottom: 20px;
+      left: 20px;
+      background: red;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #cam-close {
+      bottom: 20px;
+      right: 20px;
+      background: gray;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #skipBtn, #closeCameraBtn {
+  border: none;
+  outline: none;
+  box-shadow: none !important;
+  background: #f44336; /* warna contoh */
+  z-index: 9999;       /* pastikan di atas overlay */
+}
+
+
+
+#giftBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 9999; /* biar di atas */
+}
+
+#giftPopup {
+  display: none;
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  background: rgba(0,0,0,0.8);
+  padding: 10px;
+  border-radius: 8px;
+  z-index: 9999; /* juga di atas */
+}
+
+
+
+    /* 🔹 Animasi Gift */
+    @keyframes giftFly {
+      0% { opacity: 0; transform: translate(0, 0) scale(0.3); }
+      20% { opacity: 1; transform: translate(-50vw, 30vh) scale(1.5); }
+      60% { transform: translate(-50vw, 30vh) scale(1); }
+      100% { opacity: 0; transform: translate(-50vw, 70vh) scale(0.5); }
+    }
+    .gift-flying {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 60px;
+      z-index: 99999;
+      animation: giftFly 2.5s ease-in-out forwards;
+      text-align: center;
+      pointer-events: none;
+    }
+    .gift-flying span {
+      display: block;
+      margin-top: 5px;
+      font-size: 14px;
+      color: gold;
+      font-weight: bold;
+    }
+    /* 🔹 Loading animasi */
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#carouselTrack .carousel-item {
+    margin: 0;
+    padding: 0;
+}
+
+#carouselTrack .carousel-item img {
+    width:150px;
+    height:150px;
+    border-radius:50%; /* kalau masih mau bulat */
+    border: none;      /* hapus garis putih biar rapet */
+    box-shadow: none;  /* hapus shadow biar nempel */
+    display: block;    /* biar nggak ada spasi inline */
+    margin: 0;
+    transition: transform 0.3s;
+}
+
+
 
 
 
@@ -677,14 +844,13 @@ label {
       
 <div class="slider-container">
   <div id="conbank" class="slider">
-    <img src="tigogambar.webp" alt="icon1">
     <img src="TenderUlogo.webp" alt="icon2">
     <img src="weelivelogo.webp" alt="icon3">
     <img src="bling.webp" alt="icon4">
     <img src="ayarlogo.webp" alt="icon5">
     <img src="meegologo.webp" alt="icon6">
     <img src="makologo.webp" alt="icon7">
-        <img src="tigogambar.webp" alt="icon1">
+<img src="tigogambar.webp" alt="icon1" id="opee1">
     <img src="TenderUlogo.webp" alt="icon2">
     <img src="weelivelogo.webp" alt="icon3">
     <img src="bling.webp" alt="icon4">
@@ -693,6 +859,24 @@ label {
   </div>
   <div class="dots"></div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -786,6 +970,151 @@ label {
 
 
 
+<!-- Popup kamera -->
+<div id="cameraPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999;">
+  <!-- Header -->
+
+
+
+ <!-- BOX SALDO DI POPUP -->
+  <div class="saldo-box" style="position:absolute; top:10px; left:10px; background:#73229c; border-radius:10px; padding:6px 12px; display:flex; align-items:center; ">
+    <img src="score_icon_wrap.png" alt="icon" style="width:20px; height:20px; margin-right:6px;">
+    <span id="saldoHostPopup" style="color:white;"> 0</span>
+
+  </div>
+
+
+
+
+<!-- Tombol Gift -->
+  <!-- Tombol Gift -->
+  <img id="giftBtn" src="im_gift_select.png" alt="gift"
+    style="position:absolute; top:10px; right:10px; width:40px; height:40px; cursor:pointer;">
+
+
+<!-- Popup Gift -->
+  <!-- Popup Gift -->
+  <div id="giftPopup" style="
+    display:none;
+    position:absolute;
+    top:60px; right:10px;
+    background-image:url('no_match_times_top_bg.png');
+    background-size:100% 100%;
+    background-repeat:no-repeat;
+    padding:10px;
+    border-radius:8px;
+    z-index:1000;
+  ">
+    <img src="gift_103.png" class="giftOption" data-points="10" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_14.png" class="giftOption" data-points="20" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_35.png" class="giftOption" data-points="30" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="giftkiss.png" class="giftOption" data-points="50" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="giftbear.png" class="giftOption" data-points="230" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_96.png" class="giftOption" data-points="125" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_77.png" class="giftOption" data-points="135" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_59.png" class="giftOption" data-points="140" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_58.png" class="giftOption" data-points="170" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_59.png" class="giftOption" data-points="100" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="giftlambor.png" class="giftOption" data-points="600" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="giftring.png" class="giftOption" data-points="200" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift.png" class="giftOption" data-points="5" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift2.png" class="giftOption" data-points="212" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift3.png" class="giftOption" data-points="118" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift4.png" class="giftOption" data-points="325" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift5.png" class="giftOption" data-points="310" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_61.png" class="giftOption" data-points="90" style="width:40px; margin:5px; cursor:pointer;">
+  </div>
+
+
+
+
+
+
+
+
+
+
+  <!-- Video -->
+  <video id="customCameraVideo" playsinline style="width:100%; height:100%; object-fit:cover;"></video>
+
+  <!-- Loading -->
+  <div id="loadingOverlay" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); text-align:center; color:white;">
+    <div style="border:6px solid #f3f3f3; border-top:6px solid #3498db; border-radius:50%; width:50px; height:50px; animation:spin 1s linear infinite; margin:auto;"></div>
+    <p style="margin-top:10px;">Sedang mencari lawan...</p>
+  </div>
+
+<!-- Chat Box -->
+<!-- Chat Box -->
+  <div id="chatBox" style="
+    position:absolute;
+    bottom:190px;
+    left:10px;
+    width:60%;
+    max-height:200px;
+    background:rgba(0,0,0,0.6);
+    border-radius:8px;
+    padding:10px;
+    overflow-y:auto;
+    color:white;
+    font-size:14px;
+  ">
+  <!-- Pesan & gift muncul di sini -->
+</div>
+<!-- Input + Tombol Kirim -->
+  <!-- Input + Tombol Kirim -->
+  <div style="position:absolute; bottom:160px; left:10px; width:60%; display:flex; gap:6px;">
+    <input id="chatInput" type="text" placeholder="Ketik pesan..." 
+      style="flex:1; padding:6px 8px; border-radius:6px; border:none; outline:none;">
+    <button id="chatSendBtn" style="
+      background:#007bff; 
+      color:white; 
+      border:none; 
+      padding:6px 12px; 
+      border-radius:6px;
+      cursor:pointer;
+    ">Kirim</button>
+  </div>
+
+
+
+
+
+
+
+
+  <!-- Tombol -->
+  <button id="skipBtn" style="position:absolute; color: #fff; bottom:100px; left:20px; border-radius:20px; background:#73229c; padding:10px 20px;">Skip</button>
+  <button id="closeCameraBtn" style="position:absolute; color: #fff; bottom:100px; border-radius: 20px; right:20px; background: #73229c; padding:10px 20px;">Tutup</button>
+
+<!-- Popup pesan -->
+<!-- Popup pesan -->
+<div id="inactivePopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0, 0, 0, 0.8); color:white; display:flex; justify-content:center; align-items:center; z-index:10000;">
+  <div style="background:#ffffff; padding:20px; border-radius:12px; text-align:center; max-width:80%; box-shadow:0 4px 12px rgba(0,0,0,0.4);">
+    
+    <!-- Logo di tengah -->
+    <img src="cert_failed_similar_user.png" alt="Logo" style="width:70px; height:70px; margin-bottom:15px; display:block; margin-left:auto; margin-right:auto;">
+    
+    <!-- Pesan -->
+    <p style="color:#000; font-size:16px; line-height:1.5; margin-bottom:20px;">
+      Video dijeda,<br>
+      akun anda belum aktif.<br>
+      <b>Mohon aktifkan terlebih dahulu</b>
+    </p>
+
+    <!-- Tombol OK -->
+    <button onclick="document.getElementById('inactivePopup').style.display='none'" 
+      style="background:#420785; color:white; border:none; padding:10px 24px; border-radius:6px; font-size:15px; cursor:pointer; font-weight:bold; transition:0.2s;">
+      OK
+    </button>
+  </div>
+</div>
+
+
+
+
+
+</div>
+
 
 
 
@@ -844,26 +1173,32 @@ label {
 
 <!-- NAVIGASI BAWAH (selalu tampil) -->
 <div id="bottomNav">
-  <!-- Play (dibekukan) -->
-  <div class="nav-item" id="playFrozen">
-    <img src="destiny_icon_normal.png" alt="Play"><br>
-    <small></small>
-  </div>
-  <!-- Dunia (dibekukan) -->
-  <div class="nav-item" id="duniaFrozen">
-    <img src="match_icon_normal.png" alt="Dunia"><br>
-    <small></small>
-  </div>
-  <!-- Chat (dibekukan) -->
-  <div class="nav-item" id="chatFrozen">
-    <img src="msg_icon_normal.png" alt="Chat"><br>
-    <small></small>
-  </div>
-  <!-- Saya (fungsi lama jangan diubah) -->
-  <div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
-    <img src="mine_icon_selected.png" alt="Saya"><br>
-    <small></small>
-  </div>
+<!-- Play -->
+<div class="nav-item" onclick="setActiveNav(this); openPlayPopup()">
+  <img src="destiny_icon_normal.png" alt="Play"><br>
+  <small></small>
+</div>
+
+<!-- Dunia -->
+<!-- Dunia -->
+<div class="nav-item" onclick="setActiveNav(this); openDuniaPopup()">
+  <img src="match_icon_normal.png" alt="Dunia"><br>
+  <small></small>
+</div>
+
+<!-- Chat -->
+<!-- Sanpesan -->
+<div class="nav-item" onclick="setActiveNav(this); openSanpesanPopup()">
+  <img src="msg_icon_normal.png" alt="Sanpesan"><br>
+  <small></small>
+</div>
+
+
+<!-- Saya -->
+<div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
+  <img src="mine_icon_selected.png" alt="Saya"><br>
+  <small></small>
+</div>
 </div>
 
 
@@ -881,6 +1216,220 @@ label {
     <p style="margin:0;">Halaman sedang dibekukan sementara!<br>Mohon hubungi layanan.</p>
   </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- POPUP DUNIA -->
+<div id="duniaPopup" class="popup-overlay" style="
+    display:none; 
+    position:fixed; 
+    top:0; 
+    left:0; 
+    width:100%; 
+    height:100%; 
+    background:rgba(0,0,0,0.5); 
+    justify-content:center; 
+    align-items:center;
+    z-index:999;
+">
+ <div class="popup-box" style="
+    background:#ffffff; 
+    border-radius:12px; 
+    padding:20px; 
+    width:100%; height:100%; 
+    max-width:none; 
+    display:flex; 
+    flex-direction:column; 
+    position:relative;
+    align-items:center;
+    justify-content:center;
+  ">
+
+    <!-- HEADER SALDO -->
+    <div class="saldo-header" style="
+      position:absolute; 
+      top:40px; 
+      left:20px; right:20px;
+      background:#ffffff;              /* ganti jadi gelap biar kontras */
+      padding:6px 12px; 
+      border-radius:12px; 
+      font-weight:bold; 
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      color:#890086;
+    ">
+      <div style="display:flex; align-items:center;">
+        <img src="score_icon_wrap.png" alt="icon" 
+             style="width:20px; height:20px; margin-right:6px;">
+        <span id="saldoHostPopup3" class="saldo-text">Rp 0</span>
+      </div>
+      <img src="match_his_icon.png" alt="hispanggilll" style="width:22px; cursor:pointer;">
+
+<div id="hispanggilll" style="
+  display:none; 
+  position:fixed; 
+  top:0; 
+  left:0; 
+  width:100%; 
+  height:100%; 
+  background:rgb(255, 255, 255); 
+  justify-content:center; 
+  align-items:center;
+  z-index:1000;
+">
+  <div style="background:#fff; border-radius:12px; padding:20px; max-width:400px; width:90%; text-align:center; position:relative;">
+    <span class="closePanggilan" style="position:absolute; top:-300px; right:15px; font-size:20px; color: #686868; cursor:pointer;">✖</span>
+    <img src="page_empty_icon.png" style="max: width 60px; height:60px;">
+    <p style="margin-top:10px; color: #212121; font-weight:bold;">Tidak ada history panggilan</p>
+  </div>
+</div>
+
+
+
+
+
+      
+    </div>
+      
+<!-- Scroll Foto Profil Otomatis -->
+<!-- Scroll Foto Profil Otomatis -->
+<div id="carouselContainer" style="
+    position:relative;
+    width:100%;
+    max-width:600px;
+    margin:50px auto;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: url('global_map.png') no-repeat center center;
+    background-size: contain; /* ukuran pas dengan container */
+">
+    <div id="carouselTrack" style="
+        display:flex;
+        transition: transform 5.90s;
+        gap:0px;
+    ">
+        <div class="carousel-item"><img src="cewek10.jpeg"></div>
+        <div class="carousel-item"><img src="cewek11.jpeg"></div>
+        <div class="carousel-item"><img src="cewek12.jpg"></div>
+        <div class="carousel-item"><img src="cewek13.jpeg"></div>
+        <div class="carousel-item"><img src="cewek15.jpeg"></div>
+        <div class="carousel-item"><img src="cewek16.jpeg"></div>
+        <div class="carousel-item"><img src="cewek20.jpg"></div>
+        <div class="carousel-item"><img src="cewek21.jpeg"></div>
+        <div class="carousel-item"><img src="cewek22.jpeg"></div>
+        <div class="carousel-item"><img src="cewek23.jpeg"></div>
+        <div class="carousel-item"><img src="cewek24.jpeg"></div>
+        <div class="carousel-item"><img src="cewek25.jpeg"></div>
+        <div class="carousel-item"><img src="cewek26.jpg"></div>
+        <div class="carousel-item"><img src="cewek27.jpeg"></div>
+        <div class="carousel-item"><img src="cewek28.jpeg"></div>
+        <div class="carousel-item"><img src="cewek29.jpeg"></div>
+        <div class="carousel-item"><img src="cewek30.jpeg"></div>
+        <div class="carousel-item"><img src="cewek31.jpeg"></div>
+        <div class="carousel-item"><img src="cewek23.jpeg"></div>
+        <div class="carousel-item"><img src="cewek12.jpg"></div>
+        <div class="carousel-item"><img src="cewek10.jpeg"></div>
+        <div class="carousel-item"><img src="cewek11.jpeg"></div>
+        <div class="carousel-item"><img src="cewek12.jpg"></div>
+        <div class="carousel-item"><img src="cewek13.jpeg"></div>
+        <div class="carousel-item"><img src="cewek15.jpeg"></div>
+        <div class="carousel-item"><img src="cewek16.jpeg"></div>
+        <div class="carousel-item"><img src="cewek20.jpg"></div>
+        <div class="carousel-item"><img src="cewek21.jpeg"></div>
+        <div class="carousel-item"><img src="cewek22.jpeg"></div>
+        <div class="carousel-item"><img src="cewek23.jpeg"></div>
+        <div class="carousel-item"><img src="cewek24.jpeg"></div>
+        <div class="carousel-item"><img src="cewek25.jpeg"></div>
+        <div class="carousel-item"><img src="cewek26.jpg"></div>
+        <div class="carousel-item"><img src="cewek27.jpeg"></div>
+        <div class="carousel-item"><img src="cewek28.jpeg"></div>
+        <div class="carousel-item"><img src="cewek29.jpeg"></div>
+        <div class="carousel-item"><img src="cewek30.jpeg"></div>
+        <div class="carousel-item"><img src="cewek31.jpeg"></div>
+        <div class="carousel-item"><img src="cewek23.jpeg"></div>
+        <div class="carousel-item"><img src="cewek33.jpeg"></div>
+        
+        
+    </div>
+</div>
+
+
+    <!-- Tombol Awal -->
+    <div style="margin-top:60px; text-align:center;"> <!-- lebih banyak jarak ke bawah -->
+      <button id="openCameraBtn2" style="
+        background:#6c27b0; 
+        color:#fff; 
+        border:none; 
+        padding:12px 60px; 
+        border-radius:30px; 
+        font-size:16px; 
+        font-weight:bold; 
+        cursor:pointer;
+      ">
+        Awal
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- POPUP SANPESAN -->
+<div id="sanpesanPopup" style="display:none;
+     position:fixed;top:0;left:0;width:100%;height:100%;
+     background:rgb(255, 255, 255);z-index:999;
+     justify-content:center;align-items:center;">
+  <div style="background:#fff;padding:20px;border-radius:12px;
+              max-width:300px;text-align:center;position:relative;">
+    <img src="cert_failed_similar_user.png" alt="Sanpesan" style="width:80px;margin-bottom:15px;">
+    <p style="margin:0;"><b>Menu ini belum bisa di akses<p></b>Silakan Vrifikasi Terlebih Dahulu!</p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- PLAY POPUP -->
+<div id="playPopup" style="display:none;
+     position:fixed;top:0;left:0;width:100%;height:100%;
+     background:rgb(255, 255, 255);z-index:999;
+     justify-content:center;align-items:center;">
+  <div style="background:#fff;padding:20px;border-radius:12px;
+              max-width:300px;text-align:center;position:relative;">
+    <img src="cert_failed_similar_user.png" alt="Play" style="width:80px;margin-bottom:15px;">
+    <p style="margin:0;"><b>Menu ini belum bisa di akses<p></b>Silakan Vrifikasi Terlebih Dahulu!</p>
+  </div>
+</div>
+
+
+
+
 
 
 
@@ -1133,14 +1682,31 @@ function listenSaldo(uid) {
   unsubscribeSaldo = onSnapshot(saldoRef, (docSnap) => {
     if (docSnap.exists()) {
       const data = docSnap.data();
-      saldoHostEl.innerText =
-        "Rp " + (data.saldo || 0).toLocaleString("id-ID");
+      const saldoNumber = Number(data.saldo || 0);
+      const saldoText = "Rp " + saldoNumber.toLocaleString("id-ID");
+
+      // update ke dashboard utama
+      if (saldoHostEl) saldoHostEl.innerText = saldoText;
+
+      // update ke popup saldo 1
+      const saldoPopupEl = document.getElementById("saldoHostPopup");
+      if (saldoPopupEl) saldoPopupEl.innerText = saldoText;
+
+      // update ke popup saldo 3
+      const saldoPopupEl3 = document.getElementById("saldoHostPopup3");
+      if (saldoPopupEl3) saldoPopupEl3.innerText = saldoText;
+
     } else {
-      saldoHostEl.innerText = "Rp 0";
+      if (saldoHostEl) saldoHostEl.innerText = "Rp 0";
+
+      const saldoPopupEl = document.getElementById("saldoHostPopup");
+      if (saldoPopupEl) saldoPopupEl.innerText = "Rp 0";
+
+      const saldoPopupEl3 = document.getElementById("saldoHostPopup3");
+      if (saldoPopupEl3) saldoPopupEl3.innerText = "Rp 0";
     }
   });
 }
-
 
 
 
@@ -1470,54 +2036,115 @@ slider.addEventListener("scroll", () => {
 
 
 
+// ========================
+// GLOBAL: Tutup semua popup
+// ========================
+function closeAllPopups() {
+  const dunia = document.getElementById("duniaPopup");
+  const sanpesan = document.getElementById("sanpesanPopup");
+  const play = document.getElementById("playPopup");
+  const frozen = document.getElementById("frozenPopup");
 
-  function showPageNav(page) {
-    // sembunyikan semua page
-    document.querySelectorAll(".page-section").forEach(sec => sec.style.display = "none");
-    // tampilkan page yang dipilih
-    document.getElementById("page-" + page).style.display = "block";
-  }
-
-  function setActiveNav(el) {
-    document.querySelectorAll("#bottomNav .nav-item").forEach(item => {
-      item.classList.remove("active");
-      item.style.color = "#444";
-    });
-    el.classList.add("active");
-    el.style.color = "#e91e63"; // warna aktif
-  }
-
-  // default buka halaman play
-  document.addEventListener("DOMContentLoaded", () => {
-    showPageNav("play");
-  });
-
-
-
-
-const frozenPopup = document.getElementById("frozenPopup");
-const navItems = document.querySelectorAll(".nav-item");
-
-// fungsi set nav aktif
-function setNavActive(el) {
-  navItems.forEach(item => item.classList.remove("active"));
-  el.classList.add("active");
+  if (dunia) dunia.style.display = "none";
+  if (sanpesan) sanpesan.style.display = "none";
+  if (play) play.style.display = "none";
+  if (frozen) frozen.style.display = "none";
 }
 
-// tombol dibekukan
-["playFrozen", "duniaFrozen", "chatFrozen"].forEach(id => {
-  document.getElementById(id).onclick = (e) => {
-    setNavActive(e.currentTarget); // bikin aktif
-    frozenPopup.style.display = "flex"; // munculin popup
-  };
-});
+// ========================
+// NAVIGASI
+// ========================
+window.setActiveNav = function(el) {
+  document.querySelectorAll("#bottomNav .nav-item").forEach(item => {
+    item.classList.remove("active");
+    item.style.color = "#444"; // default
+  });
+  el.classList.add("active");
+  el.style.color = "#e91e63"; // aktif
 
-// tombol close popup
-closePopup.onclick = () => frozenPopup.style.display = "none";
-frozenPopup.onclick = (e) => {
-  if (e.target === frozenPopup) frozenPopup.style.display = "none";
+  // Tutup semua popup ketika pindah nav
+  closeAllPopups();
 };
 
+// Default buka halaman play
+document.addEventListener("DOMContentLoaded", () => {
+  showPageNav("play");
+
+  // Auto tutup popup kalau klik nav lain
+  document.querySelectorAll("#bottomNav .nav-item").forEach(nav => {
+    nav.addEventListener("click", () => {
+      closeAllPopups();
+    });
+  });
+
+  // Tombol close manual Sanpesan
+  const closeSanpesanBtn = document.getElementById("closeSanpesanPopup");
+  if (closeSanpesanBtn) {
+    closeSanpesanBtn.addEventListener("click", () => closeSanpesanPopup());
+  }
+
+  // Tombol close manual Dunia
+  const closeDuniaBtn = document.getElementById("closeDuniaPopup");
+  if (closeDuniaBtn) {
+    closeDuniaBtn.addEventListener("click", () => closeDuniaPopup());
+  }
+
+  // Tombol close manual Play
+  const closePlayBtn = document.getElementById("closePlayPopup");
+  if (closePlayBtn) {
+    closePlayBtn.addEventListener("click", () => closePlayPopup());
+  }
+});
+
+// ========================
+// DUNIA POPUP
+// ========================
+window.openDuniaPopup = function() {
+  closeAllPopups(); // pastikan popup lain tertutup
+  document.getElementById("duniaPopup").style.display = "flex";
+};
+
+window.closeDuniaPopup = function() {
+  document.getElementById("duniaPopup").style.display = "none";
+};
+
+// ========================
+// SANPESAN POPUP
+// ========================
+window.openSanpesanPopup = function() {
+  closeAllPopups(); // pastikan popup lain tertutup
+  document.getElementById("sanpesanPopup").style.display = "flex";
+};
+
+window.closeSanpesanPopup = function() {
+  document.getElementById("sanpesanPopup").style.display = "none";
+};
+
+// ========================
+// PLAY POPUP
+// ========================
+window.openPlayPopup = function() {
+  closeAllPopups(); // pastikan popup lain tertutup
+  document.getElementById("playPopup").style.display = "flex";
+};
+
+window.closePlayPopup = function() {
+  document.getElementById("playPopup").style.display = "none";
+};
+
+// ========================
+// FROZEN POPUP
+// ========================
+const frozenPopup = document.getElementById("frozenPopup");
+
+if (closePopup) {
+  closePopup.onclick = () => frozenPopup.style.display = "none";
+}
+if (frozenPopup) {
+  frozenPopup.onclick = (e) => {
+    if (e.target === frozenPopup) frozenPopup.style.display = "none";
+  };
+}
 
 
 
@@ -1633,6 +2260,229 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
+
+
+
+
+
+
+
+
+
+const openBtn = document.getElementById("openCameraBtn");   // gambar
+const openBtn2 = document.getElementById("openCameraBtn2"); // tombol Awal
+const closeBtn = document.getElementById("closeCameraBtn");
+const popup = document.getElementById("cameraPopup");
+const video = document.getElementById("customCameraVideo");
+const loading = document.getElementById("loadingOverlay");
+const inactivePopup = document.getElementById("inactivePopup");
+const skipBtn = document.getElementById("skipBtn");
+const chatBox = document.getElementById("chatBox");
+const chatInput = document.getElementById("chatInput");
+const chatSendBtn = document.getElementById("chatSendBtn");
+let camStream = null;
+
+// ✅ fungsi buka kamera
+async function openCamera() {
+  popup.style.display = "block";
+  inactivePopup.style.display = "none"; // reset popup
+  loading.style.display = "block";      // tampilkan loading
+
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = camStream;
+    video.play();
+
+    // setelah 2 detik → pause video, sembunyikan loading, tampilkan inactivePopup
+    setTimeout(() => {
+      if (popup.style.display === "block") {
+        video.pause();
+        loading.style.display = "none";
+        inactivePopup.style.display = "flex";
+      }
+    }, 2000);
+
+  } catch (err) {
+    alert("Gagal membuka kamera: " + err.message);
+    popup.style.display = "none";
+  }
+}
+
+// ✅ event listener untuk 2 tombol
+if (openBtn) openBtn.addEventListener("click", openCamera);
+if (openBtn2) openBtn2.addEventListener("click", openCamera);
+
+// ✅ tombol tutup kamera
+closeBtn.addEventListener("click", () => {
+  if (camStream) {
+    camStream.getTracks().forEach(track => track.stop());
+    camStream = null;
+  }
+  video.srcObject = null;
+  popup.style.display = "none";
+});
+
+// ✅ tombol skip (cari lawan baru)
+skipBtn.addEventListener("click", () => {
+  video.pause();
+  loading.style.display = "block";
+  inactivePopup.style.display = "none"; // reset popup
+
+  setTimeout(() => {
+    if (popup.style.display === "block") {
+      video.pause();
+      loading.style.display = "none";
+      inactivePopup.style.display = "flex";
+    }
+  }, 2000);
+});
+
+// ✅ kirim pesan chat
+chatSendBtn.addEventListener("click", () => {
+  const msg = chatInput.value.trim();
+  if (!msg) return;
+
+  const p = document.createElement("p");
+  p.textContent = msg;
+  p.style.margin = "5px 0";
+  p.style.textAlign = "right"; 
+  p.style.color = "#4CAF50";
+
+  chatBox.appendChild(p);
+  chatBox.scrollTop = chatBox.scrollHeight;
+  chatInput.value = "";
+});
+
+
+
+// ================== 🎁 GIFT FEATURE ==================
+const giftBtn = document.getElementById("giftBtn");
+const giftPopup = document.getElementById("giftPopup");
+
+// buka / tutup popup gift
+giftBtn.addEventListener("click", () => {
+  giftPopup.style.display = (giftPopup.style.display === "block") ? "none" : "block";
+});
+
+// klik gift → animasi muncul di chat
+document.querySelectorAll(".giftOption").forEach(gift => {
+  gift.addEventListener("click", () => {
+    giftPopup.style.display = "none"; 
+
+    // ambil poin dari atribut
+    const points = gift.dataset.points || 0;
+
+    // clone gift buat animasi terbang
+    const flyingGift = gift.cloneNode(true);
+    flyingGift.classList.add("gift-flying");
+    document.body.appendChild(flyingGift);
+
+    // bikin teks poin melayang
+    const floatingPoints = document.createElement("div");
+    floatingPoints.textContent = `+${points}`;
+    floatingPoints.classList.add("points-flying");
+    document.body.appendChild(floatingPoints);
+
+    // setelah animasi selesai
+    setTimeout(() => {
+      flyingGift.remove();
+      floatingPoints.remove();
+
+      // masukin ke chat
+      const wrapper = document.createElement("p");
+      wrapper.style.margin = "5px 0";
+      wrapper.style.textAlign = "center";
+
+      const clone = gift.cloneNode(true);
+      wrapper.appendChild(clone);
+
+      const pointSpan = document.createElement("span");
+      pointSpan.textContent = ` +${points}`;
+      pointSpan.style.marginLeft = "6px";
+      pointSpan.style.color = "yellow";
+      wrapper.appendChild(pointSpan);
+
+      chatBox.appendChild(wrapper);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // gift di chat hilang setelah 10 detik
+      setTimeout(() => {
+        wrapper.remove();
+      }, 100000);
+    }, 2500);
+  });
+});
+
+
+
+
+
+
+
+const container = document.getElementById('carouselContainer');
+const track = document.getElementById('carouselTrack');
+const items = track.querySelectorAll('.carousel-item');
+
+let scrollPos = 0;
+const speed = 0.7; // pixel per frame
+
+function updateScale() {
+    const containerRect = container.getBoundingClientRect();
+    const containerCenter = containerRect.left + containerRect.width / 2;
+
+    items.forEach(item => {
+        const itemRect = item.getBoundingClientRect();
+        const itemCenter = itemRect.left + itemRect.width / 2;
+        const distance = Math.abs(containerCenter - itemCenter);
+
+        const scale = Math.max(0.5, 1 - distance / 300);
+        item.querySelector('img').style.transform = `scale(${scale})`;
+    });
+}
+
+function autoScroll() {
+    scrollPos += speed;
+    if(scrollPos > track.scrollWidth - container.offsetWidth) scrollPos = 0;
+    track.style.transform = `translateX(${-scrollPos}px)`;
+    updateScale();
+}
+
+setInterval(autoScroll, 20);
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const historyIcon = document.querySelector('img[alt="hispanggilll"]'); 
+  const historyPopup = document.getElementById("hispanggilll");
+  const closeHistoryPopup = document.querySelector("#hispanggilll .closePanggilan");
+
+  if (historyIcon && historyPopup && closeHistoryPopup) {
+    // buka popup saat klik icon
+    historyIcon.addEventListener("click", () => {
+      historyPopup.style.display = "flex";
+    });
+
+    // tutup popup saat klik tombol X
+    closeHistoryPopup.addEventListener("click", () => {
+      historyPopup.style.display = "none";
+    });
+
+    // tutup popup saat klik di luar box
+    historyPopup.addEventListener("click", (e) => {
+      if (e.target === historyPopup) {
+        historyPopup.style.display = "none";
+      }
+    });
+  }
+});
+
+
+
 </script>
 
  
