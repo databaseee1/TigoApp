@@ -147,7 +147,7 @@ function loadUsersTagihan() {
         <td>${user.wa || "-"}</td>
         <td id="tagihan-${uid}">Rp ${(user.jumlahTagihan || 0).toLocaleString("id-ID")}</td>
         <td>
-          <input type="number" id="input-${uid}" placeholder="Nominal" style="width:100px;">
+          <input type="number" id="input-${uid}" placeholder="Nominal" style="width:100px; border-radius:10px;">
           <button id="btn-add-${uid}" onclick="updateTagihanUser('${uid}', 'tambah')">Tambah</button>
           <button id="btn-sub-${uid}" onclick="updateTagihanUser('${uid}', 'kurangi')">Kurangi</button>
         </td>
@@ -248,38 +248,47 @@ tr.innerHTML = `
   <td>Rp ${nominal.toLocaleString("id-ID")}</td>
   <td>${data.timestamp?.toDate ? data.timestamp.toDate().toLocaleString("id-ID") : '-'}</td>
   <td ${statusColor}>${data.status || 'pending'}</td>
+
   <td>
+  <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px;">
+    <!-- 🔹 Aksi Deposit -->
     <button onclick="updateDepositStatus('${docSnap.id}','${data.uid}','${data.subId}','approve')" 
-      style="background:green;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+      style="background:green; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">
       Approve
     </button>
+
     <button onclick="updateDepositStatus('${docSnap.id}','${data.uid}','${data.subId}','pending')" 
-      style="background:orange;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+      style="background:orange; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">
       Pending
     </button>
+
     <button onclick="updateDepositStatus('${docSnap.id}','${data.uid}','${data.subId}','tolak')" 
-      style="background:red;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+      style="background:red; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">
       Tolak
     </button>
+
     <button onclick="hapusDeposit('${docSnap.id}','${data.uid}','${data.subId}')" 
-      style="background:gray;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+      style="background:gray; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">
       Hapus
     </button>
 
-    <!-- 🔹 Tombol Aksi User -->
+    <!-- 🔹 Aksi User -->
     <button onclick="updateUserStatus('${data.uid}','active')" 
-      style="background:#000000;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
+      style="background:#00a898; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">
       Aktifkan
     </button>
+
     <button onclick="updateUserStatus('${data.uid}','suspended')" 
-      style="background:#000000;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
-      Suspanse
+      style="background:#000; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">
+      Suspend
     </button>
+
     <button onclick="updateUserStatus('${data.uid}','deleted')" 
-      style="background:#000000;color:#fff;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;">
-      Detele data
+      style="background:#000; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">
+      Delete Data
     </button>
-  </td>
+  </div>
+</td>
 `;
 
 
@@ -901,17 +910,28 @@ document.addEventListener("DOMContentLoaded", () => {
         ? `<span style="color:green;font-weight:bold;">Diverifikasi</span>` 
         : `<span style="color:red;font-weight:bold;">Unverifikasi</span>`}
     </td>
-    <td>
-      <button class="verify-btn" data-id="${userId}" data-status="true">Verifikasi</button>
-      <button class="verify-btn" data-id="${userId}" data-status="false">Batalkan</button>
-      <button class="delete-btn" data-id="${userId}" style="color: #ffffff; background: red;">Delete</button>
-      <button class="mark-btn" data-id="${userId}" style="background: orange; color: #fff;">Sudah</button>
-      <button class="note-btn" data-id="${userId}" data-nama="${data.nama || '-'}" style="background:#4caf50;color:#fff;">Catatan</button>
-      <div id="suuukkses-${userId}" class="suuukkses-btn" style="margin-top:5px;padding:5px 10px;background:#ddd;border-radius:4px;cursor:pointer;text-align:center;">
-        Sukses</div>
-    </td>
+<td>
+  <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px;">
+    <button class="verify-btn" data-id="${userId}" data-status="true">Verifikasi</button>
+    <button class="verify-btn" data-id="${userId}" data-status="false">Batalkan</button>
+
+    <button class="delete-btn" data-id="${userId}" 
+      style="color:#fff; background:red;">Delete</button>
+    <button class="mark-btn" data-id="${userId}" 
+      style="background:orange; color:#fff;">Sudah</button>
+
+    <button class="note-btn" data-id="${userId}" data-nama="${data.nama || '-'}" 
+      style="background:#4caf50; color:#fff;">Catatan</button>
+    <div id="suuukkses-${userId}" class="suuukkses-btn" 
+      style="padding:5px 10px; background:#ddd; border-radius:4px; cursor:pointer; text-align:center;">
+      Sukses
+    </div>
+  </div>
+</td>
+  
   `;
 
+  
   // ✅ Jika statusHijau = true → seluruh baris hijau
   if (data.statusHijau) {
     tr.style.background = "#4caf50";  // hijau
@@ -1783,7 +1803,6 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
   }
   .main {
     margin-left: 0;
-    padding: 10px 5px 150px;
   }
 }
 
@@ -2038,7 +2057,7 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 
 
 <!-- ✅ Halaman Kontrol Chat -->
-<div id="chatControl" style="display:none; padding:20px;">
+<div id="chatControl" class="page" style="display:none; padding:20px;">
   <h2>Kontrol Chat User</h2>
   <table border="1" cellpadding="8" cellspacing="0" style="width:100%; margin-top:10px;">
     <thead>
@@ -2071,7 +2090,7 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 
 
   <!-- ✅ Tambah Credit Section -->
-  <div id="tambahCreditSection" style="display:none;padding:20px;">
+  <div id="tambahCreditSection"  class="page" style="display:none;padding:20px;">
     <h2>Manajemen Credit User</h2>
     <table border="1" cellpadding="8" cellspacing="0" style="width:100%;margin-top:10px;">
       <thead>
@@ -2087,25 +2106,29 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
     </table>
   </div>
 
-  <!-- ✅ User DPO -->
-  <div id="userdpo" style="display:none;padding:20px;">
-    <h2>Permintaan Deposit User</h2>
-    <table border="1" width="100%" style="border-collapse:collapse;text-align:center;">
-      <thead style="background:#eee;">
-        <tr>
-          <th>Nama Lengkap</th>
-          <th>Email</th>
-          <th>No WA</th>
-          <th>Total Deposit</th>
-          <th>Terakhir Deposit</th>
-          <th>Status</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody id="userdpoTableBody"></tbody>
-    </table>
-    <div id="grandTotal" style="margin-top:15px;font-weight:bold;"></div>
-  </div>
+<!-- ✅ User DPO -->
+<div id="userdpo" class="page" style="display:none; padding:20px;">
+  <h2>Permintaan Deposit User</h2>
+  <table border="1" width="100%" style="border-collapse:collapse;text-align:center;">
+    <thead style="background:#eee;">
+      <tr>
+        <th>Nama Lengkap</th>
+        <th>Email</th>
+        <th>No WA</th>
+        <th>Total Deposit</th>
+        <th>Terakhir Deposit</th>
+        <th>Status</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="userdpoTableBody"></tbody>
+  </table>
+  <div id="grandTotal" style="margin-top:15px;font-weight:bold;"></div>
+</div>
+
+
+
+
 
   <!-- ✅ Overlay -->
   <div id="csOverlay" onclick="closeAllPopups()" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;"></div>
@@ -2148,22 +2171,22 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
   </div>
 
   <!-- ✅ Saldo Host -->
-  <div id="saldoHostAdmin" style="display:none;padding:20px;">
-    <h2>Kelola Saldo Host</h2>
-    <table id="saldoHostTable" border="1" style="width:100%;border-collapse:collapse;margin-top:10px;">
-      <thead style="background:#7f3586;color:#fff;">
-        <tr>
-          <th style="padding:8px;">Nama</th>
-          <th style="padding:8px;">Email</th>
-          <th style="padding:8px;">WA</th>
-          <th style="padding:8px;">Saldo Host</th>
-          <th style="padding:8px;">Aksi</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
+<!-- ✅ Saldo Host -->
+<div id="saldoHostAdmin" class="page" style="display:none; padding:20px;">
+  <h2>Kelola Saldo Host</h2>
+  <table id="saldoHostTable" border="1" style="width:100%; border-collapse:collapse; margin-top:10px;">
+    <thead style="background:#7f3586;color:#fff;">
+      <tr>
+        <th style="padding:8px;">Nama</th>
+        <th style="padding:8px;">Email</th>
+        <th style="padding:8px;">WA</th>
+        <th style="padding:8px;">Saldo Host</th>
+        <th style="padding:8px;">Aksi</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
 
 
 
@@ -2316,57 +2339,61 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 
 
 
-
-<!-- Halaman Kelola Coin -->
+<!-- ✅ Halaman Kelola Coin -->
 <div id="kelolaCoin" class="page" style="display:none; margin-top:20px; display:flex; justify-content:center;">
 
-  <div style="background:#fff; border-radius:12px; padding:20px 24px; box-shadow:0 4px 12px rgba(0,0,0,0.08); width:100%; max-width:420px; font-family:Arial, sans-serif;">
+  <div style="background:#fff; border-radius:16px; padding:24px; box-shadow:0 6px 18px rgba(0,0,0,0.08); width:100%; max-width:480px; font-family:'Segoe UI', Tahoma, sans-serif;">
 
-    <h2 style="margin:0 0 18px; font-size:20px; font-weight:600; border-bottom:1px solid #eee; padding-bottom:10px; color:#333; text-align:center;">
-      Kelola Coin User
+    <h2 style="margin:0 0 20px; font-size:22px; font-weight:700; color:#333; text-align:center;">
+      💰 Kelola Coin User
     </h2>
 
-    <!-- Dropdown pilih user -->
+    <!-- 🔹 Dropdown pilih user -->
     <label for="admin-selectUser" style="font-size:14px; font-weight:600; color:#555;">Pilih User:</label>
     <select id="admin-selectUser" onchange="showUserInfo()" 
-      style="width:100%; padding:10px; margin-top:6px; border-radius:8px; border:1px solid #ccc; font-size:14px;">
-
+      style="width:100%; padding:12px; margin-top:8px; border-radius:10px; border:1px solid #ccc; font-size:14px; background:#fafafa; transition:all .2s;">
       <option value="">-- Pilih User --</option>
       <!-- opsi user diisi lewat JS -->
     </select>
 
-    <!-- Info user -->
-    <div id="admin-userInfo" style="display:none; margin-top:20px; font-size:14px; color:#444;">
-      
-      <div style="margin:8px 0; display:flex; justify-content:space-between;">
-        <span><b>Nama Rek:</b></span> <span id="admin-selectedUserRek">-</span>
-      </div>
-      <div style="margin:8px 0; display:flex; justify-content:space-between;">
-        <span><b>ID User:</b></span> <span id="admin-selectedUserId">-</span>
-      </div>
-      <div style="margin:8px 0; display:flex; justify-content:space-between;">
-        <span><b>Nama:</b></span> <span id="admin-selectedUserName">-</span>
-      </div>
-      <div style="margin:8px 0; display:flex; justify-content:space-between;">
-        <span><b>Saldo Coin:</b></span> <span id="admin-selectedUserCoin">0</span>
+    <!-- 🔹 Info user -->
+    <div id="admin-userInfo" style="display:none; margin-top:24px;">
+
+      <!-- Card info -->
+      <div style="background:#f9f9f9; border:1px solid #eee; border-radius:12px; padding:16px;">
+
+        <div style="margin:10px 0; display:flex; justify-content:space-between; font-size:15px; color:#333;">
+          <span><b>Nama Rek:</b></span> <span id="admin-selectedUserRek">-</span>
+        </div>
+
+        <div style="margin:10px 0; display:flex; justify-content:space-between; font-size:15px; color:#333;">
+          <span><b>ID User:</b></span> <span id="admin-selectedUserId">-</span>
+        </div>
+
+        <div style="margin:10px 0; display:flex; justify-content:space-between; font-size:15px; color:#333;">
+          <span><b>Nama:</b></span> <span id="admin-selectedUserName">-</span>
+        </div>
+
+        <div style="margin:10px 0; display:flex; justify-content:space-between; font-size:15px; color:#333;">
+          <span><b>Saldo Coin:</b></span> 
+          <span id="admin-selectedUserCoin" style="font-weight:700; color:#4caf50;">0</span>
+        </div>
       </div>
 
+      <!-- 🔹 Tombol aksi -->
       <div style="margin-top:20px; display:flex; gap:12px;">
         <button onclick="tambahSaldoCoin()" 
-          style="flex:1; padding:10px; border:none; border-radius:8px; cursor:pointer; font-weight:600; background:#4caf50; color:white; transition:0.2s;">
-          + Tambah
+          style="flex:1; padding:12px; border:none; border-radius:10px; cursor:pointer; font-weight:600; font-size:14px; background:#4caf50; color:white; transition:0.2s; box-shadow:0 3px 6px rgba(0,0,0,0.15);">
+          ➕ Tambah
         </button>
+
         <button onclick="kurangiSaldoCoin()" 
-          style="flex:1; padding:10px; border:none; border-radius:8px; cursor:pointer; font-weight:600; background:#f44336; color:white; transition:0.2s;">
-          - Kurangi
+          style="flex:1; padding:12px; border:none; border-radius:10px; cursor:pointer; font-weight:600; font-size:14px; background:#f44336; color:white; transition:0.2s; box-shadow:0 3px 6px rgba(0,0,0,0.15);">
+          ➖ Kurangi
         </button>
       </div>
     </div>
   </div>
-
-
-
-  
 </div>
 
 
@@ -2402,22 +2429,22 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 
 
 
-  <!-- ✅ Update Tagihan -->
-<h2>ATUR TAGIHAN</h2>
-<table border="1" cellpadding="8" cellspacing="0" style="width:100%; text-align:left;">
-  <thead>
-    <tr>
-      <th>Nama</th>
-      <th>Email</th>
-      <th>WA</th>
-      <th>Jumlah Tagihan</th>
-      <th>Aksi</th>
-    </tr>
-  </thead>
-  <tbody id="userTable"></tbody>
-</table>
-
-
+<!-- ✅ Update Tagihan -->
+<div id="updateTagihan" class="page" style="display:none; padding:20px;">
+  <h2>Atur Tagihan</h2>
+  <table border="1" cellpadding="8" cellspacing="0" style="width:100%; text-align:left; border-collapse:collapse;">
+    <thead style="background:#f5f5f5;">
+      <tr>
+        <th>Nama</th>
+        <th>Email</th>
+        <th>WA</th>
+        <th>Jumlah Tagihan</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+    <tbody id="userTable"></tbody>
+  </table>
+</div>
 
 
 
@@ -2467,7 +2494,7 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 
 </div>  <!-- ✅menu  tutup login  -->
 
-
+  </div> <!-- end main -->
 <!-- ✅ Tutup Wrapper Dashboard -->
 </div> <!-- End of Dashboard -->
 
