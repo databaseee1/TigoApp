@@ -1512,9 +1512,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     loginCard.style.display = "none";
     actionCard.style.display = "block";
     listenSaldo(currentUser.uid);
+    listenTagihan(currentUser.uid);   // ✅ tambahkan ini
+    listenUserStatus(currentUser.uid); // ✅ biar status juga tetap jalan
   }
 });
-
 
 
 
