@@ -694,7 +694,7 @@ label {
   --bg-image: url('nature1.webp'); /* default */
 }
 
-/* Background dengan blur + animasi turun */
+/* Background dengan blur */
 #loginOverlay::before {
   content: "";
   position: absolute;
@@ -706,23 +706,9 @@ label {
   filter: blur(6px);
   transform: scale(1.1);
   z-index: 1;
-
-  /* animasi */
-  animation: slideDown 0.8s ease;
-  transition: background 1s ease-in-out; /* transisi halus antar gambar */
+  transition: background 1s ease-in-out; /* efek halus saat ganti */
 }
 
-/* 🔹 Animasi turun */
-@keyframes slideDown {
-  from {
-    transform: scale(1.1) translateY(-25px); /* mulai agak di atas */
-    opacity: 0.6;
-  }
-  to {
-    transform: scale(1.1) translateY(0); /* normal */
-    opacity: 1;
-  }
-}
 
 
 
@@ -2922,14 +2908,13 @@ const overlay = document.getElementById("loginOverlay");
 // ✅ tampilkan gambar pertama langsung
 overlay.style.setProperty("--bg-image", `url('${images[index]}')`);
 
-// ✅ ganti gambar setiap 3 detik
+// ✅ ganti gambar setiap 2 detik
 setInterval(() => {
   index = (index + 1) % images.length;
   overlay.style.setProperty("--bg-image", `url('${images[index]}')`);
-
-  // restart animasi tiap kali ganti
-  const beforeEl = overlay.querySelector("::before");
 }, 3000);
+
+
 
 
 
