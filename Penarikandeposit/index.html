@@ -933,7 +933,94 @@ label {
     position:relative;
     margin-top:-10px;
   ">
-    <h2 style="text-align:center; font-size: 15px; margin-bottom:20px;">Detail Rekening</h2>
+<div style="
+  background:#fff; 
+  width:90%; 
+  max-width:400px; 
+  border-radius:12px; 
+  padding:20px; 
+  position:relative; /* penting supaya absolute bekerja */
+  margin-top:-10px;
+">
+  <!-- Judul -->
+  <h2 style="
+    text-align:center; 
+    font-size:15px; 
+    margin-bottom:20px;
+  ">
+    Detail Rekening
+  </h2>
+
+  <!-- Gear di pojok kanan -->
+  <img src="gear.png" alt="leeeogo" 
+       style="width:35px; height:30px; position:absolute; top:27px; right:1px; cursor:pointer;">
+</div>
+
+<!-- =================== POPUP EDIT DATA =================== -->
+<div id="editPopup" style="
+  display:none; 
+  position:fixed; 
+  top:0; left:0; width:100%; height:100%; 
+  background:rgb(255, 255, 255); 
+  z-index:10000; 
+  justify-content:center; align-items:center;
+">
+  <div style="
+    background:#fff; 
+    width:90%; max-width:400px; 
+    border-radius:12px; 
+    padding:20px; 
+    position:relative;
+  ">
+    <!-- Tombol Close -->
+    <span id="closeEditPopup" style="
+      position:absolute; top:10px; right:15px; 
+      font-size:20px; cursor:pointer;">✖</span>
+
+    <h3 style="text-align:center; margin-bottom:15px;">Edit Data</h3>
+
+    <form id="editForm">
+      <label>Nama Lengkap:</label>
+      <input type="text" id="editNama" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:10px;">
+
+      <label>Umur:</label>
+      <input type="number" id="editUmur" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:10px;">
+
+      <label>Ganti Password:</label>
+<input type="password" id="editWA" 
+  style="width:100%; padding:8px; margin-bottom:15px; border:1px solid #ccc; border-radius:10px;">
+      <button type="submit" style="width:100%; padding:10px; background:#7636ff; color:#fff; border:none; border-radius:20px; cursor:pointer;">
+        Simpan Perubahan
+      </button>
+    </form>
+  </div>
+
+</div>
+
+<!-- 🔹 Notifikasi Kecil -->
+<div id="notif" style="
+  display:none;
+  position:fixed;
+  top:20px; right:20px;
+  background:#d5d5d5;
+  color:#fff;
+  padding:10px 16px;
+  border-radius:8px;
+  font-size:14px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+  z-index:20000;
+  align-items:center;
+  gap:8px;
+  opacity:0;
+  transition:opacity 0.4s ease;
+">
+  <img src="servant_icon.png" alt="icon" style="width:20px; height:20px; border-radius:4px;">
+  <span>Data berhasil diperbarui!</span>
+</div>
+
+
+
+
 
 <div style="border:1px solid #ddd; border-radius:8px; padding:16px; background:#fff;">
 
@@ -1735,7 +1822,7 @@ label {
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { 
   getFirestore, collection, query, where, getDocs, addDoc,
-  doc, getDoc, onSnapshot, Timestamp, orderBy
+  doc,updateDoc, getDoc, onSnapshot, Timestamp, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
@@ -1809,6 +1896,10 @@ const historyHeader = document.getElementById("historyHeader");
 const historyTotal  = document.getElementById("historyTotal");
 const txList        = document.getElementById("txList");
 const nomErr        = document.getElementById("nomErr");
+const gearBtn = document.querySelector('img[alt="leeeogo"]'); 
+const editPopup = document.getElementById("editPopup");
+const closeEditPopup = document.getElementById("closeEditPopup");
+const editForm = document.getElementById("editForm");
 
 // ---------- HELPER ----------
 function formatRpShort(n) {
@@ -2913,6 +3004,101 @@ setInterval(() => {
   index = (index + 1) % images.length;
   overlay.style.setProperty("--bg-image", `url('${images[index]}')`);
 }, 3000);
+
+
+
+
+
+
+
+
+
+// Buka popup
+gearBtn.addEventListener("click", async () => {
+  if (!currentUser) return;
+
+  try {
+    const userRef = doc(db, "pendaftaran", currentUser.uid);
+    const snap = await getDoc(userRef);
+    if (snap.exists()) {
+      const data = snap.data();
+      document.getElementById("editNama").value = data.nama || "";
+      document.getElementById("editUmur").value = data.umur || "";
+      document.getElementById("editWA").value   = data.wa || "";
+    }
+    editPopup.style.display = "flex";
+  } catch (err) {
+    console.error("Gagal ambil data edit:", err);
+    alert("Gagal ambil data.");
+  }
+});
+
+// Tutup popup
+closeEditPopup.addEventListener("click", () => {
+  editPopup.style.display = "none";
+});
+
+
+
+
+// ======== Fungsi tampilkan notif kecil ========
+// ======== Fungsi tampilkan notif kecil ========
+function showNotif(msg, success = true) {
+  const notif = document.getElementById("notif");
+  const span = notif.querySelector("span");
+
+  // ubah teks
+  span.textContent = msg;
+
+  // warna background
+  notif.style.background = success ? "#4caf50" : "#f44336";
+
+  // pastikan gaya awal
+  notif.style.display = "flex";
+  notif.style.opacity = "1";
+  notif.style.transition = "opacity 0.4s ease";
+
+  // clear timeout lama biar gak numpuk
+  if (notif.hideTimeout) clearTimeout(notif.hideTimeout);
+
+  // auto hilang
+  notif.hideTimeout = setTimeout(() => {
+    notif.style.opacity = "0";
+    setTimeout(() => {
+      notif.style.display = "none";
+    }, 400);
+  }, 5500);
+}
+// ====== Simpan perubahan ======
+editForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!currentUser) {
+    showNotif("User belum login!", false);
+    return;
+  }
+
+  const nama = document.getElementById("editNama").value.trim();
+  const umur = parseInt(document.getElementById("editUmur").value.trim(), 10) || null;
+  const wa   = document.getElementById("editWA").value.trim();
+
+  try {
+    const userRef = doc(db, "pendaftaran", currentUser.uid);
+    await updateDoc(userRef, { nama, umur, wa });
+
+    showNotif("Data berhasil diperbarui!");
+    editPopup.style.display = "none";
+  } catch (err) {
+    console.error("🔥 Error update data:", err);
+    showNotif("Gagal simpan perubahan: " + err.message, false);
+  }
+});
+
+
+
+
+
+
+
 
 
 
