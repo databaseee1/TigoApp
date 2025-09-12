@@ -32,6 +32,23 @@
   color: var(--text);
 }
 
+img, button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Hilangkan efek biru di HP */
+* {
+  -webkit-tap-highlight-color: transparent; /* Safari & Chrome */
+  -webkit-touch-callout: none;              /* iOS biar ga ada menu saat tahan */
+}
+
+
+
+
+
+
+
+
   .nav-item.active {
     color:#000; /* teks hitam */
     font-weight:bold;
