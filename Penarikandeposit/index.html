@@ -688,7 +688,7 @@ label {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
+  z-index: 999;
   overflow: hidden;
   position: relative;
   --bg-image: url('nature1.webp'); /* default */
@@ -708,6 +708,173 @@ label {
   z-index: 1;
   transition: background 1s ease-in-out; /* efek halus saat ganti */
 }
+
+
+
+
+
+
+
+
+
+
+
+/* 🔹 POPUP INBOX */
+.boxinbox {
+  display: none;
+  position: fixed;
+  top: 0; 
+  left: 0;
+  width: 100%; height: 100%;
+  background: #fff;
+  z-index: 999;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+}
+
+/* 🔹 Header Inbox */
+/* Popup inbox */
+#inboooxxxxxx {
+  position: fixed;
+  bottom: 60px; /* di atas nav */
+  left: 0;
+  width: 100%;
+  max-height: 100%;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+  display: none;
+  flex-direction: column; /* biar isi berbaris vertikal */
+  overflow: hidden;
+  z-index: 999;
+}
+/* List chat */
+#inboooxxxxxx .boxinbox-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+/* Satu chat */
+#inboooxxxxxx .chat-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+}
+
+#inboooxxxxxx .chat-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+#inboooxxxxxx .chat-item .chat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+#inboooxxxxxx .chat-item .chat-info .name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+#inboooxxxxxx .chat-item .chat-info .last-msg {
+  font-size: 12px;
+  color: #666;
+}
+
+/* 🔹 Avatar */
+.chat-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* 🔹 Info Chat */
+.chat-info {
+  flex: 1;
+  min-width: 0;
+}
+.chat-info h4 {
+  font-size: 15px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.chat-info p {
+  font-size: 13px;
+  color: #666;
+  margin: 2px 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 🔹 Badge Host */
+.host-badge {
+  background: #e91e63;
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+/* 🔹 Badge Notifikasi */
+.notifi-badge {
+  background: #e91e63;
+  color: #fff;
+  font-size: 11px;
+  padding: 3px 7px;
+  border-radius: 50px;
+  margin-left: auto;
+}
+
+/* 🔹 Waktu Chat */
+.chat-time {
+  font-size: 11px;
+  color: #999;
+  margin-left: auto;
+}
+
+
+
+/* === Popup Chat Fullscreen === */
+#chatPopup {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #fff;
+  display: none;
+  flex-direction: column;
+  z-index: 10001;
+  box-sizing: border-box;
+}
+
+/* === Area pesan === */
+#popupMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;   /* jarak antar pesan */
+}
+
+
+/* === Detail chat tersembunyi (source data) === */
+.chat-detail {
+  display: none;  /* jangan tampil di luar popup */
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+
 
 
 
@@ -1571,11 +1738,13 @@ label {
     <small></small>
   </div>
 
-  <!-- Chat -->
-  <div class="nav-item" onclick="setActiveNav(this); openSanpesanPopup()">
-    <img src="msg_icon_normal.png" alt="Sanpesan"><br>
-    <small></small>
-  </div>
+<!-- 🔹 NAV ITEM -->
+<div class="nav-item" onclick="setActiveNav(this); openInboxxxxPopup()">
+  <img src="msg_icon_normal.png" alt="Inboxxxx" style="width:38px;"><br>
+  <small></small>
+</div>
+
+
 
   <!-- Saya -->
   <div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
@@ -1767,28 +1936,6 @@ label {
 
 
 
-
-
-
-<!-- POPUP SANPESAN -->
-<div id="sanpesanPopup" style="display:none;
-     position:fixed;top:0;left:0;width:100%;height:100%;
-     background:rgb(255, 255, 255);z-index:999;
-     justify-content:center;align-items:center;">
-  <div style="background:#fff;padding:20px;border-radius:12px;
-              max-width:300px;text-align:center;position:relative;">
-    <img src="cert_failed_similar_user.png" alt="Sanpesan" style="width:80px;margin-bottom:15px;">
-    <p style="margin:0;"><b>Menu ini belum bisa di akses<p></b>Silakan Vrifikasi Terlebih Dahulu!</p>
-  </div>
-</div>
-
-
-
-
-
-
-
-
 <!-- PLAY POPUP -->
 <div id="playPopup" style="display:none;
      position:fixed;top:0;left:0;width:100%;height:100%;
@@ -1800,6 +1947,228 @@ label {
     <p style="margin:0;"><b>Menu ini belum bisa di akses<p></b>Silakan Vrifikasi Terlebih Dahulu!</p>
   </div>
 </div>
+
+
+
+
+
+
+
+
+<!-- 🔹 POPUP INBOX FULL -->
+<div id="inboooxxxxxx" class="boxinbox" style="
+  display:none;
+  position: fixed;
+  top:0;
+   left:0;
+  width:100%; height:100%;
+  background:#fff;
+  z-index:999;
+  overflow-y:auto;
+">
+  <!-- Header -->
+<div style="position:fixed; top:0; left:0; width:95%; background:#fff; padding:15px; 
+            display:flex; justify-content:space-between; 
+            align-items:center; z-index:10000;">
+
+  <!-- Tabs Pesan & Panggilan -->
+  <div style="display:flex; gap:15px; font-size:16px;">
+    <span style="font-weight:bold; color:#000;">Pesan</span>
+    <span id="openCallsPopup" style="color:#999; cursor:pointer;">Panggilan</span>
+  </div>
+
+  <!-- Icon kanan -->
+  <!-- Icon kanan -->
+<div style="display:flex; align-items:center; gap:15px;">
+  
+  <!-- Ikon User dengan Badge -->
+<!-- === Ganti atau tambahkan id ini pada elemen trigger-mu === -->
+<div id="friendsBtn" style="position:relative; font-size:20px; cursor:pointer;">
+  <img src="msg_icon_friend.png" alt="Friends" style="width:24px; height:24px;">
+  <span style="position:absolute; top:-5px; right:-8px; background:red; color:white;
+               font-size:12px; padding:2px 6px; border-radius:50%;">0</span>
+</div>
+<!-- === POPUP FULLSCREEN (menutupi nav + header) === -->
+<div id="friendsPopup" style="
+  display:none;
+  position:fixed; top:0; left:0;
+  width:100%; height:100%;
+  background:#fff;
+  z-index:100000;
+  font-family:sans-serif;
+  flex-direction:column;
+">
+  <!-- Header -->
+  <div style="display:flex; align-items:center; justify-content:space-between;
+              padding:12px 15px; ">
+    <img id="friendsBackBtn" src="back_gray.png" alt="Back" style="width:22px; height:22px; cursor:pointer;">
+    <span style="font-weight:bold;">Permintaan</span>
+    <div style="width:22px;"></div>
+  </div>
+
+  <!-- Tabs dengan border-bottom -->
+<div style="display:flex; gap:0; margin: 40px;">
+  <div id="friendsTabTeman" data-tab="teman" style="
+    flex:1; 
+    text-align:center; 
+    padding:12px; 
+    border-radius: 20px;
+    cursor:pointer; 
+    border-bottom:3px solid 3px solid rgb(167 167 167);
+    border-right:1px solid #ddd;
+  ">Teman</div>
+
+  <div id="friendsTabPermintaan" data-tab="permintaan" style="
+    flex:1; 
+    text-align:center; 
+    padding:12px; 
+    border-radius: 20px;
+    cursor:pointer; 
+    border-bottom:3px solid 3px solid rgb(167 167 167);
+    border-bottom:3px solid transparent;
+  ">Permintaan</div>
+</div>
+
+
+  <!-- Konten -->
+  <div id="friendsTabContent" style="
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#666;
+    font-size:15px;
+  ">
+    Belum ada teman
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Menu titik tiga jadi gambar -->
+<div style="cursor:pointer;" onclick="openMenuPopup()">
+  <img src="msg_icon_more_dot.png" alt="Menu" style="width:22px; height:22px;">
+</div>
+
+</div>
+</div>
+
+  <!-- Isi daftar chat -->
+  <div id="pageChat" style="margin-top:70px; padding:1px;">
+
+  <div class="chat-item laporan" onclick="openChat('chatLayananHost', this)" 
+     style="display:flex; align-items:center; gap:10px;">
+  
+  <div class="chat-avatar" style="
+      width: 40px; 
+      height: 40px; 
+      -webkit-mask: url('servant_icon.png') no-repeat center;
+      -webkit-mask-size: contain;
+      mask: url('servant_icon.png') no-repeat center;
+      mask-size: contain;
+      background-image: url('servant_icon.png'); 
+      background-size: cover;
+      background-position: center;
+  "></div>
+
+  <div class="chat-info">
+    <h4>Layanan Pelanggan</h4>
+    <p id="lastMessage"></p>
+  </div>
+</div>
+
+      <!-- Tempat isi chat -->
+    
+    </div>
+
+    <!-- Notifikasi -->
+    <div class="chat-item" onclick="openChat('pengunjung')">
+      <img src="message_see_me_item_icon.png" alt="Pengunjung" class="chat-avatar">
+      <div class="chat-info">
+        <h4>Notifikasi</h4>
+        <p>Widia ninggsih mengunjungi saya 13 kali</p>
+      </div>
+      <span class="notifi-badge">30</span>
+    </div>
+
+    <div class="chat-item" onclick="openChat('pengumuman')">
+      <img src="notifikasi.png" alt="Pengumuman" class="chat-avatar">
+      <div class="chat-info">
+        <h4>Notifikasi</h4>
+        <p>Zulvira telah mengikuti anda, dan and...</p>
+      </div>
+      <span class="chat-time">--:--</span>
+    </div>
+
+    <!-- Chat User 1 -->
+   <!-- Chat User 1 (tetap ada, tidak dihapus) -->
+    <div id="chatList">
+      <div class="chat-item" onclick="openChat('user1')" data-chat-id="user1">
+        <img src="cewek23.jpeg" alt="User" class="chat-avatar">
+        <div class="chat-info">
+          <h4>Sintya Pratiwi <span class="host-badge">HOST</span></h4>
+          <p>abg host baru ya,kok gabisa di vc bg</p>
+        </div>
+        <span class="chat-time">09:40</span>
+      </div>
+    </div>
+
+<!-- POPUP CHAT -->
+<div id="chatPopup" style="
+  position:fixed; 
+  top:0;
+  left:0;
+  width:100%; 
+  height:100%;
+  background:#fff;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  font-family:sans-serif;
+">
+  <div style="
+    max-width:40%;
+    text-align:center;
+    font-size:16px;
+    color:#333;
+    background:#f9f9f9;
+    padding:20px;
+    border-radius:10px;
+  ">
+    <!-- Gambar di atas teks -->
+    <img src="cert_failed_wrong_avatar.png" alt="Warning" style="width:60px; height:60px; margin-bottom:10px;">
+    
+    <div>
+      Anda belum memenuhi syarat untuk memulai percakapan!
+    </div>
+  </div>
+</div>
+
+  </div>
+</div>
+
+
+
+
+
+
+
 
 
 
@@ -2463,14 +2832,16 @@ historyPopup.addEventListener("click", (ev) => {
 // ========================
 function closeAllPopups() {
   const dunia = document.getElementById("duniaPopup");
-  const sanpesan = document.getElementById("sanpesanPopup");
   const play = document.getElementById("playPopup");
   const frozen = document.getElementById("frozenPopup");
+  const inbox = document.getElementById("inboooxxxxxx"); // 🔹 tambahin
+
 
   if (dunia) dunia.style.display = "none";
-  if (sanpesan) sanpesan.style.display = "none";
   if (play) play.style.display = "none";
   if (frozen) frozen.style.display = "none";
+  if (inbox) inbox.style.display = "none"; // 🔹 tambahin
+
 }
 
 // ========================
@@ -2499,11 +2870,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Tombol close manual Sanpesan
-  const closeSanpesanBtn = document.getElementById("closeSanpesanPopup");
-  if (closeSanpesanBtn) {
-    closeSanpesanBtn.addEventListener("click", () => closeSanpesanPopup());
-  }
+ 
 
   // Tombol close manual Dunia
   const closeDuniaBtn = document.getElementById("closeDuniaPopup");
@@ -2517,6 +2884,28 @@ document.addEventListener("DOMContentLoaded", () => {
     closePlayBtn.addEventListener("click", () => closePlayPopup());
   }
 });
+
+
+
+
+ // 🔹 Buka popup inbox
+  function openInboxxxxPopup() {
+    document.getElementById("inboooxxxxxx").style.display = "block";
+  }
+
+  // 🔹 Tutup popup inbox
+  function closeInboxxxxPopup() {
+    document.getElementById("inboooxxxxxx").style.display = "none";
+  }
+
+  // 🔹 (Opsional) buka detail chat
+  function openChatDetail(userId) {
+    alert("Buka detail chat untuk: " + userId);
+    // nanti di sini bisa dibuat halaman detail chat full layar juga
+  }
+
+
+
 
 // ========================
 // DUNIA POPUP
@@ -2533,14 +2922,21 @@ window.closeDuniaPopup = function() {
 // ========================
 // SANPESAN POPUP
 // ========================
-window.openSanpesanPopup = function() {
-  closeAllPopups(); // pastikan popup lain tertutup
-  document.getElementById("sanpesanPopup").style.display = "flex";
+// ========================
+// INBOOXXXXXXX POPUP
+// ========================
+window.openInboxxxxPopup = function() {
+  closeAllPopups(); // tutup popup lain dulu
+  document.getElementById("inboooxxxxxx").style.display = "flex"; // konsisten dengan popup lain
 };
 
-window.closeSanpesanPopup = function() {
-  document.getElementById("sanpesanPopup").style.display = "none";
+window.closeInboxxxxPopup = function() {
+  document.getElementById("inboooxxxxxx").style.display = "none";
 };
+
+
+
+
 
 // ========================
 // PLAY POPUP
@@ -3098,6 +3494,110 @@ editForm.addEventListener("submit", async (e) => {
 
 
 
+(function(){
+  const popup = document.getElementById('chatPopup');
+  const body = document.body;
+
+  // buka popup
+  window.openChat = function() {
+    popup.style.display = 'flex';
+    body.style.overflow = 'hidden';
+  };
+
+  // tutup popup (ESC atau klik luar box)
+  window.closeChat = function() {
+    popup.style.display = 'none';
+    body.style.overflow = '';
+  };
+
+  // bikin semua chat-item bisa klik
+  document.querySelectorAll('.chat-item').forEach(item => {
+    item.addEventListener('click', () => openChat());
+  });
+
+  // tutup dengan ESC
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeChat();
+  });
+
+  // tutup dengan klik di luar box
+  popup.addEventListener('click', e => {
+    if (e.target === popup) closeChat();
+  });
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(function(){
+  const trigger = document.getElementById('friendsBtn');
+  const popup = document.getElementById('friendsPopup');
+  const backBtn = document.getElementById('friendsBackBtn');
+  const tabTeman = document.getElementById('friendsTabTeman');
+  const tabPermintaan = document.getElementById('friendsTabPermintaan');
+  const tabContent = document.getElementById('friendsTabContent');
+
+  function openFriendsPopup() {
+    popup.style.display = 'flex';
+    popup.style.flexDirection = 'column';
+    document.body.style.overflow = 'hidden'; // nonaktifkan scroll background
+    showFriendsTab('teman'); // default tab
+  }
+
+  function closeFriendsPopup() {
+    popup.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  function showFriendsTab(tab) {
+    if (tab === 'teman') {
+      tabTeman.style.borderBottom = '3px solid #d7d7d7';
+      tabPermintaan.style.borderBottom = '3px solid transparent';
+      tabContent.textContent = 'Belum ada teman';
+    } else {
+      tabPermintaan.style.borderBottom = '3px solid #d7d7d7';
+      tabTeman.style.borderBottom = '3px solid transparent';
+      tabContent.textContent = 'Belum ada permintaan';
+    }
+  }
+
+  // Attach listeners (safe: no inline onclick required)
+  if (trigger) trigger.addEventListener('click', openFriendsPopup);
+  if (backBtn) backBtn.addEventListener('click', closeFriendsPopup);
+  if (tabTeman) tabTeman.addEventListener('click', () => showFriendsTab('teman'));
+  if (tabPermintaan) tabPermintaan.addEventListener('click', () => showFriendsTab('permintaan'));
+
+  // tutup dengan ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeFriendsPopup();
+  });
+
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3135,10 +3635,6 @@ document.addEventListener("keydown", (e) => {
 document.addEventListener("gesturestart", (e) => {
   e.preventDefault();
 });
-
-
-
-
 
 
 
