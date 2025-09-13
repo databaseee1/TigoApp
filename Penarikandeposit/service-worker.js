@@ -9,32 +9,43 @@ const urlsToCache = [
   "./offline.html"
 ];
 
+// Install Service Worker
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return Promise.all(
         urlsToCache.map((url) =>
-          cache.add(url).catch((err) => {
-            console.warn("Gagal cache:", url, err);
-          })
+          fetch(url)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Gagal fetch: " + url);
+              }
+              return cache.put(url, response);
+            })
+            .catch((err) => {
+              console.warn("⚠️ Gagal cache:", url, err.message);
+            })
         )
       );
     })
   );
+  self.skipWaiting(); // langsung aktifkan versi baru
 });
 
 // Fetch dengan fallback ke offline.html
 self.addEventListener("fetch", (event) => {
+  if (event.request.method !== "GET") {
+    return; // hanya tangani request GET
+  }
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Simpan response ke cache (optional, biar update otomatis)
         const clone = response.clone();
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         return response;
       })
       .catch(() => {
-        // Kalau offline, ambil dari cache atau offline.html
         return caches.match(event.request).then((response) => {
           return response || caches.match("./offline.html");
         });
@@ -42,7 +53,7 @@ self.addEventListener("fetch", (event) => {
   );
 });
 
-// Update cache lama kalau ada versi baru
+// Hapus cache lama
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -53,5 +64,6 @@ self.addEventListener("activate", (event) => {
       );
     })
   );
-  console.log("Service Worker: Activated");
+  console.log("✅ Service Worker: Activated");
+  self.clients.claim(); // pastikan langsung kontrol page
 });
