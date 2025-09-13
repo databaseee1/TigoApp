@@ -1,26 +1,44 @@
-const CACHE_NAME = "app-cache-v1";
+const CACHE_NAME = "Tigoapp.v1";
 const urlsToCache = [
-  "/",
-  "/index.html",
-  "/icon-192.png",
-  "/icon-512.png",
+  "./",
+  "./index.html",
+  "./style.css",
+  "./app.js",
+  "./192x192.png",
+  "./512x512.png",
+  "./offline.html"
 ];
 
-// Install service worker & simpan cache
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache);
+      return Promise.all(
+        urlsToCache.map((url) =>
+          cache.add(url).catch((err) => {
+            console.warn("Gagal cache:", url, err);
+          })
+        )
+      );
     })
   );
 });
 
-// Ambil dari cache kalau offline
+// Fetch dengan fallback ke offline.html
 self.addEventListener("fetch", (event) => {
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
+    fetch(event.request)
+      .then((response) => {
+        // Simpan response ke cache (optional, biar update otomatis)
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        return response;
+      })
+      .catch(() => {
+        // Kalau offline, ambil dari cache atau offline.html
+        return caches.match(event.request).then((response) => {
+          return response || caches.match("./offline.html");
+        });
+      })
   );
 });
 
@@ -35,4 +53,5 @@ self.addEventListener("activate", (event) => {
       );
     })
   );
+  console.log("Service Worker: Activated");
 });

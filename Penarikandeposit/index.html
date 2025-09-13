@@ -4,10 +4,29 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Acount & Pembayaran</title>
-    <!-- PWA manifest -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#000000">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <!-- PWA manifest -->
+<link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#fff">
+  
+   <script>
+
+   
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(reg => {
+            console.log('Service Worker terdaftar:', reg);
+          })
+          .catch(err => {
+            console.log('Service Worker gagal:', err);
+          });
+      });
+    }
+    
+  </script>
+  
+  
   <style>
     :root{
       --primary:#7f3586;
@@ -2227,25 +2246,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-
-
-
-
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-          .then(reg => {
-            console.log('Service Worker terdaftar:', reg);
-          })
-          .catch(err => {
-            console.log('Service Worker gagal:', err);
-          });
-      });
-    }
-
-
 
 
 
