@@ -1,4 +1,4 @@
-const CACHE_NAME = "Tigoapp.v1";
+const CACHE_NAME = "Tigoapp.v2";
 const urlsToCache = [
   "./",
   "./index.html",
