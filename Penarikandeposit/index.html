@@ -12,18 +12,35 @@
    <script>
 
    
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-          .then(reg => {
-            console.log('Service Worker terdaftar:', reg);
-          })
-          .catch(err => {
-            console.log('Service Worker gagal:', err);
-          });
+ document.addEventListener("DOMContentLoaded", () => {
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js")
+      .then((reg) => {
+        console.log("Applikasi Siap di Download:", reg);
+        Swal.fire({
+          icon: "success",
+          title: "Aplikasi Aktif",
+          text: "Aplikasi siap dipakai",
+          timer: 2000,
+          showConfirmButton: false
+        });
+      })
+      .catch((err) => {
+        console.log("Service Worker gagal:", err);
+        Swal.fire({
+          icon: "error",
+          title: "Gagal",
+          text: "Aplikasi tidak bisa didaftarkan"
+        });
       });
-    }
-    
+  } else {
+    Swal.fire({
+      icon: "warning",
+      title: "Tidak Didukung",
+      text: "Browser ini tidak mendukung Aplikasi"
+    });
+  }
+});
   </script>
   
   
@@ -3689,6 +3706,7 @@ document.addEventListener("gesturestart", (e) => {
 
 </script>
 
+  <script src="app.js"></script>
  
 </body>
 </html>
