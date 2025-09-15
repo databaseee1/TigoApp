@@ -1779,6 +1779,7 @@ label {
 
 
 
+
 <!-- 🔹 Popup Riwayat -->
 <div id="historyPopup" class="history-popup" role="dialog" aria-hidden="true">
   <div class="history-panel" style="max-width:480px; margin:0 auto;">
@@ -2609,15 +2610,17 @@ function listenUserStatus(uid) {
       forceLogout(
         `
           <div style="text-align:center; line-height:1.6;">
-            Akun anda telah di <b style="color:orange;">SUSPENDED</b> oleh pihak aplikasi.<br>
-            Tidak ada aktivitas pada akun.<br><br>
+            Aplikasi Sedang <b style="color:orange;">Maintenance</b>PEMBERITAHUAN PENTING
+diberitahukan kepada pelanggan setia AGENCY TIGOHOST INDONESIA yang menggunakan aplikasi Tigo mulai hari ini sampai 1 hari kedepan Seluruh AGENCY yang ada di indonesia sedang melakukan Revisi Pembaruan server system dari priode 9 ke priode 10 , 
+untuk para pembeli coin Tigo harap tidak melakukan transkasi tanpa konfirmasi ADMIN
+tidak hanya bagi pembeli coin Tigo , selain itu kami beritahukan kepada seluru Clien Tigo Father agency tigohost agar pengertianya untuk menunggu dalam waktu yang sudah di tetapkan oleh pihak agency.<br><br>
             <div style="margin-top:20px; font-weight:bold;">
               Hubungi admin untuk ajukan banding
             </div>
           </div>
         `,
         "im_banned_icon.png",
-        "Akun Ditangguhkan"
+        "Aplikasi Sedang Maintenance"
       );
     } 
     else if (status === "deleted") {
