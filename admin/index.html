@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Admin Panel - TigoHost</title>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="module" src="/js/admin.js"></script>
@@ -214,85 +214,117 @@ document.addEventListener("DOMContentLoaded", loadUsersTagihan);
 // ==========================
 // 🔹 Load User Deposit (userdpo)
 // ==========================
+
+
+// ==========================
+// 🔹 Load User Deposit (userdpo)
+// ==========================
 function loadUserDpo() {
   const tbody = document.getElementById("userdpoTableBody");
   const grandTotalEl = document.getElementById("grandTotal");
 
-  const q = query(collection(db, "historydeposit"), orderBy("timestamp", "desc"));
-  onSnapshot(q, (snap) => {
+  onSnapshot(collection(db, "pendaftaran"), async (usersSnap) => {
     tbody.innerHTML = "";
     let grandTotal = 0;
 
-    if (snap.empty) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Belum ada permintaan deposit.</td></tr>`;
+    if (usersSnap.empty) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">Belum ada user.</td></tr>`;
       grandTotalEl.innerText = "";
       return;
     }
 
-    snap.forEach((docSnap) => {
-      const data = docSnap.data();
-      const nominal = Number(data.nominal || 0);
-      grandTotal += nominal;
+    const withDeposit = [];
+    const noDeposit = [];
 
-      // 🔹 Tentukan warna status
+    for (const userDoc of usersSnap.docs) {
+      const user = userDoc.data();
+      const uid = userDoc.id;
+
+      const nama = user.namaLengkap || user.nama || "-";
+      const email = user.email || user.userEmail || "-";
+      const wa = user.whatsapp || user.wa || "-";
+      const userStatus = user.statusAkun || "active"; // konsisten pakai statusAkun
+
+      const q = query(collection(db, "historydeposit"), where("uid", "==", uid));
+      const depositsSnap = await getDocs(q);
+
+      if (!depositsSnap.empty) {
+        depositsSnap.forEach((depDoc) => {
+          const data = depDoc.data();
+          const nominal = Number(data.nominal || 0);
+          grandTotal += nominal;
+
+          withDeposit.push({ uid, nama, email, wa, userStatus, depId: depDoc.id, data });
+        });
+      } else {
+        noDeposit.push({ uid, nama, email, wa, userStatus });
+      }
+    }
+
+    withDeposit.sort((a, b) => {
+      const tA = a.data.timestamp?.toDate ? a.data.timestamp.toDate().getTime() : 0;
+      const tB = b.data.timestamp?.toDate ? b.data.timestamp.toDate().getTime() : 0;
+      return tB - tA;
+    });
+
+    function renderUserStatus(status) {
+      if (status === "suspended") return "<span style='color:black;font-weight:bold;'>Suspended</span>";
+      if (status === "banned") return "<span style='color:red;font-weight:bold;'>Banned</span>";
+      if (status === "deleted") return "<span style='color:gray;font-weight:bold;'>Deleted</span>";
+      return "<span style='color:green;font-weight:bold;'>Active</span>";
+    }
+
+    // render user dengan deposit
+    withDeposit.forEach(({ uid, nama, email, wa, userStatus, depId, data }) => {
       let statusColor = "";
       if (data.status === "approve") statusColor = "style='color:green;font-weight:bold;'";
       else if (data.status === "pending") statusColor = "style='color:orange;font-weight:bold;'";
       else if (data.status === "tolak") statusColor = "style='color:red;font-weight:bold;'";
 
       const tr = document.createElement("tr");
-tr.innerHTML = `
-  <td>${data.namaPengirim || '-'}</td>
-  <td>${data.userEmail || '-'}</td>
-  <td>${data.userWA || '-'}</td>
-  <td>Rp ${nominal.toLocaleString("id-ID")}</td>
-  <td>${data.timestamp?.toDate ? data.timestamp.toDate().toLocaleString("id-ID") : '-'}</td>
-  <td ${statusColor}>${data.status || 'pending'}</td>
+      tr.innerHTML = `
+        <td>${nama}</td>
+        <td>${email}</td>
+        <td>${wa}</td>
+        <td>Rp ${Number(data.nominal || 0).toLocaleString("id-ID")}</td>
+        <td>${data.timestamp?.toDate ? data.timestamp.toDate().toLocaleString("id-ID") : '-'}</td>
+        <td ${statusColor}>${data.status || 'pending'}</td>
+        <td>${renderUserStatus(userStatus)}</td>
+        <td>
+          <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px;">
+            <button onclick="updateDepositStatus('${depId}','${uid}','${data.subId}','approve')" style="background:green;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Approve</button>
+            <button onclick="updateDepositStatus('${depId}','${uid}','${data.subId}','pending')" style="background:orange;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Pending</button>
+            <button onclick="updateDepositStatus('${depId}','${uid}','${data.subId}','tolak')" style="background:red;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Tolak</button>
+            <button onclick="hapusDeposit('${depId}','${uid}','${data.subId}')" style="background:gray;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Hapus</button>
 
-  <td>
-  <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px;">
-    <!-- 🔹 Aksi Deposit -->
-    <button onclick="updateDepositStatus('${docSnap.id}','${data.uid}','${data.subId}','approve')" 
-      style="background:green; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">
-      Approve
-    </button>
+            <button onclick="updateUserStatus('${uid}','active')" style="background:#00a898;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Aktifkan</button>
+            <button onclick="updateUserStatus('${uid}','suspended')" style="background:#000;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Suspend</button>
+            <button onclick="updateUserStatus('${uid}','banned')" style="background:#66;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Maintenance</button>
+            <button onclick="updateUserStatus('${uid}','deleted')" style="background:#c00;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Bann User</button>
+          </div>
+        </td>`;
+      tbody.appendChild(tr);
+    });
 
-    <button onclick="updateDepositStatus('${docSnap.id}','${data.uid}','${data.subId}','pending')" 
-      style="background:orange; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">
-      Pending
-    </button>
-
-    <button onclick="updateDepositStatus('${docSnap.id}','${data.uid}','${data.subId}','tolak')" 
-      style="background:red; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">
-      Tolak
-    </button>
-
-    <button onclick="hapusDeposit('${docSnap.id}','${data.uid}','${data.subId}')" 
-      style="background:gray; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">
-      Hapus
-    </button>
-
-    <!-- 🔹 Aksi User -->
-    <button onclick="updateUserStatus('${data.uid}','active')" 
-      style="background:#00a898; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">
-      Aktifkan
-    </button>
-
-    <button onclick="updateUserStatus('${data.uid}','suspended')" 
-      style="background:#000; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">
-      Suspend
-    </button>
-
-    <button onclick="updateUserStatus('${data.uid}','deleted')" 
-      style="background:#000; color:#fff; padding:5px 10px; border:none; border-radius:5px; cursor:pointer;">
-      Delete Data
-    </button>
-  </div>
-</td>
-`;
-
-
-
+    // render user tanpa deposit
+    noDeposit.forEach(({ uid, nama, email, wa, userStatus }) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${nama}</td>
+        <td>${email}</td>
+        <td>${wa}</td>
+        <td>Rp 0</td>
+        <td>-</td>
+        <td style="color:gray;font-weight:bold;">Belum Request</td>
+        <td>${renderUserStatus(userStatus)}</td>
+        <td>
+          <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px;">
+            <button onclick="updateUserStatus('${uid}','active')" style="background:#00a898;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Aktifkan</button>
+            <button onclick="updateUserStatus('${uid}','suspended')" style="background:#000;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Suspend</button>
+            <button onclick="updateUserStatus('${uid}','banned')" style="background:#c00;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Abaikan</button>
+            <button onclick="updateUserStatus('${uid}','deleted')" style="background:#666;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Bann</button>
+          </div>
+        </td>`;
       tbody.appendChild(tr);
     });
 
@@ -300,80 +332,107 @@ tr.innerHTML = `
   });
 }
 
-
-
 // ==========================
-// 🔹 Update Status (sync ke global + subcollection)
+// 🔹 Update Status User
 // ==========================
-async function updateDepositStatus(globalId, uid, subId, newStatus) {
-  try {
-    // update global
-    await updateDoc(doc(db, "historydeposit", globalId), { status: newStatus });
-
-    // update subcollection user
-    if (uid && subId) {
-      await updateDoc(doc(db, "pendaftaran", uid, "historydeposit", subId), {
-        status: newStatus,
-      });
-    }
-
-    Swal.fire({ icon: "success", text: "Status berhasil diubah ke " + newStatus });
-  } catch (err) {
-    console.error("Update status error:", err);
-    Swal.fire({ icon: "error", text: "Gagal mengubah status." });
-  }
-}
-
-
-
-
-
-async function hapusDeposit(globalId, uid, subId) {
-  const konfirmasi = await Swal.fire({
-    title: "Yakin hapus?",
-    text: "Data deposit ini akan dihapus permanen.",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Ya, hapus",
-    cancelButtonText: "Batal"
-  });
-
-  if (konfirmasi.isConfirmed) {
-    try {
-      await deleteDoc(doc(db, "historydeposit", globalId));
-      if (uid && subId) {
-        await deleteDoc(doc(db, "pendaftaran", uid, "historydeposit", subId));
-      }
-      Swal.fire({ icon: "success", text: "Deposit berhasil dihapus." });
-    } catch (err) {
-      console.error("Hapus deposit error:", err);
-      Swal.fire({ icon: "error", text: "Gagal menghapus deposit." });
-    }
-  }
-}
-
-window.updateDepositStatus = updateDepositStatus;
-window.hapusDeposit = hapusDeposit;
-window.loadUserDpo = loadUserDpo;
-
-if (document.getElementById("userdpo")) {
-  loadUserDpo();
-}
-
-
 async function updateUserStatus(uid, status) {
   try {
-    await updateDoc(doc(db, "pendaftaran", uid), {
-      statusAkun: status
-    });
+    await updateDoc(doc(db, "pendaftaran", uid), { statusAkun: status });
     Swal.fire({ icon: "success", text: "Status akun diubah ke " + status });
   } catch (err) {
     console.error("Update user status error:", err);
     Swal.fire({ icon: "error", text: "Gagal update status akun." });
   }
 }
-
 window.updateUserStatus = updateUserStatus;
+
+
+
+
+
+
+
+// ==========================
+// 🔹 Update Deposit Status (Sinkronisasi Global + Subkoleksi)
+// ==========================
+async function updateDepositStatus(globalId, uid, subId, newStatus) {
+  try {
+    const updates = [];
+
+    // Update global collection (wajib, admin lihat dari sini)
+    updates.push(updateDoc(doc(db, "historydeposit", globalId), {
+      status: newStatus
+    }));
+
+    // Kalau ada subId, update juga subkoleksi user (supaya user panel ikut sinkron)
+    if (uid && subId) {
+      updates.push(updateDoc(doc(db, "pendaftaran", uid, "historydeposit", subId), {
+        status: newStatus
+      }));
+    }
+
+    await Promise.all(updates);
+
+    Swal.fire({ icon: "success", text: "Status deposit diubah ke " + newStatus });
+  } catch (err) {
+    console.error("Update deposit error:", err);
+    Swal.fire({ icon: "error", text: "Gagal update status deposit." });
+  }
+}
+window.updateDepositStatus = updateDepositStatus;
+
+
+
+
+
+
+// ==========================
+// 🔹 Hapus Deposit
+// ==========================
+async function hapusDeposit(globalId, uid, subId) {
+  try {
+    await deleteDoc(doc(db, "historydeposit", globalId));
+    if (uid && subId) {
+      await deleteDoc(doc(db, "pendaftaran", uid, "historydeposit", subId));
+    }
+    Swal.fire({ icon: "success", text: "Deposit berhasil dihapus" });
+  } catch (err) {
+    console.error("Hapus deposit error:", err);
+    Swal.fire({ icon: "error", text: "Gagal hapus deposit." });
+  }
+}
+window.hapusDeposit = hapusDeposit;
+
+// ✅ panggil saat halaman siap
+document.addEventListener("DOMContentLoaded", () => {
+  if (document.getElementById("userdpo")) loadUserDpo();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -444,80 +503,105 @@ window.updateUserStatus = updateUserStatus;
 
 
 
- const saldoHostTable = document.getElementById("saldoHostTable").querySelector("tbody");
+// ==========================
+// 🔹 Load Saldo Host (Auto urut terbaru di atas)
+// ==========================
+const saldoHostTable = document.getElementById("saldoHostTable").querySelector("tbody");
 
-  // ✅ Load semua user dari Firestore
-  async function loadSaldoHostData() {
-    const q = query(collection(db, "pendaftaran"));
-    onSnapshot(q, (snapshot) => {
-      saldoHostTable.innerHTML = "";
-      snapshot.forEach((docSnap) => {
-        const d = docSnap.data();
-        const id = docSnap.id;
-
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td style="padding:8px; border-bottom:1px solid #ddd;">${d.nama || "-"}</td>
-          <td style="padding:8px; border-bottom:1px solid #ddd;">${d.email || "-"}</td>
-          <td style="padding:8px; border-bottom:1px solid #ddd;">${d.wa || "-"}</td>
-          <td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold; color:#7f3586;">
-            Rp ${(d.saldo || 0).toLocaleString("id-ID")}
-          </td>
-          <td style="padding:8px; border-bottom:1px solid #ddd;">
-            <button class="tambah-saldo" data-id="${id}" style="margin-right:6px; padding:5px 10px; background:green; color:#fff; border:none; border-radius:4px; cursor:pointer;">+ Tambah</button>
-            <button class="kurangi-saldo" data-id="${id}" style="padding:5px 10px; background:red; color:#fff; border:none; border-radius:4px; cursor:pointer;">- Kurangi</button>
-          </td>
-        `;
-        saldoHostTable.appendChild(tr);
-      });
-
-      // Tambahkan event listener ke tombol
-      document.querySelectorAll(".tambah-saldo").forEach((btn) => {
-        btn.addEventListener("click", () => ubahSaldo(btn.dataset.id, "tambah"));
-      });
-      document.querySelectorAll(".kurangi-saldo").forEach((btn) => {
-        btn.addEventListener("click", () => ubahSaldo(btn.dataset.id, "kurangi"));
-      });
+// ==========================
+// 🔹 Load Saldo Host Data
+// ==========================
+async function loadSaldoHostData() {
+  const q = query(collection(db, "pendaftaran"));
+  onSnapshot(q, (snapshot) => {
+    const users = [];
+    snapshot.forEach((docSnap) => {
+      users.push({ id: docSnap.id, ...docSnap.data() });
     });
+
+    // ✅ Urutkan manual berdasarkan lastUpdated (yang baru diubah paling atas)
+    users.sort((a, b) => {
+      const tA = a.lastUpdated?.toMillis ? a.lastUpdated.toMillis() : 0;
+      const tB = b.lastUpdated?.toMillis ? b.lastUpdated.toMillis() : 0;
+      return tB - tA;
+    });
+
+    // ✅ Render ke tabel
+    saldoHostTable.innerHTML = "";
+    users.forEach((d) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td style="padding:8px; border-bottom:1px solid #ddd;">${d.nama || "-"}</td>
+        <td style="padding:8px; border-bottom:1px solid #ddd;">${d.email || "-"}</td>
+        <td style="padding:8px; border-bottom:1px solid #ddd;">${d.wa || "-"}</td>
+        <td style="padding:8px; border-bottom:1px solid #ddd; font-weight:bold; color:#7f3586;">
+          Rp ${(d.saldo || 0).toLocaleString("id-ID")}
+        </td>
+        <td style="padding:8px; border-bottom:1px solid #ddd;">
+          <button class="tambah-saldo" data-id="${d.id}" 
+            style="margin-right:6px; padding:5px 10px; background:green; color:#fff; border:none; border-radius:4px; cursor:pointer;">
+            + Tambah
+          </button>
+          <button class="kurangi-saldo" data-id="${d.id}" 
+            style="padding:5px 10px; background:red; color:#fff; border:none; border-radius:4px; cursor:pointer;">
+            - Kurangi
+          </button>
+        </td>
+      `;
+      saldoHostTable.appendChild(tr);
+    });
+
+    // ✅ Tambahkan event listener tombol
+    document.querySelectorAll(".tambah-saldo").forEach((btn) => {
+      btn.addEventListener("click", () => ubahSaldo(btn.dataset.id, "tambah"));
+    });
+    document.querySelectorAll(".kurangi-saldo").forEach((btn) => {
+      btn.addEventListener("click", () => ubahSaldo(btn.dataset.id, "kurangi"));
+    });
+  });
+}
+
+// ==========================
+// 🔹 Tambah / Kurangi Saldo
+// ==========================
+async function ubahSaldo(userId, aksi) {
+  const jumlah = parseInt(prompt(`Masukkan jumlah saldo yang ingin di${aksi}:`));
+  if (isNaN(jumlah) || jumlah <= 0) {
+    alert("Jumlah tidak valid!");
+    return;
   }
 
-  // ✅ Fungsi tambah/kurangi saldoHost
-  async function ubahSaldo(userId, aksi) {
-    const jumlah = parseInt(prompt(`Masukkan jumlah saldo yang ingin di${aksi}:`));
-    if (isNaN(jumlah) || jumlah <= 0) {
-      alert("Jumlah tidak valid!");
-      return;
-    }
+  try {
+    const userRef = doc(db, "pendaftaran", userId);
+    const userSnap = await getDoc(userRef);
 
-    try {
-      const userRef = doc(db, "pendaftaran", userId);
-      const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      const saldoSekarang = userData.saldo || 0;
+      let saldoBaru = saldoSekarang;
 
-      if (userSnap.exists()) {
-        const userData = userSnap.data();
-        const saldoSekarang = userData.saldo || 0;
-        let saldoBaru = saldoSekarang;
-
-        if (aksi === "tambah") {
-          saldoBaru += jumlah;
-        } else if (aksi === "kurangi") {
-          saldoBaru -= jumlah;
-          if (saldoBaru < 0) saldoBaru = 0; // biar tidak minus
-        }
-
-        await updateDoc(userRef, { saldo: saldoBaru });
-        alert(`Saldo berhasil di${aksi === "tambah" ? "tambahkan" : "kurangi"}!`);
+      if (aksi === "tambah") {
+        saldoBaru += jumlah;
+      } else if (aksi === "kurangi") {
+        saldoBaru -= jumlah;
+        if (saldoBaru < 0) saldoBaru = 0; // biar tidak minus
       }
-    } catch (err) {
-      console.error("Error ubah saldo:", err);
-      alert("Gagal mengubah saldo!");
+
+      await updateDoc(userRef, {
+        saldo: saldoBaru,
+        lastUpdated: serverTimestamp(), // ✅ biar selalu naik ke atas
+      });
+
+      alert(`Saldo berhasil di${aksi === "tambah" ? "tambahkan" : "kurangi"}!`);
     }
+  } catch (err) {
+    console.error("Error ubah saldo:", err);
+    alert("Gagal mengubah saldo!");
   }
+}
 
-  // ✅ Panggil saat halaman admin dibuka
-  loadSaldoHostData();
-
-
+// ✅ Panggil saat halaman admin dibuka
+loadSaldoHostData();
 
 
 
@@ -2106,6 +2190,10 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
     </table>
   </div>
 
+
+
+
+
 <!-- ✅ User DPO -->
 <div id="userdpo" class="page" style="display:none; padding:20px;">
   <h2>Permintaan Deposit User</h2>
@@ -2117,7 +2205,8 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
         <th>No WA</th>
         <th>Total Deposit</th>
         <th>Terakhir Deposit</th>
-        <th>Status</th>
+        <th>Status Deposit</th>
+        <th>Status Akun</th> <!-- 🔹 kolom tambahan -->
         <th>Aksi</th>
       </tr>
     </thead>
@@ -2125,6 +2214,17 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
   </table>
   <div id="grandTotal" style="margin-top:15px;font-weight:bold;"></div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
