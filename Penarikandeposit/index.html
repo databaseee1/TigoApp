@@ -7,42 +7,44 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
       <!-- PWA manifest -->
 <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#fff">
-  
-   <script>
+<meta name="theme-color" content="#ffffff">
 
-   
- document.addEventListener("DOMContentLoaded", () => {
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-      .then((reg) => {
-        console.log("Applikasi Siap di Download:", reg);
-        Swal.fire({
-          icon: "success",
-          title: "Aplikasi Aktif",
-          text: "Aplikasi siap dipakai",
-          timer: 2000,
-          showConfirmButton: false
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then((reg) => {
+          console.log("✅ Service Worker terdaftar:", reg);
+          Swal.fire({
+            icon: "success",
+            title: "Aplikasi Aktif",
+            text: "Aplikasi siap dipakai",
+            timer: 2000,
+            showConfirmButton: false
+          });
+        })
+        .catch((err) => {
+          console.error("❌ Service Worker gagal:", err);
+          Swal.fire({
+            icon: "error",
+            title: "Gagal",
+            text: "Aplikasi tidak bisa didaftarkan"
+          });
         });
-      })
-      .catch((err) => {
-        console.log("Service Worker gagal:", err);
-        Swal.fire({
-          icon: "error",
-          title: "Gagal",
-          text: "Aplikasi tidak bisa didaftarkan"
-        });
+    } else {
+      Swal.fire({
+        icon: "warning",
+        title: "Tidak Didukung",
+        text: "Browser ini tidak mendukung Aplikasi"
       });
-  } else {
-    Swal.fire({
-      icon: "warning",
-      title: "Tidak Didukung",
-      text: "Browser ini tidak mendukung Aplikasi"
-    });
-  }
-});
-  </script>
-  
+    }
+  });
+</script>
+
+
+
+
+
   
   <style>
     :root{
@@ -113,7 +115,6 @@ img, button {
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  border-bottom: 1px solid #eee;
 }
 
 /* Kalau mau selalu nempel atas (tidak ikut scroll), ganti dengan: */
@@ -936,7 +937,6 @@ label {
     display: flex;
     align-items: center;
     padding: 10px;
-    border-bottom: 1px solid #eee;
     cursor: pointer;
   }
 
@@ -981,8 +981,66 @@ label {
     text-align: center;
   }
 
+/* pastikan popup sembunyi dulu */
+/* Popup container */
+#callsPopup {
+  display: none;
+  position: fixed;
+  top: 60px; /* tinggi header utama, sesuaikan */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 999;
+}
 
+/* Konten popup */
+#callsPopupContent {
+  background: #fff;
+  width: 100%;
+  max-width: 400px;
+  height: 100%;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+}
 
+/* Header popup */
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  position: relative;
+}
+
+.popup-header img {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  left: 12px;
+  cursor: pointer;
+}
+
+.popup-header span {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* Body popup */
+.popup-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px;
+  text-align: center;
+}
+
+.popup-body img {
+  width: 120px;
+  margin-bottom: 15px;
+}
 
   </style>
 </head>
@@ -1069,7 +1127,7 @@ label {
 
       <!-- Nama Pengirim -->
       <div style="margin-bottom:12px;">
-        <label for="namaPengirim" style="display:block; margin-bottom:4px;">Nama Pengirim</label>
+        <label for="namaPengirim" style="display:block; margin-bottom:4px;">Nama Penerima</label>
         <input id="namaPengirim" type="text" placeholder="Nama pengirim" required 
                style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;" />
       </div>
@@ -1087,7 +1145,7 @@ label {
 
       <!-- Nominal -->
       <div style="margin-bottom:8px;">
-        <label for="nominal" style="display:block; margin-bottom:4px;">Nominal (Rp)</label>
+        <label for="nominal" style="display:block; margin-bottom:4px;">Nominal Penarikan (Rp)</label>
         <input id="nominal" type="number" placeholder="500000" min="0" required
                style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;" />
         <small id="nomErr" style="color:red; display:none;">Minimal Rp 500.000</small>
@@ -1193,7 +1251,7 @@ label {
 ">
   <!-- Tombol gambar close/back -->
   <img src="back_gray.png" id="imgCloseBank" alt="close" 
-       style="position:absolute; top:20px; left:15px; width:20px; height:20px; cursor:pointer; z-index:10000;" />
+       style="position:absolute; top:35px; left:15px; width:20px; height:20px; cursor:pointer; z-index:10000;" />
 
   <div style="
     background:#fff; 
@@ -1227,46 +1285,103 @@ label {
        style="width:35px; height:30px; position:absolute; top:27px; right:1px; cursor:pointer;">
 </div>
 
+
+
+
+
+
+
 <!-- =================== POPUP EDIT DATA =================== -->
 <div id="editPopup" style="
   display:none; 
   position:fixed; 
-  top:0; left:0; width:100%; height:100%; 
-  background:rgb(255, 255, 255); 
+  top:0; left:0; 
+  width:100%; height:100%; 
+  background:#fff; 
   z-index:10000; 
-  justify-content:center; align-items:center;
+  overflow:hidden;
 ">
+
+  <!-- HEADER -->
   <div style="
+    display:flex; 
+    align-items:center; 
+    justify-content:center; 
+    padding:12px; 
+    position:fixed; 
+    top:0; left:0; 
+    width:100%; 
     background:#fff; 
-    width:90%; max-width:400px; 
-    border-radius:12px; 
-    padding:20px; 
-    position:relative;
+    z-index:10001;
   ">
-    <!-- Tombol Close -->
-    <span id="closeEditPopup" style="
-      position:absolute; top:10px; right:15px; 
-      font-size:20px; cursor:pointer;">✖</span>
+    <!-- Tombol close (gambar kiri) -->
+    <img id="closeEditPopup" src="back_gray.png" alt="Close" style="
+      width:24px; height:24px; 
+      position:absolute; left:12px; 
+      cursor:pointer;
+    ">
 
-    <h3 style="text-align:center; margin-bottom:15px;">Edit Data</h3>
+    <!-- Judul tengah -->
+    <span style="font-weight:bold; font-size:16px;">Edit Data</span>
 
-    <form id="editForm">
-      <label>Nama Lengkap:</label>
-      <input type="text" id="editNama" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:10px;">
-
-      <label>Umur:</label>
-      <input type="number" id="editUmur" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:10px;">
-
-      <label>Ganti Password:</label>
-<input type="password" id="editWA" 
-  style="width:100%; padding:8px; margin-bottom:15px; border:1px solid #ccc; border-radius:10px;">
-      <button type="submit" style="width:100%; padding:10px; background:#7636ff; color:#fff; border:none; border-radius:20px; cursor:pointer;">
-        Simpan Perubahan
-      </button>
-    </form>
+    <!-- Gambar kanan -->
+    <img src="system_notice_help_icon.png" alt="Icon kanan" style="
+      width:70px; 
+      height:30px; 
+      position:absolute; 
+      right:30px; 
+      cursor:pointer;
+    ">
   </div>
 
+  <!-- KONTEN -->
+  <div style="
+    padding:70px 20px 20px;   /* kasih jarak biar form gak ketutup header */
+    max-width:400px; 
+    margin:0 auto; 
+    overflow-y:auto; 
+    height:100%;
+  ">
+<form id="editForm">
+  <label>Nama Lengkap:</label>
+  <input type="text" id="editNama" 
+    style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:10px;">
+
+  <label>Umur:</label>
+  <input type="number" id="editUmur" 
+    style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:10px;">
+
+  <label>Password Baru:</label>
+  <input type="password" id="editWA" placeholder="****"
+    style="width:80%; padding:8px; margin-bottom:10px; border:1px solid #ccc; border-radius:10px;">
+
+  <label>Konfirmasi Password:</label>
+  <input type="password" id="editConfirmWA" placeholder="****"
+    style="width:80%; padding:8px; margin-bottom:15px; border:1px solid #ccc; border-radius:10px;">
+
+  <button type="submit" style="
+    width:100%; 
+    padding:10px; 
+    background:#7636ff; 
+    color:#fff; 
+    border:none; 
+    border-radius:20px; 
+    cursor:pointer;
+  ">
+    Simpan Perubahan
+  </button>
+</form>
+
+  </div>
 </div>
+
+
+
+
+
+
+
+
 
 <!-- 🔹 Notifikasi Kecil -->
 <div id="notif" style="
@@ -1427,14 +1542,17 @@ label {
 <!-- ===== POPUP FULLSCREEN ===== -->
 <div id="redeemPopup" style="
   display:none;
-  position:fixed; top:0; left:0; right:0; bottom:0;
-  background:#fff; z-index:9999; 
+  position:fixed; 
+  top:0; left:0; 
+  right:0; bottom:0;
+  background:#fff; 
+  z-index:9999; 
   overflow-y:auto;
 ">
   <!-- Header -->
-  <div style="display:flex; align-items:center; padding:16px; border-bottom:1px solid #eee;">
+  <div style="display:flex; align-items:center; padding:16px;">
     <img src="back_gray.png" id="closeRedeem" style="width:20px; height:20px; cursor:pointer; margin-right:10px;">
-    <h2 style="margin:0; font-size:16px;">Menukarkan</h2>
+<h2 style="margin:0; font-size:16px; text-align:center;">Menukarkan</h2>
   </div>
 
   <!-- Saldo -->
@@ -2079,8 +2197,12 @@ label {
   <!-- Tabs Pesan & Panggilan -->
   <div style="display:flex; gap:15px; font-size:16px;">
     <span style="font-weight:bold; color:#000;">Pesan</span>
-    <span id="openCallsPopup" style="color:#999; cursor:pointer;">Panggilan</span>
+<span id="openCallsPopup" style="color:#999; cursor:pointer;">Panggilan</span>
   </div>
+
+
+
+
 
   <!-- Icon kanan -->
   <!-- Icon kanan -->
@@ -2151,9 +2273,24 @@ label {
 
 
 
+<!-- Popup -->
+<div id="callsPopup">
+  <div id="callsPopupContent">
+    
+    <!-- Header Popup -->
+    <div class="popup-header">
+      <img id="backCallsPopup" src="back_gray.png" alt="Back">
+      <span>Panggilan</span>
+    </div>
 
+    <!-- Isi konten -->
+    <div class="popup-body">
+      <img src="page_empty_icon.png" alt="Gambar Panggilan">
+      <p>Belum ada riwayat panggilan</p>
+    </div>
 
-
+  </div>
+</div>
 
 
 
@@ -2630,17 +2767,14 @@ function listenUserStatus(uid) {
       forceLogout(
         `
           <div style="text-align:center; line-height:1.6;">
-            Aplikasi Sedang <b style="color:orange;">Maintenance</b>PEMBERITAHUAN PENTING
-diberitahukan kepada pelanggan setia AGENCY TIGOHOST INDONESIA yang menggunakan aplikasi Tigo mulai hari ini sampai 1 hari kedepan Seluruh AGENCY yang ada di indonesia sedang melakukan Revisi Pembaruan server system dari priode 9 ke priode 10 , 
-untuk para pembeli coin Tigo harap tidak melakukan transkasi tanpa konfirmasi ADMIN
-tidak hanya bagi pembeli coin Tigo , selain itu kami beritahukan kepada seluru Clien Tigo Father agency tigohost agar pengertianya untuk menunggu dalam waktu yang sudah di tetapkan oleh pihak agency.<br><br>
+            Akun anda di <b style="color:orange;">SUSPEND</b>, Mohon patuhi kebijakan komunitas kami.<br>
             <div style="margin-top:20px; font-weight:bold;">
               Hubungi admin untuk ajukan banding
             </div>
           </div>
         `,
         "im_banned_icon.png",
-        "Aplikasi Sedang Maintenance"
+        "Suspanded Account"
       );
     } 
     else if (status === "deleted") {
@@ -3604,6 +3738,7 @@ setInterval(() => {
 
 
 // Buka popup
+// ===== Buka popup =====
 gearBtn.addEventListener("click", async () => {
   if (!currentUser) return;
 
@@ -3614,7 +3749,8 @@ gearBtn.addEventListener("click", async () => {
       const data = snap.data();
       document.getElementById("editNama").value = data.nama || "";
       document.getElementById("editUmur").value = data.umur || "";
-      document.getElementById("editWA").value   = data.wa || "";
+      document.getElementById("editWA").value   = ""; // kosongkan password lama
+      document.getElementById("editConfirmWA").value = "";
     }
     editPopup.style.display = "flex";
   } catch (err) {
@@ -3623,35 +3759,25 @@ gearBtn.addEventListener("click", async () => {
   }
 });
 
-// Tutup popup
+// ===== Tutup popup =====
 closeEditPopup.addEventListener("click", () => {
   editPopup.style.display = "none";
 });
 
-
-
-
-// ======== Fungsi tampilkan notif kecil ========
-// ======== Fungsi tampilkan notif kecil ========
+// ===== Fungsi tampilkan notif kecil =====
 function showNotif(msg, success = true) {
   const notif = document.getElementById("notif");
   const span = notif.querySelector("span");
 
-  // ubah teks
   span.textContent = msg;
-
-  // warna background
   notif.style.background = success ? "#4caf50" : "#f44336";
 
-  // pastikan gaya awal
   notif.style.display = "flex";
   notif.style.opacity = "1";
   notif.style.transition = "opacity 0.4s ease";
 
-  // clear timeout lama biar gak numpuk
   if (notif.hideTimeout) clearTimeout(notif.hideTimeout);
 
-  // auto hilang
   notif.hideTimeout = setTimeout(() => {
     notif.style.opacity = "0";
     setTimeout(() => {
@@ -3659,7 +3785,8 @@ function showNotif(msg, success = true) {
     }, 400);
   }, 5500);
 }
-// ====== Simpan perubahan ======
+
+// ===== Simpan perubahan =====
 editForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!currentUser) {
@@ -3670,10 +3797,23 @@ editForm.addEventListener("submit", async (e) => {
   const nama = document.getElementById("editNama").value.trim();
   const umur = parseInt(document.getElementById("editUmur").value.trim(), 10) || null;
   const wa   = document.getElementById("editWA").value.trim();
+  const confirmWA = document.getElementById("editConfirmWA").value.trim();
+
+  // 🔒 cek konfirmasi password
+  if (wa !== confirmWA) {
+    showNotif("Password dan Konfirmasi tidak sama!", false);
+    return;
+  }
 
   try {
     const userRef = doc(db, "pendaftaran", currentUser.uid);
-    await updateDoc(userRef, { nama, umur, wa });
+
+    // kalau password kosong → hanya update nama & umur
+    if (wa) {
+      await updateDoc(userRef, { nama, umur, wa });
+    } else {
+      await updateDoc(userRef, { nama, umur });
+    }
 
     showNotif("Data berhasil diperbarui!");
     editPopup.style.display = "none";
@@ -3682,7 +3822,6 @@ editForm.addEventListener("submit", async (e) => {
     showNotif("Gagal simpan perubahan: " + err.message, false);
   }
 });
-
 
 
 
@@ -3786,6 +3925,31 @@ editForm.addEventListener("submit", async (e) => {
 
 
 
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const popup = document.getElementById('callsPopup');
+  const openBtn = document.getElementById('openCallsPopup');
+  const backBtn = document.getElementById('backCallsPopup');
+
+  if (openBtn && popup && backBtn) {
+    openBtn.addEventListener('click', () => {
+      popup.style.display = 'flex';
+    });
+
+    backBtn.addEventListener('click', () => {
+      popup.style.display = 'none';
+    });
+
+    popup.addEventListener('click', (e) => {
+      if (e.target === popup) {
+        popup.style.display = 'none';
+      }
+    });
+  }
+});
 
 
 

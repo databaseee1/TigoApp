@@ -1,20 +1,24 @@
 {
   "name": "Tigoapp",
-  "short_name": "Tigo.app",
-  "start_url": "./",
+  "short_name": "Tigo",
+  "start_url": "/TigoApp/Penarikandeposit/",
+  "scope": "/TigoApp/Penarikandeposit/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "theme_color": "#7636ff",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "./192x192.png",
+      "src": "192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "./512x512.png",
+      "src": "512x512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = "Tigoapp.v2";
+const CACHE_NAME = "Tigoapp.v3";
 const urlsToCache = [
   "./",
   "./index.html",
@@ -12,31 +12,15 @@ const urlsToCache = [
 // Install Service Worker
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return Promise.all(
-        urlsToCache.map((url) =>
-          fetch(url)
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error("Gagal fetch: " + url);
-              }
-              return cache.put(url, response);
-            })
-            .catch((err) => {
-              console.warn("⚠️ Gagal cache:", url, err.message);
-            })
-        )
-      );
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
   );
-  self.skipWaiting(); // langsung aktifkan versi baru
+  self.skipWaiting();
 });
 
 // Fetch dengan fallback ke offline.html
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") {
-    return; // hanya tangani request GET
-  }
+  if (!event.request.url.startsWith("http")) return;
+  if (event.request.method !== "GET") return;
 
   event.respondWith(
     fetch(event.request)
@@ -45,25 +29,21 @@ self.addEventListener("fetch", (event) => {
         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         return response;
       })
-      .catch(() => {
-        return caches.match(event.request).then((response) => {
-          return response || caches.match("./offline.html");
-        });
-      })
+      .catch(() =>
+        caches.match(event.request).then((res) => res || caches.match("./offline.html"))
+      )
   );
 });
 
 // Hapus cache lama
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
-      );
-    })
+    caches.keys().then((cacheNames) =>
+      Promise.all(
+        cacheNames.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name))
+      )
+    )
   );
   console.log("✅ Service Worker: Activated");
-  self.clients.claim(); // pastikan langsung kontrol page
+  self.clients.claim();
 });
