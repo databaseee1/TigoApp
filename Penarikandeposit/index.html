@@ -94,9 +94,6 @@ img, button {
     color:#000; /* teks hitam */
     font-weight:bold;
   }
-  .nav-item.active img {
-    filter: brightness(0); /* bikin ikon jadi hitam */
-  }
 
 /* Pastikan Swal selalu di paling depan */
 .swal2-container {
@@ -769,6 +766,19 @@ label {
 
 
 
+#bottomNav .nav-item {
+  outline: none;        /* hilangkan outline default */
+  background: none;     /* pastikan background default kosong */
+  border: none;         /* hapus border jika ada */
+  user-select: none;    /* hilangkan highlight teks */
+}
+
+#bottomNav .nav-item:focus,
+#bottomNav .nav-item:active {
+  outline: none;        /* hilangkan titik blok hitam */
+  box-shadow: none;
+  background: none;     /* hilangkan background hitam saat klik */
+}
 
 
 
@@ -1359,6 +1369,41 @@ label {
   <input type="password" id="editConfirmWA" placeholder="****"
     style="width:80%; padding:8px; margin-bottom:15px; border:1px solid #ccc; border-radius:10px;">
 
+
+
+
+<!-- Box Tags -->
+<div style="background:#f9f9f9; padding:12px; border:1px solid #ddd; border-radius:8px; margin-bottom:16px;">
+  <p style="margin:0 0 8px; font-weight:600; font-size:14px;">Tambahkan Tag</p>
+
+  <!-- Grid Tag -->
+  <div id="tagList" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
+    <!-- Tag otomatis muncul disini -->
+  </div>
+
+  <!-- Input + Button -->
+  <div style="display:flex; gap:6px;">
+    <input id="tagInput" type="text" placeholder="Tambah tag..."
+      style="flex:1; padding:6px 8px; border:1px solid #ccc; border-radius:6px;">
+    <button id="addTagBtn" 
+  style="padding:6px 12px; border:none; background:#c9c9c9; color:#fff; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+  <img src="tambah.png" alt="Tambah Tag" style="width:18px; height:18px;">
+</button>
+  </div>
+  <!-- Notifikasi limit -->
+<div id="tagLimitInfo" style="margin-top:6px; font-size:12px; color:#ff4444; font-style:italic;"></div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
   <button type="submit" style="
     width:100%; 
     padding:10px; 
@@ -1370,6 +1415,7 @@ label {
   ">
     Simpan Perubahan
   </button>
+
 </form>
 
   </div>
@@ -1408,8 +1454,59 @@ label {
 
 
 
-<div style="border:1px solid #ddd; border-radius:8px; padding:16px; background:#fff;">
+<div style="border:1px solid #ddd; border-radius:8px; padding:16px; background:#fff; max-width:350px;">
 
+  <!-- Foto Profil + Umur -->
+  <div style="text-align:center; margin-bottom:16px;">
+    <!-- Foto Profil User -->
+    <label for="fotoInput" style="cursor:pointer; display:inline-block; position:relative;">
+      <img id="viewFoto" src="profile_photo_add_icon.png" 
+           alt="Foto User" 
+           style="width:90px; height:90px; border-radius:50%; object-fit:cover; border:2px solid #ccc; transition:0.3s;">
+      <!-- Umur ditampilkan di pojok bawah foto -->
+<div id="viewUmur" 
+     style="position:absolute; bottom:-6px; right:-6px; 
+            background:#e0e0e0; color:#747474; font-size:13px; font-weight:500; 
+            padding:4px 8px; border-radius:12px; 
+            display:flex; align-items:center; gap:2px;">
+
+  <img id="umurIcon" src="cert_failed_wrong_gender.png" alt="umur" 
+       style="width:14px; height:14px; display:block;">
+
+  <span id="umurText">-</span>
+</div>
+    </label>
+
+    <!-- Input file hidden -->
+    <input type="file" id="fotoInput" accept="image/*" style="display:none;">
+
+    <!-- Info user -->
+    <div id="viewNama" style="margin-top:12px; font-size:14px; color:#333; font-weight:600;">-</div>
+    <div id="viewEmail" style="font-size:13px; color:#666;">-</div>
+  </div>
+
+
+
+
+
+<!-- Box Tags -->
+<div id="boxTags" style="background:#f9f9f9; padding:12px; border:1px solid #ddd; border-radius:8px; margin-bottom:16px;">
+  <p style="margin:0 0 8px; font-weight:600; font-size:14px;">Tag Aktivitas</p>
+
+  <!-- Grid Tag -->
+  <div id="viewTags" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+    <!-- Tag dari Firestore muncul di sini -->
+  </div>
+</div>
+
+
+
+
+
+
+
+
+  <!-- Nama Bank -->
   <div style="margin-bottom:12px; display:flex; align-items:center; gap:10px;">
     <img src="ic_checked.png" alt="icon" style="width:22px; height:22px;">
     <div>
@@ -1418,6 +1515,7 @@ label {
     </div>
   </div>
 
+  <!-- Nama Rekening -->
   <div style="margin-bottom:12px; display:flex; align-items:center; gap:10px;">
     <img src="ic_checked.png" alt="icon" style="width:22px; height:22px;">
     <div>
@@ -1426,6 +1524,7 @@ label {
     </div>
   </div>
 
+  <!-- Nomor Rekening -->
   <div style="display:flex; align-items:center; gap:10px;">
     <img src="ic_checked.png" alt="icon" style="width:22px; height:22px;">
     <div>
@@ -1435,6 +1534,7 @@ label {
   </div>
 
 </div>
+
 
 <!-- 🔹 Tombol Google -->
 <button style="
@@ -1951,30 +2051,45 @@ label {
 <div id="bottomNav">
   <!-- Play -->
   <div class="nav-item" onclick="setActiveNav(this); openPlayPopup()">
-    <img src="destiny_icon_normal.png" alt="Play"><br>
+    <img class="nav-icon" 
+         src="destiny_icon_normal.png" 
+         data-default="destiny_icon_normal.png" 
+         data-active="destiny_icon_selected.png" 
+         alt="Play"><br>
     <small></small>
   </div>
 
   <!-- Dunia -->
   <div class="nav-item" onclick="setActiveNav(this); openDuniaPopup()">
-    <img src="match_icon_normal.png" alt="Dunia"><br>
+    <img class="nav-icon" 
+         src="match_icon_normal.png" 
+         data-default="match_icon_normal.png" 
+         data-active="match_icon_selected.png" 
+         alt="Dunia"><br>
     <small></small>
   </div>
 
-<!-- 🔹 NAV ITEM -->
-<div class="nav-item" onclick="setActiveNav(this); openInboxxxxPopup()">
-  <img src="msg_icon_normal.png" alt="Inboxxxx" style="width:38px;"><br>
-  <small></small>
-</div>
-
-
+  <!-- Inboxxxx -->
+  <div class="nav-item" onclick="setActiveNav(this); openInboxxxxPopup()">
+    <img class="nav-icon" 
+         src="msg_icon_normal.png" 
+         data-default="msg_icon_normal.png" 
+         data-active="msg_icon_selected.png" 
+         alt="Inboxxxx" style="width:38px;"><br>
+    <small></small>
+  </div>
 
   <!-- Saya -->
   <div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
-    <img src="mine_icon_normal.png" alt="Saya"><br>
+    <img class="nav-icon" 
+         src="mine_icon_normal.png" 
+         data-default="mine_icon_normal.png" 
+         data-active="mine_icon_selected.png" 
+         alt="Saya"><br>
     <small></small>
   </div>
 </div>
+
 
 <!-- POPUP CUSTOM -->
 <div id="frozenPopup" style="display:none;
@@ -2513,7 +2628,7 @@ label {
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { 
   getFirestore, collection, query, where, getDocs, addDoc,
-  doc,updateDoc, getDoc, onSnapshot, Timestamp, orderBy
+  doc,updateDoc, getDoc, onSnapshot, arrayUnion , Timestamp, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
@@ -2544,31 +2659,168 @@ const btnAkunUangTunai = document.getElementById("btnAkunUangTunai");
 const bankPopup = document.getElementById("bankPopup");
 const closeBankPopup = document.getElementById("closeBankPopup");
 
+
 btnAkunUangTunai.addEventListener("click", async () => {
   if (!currentUser) return;
 
   try {
     const userRef = doc(db, "pendaftaran", currentUser.uid);
     const snap = await getDoc(userRef);
+
     if (snap.exists()) {
       const data = snap.data();
+
+      // isi data rekening
       document.getElementById("viewBank").textContent = data.bank || "-";
       document.getElementById("viewNamaRek").textContent = data.namaRek || "-";
       document.getElementById("viewNoRek").textContent = data.noRek || "-";
+      document.getElementById("viewEmail").innerText = data.email || "-";
+      document.getElementById("viewNama").innerText = data.nama || "-";
+      document.getElementById("umurText").innerText = data.umur || "-";
+
+      // 🔥 render tag
+// 🔥 render tag
+const viewTags = document.getElementById("viewTags");
+viewTags.innerHTML = ""; // reset isi
+
+if (Array.isArray(data.tags) && data.tags.length > 0) {
+  data.tags.forEach((tag, index) => {
+    // wrapper tag
+    const tagWrapper = document.createElement("div");
+    tagWrapper.style.cssText = `
+      display:flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      background:#e8f0fe;
+      border-radius:20px;
+      font-size:13px;
+      color:#333;
+      white-space:nowrap;
+    `;
+
+    // teks tag
+    const tagText = document.createElement("span");
+    tagText.textContent = "#" + tag;
+
+    // tombol X
+    const closeBtn = document.createElement("span");
+    closeBtn.textContent = "×";
+    closeBtn.style.cssText = `
+      cursor:pointer;
+      font-weight:bold;
+      color:#ff4444;
+      margin-left:4px;
+    `;
+
+    // event klik hapus
+    closeBtn.addEventListener("click", async () => {
+      if (!currentUser) return;
+
+      try {
+        const userRef = doc(db, "pendaftaran", currentUser.uid);
+        // buat array baru tanpa tag ini
+        const newTags = data.tags.filter((t, i) => i !== index);
+
+        await updateDoc(userRef, { tags: newTags });
+
+        // hapus dari tampilan langsung
+        tagWrapper.remove();
+
+        Swal.fire({
+          icon: "success",
+          text: `Tag ${tag} berhasil dihapus!`,
+          timer: 1500,
+          showConfirmButton: false
+        });
+      } catch (err) {
+        console.error("Gagal hapus tag:", err);
+        Swal.fire({ icon: "error", text: "Gagal hapus tag!" });
+      }
+    });
+
+    tagWrapper.appendChild(tagText);
+    tagWrapper.appendChild(closeBtn);
+    viewTags.appendChild(tagWrapper);
+  });
+} else {
+  viewTags.innerHTML = `<span style="color:#888; font-size:13px;">Tidak ada tag</span>`;
+}
+
+
+
+ // 🚫 cek limit
+    if (data.tags && data.tags.length >= 4) {
+      addTagBtn.disabled = true;
+      addTagBtn.style.opacity = "0.5";
+      addTagBtn.style.cursor = "not-allowed";
+      tagLimitInfo.textContent = "Batas maksimal 4 tag sudah tercapai";
+    } else {
+      addTagBtn.disabled = false;
+      addTagBtn.style.opacity = "1";
+      addTagBtn.style.cursor = "pointer";
+      tagLimitInfo.textContent = "";
     }
 
-    bankPopup.style.display = "flex";
+
+
+
+
+
+
+
+
+
+
+
+
+    } else {
+      Swal.fire({ icon: "warning", text: "Data rekening tidak ditemukan!" });
+    }
+
+    bankPopup.style.display = "flex";  
+
   } catch (err) {
     console.error("Error ambil data bank:", err);
     Swal.fire({ icon: "error", text: "Gagal ambil data rekening!" });
   }
 });
 
+
+
 closeBankPopup.addEventListener("click", () => {
   bankPopup.style.display = "none";
 });
 
+// Ambil elemen
+ const fotoInput = document.getElementById("fotoInput");
+  const viewFoto = document.getElementById("viewFoto");
 
+  // Saat pilih foto
+  fotoInput.addEventListener("change", function() {
+    const file = this.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const fotoBase64 = e.target.result;
+
+      // tampilkan ke img
+      viewFoto.src = fotoBase64;
+
+      // simpan ke localStorage
+      localStorage.setItem("userFoto", fotoBase64);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Load ulang dari localStorage saat buka halaman
+  window.addEventListener("load", () => {
+    const savedFoto = localStorage.getItem("userFoto");
+    if (savedFoto) {
+      viewFoto.src = savedFoto;
+    }
+  });
 
 
 // ---------- STATE ----------
@@ -2598,6 +2850,53 @@ const gearBtn = document.querySelector('img[alt="leeeogo"]');
 const editPopup = document.getElementById("editPopup");
 const closeEditPopup = document.getElementById("closeEditPopup");
 const editForm = document.getElementById("editForm");
+const tagInput = document.getElementById("tagInput");
+const tagList  = document.getElementById("tagList");
+const addTagBtn = document.getElementById("addTagBtn");
+
+
+
+
+// Tambah Tag pakai tombol
+addTagBtn.addEventListener("click", async () => {
+  const value = tagInput.value.trim();
+  if (value !== "" && currentUser) {
+    const newTag = value.startsWith("#") ? value : "#" + value;
+
+    // 1. Tambah ke UI
+    const tagDiv = document.createElement("div");
+    tagDiv.textContent = newTag;
+    tagDiv.style.cssText = `
+      padding:6px 10px; 
+      background:#e8f0fe; 
+      border-radius:20px; 
+      font-size:13px; 
+      text-align:center; 
+      color:#333;
+    `;
+    tagList.appendChild(tagDiv);
+
+    // 2. Simpan ke Firestore
+    try {
+      const userRef = doc(db, "pendaftaran", currentUser.uid);
+      await updateDoc(userRef, {
+        tags: arrayUnion(newTag)
+      });
+      console.log("✅ Tag tersimpan:", newTag);
+    } catch (err) {
+      console.error("🔥 Error simpan tag:", err);
+    }
+
+    tagInput.value = "";
+  }
+});
+
+
+
+
+
+
+
 
 // ---------- HELPER ----------
 function formatRpShort(n) {
@@ -2658,6 +2957,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     listenSaldo(currentUser.uid);
     listenTagihan(currentUser.uid);
     listenUserStatus(currentUser.uid);
+      // 🔥 update last active saat user masuk ke dashboard
+  updateLastActive(currentUser.uid);
 
   } else {
     // Kalau belum login atau status bukan active → tampilkan login
@@ -2675,7 +2976,18 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 
 
-
+// ---------- UPDATE LAST ACTIVE ----------
+async function updateLastActive(uid) {
+  try {
+    const userRef = doc(db, "pendaftaran", uid);
+    await updateDoc(userRef, {
+      lastActive: Timestamp.now()
+    });
+    console.log("Last active updated for:", uid);
+  } catch (err) {
+    console.error("Gagal update lastActive:", err);
+  }
+}
 
 
 
@@ -2739,6 +3051,12 @@ btnLogin.addEventListener("click", async () => {
       timer: 1500,
       showConfirmButton: false,
     });
+
+
+    // 🔥 update waktu terakhir aktif
+    updateLastActive(userId);
+
+
 
   } catch (err) {
     console.error("Login error:", err);
@@ -3178,27 +3496,34 @@ function closeAllPopups() {
 window.setActiveNav = function(el) {
   document.querySelectorAll("#bottomNav .nav-item").forEach(item => {
     item.classList.remove("active");
-    item.style.color = "#444"; // default
+    
+
+    // reset ikon ke default
+    const icon = item.querySelector(".nav-icon");
+    if (icon) icon.src = icon.getAttribute("data-default");
   });
+
   el.classList.add("active");
-  el.style.color = "#e91e63"; // aktif
+
+
+  // ganti ikon jadi aktif
+  const activeIcon = el.querySelector(".nav-icon");
+  if (activeIcon) activeIcon.src = activeIcon.getAttribute("data-active");
 
   // Tutup semua popup ketika pindah nav
   closeAllPopups();
 };
 
+
 // Default buka halaman play
 document.addEventListener("DOMContentLoaded", () => {
   showPageNav("play");
 
-  // Auto tutup popup kalau klik nav lain
   document.querySelectorAll("#bottomNav .nav-item").forEach(nav => {
     nav.addEventListener("click", () => {
       closeAllPopups();
     });
   });
-
- 
 
   // Tombol close manual Dunia
   const closeDuniaBtn = document.getElementById("closeDuniaPopup");
@@ -3815,7 +4140,7 @@ editForm.addEventListener("submit", async (e) => {
       await updateDoc(userRef, { nama, umur });
     }
 
-    showNotif("Data berhasil diperbarui!");
+showNotif("Data berhasil diperbarui!\nSilahkan Refresh kembali");
     editPopup.style.display = "none";
   } catch (err) {
     console.error("🔥 Error update data:", err);

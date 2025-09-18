@@ -332,6 +332,35 @@ function loadUserDpo() {
   });
 }
 
+// ---------- UPDATE LAST ACTIVE ----------
+async function updateLastActive(uid) {
+  try {
+    const userRef = doc(db, "pendaftaran", uid);
+    await updateDoc(userRef, { lastActive: Timestamp.now() });
+    console.log("Last active updated for:", uid);
+  } catch (err) {
+    console.error("Gagal update lastActive:", err);
+  }
+}
+window.updateLastActive = updateLastActive;
+
+
+// ==========================
+// 🔹 Update User Last Active / Online
+// ==========================
+async function setUserOnline(uid, isOnline) {
+  try {
+    await updateDoc(doc(db, "pendaftaran", uid), {
+      isOnline: isOnline,
+      lastActive: Timestamp.now()
+    });
+  } catch (err) {
+    console.error("Update user online error:", err);
+  }
+}
+window.setUserOnline = setUserOnline;
+
+
 // ==========================
 // 🔹 Update Status User
 // ==========================
@@ -345,8 +374,6 @@ async function updateUserStatus(uid, status) {
   }
 }
 window.updateUserStatus = updateUserStatus;
-
-
 
 
 
@@ -975,45 +1002,59 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🔹 Render User Data
   // ========================
   function renderUserRow(userId, data) {
-  const tr = document.createElement("tr");
-  tr.dataset.userId = userId; // Tambahkan untuk referensi nanti
+    const tr = document.createElement("tr");
+    tr.id = `row-${userId}`;
 
-  tr.innerHTML = `
-    <td>${data.nama || '-'}</td>
-    <td>${data.umur || '-'}</td>
-    <td>${data.jk || '-'}</td>
-    <td>${data.wa || '-'}</td>
-    <td>${data.email || '-'}</td>
-    <td>${data.app || '-'}</td>
-    <td>${data.bank || '-'}</td>
-    <td>${data.namaRek || '-'}</td>
-    <td>${data.noRek || '-'}</td>
-    <td>${data.fotoURL ? `<img src="${data.fotoURL}" width="50">` : ''}</td>
-    <td>
-      ${data.verified 
-        ? `<span style="color:green;font-weight:bold;">Diverifikasi</span>` 
-        : `<span style="color:red;font-weight:bold;">Unverifikasi</span>`}
-    </td>
-<td>
-  <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px;">
-    <button class="verify-btn" data-id="${userId}" data-status="true">Verifikasi</button>
-    <button class="verify-btn" data-id="${userId}" data-status="false">Batalkan</button>
+    // 🔹 Format timestamp untuk lastActive
+    function formatTimestamp(ts) {
+      if (!ts) return "-";
+      if (ts.toDate) return ts.toDate().toLocaleString("id-ID", { dateStyle: "short", timeStyle: "short" });
+      if (ts.seconds) return new Date(ts.seconds * 1000).toLocaleString("id-ID", { dateStyle: "short", timeStyle: "short" });
+      if (typeof ts === "string") return new Date(ts).toLocaleString("id-ID", { dateStyle: "short", timeStyle: "short" });
+      return "-";
+    }
 
-    <button class="delete-btn" data-id="${userId}" 
-      style="color:#fff; background:red;">Delete</button>
-    <button class="mark-btn" data-id="${userId}" 
-      style="background:orange; color:#fff;">Sudah</button>
+    const lastActiveText = formatTimestamp(data.lastActive);
 
-    <button class="note-btn" data-id="${userId}" data-nama="${data.nama || '-'}" 
-      style="background:#4caf50; color:#fff;">Catatan</button>
-    <div id="suuukkses-${userId}" class="suuukkses-btn" 
-      style="padding:5px 10px; background:#ddd; border-radius:4px; cursor:pointer; text-align:center;">
-      Sukses
-    </div>
-  </div>
-</td>
-  
-  `;
+    tr.innerHTML = `
+      <td>${data.nama || '-'}</td>
+      <td>${data.umur || '-'}</td>
+      <td>${data.jk || '-'}</td>
+      <td>${data.wa || '-'}</td>
+      <td>${data.email || '-'}</td>
+      <td>${data.app || '-'}</td>
+      <td>${data.bank || '-'}</td>
+      <td>${data.namaRek || '-'}</td>
+      <td>${data.noRek || '-'}</td>
+      <td>${data.fotoURL ? `<img src="${data.fotoURL}" width="50">` : ''}</td>
+      <td>
+        ${data.verified 
+          ? `<span style="color:green;font-weight:bold;">Diverifikasi</span>` 
+          : `<span style="color:red;font-weight:bold;">Unverifikasi</span>`}
+      </td>
+      <td class="last-active">${lastActiveText}</td> <!-- 🔹 Kolom terakhir online -->
+               <td class="aksi-cell">
+        <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px;">
+          <button class="verify-btn" data-id="${userId}" data-status="true">Verifikasi</button>
+          <button class="verify-btn" data-id="${userId}" data-status="false">Batalkan</button>
+
+          <button class="delete-btn" data-id="${userId}" 
+            style="color:#fff; background:red;">Delete</button>
+          <button class="mark-btn" data-id="${userId}" 
+            style="background:orange; color:#fff;">Sudah</button>
+
+          <button class="note-btn" data-id="${userId}" data-nama="${data.nama || '-'}" 
+            style="background:#4caf50; color:#fff;">Catatan</button>
+          <div id="suuukkses-${userId}" class="suuukkses-btn" 
+            style="padding:5px 10px; background:#ddd; border-radius:4px; cursor:pointer; text-align:center;">
+            Sukses
+          </div>
+<button class="copy-row-btn" data-id="${userId}" style="background:#2196f3; color:#fff;">Terima</button>
+<button class="copdata-btn" data-id="${userId}" style="background:#9c27b0; color:#fff;">Copy Data</button>        </div>
+      </td>
+      </td>
+      
+    `;
 
   
   // ✅ Jika statusHijau = true → seluruh baris hijau
@@ -1021,6 +1062,121 @@ document.addEventListener("DOMContentLoaded", () => {
     tr.style.background = "#4caf50";  // hijau
     tr.style.color = "#fff";          // teks putih
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("click", (e) => {
+  // Tombol Salin (template WhatsApp panjang)
+  if (e.target.classList.contains("copy-row-btn")) {
+    const row = e.target.closest("tr");
+    const cells = row.querySelectorAll("td");
+
+    const dataUser = {
+      nama: cells[0].innerText.trim(),
+      umur: cells[1].innerText.trim(),
+      jk: cells[2].innerText.trim(),
+      wa: cells[3].innerText.trim(),
+      email: cells[4].innerText.trim(),
+      app: cells[5].innerText.trim(),
+      bank: cells[6].innerText.trim(),
+      namaRek: cells[7].innerText.trim(),
+      noRek: cells[8].innerText.trim(),
+    };
+
+    const hasil = 
+`📩SELAMAT! , Atas pendaftaran anda untuk menjadi salah satu Father AGENCY HOSTLIVE Telah di Terima🎉🎊
+
+𝘉𝘦𝘳𝘪𝘬𝘶𝘵 𝘥𝘢𝘵𝘢 𝘢𝘯𝘥𝘢 𝘺𝘢𝘯𝘨 𝘵𝘦𝘭𝘢𝘩 𝘬𝘢𝘮𝘪 𝘵𝘦𝘳𝘪𝘮𝘢^^
+--------------------------------------
+
+USER DAFTAR
+
+NAMA D/B
+${dataUser.nama}
+
+EMAIL AKTIF
+${dataUser.email}
+
+NAMA AKUN DI APLIKASI
+${dataUser.nama} (dapat di ganti pada aplikasi)
+
+WHATSAPP
+${dataUser.wa}
+
+NAMA BANK/E-WALLET
+${dataUser.bank}
+
+NAMA REKENING
+${dataUser.namaRek}
+
+NOMO REKENING
+${dataUser.noRek}
+
+HOST APLIKASI
+${dataUser.nama}
+
+APLIKASI
+${dataUser.app}
+
+Mohon untuk memeriksa kembali data anda apakah sudah benar ya kak😊🙏*
+----------------------------`;
+
+    navigator.clipboard.writeText(hasil).then(() => {
+      e.target.innerText = "✔ Disalin!";
+      setTimeout(() => e.target.innerText = "Salin", 1500);
+    });
+  }
+
+  // Tombol Copy Data (format singkat: Nama lengkap: a, Email: b, dst)
+ // Tombol Copy Data (format singkat: Nama lengkap: a, Email: b, dst)
+// Tombol Copy Data (format singkat)
+if (e.target.classList.contains("copdata-btn")) {
+  const row = e.target.closest("tr");
+  const cells = row.querySelectorAll("td");
+
+  const headers = [
+    "Nama Lengkap",
+    "Umur",
+    "Jenis Kelamin",
+    "No. WA",
+    "Email",
+    "App",
+    "Bank",
+    "Nama Rekening",
+    "No. Rekening"
+  ];
+
+  let texts = [];
+  cells.forEach((cell, idx) => {
+    if (!cell.classList.contains("aksi-cell") && headers[idx]) {
+      texts.push(`${headers[idx]} : ${cell.innerText.trim()}`);
+    }
+  });
+
+  // satukan hasil dengan template
+  const hasil = `Hasil pada data anda pada sistem kami\n\n${texts.join("\n")}\n\nmohon periksa kembali apakah data ini bener ya kak`;
+
+
+
+
+
+    navigator.clipboard.writeText(hasil).then(() => {
+      e.target.innerText = "✔ Copied!";
+      setTimeout(() => e.target.innerText = "Copy Data", 1500);
+    });
+  }
+});
 
 
 
@@ -1041,13 +1197,13 @@ document.addEventListener("click", async function(e) {
 
     // ✅ UI langsung berubah tanpa reload
     const row = document.getElementById(`row-${userId}`);
-    if (!statusHijau) {
-      row.style.background = "#4caf50"; // hijau
-      row.style.color = "#4caf50";         // teks putih
-    } else {
-      row.style.background = "";  // kembali normal
-      row.style.color = "";
-    }
+if (!statusHijau) {
+  row.style.background = "#4caf50"; // hijau
+  row.style.color = "#fff";         // teks putih ✅
+} else {
+  row.style.background = "";  
+  row.style.color = "";
+}
   }
 });
 
@@ -2028,7 +2184,10 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 
 
 
-
+  /* Biar kolom aksi selalu putih */
+  #data-user-table td.aksi-cell {
+    background: #fff !important;
+  }
 
 
 
@@ -2196,7 +2355,7 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 
 <!-- ✅ User DPO -->
 <div id="userdpo" class="page" style="display:none; padding:20px;">
-  <h2>Permintaan Deposit User</h2>
+  <h2>Permintaan Withdraw User</h2>
   <table border="1" width="100%" style="border-collapse:collapse;text-align:center;">
     <thead style="background:#eee;">
       <tr>
@@ -2318,7 +2477,7 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 
     <div id="data" class="page active">
       <h1>Data User</h1>
-      <input type="text" id="searchInput" placeholder="Cari data..." style="margin-bottom:10px;border-radius:10px;padding:8px;width:300px;font-size:16px;">
+      <input type="text" id="searchInput" placeholder="Cari data..." style="margin-bottom:10px;border-radius:10px;padding:8px;width:300px;  font-size:16px;">
       <table>
         <thead>
           <tr>
@@ -2332,7 +2491,9 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
             <th>Nama Rek</th>
             <th>No Rek</th>
             <th>Foto</th>
-            <th>Status Verifikasi</th>
+            <th>Status</th>
+            <th>Terakhir Aktif</th> <!-- ✅ kolom baru -->
+
             <th>Aksi</th>
           </tr>
         </thead>
