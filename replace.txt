@@ -1,3 +1,0 @@
-# match OpenAI API key pattern
-re:sk-[A-Za-z0-9]+
-***REMOVED***
