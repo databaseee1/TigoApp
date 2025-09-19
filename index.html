@@ -379,6 +379,7 @@ border-bottom-right-radius: 0;
   width: 100%;
   margin-bottom: -10px;
   box-sizing: border-box;
+  background: #d9d9d9;
 }
 
 /* Tombol */
@@ -1546,7 +1547,7 @@ button[onclick="prosesTarik()"] {
   align-items: center;
   gap: 1px;      /* jarak antara logo & teks */
   margin-top: -18px;
-  background: #9e9d9d;
+  background: #d6d5d5;
       border-radius: 4px;
 }
 
@@ -1560,7 +1561,6 @@ button[onclick="prosesTarik()"] {
   font-size: 9px;
   font-weight: 600;
   color: rgb(255, 255, 255);
-  background: #a1a1a1;
 }
 
 .age {
@@ -2548,7 +2548,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 <!-- GRID FOTO -->
 <div class="foto-grid">
   <div class="foto-box" onclick="openProfile(0)">
-    <img src="cewek10.jpeg" alt="Host 1">
+    <img src="cewek25.jpeg" alt="Host 1">
   </div>
   <div class="foto-box" onclick="openProfile(1)">
     <img src="cewek11.jpeg" alt="Host 2">
@@ -4040,7 +4040,7 @@ function closeRefundCoin(){
 
 
 const profiles = [
-  {name:'Bella', age:22, level:'Level 3', verified:true, avatar:'cewek10.jpeg'},
+  {name:'Inka prawiti', age:22, level:'Level 3', verified:true, avatar:'cewek25.jpeg'},
   {name:'Angel winka', age:24, level:'Level 4', verified:false, avatar:'cewek11.jpeg'},
   {name:'Syila boes', age:21, level:'Level 2', verified:true, avatar:'cewek12.jpg'},
   {name:'Tylist', age:23, level:'Level 3', verified:false, avatar:'athia.jpeg'},
@@ -4530,26 +4530,13 @@ const GAP_MS      = 1400;    // jeda antar spawn (ms)
 
 /* ==== Data contoh ==== */
 const messages = [
-  "(Host) Irfan telah menerima Rp 4.788.000",
-  "(Host) Bagas telah menerima Rp 6.450.000",
-  "(Host) Dimas telah menerima Rp 7.200.000",
-  "(Host) Rian telah menerima Rp 4.950.000",
-  "(Host) Andi telah menerima Rp 5.300.000",
-  "(Host) Bima telah menerima Rp 8.250.000",
-  "(Host) Farhan telah menerima Rp 4.600.000",
-  "(Host) Reza telah menerima Rp 6.750.000",
-  "(Host) Fahri telah menerima Rp 7.850.000",
-  "(Host) Ardi telah menerima Rp 9.100.000",
-  "(Host) Aldi telah menerima Rp 4.500.000",
-  "(Host) Rio telah menerima Rp 5.750.000",
-  "(Host) Yoga telah menerima Rp 8.000.000",
-  "(Host) Rizky telah menerima Rp 6.200.000",
-  "(Host) Fajar telah menerima Rp 4.890.000",
+
   "(Host) Raka telah menerima Rp 9.250.000",
   "(Host) Galih telah menerima Rp 5.900.000",
   "(Host) Hendra telah menerima Rp 6.450.000",
   "(Host) Angga telah menerima Rp 7.300.000",
   "(Host) Yudi telah menerima Rp 8.150.000",
+  
   "(Host) Joko telah menerima Rp 4.950.000",
   "(Host) Bayu telah menerima Rp 5.600.000",
   "(Host) Aldianto telah menerima Rp 7.750.000",
@@ -4565,6 +4552,21 @@ const messages = [
   "(Host) Sinta telah menerima Rp 4.850.000",
   "(Host) Rani telah menerima Rp 6.250.000",
   "(Host) Wulan telah menerima Rp 7.500.000",
+    "(Host) Irfan telah menerima Rp 4.788.000",
+  "(Host) Bagas telah menerima Rp 6.450.000",
+  "(Host) Dimas telah menerima Rp 7.200.000",
+  "(Host) Rian telah menerima Rp 4.950.000",
+  "(Host) Andi telah menerima Rp 5.300.000",
+  "(Host) Bima telah menerima Rp 8.250.000",
+  "(Host) Farhan telah menerima Rp 4.600.000",
+  "(Host) Reza telah menerima Rp 6.750.000",
+  "(Host) Fahri telah menerima Rp 7.850.000",
+  "(Host) Ardi telah menerima Rp 9.100.000",
+  "(Host) Aldi telah menerima Rp 4.500.000",
+  "(Host) Rio telah menerima Rp 5.750.000",
+  "(Host) Yoga telah menerima Rp 8.000.000",
+  "(Host) Rizky telah menerima Rp 6.200.000",
+  "(Host) Fajar telah menerima Rp 4.890.000",
   "(Host) Ayu telah menerima Rp 8.150.000",
   "(Host) Dinda telah menerima Rp 4.900.000",
   "(Host) Putri telah menerima Rp 6.750.000",
@@ -4573,6 +4575,20 @@ const messages = [
   "(Host) Melisa telah menerima Rp 7.900.000",
   "(Host) Riska telah menerima Rp 9.000.000",
   "(Host) Rika telah menerima Rp 6.950.000",
+
+    "(Host) Rani telah menerima Rp 8.900.000",
+  "(Host) Dimas telah menerima Rp 12.000.000",
+  "(Host) Putri telah menerima Rp 14.500.000",
+  "(Host) Bayu telah menerima Rp 11.200.000",
+  "(Host) Lala telah menerima Rp 7.800.000",
+  "(Host) Agus telah menerima Rp 9.700.000",
+  "(Host) Melisa telah menerima Rp 13.600.000",
+  "(Host) Fajar telah menerima Rp 10.800.000",
+  "(Host) Riska telah menerima Rp 7.400.000",
+  "(Host) Reza telah menerima Rp 12.900.000",
+  "(Host) Tiara telah menerima Rp 8.700.000",
+  "(Host) Arif telah menerima Rp 14.200.000",
+  "(Host) Nia telah menerima Rp 9.800.000",
   "(Host) Tiara telah menerima Rp 8.500.000",
   "(Host) Shinta telah menerima Rp 5.850.000",
   "(Host) Indah telah menerima Rp 7.200.000",
@@ -4586,19 +4602,7 @@ const messages = [
   "(Host) Budi telah menerima Rp 8.100.000",
   "(Host) Ayu telah menerima Rp 9.500.000",
   "(Host) Andi telah menerima Rp 10.250.000",
-  "(Host) Rani telah menerima Rp 8.900.000",
-  "(Host) Dimas telah menerima Rp 12.000.000",
-  "(Host) Putri telah menerima Rp 14.500.000",
-  "(Host) Bayu telah menerima Rp 11.200.000",
-  "(Host) Lala telah menerima Rp 7.800.000",
-  "(Host) Agus telah menerima Rp 9.700.000",
-  "(Host) Melisa telah menerima Rp 13.600.000",
-  "(Host) Fajar telah menerima Rp 10.800.000",
-  "(Host) Riska telah menerima Rp 7.400.000",
-  "(Host) Reza telah menerima Rp 12.900.000",
-  "(Host) Tiara telah menerima Rp 8.700.000",
-  "(Host) Arif telah menerima Rp 14.200.000",
-  "(Host) Nia telah menerima Rp 9.800.000",
+
   "(Host) Joko telah menerima Rp 13.500.000",
   "(Host) Dinda telah menerima Rp 11.000.000",
   "(Host) Aldi telah menerima Rp 10.700.000",
