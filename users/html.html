@@ -540,7 +540,7 @@ async function loadUserData(userId) {
         const userNameEl = document.getElementById("userName");
         const userAgeEl = document.getElementById("userAge");
         if (userNameEl) userNameEl.textContent = data.nama || "User";
-        if (userAgeEl) userAgeEl.textContent = data.umur ? `${data.umur} Tahun` : "0 Tahun";
+        if (userAgeEl) userAgeEl.textContent = data.umur ? `${data.umur}` : "0";
 
         // ✅ Update saldo Rupiah
         const saldoNominalEl = document.getElementById("saldoNominal");
@@ -1628,7 +1628,7 @@ if (userId) {
     /* Popup content */
     .popup-content {
       position: absolute;
-      top: 50%;
+      top: 65%;
       left: 50%;
       transform: translate(-50%, -50%);
       background: #fff;
@@ -1636,7 +1636,7 @@ if (userId) {
       border-radius: 12px;
       max-width: 350px;
       width: 80%;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
       text-align: center;
       animation: fadeIn 0.3s ease;
     }
@@ -1718,7 +1718,7 @@ if (userId) {
       border-radius: 8px;
       color: #fff;
       margin-bottom: 20px;
-      width: 100%;
+      width: 93%;
       text-align: center;
     }
 
@@ -2291,7 +2291,7 @@ if (userId) {
   .settings-item {
     padding:15px;
     border-bottom:1px;
-    font-size:16px;
+    font-size:17px;
     cursor:pointer;
   }
   .settings-item:hover {
@@ -2305,9 +2305,11 @@ if (userId) {
   padding: 12px 0;      /* ✅ tinggi tombol */
   background: #f3f3f3;
   border-radius: 50px;  /* ✅ biar bulat kiri-kanan */
-  width: 100%;          /* ✅ full lebar container */
+  width: 90%;          /* ✅ full lebar container */
   box-sizing: border-box;
   cursor: pointer;
+    padding-left: 20px; /* jarak dari kiri biar rapi */
+
 }
 
 
@@ -2318,7 +2320,490 @@ if (userId) {
   border-radius: 10px;
   text-align: center;
   cursor: pointer;
+  width: 85%;
 }
+
+
+/* Container utama: bisa disesuaikan atau dipindah ke file CSS terpisah */
+#rekom-lokasi {
+  max-width: 720px;
+  margin: 18px auto;           /* center di layar */
+  padding: 16px;
+  background: #fffdf6;         /* latar lembut, sesuaikan jika perlu */
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(20,20,20,0.06);
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Judul */
+#rekom-lokasi h2 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+}
+
+/* Konten umum */
+.rekom-content p {
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+/* Teks yang harus merah */
+.rekom-content .emph-red {
+  color: #d32f2f;      /* merah tajam, bisa ganti kode warna */
+  font-weight: 600;
+}
+
+/* Jika ingin menonjolkan bar/ikon di samping teks */
+.rekom-content .emph-red::before{
+  content: "⚠️";
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* Responsif: agar tetap rapi di layar kecil */
+@media (max-width: 420px) {
+  #rekom-lokasi {
+    padding: 12px;
+    margin: 12px;
+  }
+  #rekom-lokasi h2 { font-size: 16px; }
+  .rekom-content p { font-size: 13px; }
+}
+
+
+
+
+
+
+/* Popup full layar */
+.popup {
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:#fff;
+  z-index:9999;
+  overflow:auto;
+  font-family:sans-serif;
+}
+
+.popup-header {
+  display:flex;
+  align-items:center;
+  padding:12px;
+  border-bottom:1px solid #ddd;
+}
+.popup-header img.back-btn {
+  width:24px; height:24px; cursor:pointer;
+}
+.popup-header h2 {
+  flex:1;
+  text-align:center;
+  margin:0;
+  color: #000000;
+}
+
+.popup-content {
+  padding:20px;
+  width: 80%;
+  max-width: 450px;
+}
+.row {
+  margin:15px 0;
+}
+.row label {
+  font-weight:bold;
+  margin-right:10px;
+}
+.lokasi-toggle-box {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Baris toggle */
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+/* Hilangkan border di baris terakhir */
+.toggle-row:last-child {
+  border-bottom: none;
+}
+
+/* Gambar toggle */
+.toggle-row img {
+  width: 40px;
+  height: auto;
+}
+
+
+
+
+
+
+
+/* Popup umum */
+.popup {
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:#fff;
+  z-index:9999;
+  overflow:auto;
+  font-family:sans-serif;
+}
+.popup-header {
+  display:flex;
+  align-items:center;
+  padding:12px;
+  border-bottom:1px solid #ddd;
+}
+#referal-back {
+  width:24px;
+  height:24px;
+  cursor:pointer;
+}
+.popup-header h2 {
+  flex:1;
+  text-align:center;
+  margin:0;
+  font-size: 16px;
+}
+
+/* Konten */
+.popup-content {
+  padding:20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* === Popup Referal Khusus === */
+#referal-popup {
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:#fff;
+  z-index:9999;
+  overflow:auto;
+  font-family:sans-serif;
+}
+
+/* Header */
+#referal-header {
+  display:flex;
+  align-items:center;
+  padding:12px;
+  border-bottom:1px solid #ddd;
+}
+#referal-back {
+  width:28px;
+  height:28px;
+  cursor:pointer;
+}
+#referal-header h2 {
+  flex:1;
+  text-align:center;
+  margin:0;
+  color: #000000;
+  font-size:18px;
+}
+
+/* Konten */
+#referal-content {
+  padding:20px;
+  text-align:center;
+}
+
+/* Banner */
+#referal-banner {
+  width:100%;
+  max-height:180px;
+  object-fit:cover;
+  border-radius:8px;
+  margin-bottom:20px;
+}
+
+/* Box link */
+#referal-box {
+  margin:0 auto 20px auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#e7e7e7;
+  border:3px solid #9f7aff;
+  border-radius:8px;
+  padding:10px 14px;
+  max-width:340px;
+}
+
+#referal-link {
+  border:none;
+  outline:none;
+  flex:1;
+  font-size:14px;
+  background:#6467ff;
+  text-align:left;
+  color: #fff;
+}
+
+/* Pemisah miring */
+#referal-separator {
+  width:4px;
+  height:24px;
+  margin:0 10px;
+  background:linear-gradient(135deg, #ccc 50%, transparent 60%);
+}
+
+#referal-copy {
+  width:28px;
+  height:28px;
+  cursor:pointer;
+}
+
+/* Button undang */
+#referal-button-box {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;                 /* jarak antara gambar & teks */
+  width:80%;
+  max-width:320px;
+  margin:20px auto 0 auto;
+  padding:12px;
+  background:oklab(0.72 0.32 -0.17 / 0.67);       /* biar keliatan tombol */
+  border-radius:20px;
+  cursor:pointer;
+  box-shadow: 0 1px 3px rgb(0 31 46);
+}
+
+#referal-button {
+  width:28px;
+  height:28px;
+}
+
+#referal-button-text {
+  font-size:16px;
+  font-weight:bold;
+  color:#333;
+}
+
+
+#referal-banner-box {
+  position:relative;
+  width:100%;
+  max-height:200px;
+  overflow:hidden;
+  border-radius:8px;
+  margin-bottom:20px;
+}
+
+#referal-banner {
+  width:100%;
+  height:200px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+/* Overlay teks */
+#referal-banner-text {
+  position:absolute;
+  top:15px;
+  left:15px;
+  color:#fff;
+  text-shadow:0 1px 3px rgba(0,0,0,0.5);
+}
+#referal-banner-text h3 {
+  margin:0;
+  font-size:25px;
+  line-height:1.3;
+}
+#referal-banner-text p {
+  margin:5px 0 0;
+  font-size:14px;
+}
+
+/* Box komisi */
+#referal-banner-commission {
+  position:absolute;
+  bottom:15px;
+  left:15px;
+  display:flex;
+  gap:10px;
+}
+.commission-box {
+  background: url("no_match_times_open_vip_bg.png") no-repeat center center;
+  background-size: cover;   /* biar gambar menyesuaikan ukuran box */
+  border-radius: 6px;
+  padding: 6px 10px;
+  text-align: center;
+  color: #fff;
+      border-bottom: 3px solid #0010c0;              /* teksnya putih biar kontras */
+}
+.commission-box strong {
+  font-size:16px;
+  color:#8a10e5;
+  display:block;
+}
+.commission-box span {
+  font-size:12px;
+  color:#333;
+}
+
+/* Icon tambahan */
+#referal-banner-icon {
+  position:absolute;
+  bottom:10px;
+  right:10px;
+  width:60px;
+  height:60px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+#bagi-hasil-card {
+    width: 290px;
+    background: url(cert_scan_frame.png) no-repeat center center;
+    background-size: cover;
+    border-radius: 12px;
+    padding: 16px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    margin: 0 auto; /* 🔹 otomatis center */
+}
+
+#bagi-hasil-card h3 {
+  text-align: center;
+  font-size: 16px;
+  margin: 0 0 10px;
+  color: #333;
+}
+
+.hasil-atas {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.hasil-dollar {
+  font-size: 22px;
+  font-weight: bold;
+  color: #ff5500;
+}
+
+.hasil-coin {
+  font-size: 18px;
+  color: #a944ff;
+}
+
+.lihat-rincian {
+  display: block;
+  text-align: center;
+  font-size: 13px;
+  color: #007bff;
+  text-decoration: none;
+  margin-bottom: 10px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid rgba(0,0,0,0.1);
+  margin: 8px 0;
+}
+
+.penghasilan {
+  font-size: 13px;
+  margin: 6px 0;
+}
+
+.penghasilan .merah {
+  color: #ff3300;
+  font-weight: bold;
+}
+
+.rasio {
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rasio img.info {
+  width: 24px;
+  height: 24px;
+}
+
+.progress-box {
+  margin-top: 10px;
+}
+
+.progress-track {
+  height: 6px;
+  background: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff6600, #ffcc00);
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #666;
+}
+
+
+
+
+
+
+
+
+
 
 
   </style>
@@ -2721,29 +3206,41 @@ if (userId) {
   ">OK</button>
   </div>
 
-
-  <!-- USER PAGE -->
-  <div id="userPage" style="display:none;">
-    <!-- NAVIGASI BAWAH -->
-    <div id="bottomNav"
-      style="position:fixed; bottom:0; left:0; width:100%; background:#fff; display:flex; justify-content:space-around; padding:8px 0;">
-      <div class="nav-item" onclick="setActiveNav(this); showPageNav('play')">
-        <img src="destiny_icon_normal.png" alt="Play" style="width:38px;"><br>
-        <small></small>
-      </div>
-      <div class="nav-item" onclick="setActiveNav(this); showPageNav('dunia')">
-        <img src="match_icon_normal.png" alt="Dunia" style="width:38px;"><br>
-        <small></small>
-      </div>
-      <div class="nav-item" onclick="setActiveNav(this); showPageNav('chat')">
-        <img src="msg_icon_normal.png" alt="Chat" style="width:38px;"><br>
-        <small></small>
-      </div>
-      <div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
-        <img src="mine_icon_normal.png" alt="Saya" style="width:38px;"><br>
-        <small></small>
-      </div>
+<!-- USER PAGE -->
+<div id="userPage" style="display:none;">
+  <!-- NAVIGASI BAWAH -->
+  <div id="bottomNav"
+    style="position:fixed; bottom:0; left:0; width:100%; background:#fff; display:flex; justify-content:space-around; padding:8px 0;">
+    
+    <div class="nav-item" onclick="setActiveNav(this); showPageNav('play')">
+      <img src="destiny_icon_normal.png" 
+           data-normal="destiny_icon_normal.png" 
+           data-active="destiny_icon_selected.png" 
+           alt="Play" style="width:38px;"><br>
+      <small></small>
     </div>
+    <div class="nav-item" onclick="setActiveNav(this); showPageNav('dunia')">
+      <img src="match_icon_normal.png" 
+           data-normal="match_icon_normal.png" 
+           data-active="match_icon_selected.png" 
+           alt="Dunia" style="width:38px;"><br>
+      <small></small>
+    </div>
+    <div class="nav-item" onclick="setActiveNav(this); showPageNav('chat')">
+      <img src="msg_icon_normal.png" 
+           data-normal="msg_icon_normal.png" 
+           data-active="msg_icon_selected.png" 
+           alt="Chat" style="width:38px;"><br>
+      <small></small>
+    </div>
+    <div class="nav-item" onclick="setActiveNav(this); showPageNav('saya')">
+      <img src="mine_icon_normal.png" 
+           data-normal="mine_icon_normal.png" 
+           data-active="mine_icon_selected.png" 
+           alt="Saya" style="width:38px;"><br>
+      <small></small>
+    </div>
+  </div>
 
 
 
@@ -3934,7 +4431,7 @@ if (userId) {
 
           <div class="age" style="font-size:14px; color:#444;">
             <img src="female_icon_new_3.png" class="icon" alt="Age" style="width:18px;">
-            <span id="userAge">0 Tahun</span>
+            <span id="userAge">0</span>
           </div>
 
           <div class="country">
@@ -3947,7 +4444,7 @@ if (userId) {
             </div>
 
             <div class="verify"
-              style="display:flex; align-items:center; gap:0px; background:#e5e5e5; padding:0px 5px; border-radius:5px; font-size:14px; color:#7f3586;">
+              style="display:flex; align-items:center; gap:0px; background:#e5e5e5; padding:0px 5px; border-radius:5px; font-size:14px; color:#9932ff;">
               <img id="statusIcon" src="verifikasi.png" alt="Status" style="width:18px; height:18px; border-radius:4px;">
               <span id="statusVerifikasi">Diverifikasi</span>
             </div>
@@ -4174,9 +4671,245 @@ if (userId) {
   Bahasa APP <span style="color: grey;">Otomatis (Indonesia)</span>
 </div>
 
-<div class="settings-item" onclick="alert('Atur Lokasi Match')">Atur Lokasi Match</div>
+<div class="settings-item" onclick="openPopupLokasi()">Atur Lokasi Match</div>
+
+
+<!-- Popup -->
+<!-- Popup -->
+<div id="lokasi-popup" class="popup">
+  <div class="popup-header">
+    <img src="back_gray.png" class="back-btn" onclick="closePopupLokasi()" alt="Back">
+    <h2>Atur Lokasi Match</h2>
+  </div>
+  
+  <div class="popup-content">
+    <!-- Lokasi -->
+    <div class="row">
+      <label>Lokasi :</label>
+      <div>
+        <button onclick="alert('Pilih Lokasi')">Sesuaikan Lokasi</button>
+        <p>Kecamatan Kuningan &gt;</p>
+        <!-- Dropdown pilihan -->
+        <select id="lokasi-kecamatan">
+          <option>Kuningan</option>
+          <option>Jagakarsa</option>
+          <option>Kebayoran Baru</option>
+          <option>Kebayoran Lama</option>
+          <option>Mampang Prapatan</option>
+          <option>Tebet</option>
+          <option>Setiabudi</option>
+          <option>Pesanggrahan</option>
+          <option>Pasar Minggu</option>
+          <option>Pancoran</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Jarak -->
+    <div class="row">
+      <label>Jarak :</label>
+<input type="range" id="lokasi-jarak" min="100" max="3000" step="10" value="20" 
+       oninput="lokasiUpdateJarak(this.value)">
+<span id="lokasi-jarak-value">100 km</span>
+    </div>
+
+   <!-- Box Toggle -->
+<div class="lokasi-toggle-box">
+  <!-- Toggle -->
+  <div class="row toggle-row" onclick="lokasiToggle('auto')">
+    Otomatis perluas percakapan :
+    <img id="lokasi-auto" src="switch_setting_none.png" alt="toggle">
+  </div>
+  <div class="row toggle-row" onclick="lokasiToggle('verif')">
+    Hanya tampilkan pengguna yang telah Diverifikasi :
+    <img id="lokasi-verif" src="switch_setting_none.png" alt="toggle">
+  </div>
+  <div class="row toggle-row" onclick="lokasiToggle('online')">
+    Sembunyakan Online :
+    <img id="lokasi-online" src="switch_setting_none.png" alt="toggle">
+  </div>
+</div>
+      <!-- Rekomendasi Penggunaan Lokasi -->
+<section id="rekom-lokasi" aria-labelledby="rekom-lokasi-title">
+  <h2 id="rekom-lokasi-title">Rekomendasi Penggunaan Lokasi:</h2>
+
+  <div class="rekom-content">
+    <p class="emph-red">Disarankan menggunakan lokasi asli agar sistem dapat menampilkan lokasi pertemuan sesuai dengan pengaturan Anda.</p>
+
+    <p>Dengan menggunakan lokasi asli, sistem dapat menyesuaikan jarak, baik untuk mendekatkan maupun menjauhkan dari pengguna di sekitar Anda.</p>
+
+    <p class="emph-red">Hindari penggunaan VPN agar proses pencocokan berjalan lancar dan tidak mengalami gangguan.</p>
+  </div>
+</section>
+  </div>
+</div>
+
+
+
+
+
   <div class="settings-item" onclick="alert('Ganti Password')">Ganti Password</div>
-  <div class="settings-item" onclick="alert('Ambil Link Referal')">Ambil Link Referal</div>
+
+
+
+
+<div class="settings-item" onclick="openPopupReferal()">Ambil Link Referal</div>
+
+
+
+
+
+<!-- Popup Referal -->
+<div id="referal-popup">
+  <div id="referal-header">
+    <img id="referal-back" src="back_gray.png" alt="Back" onclick="closePopupReferal()">
+    <h2>Ambil Link Referal</h2>
+  </div>
+  
+  <div id="referal-content">
+    <!-- Banner / gambar header -->
+<!-- Banner dengan teks -->
+<div id="referal-banner-box">
+  <img id="referal-banner" src="chat_setting_top_bg.png" alt="Banner">
+
+  <!-- Overlay teks utama -->
+  <div id="referal-banner-text">
+    <h3>Undang teman<br>untuk menjadi host</h3>
+    <p>dapatkan komisi</p>
+  </div>
+
+  <!-- Box komisi -->
+  <div id="referal-banner-commission">
+    <div class="commission-box">
+      <strong>30%</strong>
+      <span>Pendapatan</span>
+    </div>
+    <div class="commission-box">
+      <strong>30%</strong>
+      <span>Pembelian</span>
+    </div>
+  </div>
+
+  <!-- Gambar tambahan -->
+  <img id="referal-banner-icon" src="match_ticket_icon.png" alt="Bonus">
+</div>
+    <!-- Kotak link referal -->
+<div id="referal-box">
+  <input type="text" id="referal-link" value="https://databaseee1.github.io/TigoApp/" readonly>
+  
+  <!-- separator -->
+  <div id="referal-separator"></div>
+  
+  <img id="referal-copy" src="copy_id_icon.png" alt="Copy" onclick="copyReferal()">
+</div>
+
+    <!-- Tombol undang -->
+<!-- Tombol undang -->
+<div id="referal-button-box" onclick="alert('Link dibagikan!')">
+  <img id="referal-button" src="game_room_gift_func_icon.png" alt="Undang Teman">
+  <span id="referal-button-text">Undang Sekarang</span>
+</div>  
+</div>
+
+<!-- Card Bagi Hasil -->
+<div id="bagi-hasil-card">
+  <h3>Bagi hasil minggu ini</h3>
+
+<div class="hasil-atas">
+  <span class="hasil-dollar">$481.3</span>
+  
+<span class="hasil-coin">
+  <img src="credit.png" alt="coin" style="width:25px; height:25px; vertical-align:middle; margin-right:-1px;">
+  632.15
+</span>
+</div>
+
+  <a href="#" class="lihat-rincian">Melihat rincian ></a>
+
+  <hr>
+
+  <p class="penghasilan">
+    Penghasilan pengguna yang diundang minggu ini 
+    <span class="merah">$0</span>
+  </p>
+
+  <p class="rasio">Rasio bonus penghasilan (16%) <img src="match_banned_faq.png" alt="?" class="info"></p>
+
+  <!-- Progress dummy -->
+  <div class="progress-box">
+    <div class="progress-track">
+      <div class="progress-fill" style="width:30%;"></div>
+    </div>
+    <div class="progress-labels">
+      <span>$0(11%)</span>
+      <span>$500(20%)</span>
+      <span>$1000(50%)</span>
+    </div>
+  </div>
+</div>
+<div style="font-family: Arial, sans-serif; font-size:14px; color:#333; line-height:1.6; padding:16px; background:#fff;">
+  <!-- Judul -->
+  <h3 style="margin:0 0 8px 0; font-size:16px; font-weight:bold;">How to get invitation bonus?</h3>
+  <ol style="margin:0 0 16px 20px; padding:0;">
+    <li>Bagikan tautan undangan Anda ke pengguna lain</li>
+    <li>Pengguna masuk dan menyelesaikan pendaftaran Host di Website</li>
+    <li>Anda akan mendapatkan bonus ketika pengguna yang diundang berhasil diterima</li>
+  </ol>
+
+  <!-- Aturan -->
+  <h3 style="margin:0 0 8px 0; font-size:16px; font-weight:bold;">Aturan perhitungan bonus undangan</h3>
+  <p style="margin:0 0 8px 0;">Bonus dihitung dan diselesaikan setiap hari</p>
+  <p style="margin:0 0 12px 0; font-weight:bold;">
+    Bonus penghasilan harian = (Penghasilan harian dari pengguna yang diundang) * (Rasio bonus penghasilan)
+  </p>
+  <p style="margin:0 0 16px 0;">
+    Tingkat bonus ditentukan oleh penghasilan harian dari semua pengguna yang diterima,
+    ambil maksimum dari minggu ini atau minggu lalu
+  </p>
+
+  <!-- Tabel -->
+  <table style="width:100%; border-collapse:collapse; font-size:14px; text-align:left;">
+    <thead>
+      <tr style="background:#f7f7f7;">
+        <th style="padding:10px; border:1px solid #eee;">Total penghasilan mingguan dari pengguna yang diundang</th>
+        <th style="padding:10px; border:1px solid #eee;">Bonus rate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding:10px; border:1px solid #eee;">≤ $ 100</td>
+        <td style="padding:10px; border:1px solid #eee; color:#ff6600;">20%</td>
+      </tr>
+      <tr style="background:#f8f3ff;">
+        <td style="padding:10px; border:1px solid #eee; color:#9335ff;">$ 100 ~ $ 500</td>
+        <td style="padding:10px; border:1px solid #eee; color:#ff6600;">25%</td>
+      </tr>
+      <tr>
+        <td style="padding:10px; border:1px solid #eee; color:#9335ff;">$ 500 ~ $ 5000</td>
+        <td style="padding:10px; border:1px solid #eee; color:#ff6600;">30%</td>
+      </tr>
+      <tr style="background:#f8f3ff;">
+        <td style="padding:10px; border:1px solid #eee; color:#9335ff;">&gt; $ 5000</td>
+        <td style="padding:10px; border:1px solid #eee; color:#ff6600;">42%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Cara menarik -->
+  <h3 style="margin:20px 0 8px 0; font-size:16px; font-weight:bold;">Cara menarik bonus sebagai uang</h3>
+  <p style="margin:0 0 6px 0;">
+    Semua bonus yang diperoleh hari ini akan dikirim ke dompet sebagai Credits di hari ini.
+  </p>
+  <p style="margin:0;">
+    Anda dapat menarik Credits di dompet sendiri
+  </p>
+</div>
+</div>
+
+
+
+
+
   <div class="settings-item" onclick="alert('Atur Umur Lawan Bicara')">Atur Umur Lawan Bicara</div>
   <div class="settings-item" onclick="alert('Periksa Skor Pelanggaran')">Periksa Skor Pelanggaran</div>
   <div class="settings-item" onclick="alert('Cek Priode')">Cek Priode</div>
@@ -4566,12 +5299,16 @@ onclick="window.location.href='https://databaseee1.github.io/TigoApp/Penarikande
           }
 
 
-          function setActiveNav(el) {
-            document.querySelectorAll("#bottomNav .nav-item").forEach(item => {
-              item.classList.remove("active");
-            });
-            el.classList.add("active");
-          }
+function setActiveNav(el) {
+  // reset semua icon ke normal
+  document.querySelectorAll("#bottomNav .nav-item img").forEach(img => {
+    img.src = img.getAttribute("data-normal");
+  });
+
+  // set icon yang diklik ke aktif
+  const activeImg = el.querySelector("img");
+  activeImg.src = activeImg.getAttribute("data-active");
+}
 
 
           document.addEventListener('DOMContentLoaded', () => {
@@ -5220,14 +5957,60 @@ function closeSettingsPopup() {
 
 
 
+function openPopupLokasi() {
+  document.getElementById("lokasi-popup").style.display = "block";
+  lokasiLoad();
+}
+// Tutup popup
+function closePopupLokasi() {
+  document.getElementById("lokasi-popup").style.display = "none";
+}
+// Update jarak
+function lokasiUpdateJarak(val){
+  document.getElementById("lokasi-jarak-value").textContent = val + " km";
+  localStorage.setItem("lokasi-jarak", val);
+}
+
+// Toggle setting
+function lokasiToggle(key){
+  let el = document.getElementById("lokasi-"+key);
+  let aktif = localStorage.getItem("lokasi-"+key) === "true";
+  aktif = !aktif;
+  el.src = aktif ? "switch_setting_switched.png" : "switch_setting_none.png";
+  localStorage.setItem("lokasi-"+key, aktif);
+}
+
+// Load setting saat buka popup
+function lokasiLoad(){
+  // Jarak
+  let jarak = localStorage.getItem("lokasi-jarak") || 20; // ✅ default 20, bukan 1
+  document.getElementById("lokasi-jarak").value = jarak;
+  document.getElementById("lokasi-jarak-value").textContent = jarak + " km";
+
+  // Toggle
+  ["auto","verif","online"].forEach(k=>{
+    let aktif = localStorage.getItem("lokasi-"+k) === "true";
+    let el = document.getElementById("lokasi-"+k);
+    if(el) el.src = aktif ? "switch_setting_switched.png" : "switch_setting_none.png";
+  });
+}
 
 
 
-
-
-
-
-
+// Buka popup
+function openPopupReferal() {
+  document.getElementById("referal-popup").style.display = "block";
+}
+function closePopupReferal() {
+  document.getElementById("referal-popup").style.display = "none";
+}
+function copyReferal() {
+  let input = document.getElementById("referal-link");
+  input.select();
+  input.setSelectionRange(0, 99999); // untuk mobile
+  document.execCommand("copy");
+  alert("Link berhasil disalin!");
+}
 
 
 
