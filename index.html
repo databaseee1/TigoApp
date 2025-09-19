@@ -235,7 +235,7 @@ border-bottom-right-radius: 0;
   display: flex;
   justify-content: space-between; /* kiri - tengah - kanan */
   align-items: center;
-  padding: 2px 5px;
+  padding: 1px 20px;
 }
 
 .navbtn {
@@ -243,19 +243,16 @@ border-bottom-right-radius: 0;
   flex-direction: column; /* biar icon di atas teks */
   align-items: center;
   justify-content: center;
+  color: #fff;
 }
 
 .navbtn .nav-icon {
   width: 40px;  /* atur ukuran sesuai kebutuhan */
   height: 40px;
   margin-bottom: 4px; /* jarak antara icon dan teks */
-  filter: invert(1) brightness(1.2);
 }
 
-.navbtn.active {
-  font-weight: bold;
-  color: rgb(255, 255, 255); /* contoh warna active */
-}
+
 
 /* ===== Fullscreen Coins Modal ===== */
 /* Modal lebih besar */
@@ -374,12 +371,13 @@ border-bottom-right-radius: 0;
 #form-daftar select {
   font-size: 10px;
   padding: 10px 13px;
-  border-radius: 10px;
+  border-radius: 20px;
   border: 1px solid #aaa;
   width: 100%;
   margin-bottom: -10px;
   box-sizing: border-box;
   background: #d9d9d9;
+  box-shadow: 0 1px 1px rgb(148 148 148 / 59%);
 }
 
 /* Tombol */
@@ -739,7 +737,7 @@ button[onclick="prosesTarik()"] {
   color: #fff;
   border-radius: 6px;
   display: inline-block;
-  z-index: 10000;
+  z-index: 1000;
 }
 
 /* popup utama */
@@ -1934,6 +1932,240 @@ button[onclick="prosesTarik()"] {
   color: #666;
 }
 
+
+
+.stat-row {
+      display: flex;
+      gap: 20px;
+      width: 100%;
+      max-width: 600px;
+      margin-top: 20px; /* 🔹 jarak dari atas */
+
+    }
+    .stat-box {
+      flex: 1;
+      height: 120px;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      margin-top: 20px; /* 🔹 jarak dari atas */
+
+    }
+    .stat-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #555;
+      margin-bottom: 15px;
+    }
+    .stat-number-container {
+      position: relative;
+      height: 60px;
+      overflow: hidden;
+    }
+    .stat-number {
+      font-size: 32px;
+      font-weight: bold;
+      color: #3681cc;
+      position: absolute;
+      width: 100%;
+      left: 0;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(-100%);
+      transition: all 0.6s ease;
+    }
+    .stat-number.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .stat-number.exit {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+
+
+
+  .overlay-icon {
+    position: absolute;
+    top: -5px;
+    right: 9px;
+    width: 22px;
+    height: 22px;
+  }
+
+
+  
+
+    .profile-icon-wrapper {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    flex-shrink: 0;
+  }
+
+  .profile-icons {
+    display: flex;
+    gap: 14px;
+    margin: 20px 0;
+  }
+
+  .profile-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .profile-icon:hover {
+    transform: scale(1.1);
+  }
+
+  /* Overlay Popup */
+  .popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+
+  /* Box Popup */
+  .popup-box {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    width: 300px;
+    text-align: center;
+    position: relative;
+    animation: slideDown 0.3s ease;
+  }
+
+  /* Animasi turun */
+  @keyframes slideDown {
+    from { transform: translateY(-40px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+
+  .popup-close {
+    position: absolute;
+    top: 10px; right: 15px;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #444;
+  }
+
+  .popup-profile-img {
+    width: 50px; 
+    height: 50px;
+    border-radius: 50%;
+    margin: 10px 0;
+    object-fit: cover;
+  }
+
+  /* Gift Grid */
+   #profileGiftContainer {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    padding: 16px;
+    max-width: 600px;
+    margin: 20px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+  }
+  .gift-box {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    background: #fafafa;
+  }
+  .gift-box img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    margin-bottom: 6px;
+  }
+  .gift-box span {
+    display: block;
+    font-size: 14px;
+    color: #555;
+  }
+  .gift-box b {
+    display: block;
+    margin-top: 4px;
+    font-size: 16px;
+  }
+
+
+
+
+   .verify-box {
+    display: inline-flex;        /* gambar + teks sejajar */
+    align-items: center;
+    gap: 1px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #f9f9f9;
+    padding: 1px 5px;
+    margin-top: 10px;
+  }
+  .verify-box img {
+    width: 15px;
+    height: 15px;
+  }
+  .verify-box span {
+    font-size: 14px;
+    color: #7b01af;
+    font-weight: 500;
+  }
+
+
+  .country-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: #f9f9f9;
+    padding: 1px 10px;
+    margin-top: 10px;
+  }
+  .country-box img {
+    width: 15px;
+    height: 15px;
+    border-radius: 20px;
+  }
+  .country-box span {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
   </style>
 </head>
 <body>
@@ -2565,7 +2797,65 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 </div>
 
 
-<div style="display:flex; justify-content:center; margin-top:30px;">
+<!-- ✅ Container 5 Icon Profil -->
+<!-- ✅ Container 5 Icon Profil -->
+ <div class="profile-box"></div>
+<div class="profile-icons">
+  <div class="profile-icon-wrapper">
+    <img src="c24.jpg" id="iconProfile1" class="profile-icon" alt="Andre lesmana">
+    <img src="user_level_3_male_icon.png" class="overlay-icon" alt="">
+  </div>
+  <div class="profile-icon-wrapper">
+    <img src="c25.jpg" id="iconProfile2" class="profile-icon" alt="Adoll santra">
+    <img src="user_level_3_icon.png" class="overlay-icon" alt="">
+  </div>
+  <div class="profile-icon-wrapper">
+    <img src="c20.jpg" id="iconProfile3" class="profile-icon" alt="Prima adit">
+    <img src="user_level_9_icon.png" class="overlay-icon" alt="">
+  </div>
+  <div class="profile-icon-wrapper">
+    <img src="c21.jpg" id="iconProfile4" class="profile-icon" alt="Kurnia pratana">
+    <img src="user_level_8_male_icon.png" class="overlay-icon" alt="">
+  </div>
+  <div class="profile-icon-wrapper">
+    <img src="c23.jpg" id="iconProfile5" class="profile-icon" alt="aboy swwa">
+    <img src="user_level_10_male_icon.png" class="overlay-icon" alt="">
+  </div>
+</div>
+</div>
+
+<!-- ✅ Popup Profil -->
+<div id="profilePopupOverlay" class="popup-overlay">
+  <div class="popup-box">
+    <span id="profilePopupClose" class="popup-close">&times;</span>
+    
+<h3 id="profilePopupTitle">Profil</h3>
+<img id="profilePopupImage" src="" alt="Foto Profil" class="popup-profile-img">
+
+
+
+
+<div class="verify-box">
+  <img src="verifikasi.png" alt="Verifikasi">
+  <span>Diverifikasi</span>
+</div>
+<div class="country-box">
+  <img src="indonesialogo.png" alt="Bendera Indonesia">
+  <span>Indonesia</span>
+</div>
+
+  <h4 style="margin:1 0 15px 0; background:#f0eef1; border-radius: 20px; text-align:center;">Koleksi Gift</h4>
+    <div id="profileGiftContainer" class="gift-grid">
+      <!-- Gift akan di-generate dengan JS -->
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div style="display:flex; justify-content:center; background:#d8d8d8 ; margin-top:30px;">
   <button onclick="window.location.href='https://databaseee1.github.io/TigoApp/analisist%20data%20host/'" 
     style="
       background:#B600FF; 
@@ -2660,7 +2950,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 <!-- Notifikasi login -->
 <div id="notifPopup" class="notif-popup">
   <div class="notif-box">
-    <h3>⚠️ Login Diperlukan</h3>
+    <h3>Login Diperlukan</h3>
     <p>Silakan login akun host untuk menggunakan fitur ini.</p>
     <button onclick="closeNotif()">Tutup</button>
   </div>
@@ -2803,7 +3093,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
   </div>
 </div>
 
-      <p>Aplikasinya bagus banyak wanita dari berbagai negara...</p>
+      <p>selama 3x daftar ga diterima yang ke 4x nya alhamdulilah diterima,terimakasih banyak agency...</p>
       <div class="meta">
         <div class="top-row">
           <span class="time green">1 Hari</span>
@@ -2957,7 +3247,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
   <span class="score">4.9</span>
 </div>
 
-        <p>trimksih Tigo sngat bgus mudah digunakan.</p>
+        <p>trimksih Tigo sngat membantu ekonomi,walaupun potonganya besar.jaman sekrang di indonesia serbah mahal pajaknya,tapi terbantuh dengan gaji yang sesuai</p>
       <div class="meta">
   <div class="top-row">
     <span class="time green">1 Hari</span>
@@ -3198,6 +3488,26 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
   </div>
 </div>
 
+
+
+  <div class="stat-row">
+    <!-- Coin kiri -->
+    <div class="stat-box">
+      <div class="stat-title">Total Pembelian Coin Bulan Ini</div>
+      <div class="stat-number-container" id="coinBoxStat"></div>
+    </div>
+
+    <!-- Host kanan -->
+    <div class="stat-box">
+      <div class="stat-title">Total Daftar Host Bulan Ini</div>
+      <div class="stat-number-container" id="hostBoxStat"></div>
+    </div>
+  </div>
+
+
+
+
+
   
   <div class="comments" id="comments">
 
@@ -3224,24 +3534,23 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 
 
 
-
       
 <!-- ===== Bottom Navigation ===== -->
 <nav class="nav">
   <div class="navwrap">
     <div class="navbtn" id="nav-coin" onclick="openCoins()">
-      <img src="wallet.png" alt="icon" class="nav-icon">
-      <span>Coin</span>
+      <img src="onsale_token_icon.png" alt="icon" class="nav-icon">
+      <span></span>
     </div>
 
     <div class="navbtn active" id="nav-daftar" onclick="showDaftar()">
-      <img src="order-history.png" alt="icon" class="nav-icon">
-      <span>Daftar</span>
+      <img src="match_icon_normal.png" alt="icon" class="nav-icon">
+      <span></span>
     </div>
 
 <div class="navbtn" id="nav-Logiin" onclick="window.location.href='https://databaseee1.github.io/TigoApp/Penarikandeposit/index.html';">
-  <img src="account.png" alt="icon" class="nav-icon">
-  <span>Saya</span>
+  <img src="mine_icon_normal.png" alt="icon" class="nav-icon">
+  <span></span>
 </div>
 
 
@@ -4757,10 +5066,133 @@ setInterval(() => {
 
 
 
+    // Ambil angka terakhir dari localStorage, default 0
+    let coinTotalStat = parseInt(localStorage.getItem("coinTotalStat")) || 520;
+    let hostTotalStat = parseInt(localStorage.getItem("hostTotalStat")) || 97;
+
+    function updateStat(container, value) {
+      const oldNumber = container.querySelector(".stat-number.active");
+
+      // Buat elemen baru
+      const newNumber = document.createElement("div");
+      newNumber.className = "stat-number";
+      newNumber.textContent = value.toLocaleString("id-ID");
+      container.appendChild(newNumber);
+
+      // Trigger reflow biar transition jalan
+      void newNumber.offsetWidth;
+      newNumber.classList.add("active");
+
+      // Keluarkan angka lama ke bawah
+      if (oldNumber) {
+        oldNumber.classList.remove("active");
+        oldNumber.classList.add("exit");
+        setTimeout(() => oldNumber.remove(), 600);
+      }
+    }
+
+    // Tampilkan angka pertama kali saat reload
+    updateStat(document.getElementById("coinBoxStat"), coinTotalStat);
+    updateStat(document.getElementById("hostBoxStat"), hostTotalStat);
+
+    // Coin → tiap 2 detik +14
+    setInterval(() => {
+      coinTotalStat += 6;
+      localStorage.setItem("coinTotalStat", coinTotalStat);
+      updateStat(document.getElementById("coinBoxStat"), coinTotalStat);
+    }, 16000);
+
+    // Host → tiap 5 detik +11
+    setInterval(() => {
+      hostTotalStat += 2;
+      localStorage.setItem("hostTotalStat", hostTotalStat);
+      updateStat(document.getElementById("hostBoxStat"), hostTotalStat);
+    }, 19000);
 
 
 
 
+
+
+
+
+
+
+
+
+// ✅ Data profil & gift (bisa diambil dari DB nanti)
+const profileData = {
+  profileIcon1: { name: "Andre lesmana", image: "cowok2.webp" },
+  profileIcon2: { name: " Adoll santra", image: "cowok4.png" },
+  profileIcon3: { name: "Prima adit", image: "cewek62.jpeg" },
+  profileIcon4: { name: "Kurnia pratana", image: "cewek63.jpeg" },
+  profileIcon5: { name: "aboy swwa", image: "cewek64.jpeg" }
+};
+
+// ✅ Data Gift Dummy
+  // ✅ Gift contoh
+const giftsByProfile = {
+  iconProfile1: [
+    { img: "gift_96.png", jumlah: 23, level: "x" },
+    { img: "gift_14.png", jumlah: 9,  level: "x" },
+    { img: "gift_58.png", jumlah: 9,  level: "x" },
+    { img: "giftring.png", jumlah: 27, level: "x" }
+  ],
+  iconProfile2: [
+    { img: "gift_35.png", jumlah: 30, level: "x" },
+    { img: "gift_77.png", jumlah: 30, level: "x" },
+    { img: "gift_103.png", jumlah: 30, level: "x" },
+    { img: "giftkiss.png", jumlah: 30, level: "x" },
+    { img: "gift_14.png", jumlah: 30, level: "x" },
+    { img: "giftlambor.png", jumlah: 18, level: "x" }
+  ],
+  iconProfile3: [
+    { img: "gift_103.png", jumlah: 15, level: "x" },
+    { img: "gift_14.png", jumlah: 15, level: "x" },
+    { img: "gift_96.png", jumlah: 7, level: "x" }
+  ],
+  iconProfile4: [
+    { img: "gift_14.png", jumlah: 20, level: "x" },
+    { img: "giftring.png", jumlah: 12, level: "x" }
+  ],
+  iconProfile5: [
+    { img: "giftlambor.png", jumlah: 5, level: "x" },
+    { img: "gift_35.png", jumlah: 40, level: "x" }
+  ]
+};
+ function openProfilePopup(id, src, name) {
+  document.getElementById("profilePopupOverlay").style.display = "flex";
+  document.getElementById("profilePopupImage").src = src;
+  document.getElementById("profilePopupTitle").innerText = name;
+
+  // ambil gift sesuai profil
+  const container = document.getElementById("profileGiftContainer");
+  container.innerHTML = "";
+  const gifts = giftsByProfile[id] || [];
+  gifts.forEach(g => {
+    const div = document.createElement("div");
+    div.style.margin = "6px";
+    div.innerHTML = `
+      <img src="${g.img}" style="width:40px; height:40px;"><br>
+      <small>${g.jumlah}${g.level}</small>
+    `;
+    container.appendChild(div);
+  });
+}
+
+  function closeProfilePopup() {
+    document.getElementById("profilePopupOverlay").style.display = "none";
+  }
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".profile-icon").forEach(icon => {
+    icon.addEventListener("click", () => {
+      openProfilePopup(icon.id, icon.src, icon.alt);
+    });
+  });
+
+  document.getElementById("profilePopupClose").addEventListener("click", closeProfilePopup);
+});
 
 
     </script>
