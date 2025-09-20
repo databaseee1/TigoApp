@@ -1628,7 +1628,7 @@ if (userId) {
     /* Popup content */
     .popup-content {
       position: absolute;
-      top: 65%;
+      top: 57%;
       left: 50%;
       transform: translate(-50%, -50%);
       background: #fff;
@@ -1638,7 +1638,6 @@ if (userId) {
       width: 80%;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
       text-align: center;
-      animation: fadeIn 0.3s ease;
     }
 
     .popup-content h3 {
@@ -2314,7 +2313,7 @@ if (userId) {
 
 
 .settings-item-baru {
-  background: #f4f4f4;
+  background: #f4f4f400;
   color: #7c7c7c;
   padding: 12px;
   border-radius: 10px;
@@ -2392,11 +2391,18 @@ if (userId) {
 }
 
 .popup-header {
-  display:flex;
-  align-items:center;
-  padding:12px;
-  border-bottom:1px solid #ddd;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  background: #fff;
+  position: fixed;   /* selalu nempel di atas viewport */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
 }
+
 .popup-header img.back-btn {
   width:24px; height:24px; cursor:pointer;
 }
@@ -2518,11 +2524,19 @@ if (userId) {
 
 /* Header */
 #referal-header {
-  display:flex;
-  align-items:center;
-  padding:12px;
-  border-bottom:1px solid #ddd;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  background: #fff;
+  position: fixed;   /* atau sticky */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 30px;      /* tentukan tinggi biar konsisten */
 }
+
 #referal-back {
   width:28px;
   height:28px;
@@ -2538,10 +2552,10 @@ if (userId) {
 
 /* Konten */
 #referal-content {
-  padding:20px;
-  text-align:center;
+  padding: 20px;
+  text-align: center;
+  margin-top: 50px;   /* geser konten supaya gak ketutupan */
 }
-
 /* Banner */
 #referal-banner {
   width:100%;
@@ -2799,11 +2813,163 @@ hr {
 
 
 
+ #cek-priode {
+    position: relative; /* biar popup bisa absolute terhadap item ini */
+  }
+  #popup-priode {
+    position: absolute;
+    bottom: 110%;         /* tampil di atas item */
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ededed;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    text-align: center;
+    width: 180px;
+    display: none;        /* awalnya sembunyi */
+    z-index: 10;
+  }
+  #popup-priode img {
+    max-width: 60px;
+    display: block;
+    margin: 0 auto 6px;
+  }
+  #popup-priode p {
+    margin: 0;
+    font-size: 13px;
+    color: #777;
+  }
+  #popup-priode::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: #fff transparent transparent transparent;
+  }
+
+.popup-title {
+    font-weight: 600;
+    color: #000;   /* judul lebih jelas hitam */
+    font-size: 14px;
+  }
 
 
 
 
 
+
+
+
+
+
+  #statusPopup {
+    display: none;
+    position: fixed;
+    top: 240px; 
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  #statusPopupContent {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 400px;
+    width: 90%;
+    margin: auto;
+    position: relative;
+    border-top: 2px solid #343635; /* hijau misalnya */
+
+  }
+  .statusClose {
+    position: absolute;
+    top: 10px; right: 15px;
+    font-size: 24px; font-weight: bold;
+    cursor: pointer;
+  }
+
+
+
+  .status-aktif {
+    color: green;
+  }
+
+  .status-merah {
+    color: red;
+  }
+
+  /* Popup */
+  #agePopup {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  #agePopupContent {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 400px;
+    width: 90%;
+    margin: auto;
+    position: relative;
+  }
+  .ageClose {
+    position: absolute;
+    top: 10px; right: 15px;
+    font-size: 24px; font-weight: bold;
+    cursor: pointer;
+  }
+
+  /* Range Slider Container */
+  .range-container {
+  position: relative;
+  margin: 40px 0;
+  width: 100%;
+}
+
+.range-container input[type=range] {
+  width: 100%;
+  pointer-events: none;
+  background: none;
+  padding: 0px;
+}
+
+.range-container input[type=range]::-webkit-slider-thumb {
+  pointer-events: auto;
+  -webkit-appearance: none;
+  height: 18px; width: 18px;
+  border-radius: 50%;
+  background: orange;
+  cursor: pointer;
+}
+
+.range-container input[type=range]::-moz-range-thumb {
+  pointer-events: auto;
+  height: 18px; width: 18px;
+  border-radius: 50%;
+  background: orange;
+  cursor: pointer;
+}
+
+  #ageLabel {
+    text-align: right;
+    font-weight: bold;
+    color: orange;
+    margin-top: 10px;
+  }
 
 
   </style>
@@ -4406,6 +4572,15 @@ hr {
               style="width:30%; padding:8px; margin-top:4px; border:1px solid #ccc; border-radius:5px;">
           </div>
 
+
+          <!-- Input File (hidden) -->
+<input type="file" id="uploadPic" accept="image/*" style="display:none;">
+
+<!-- Tombol untuk ganti foto -->
+<button onclick="document.getElementById('uploadPic').click()" 
+        style="background:green; color:white; padding:8px 16px; border:none; border-radius:6px; cursor:pointer;">
+  Ubah Foto
+</button>
           <!-- Tombol -->
           <div style="display:flex; justify-content:space-between; margin-top:15px;">
             <button onclick="closeEditModal()"
@@ -4421,7 +4596,7 @@ hr {
 
 
       <div class="profile-header">
-        <img src="default_pic_100.png" alt="Profile" class="profile-pic">
+      <img id="profilePic" src="default_pic_100.png" alt="Profile" class="profile-pic" width="100">
 
         <div class="profile-info">
           <div class="name" style="display: inline-flex; align-items: center; gap: 4px;">
@@ -4667,7 +4842,7 @@ hr {
     </h2>
   </div>
 
-<div class="settings-item" onclick="alert('Atur Bahasa Aplikasi')">
+<div class="settings-item" onclick="alert('Bahasa Sudah Otomatis Dan Tidak Dapat Diubah!')">
   Bahasa APP <span style="color: grey;">Otomatis (Indonesia)</span>
 </div>
 
@@ -4748,7 +4923,7 @@ hr {
 
 
 
-  <div class="settings-item" onclick="alert('Ganti Password')">Ganti Password</div>
+  <div class="settings-item" onclick="alert('Tidak Dapat Mengganti Password Disini!')">Ganti Password</div>
 
 
 
@@ -4910,10 +5085,80 @@ hr {
 
 
 
-  <div class="settings-item" onclick="alert('Atur Umur Lawan Bicara')">Atur Umur Lawan Bicara</div>
-  <div class="settings-item" onclick="alert('Periksa Skor Pelanggaran')">Periksa Skor Pelanggaran</div>
-  <div class="settings-item" onclick="alert('Cek Priode')">Cek Priode</div>
-  <div class="settings-item" onclick="alert('Periksa Status Akun')">Periksa Status Akun</div>
+<div class="settings-item" onclick="openAgePopup()">Atur Umur Lawan Bicara</div>
+ 
+ <!-- Popup Overlay -->
+<div id="agePopup">
+  <div id="agePopupContent">
+    <span class="ageClose" onclick="closeAgePopup()">&times;</span>
+
+<h3 style="color:black;">Atur batas usia Lawan</h3>
+    <div class="range-container">
+      <input type="range" id="minAge" min="18" max="60" value="20" step="1">
+      <input type="range" id="maxAge" min="18" max="60" value="25" step="1">
+      <div id="ageLabel"><b>20 - 25</b></div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+ 
+ 
+  <div class="settings-item" onclick="alert('Tidak ada pelanggaran saat ini.')">Periksa Skor Pelanggaran</div>
+ 
+<div class="settings-item" id="cek-priode" onclick="togglePriode()">
+  Cek Priode
+ <div id="popup-priode">
+  <img src="rate_app_light.png" alt="gambar" onerror="this.style.display='none'">
+  <p class="popup-title">Priode host saat ini</p>
+  <p>------Priode v9.00------</p>
+</div>
+</div>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+<!-- Tombol buka popup -->
+<div class="settings-item" onclick="openStatusPopup()">Periksa Status Akun</div>
+
+<!-- Popup Overlay -->
+<div id="statusPopup">
+  <div id="statusPopupContent">
+    <span class="statusClose" onclick="closeStatusPopup()">&times;</span>
+    <p style="text-align:center;">
+      Pastikan perilaku Anda sesuai <br>
+      <a href="#" style="color:purple; text-decoration:none;">peraturan masyarakat >></a>
+    </p>
+
+    <ul style="list-style:none; padding:0; margin:0;">
+      <li>🔵 Dihukum <br><b class="status-merah">0</b></li>
+      <br>
+      <li>🔵 Ratings Melebihi <br><b>100%</b></li>
+      <br>
+      <li>🔵 Status Acount <br><b class="status-aktif">Aktif</b></li>
+    </ul>
+
+    <p style="margin-top:20px;">
+      Berapa kali Anda telah dihukum karena pelanggaran baru-baru ini
+    </p>
+  </div>
+</div>
+
+
+
+
+
 
   <!-- Tombol Logout -->
   <div class="settings-item-baru" onclick="logout()">Priksa Pembaruan</div>
@@ -6011,6 +6256,123 @@ function copyReferal() {
   document.execCommand("copy");
   alert("Link berhasil disalin!");
 }
+
+
+function togglePriode() {
+  const popup = document.getElementById('popup-priode');
+  popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
+}
+
+
+
+
+
+
+
+  function openStatusPopup() {
+    document.getElementById("statusPopup").style.display = "flex";
+  }
+  function closeStatusPopup() {
+    document.getElementById("statusPopup").style.display = "none";
+  }
+  window.onclick = function(event) {
+    let popup = document.getElementById("statusPopup");
+    if (event.target === popup) {
+      popup.style.display = "none";
+    }
+  }
+
+
+
+
+  function openAgePopup() {
+    document.getElementById("agePopup").style.display = "flex";
+  }
+  function closeAgePopup() {
+    document.getElementById("agePopup").style.display = "none";
+  }
+  window.onclick = function(event) {
+    let popup = document.getElementById("agePopup");
+    if (event.target === popup) {
+      popup.style.display = "none";
+    }
+  }
+
+  const minAge = document.getElementById("minAge");
+  const maxAge = document.getElementById("maxAge");
+  const ageLabel = document.getElementById("ageLabel");
+
+  function updateAgeLabel(event) {
+    let minVal = parseInt(minAge.value);
+    let maxVal = parseInt(maxAge.value);
+
+    // Biar tidak silang
+    if (minVal >= maxVal) {
+      if (event && event.target === minAge) {
+        minAge.value = maxVal - 1;
+      } else {
+        maxAge.value = minVal + 1;
+      }
+    }
+
+    ageLabel.innerHTML = `<b>${minAge.value} - ${maxAge.value}</b>`;
+
+    // Simpan ke localStorage
+    localStorage.setItem("minAge", minAge.value);
+    localStorage.setItem("maxAge", maxAge.value);
+  }
+
+  // Saat slider digeser → update dan simpan
+  minAge.addEventListener("input", updateAgeLabel);
+  maxAge.addEventListener("input", updateAgeLabel);
+
+  // Saat halaman dimuat → ambil dari localStorage
+  window.onload = function() {
+    let savedMin = localStorage.getItem("minAge");
+    let savedMax = localStorage.getItem("maxAge");
+
+    if (savedMin && savedMax) {
+      minAge.value = savedMin;
+      maxAge.value = savedMax;
+    } else {
+      minAge.value = 20;
+      maxAge.value = 25;
+    }
+    updateAgeLabel();
+  };
+
+
+
+
+
+
+ const profilePic = document.getElementById("profilePic");
+  const uploadPic = document.getElementById("uploadPic");
+
+  // 🔹 Load foto dari localStorage saat halaman dibuka
+  window.onload = function () {
+    const savedPic = localStorage.getItem("profileImage");
+    if (savedPic) {
+      profilePic.src = savedPic;
+    }
+  };
+
+  // 🔹 Simpan foto baru ke localStorage setelah dipilih
+  uploadPic.addEventListener("change", function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const imageData = e.target.result;
+        profilePic.src = imageData;
+        localStorage.setItem("profileImage", imageData); // simpan base64 ke localStorage
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+
+
 
 
 
