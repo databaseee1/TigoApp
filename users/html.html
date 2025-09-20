@@ -4574,14 +4574,19 @@ hr {
 
 
           <!-- Input File (hidden) -->
-<input type="file" id="uploadPic" accept="image/*" style="display:none;">
+<!-- Input file -->
+<input type="file" id="uploadPic" accept="image/*" style="
+  opacity:0;
+  position:absolute;
+  z-index:-1;
+  width:1px;
+  height:1px;
+">
+<button class="btn-hijau" onclick="document.getElementById('uploadPic').click()">Ubah Foto</button>
+        
 
-<!-- Tombol untuk ganti foto -->
-<button onclick="document.getElementById('uploadPic').click()" 
-        style="background:green; color:white; padding:8px 16px; border:none; border-radius:6px; cursor:pointer;">
-  Ubah Foto
-</button>
-          <!-- Tombol -->
+
+<!-- Tombol -->
           <div style="display:flex; justify-content:space-between; margin-top:15px;">
             <button onclick="closeEditModal()"
               style="background:#ccc; padding:8px 12px; border:none; border-radius:5px;">Batal</button>
@@ -4596,7 +4601,7 @@ hr {
 
 
       <div class="profile-header">
-      <img id="profilePic" src="default_pic_100.png" alt="Profile" class="profile-pic" width="100">
+<img src="default_pic_100.png" alt="Profile" id="profilePic" class="profile-pic">
 
         <div class="profile-info">
           <div class="name" style="display: inline-flex; align-items: center; gap: 4px;">
@@ -6346,31 +6351,30 @@ function togglePriode() {
 
 
 
- const profilePic = document.getElementById("profilePic");
-  const uploadPic = document.getElementById("uploadPic");
+const profilePic = document.getElementById("profilePic");
+const uploadPic = document.getElementById("uploadPic");
 
-  // 🔹 Load foto dari localStorage saat halaman dibuka
-  window.onload = function () {
-    const savedPic = localStorage.getItem("profileImage");
-    if (savedPic) {
-      profilePic.src = savedPic;
-    }
-  };
+// 🔹 Load foto dari localStorage saat halaman dibuka
+window.onload = function () {
+  const savedPic = localStorage.getItem("profilePic"); // key konsisten: profilePic
+  if (savedPic) {
+    profilePic.src = savedPic;
+  }
+};
 
-  // 🔹 Simpan foto baru ke localStorage setelah dipilih
-  uploadPic.addEventListener("change", function () {
-    const file = this.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const imageData = e.target.result;
-        profilePic.src = imageData;
-        localStorage.setItem("profileImage", imageData); // simpan base64 ke localStorage
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-
+// 🔹 Saat pilih file baru
+uploadPic.addEventListener("change", function () {
+  const file = this.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const imageData = e.target.result;
+      profilePic.src = imageData;
+      localStorage.setItem("profilePic", imageData); // pakai key yg sama
+    };
+    reader.readAsDataURL(file);
+  }
+});
 
 
 
