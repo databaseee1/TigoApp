@@ -2157,6 +2157,50 @@ button[onclick="prosesTarik()"] {
 
 
 
+#daftarPostingan {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.post {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  padding: 15px;
+  transition: 0.3s;
+}
+
+.post:hover {
+  transform: scale(1.01);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+.post img {
+  width: 100%;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.judul {
+  font-size: 18px;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.info {
+  color: #666;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.deskripsi {
+  color: #444;
+  font-size: 15px;
+  line-height: 1.5;
+}
 
 
 
@@ -3529,6 +3573,17 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 
 
 
+<h1 style="text-align:center; color: #007bff; margin-top:20px;">Berita Layanan</h1>
+
+<div id="daftarPostingan" style="
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  width:100%;
+">
+</div>
 
 
 
@@ -5193,6 +5248,111 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("profilePopupClose").addEventListener("click", closeProfilePopup);
 });
+
+
+
+
+const postinganManual = [
+
+
+
+  {
+    judul: "Perayaan 11 Tahun Kerja Sama PT. AGENCY TIGOHOST INDONESIA dan Otoritas Jasa Keuangan (OJK)",
+    gambar: "a16.jpg",
+    deskripsi:  `
+Batam, 12 Oktober 2025 — Sebuah tonggak bersejarah kembali ditorehkan oleh <b>PT. AGENCY TIGOHOST INDONESIA</b> yang telah menjalin kerja sama strategis dengan <b>Otoritas Jasa Keuangan (OJK)</b> selama 11 tahun. Dalam rangka memperingati perjalanan panjang tersebut, perusahaan menggelar acara resmi perayaan kerja sama 11 tahun yang berlangsung meriah di Kota Batam, Kepulauan Riau.<br><br>
+
+Acara ini dihadiri oleh berbagai pihak penting, termasuk rekan-rekan perusahaan, ketua cabang <b>PT. AGENCY TIGOHOST INDONESIA</b>, serta para ketua agency dari seluruh Indonesia. Kehadiran mereka menjadi bukti kuat komitmen dan sinergi yang telah terjalin erat antara perusahaan dan para mitra dalam mendukung transparansi, profesionalitas, dan pertumbuhan ekonomi digital di tanah air.<br><br>
+
+Dalam sambutannya, perwakilan dari <b>PT. AGENCY TIGOHOST INDONESIA</b> menyampaikan rasa terima kasih atas dukungan dan kepercayaan dari OJK yang telah menjadi mitra dalam menjaga stabilitas serta tata kelola yang baik di sektor jasa keuangan digital. Kerja sama ini menjadi pondasi penting bagi pengembangan sistem yang aman, terpercaya, dan sesuai dengan regulasi yang berlaku.<br><br>
+
+Acara juga diwarnai dengan sesi apresiasi bagi para ketua cabang dan agency terbaik yang telah berkontribusi besar dalam memperkuat jaringan perusahaan di berbagai daerah. Selain itu, momen ini dimanfaatkan sebagai ajang silaturahmi dan refleksi atas perjalanan panjang yang telah dilalui selama lebih dari satu dekade.<br><br>
+
+Dengan semangat kolaborasi yang terus dijaga, <b>PT. AGENCY TIGOHOST INDONESIA</b> berkomitmen untuk melangkah lebih jauh bersama OJK dalam menciptakan inovasi dan layanan yang semakin relevan dengan kebutuhan masyarakat modern.
+  `,
+    nama: "Layanan Pelanggan",
+    waktu: "12 Oktober 2025"
+  },
+
+
+
+  {
+    judul: "Peresmian dan Perkembangan Cabang PT. AGENCY TIGOHOST INDONESIA di Kota Batam",
+    gambar: "a15.jpg",
+    deskripsi: `
+Batam, Kepulauan Riau — 2025<br><br>
+Sebagai langkah nyata dalam memperluas jaringan operasional dan meningkatkan pelayanan di seluruh Indonesia,
+<b>PT. AGENCY TIGOHOST INDONESIA</b> resmi memperkuat kehadirannya melalui pembukaan cabang di Kota Batam,
+Kepulauan Riau.<br><br>
+Cabang ini didirikan sebagai pusat koordinasi dan pengembangan layanan di wilayah barat Indonesia.<br><br>
+Dengan dukungan tim yang profesional dan berpengalaman, 
+<b>PT. AGENCY TIGOHOST INDONESIA Cabang Batam</b> berkomitmen untuk memberikan pelayanan cepat, efisien, dan terpercaya 
+bagi seluruh mitra dan klien di berbagai daerah.<br><br>
+Dalam sambutannya, Ketua Cabang Batam menyampaikan bahwa hadirnya kantor ini merupakan bentuk dedikasi perusahaan 
+untuk mendekatkan pelayanan kepada masyarakat serta memperkuat hubungan kerja sama antar-agency di seluruh Indonesia.
+  `,
+    nama: "Layanan Pelanggan",
+    waktu: "30 Oktober 2025"
+  },
+
+
+  {
+    judul: "Selamat kepada Pemenang Minggu Ini dari PT Agency Tigohost Indonesia!",
+    gambar: "a2.jpg",
+    deskripsi: `
+Kami dari PT. Agency Tigohost Indonesia dengan bangga mengumumkan para pemenang yang luar biasa untuk minggu ini! 
+Dedikasi dan kerja keras Anda telah membuahkan hasil, dan kami sangat senang dapat merayakan pencapaian Anda.
+
+<b>Aplikasi Unggulan:</b><br><br>
+- <b>TIGO:</b> Platform inovatif yang menghubungkan Anda dengan berbagai layanan dan hiburan.<br>
+- <b>WEELIVE:</b> Rasakan pengalaman streaming langsung yang tak terlupakan dengan fitur-fitur interaktif.<br>
+- <b>AYAR:</b> Temukan teman baru dan perluas jaringan sosial Anda dengan mudah.<br>
+- <b>BLING:</b> Ekspresikan diri Anda dengan filter dan efek kreatif yang memukau.<br>
+- <b>CHATO:</b> Obrolan seru dan tanpa batas dengan teman-teman di seluruh dunia.<br>
+- <b>TENDERU:</b> Temukan cinta sejati Anda melalui platform kencan yang aman dan terpercaya.<br>
+- <b>MACO:</b> Edit foto dan video Anda dengan mudah menggunakan alat-alat profesional.<br><br>
+
+Terima kasih kepada semua pengguna setia aplikasi kami! 
+Teruslah berkarya dan menjadi yang terbaik. 
+Nantikan pengumuman pemenang minggu depan!<br><br>
+
+<b>PT. Agency Tigohost Indonesia</b><br>
+<i>Menghubungkan Anda dengan Dunia</i><br><br>
+
+#tigolive #tigohostindonesia #agency #tigo #ayar #live #maco
+  `,
+    nama: "Layanan Pelanggan",
+    waktu: "21 Oktober 2025"
+  }
+
+
+  
+];
+
+function tampilkanPostinganManual() {
+  const container = document.getElementById("daftarPostingan");
+  container.innerHTML = "";
+
+  postinganManual.forEach(p => {
+    container.innerHTML += `
+      <div class="post">
+        <div class="judul">${p.judul}</div>
+        <div class="info">Oleh: <b>${p.nama}</b> • ${p.waktu}</div>
+        <img src="${p.gambar}" alt="${p.judul}">
+        <div class="deskripsi">${p.deskripsi}</div>
+      </div>
+    `;
+  });
+}
+
+document.addEventListener("DOMContentLoaded", tampilkanPostinganManual);
+
+
+
+
+
+
+
 
 
     </script>
