@@ -2210,6 +2210,120 @@ button[onclick="prosesTarik()"] {
 
 
 
+
+
+/* SECTION STYLE */
+.section-support {
+  text-align: center;
+  padding: 10px 3px;
+}
+.section-support h2 {
+  font-size: 15px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* ✅ Grid 3 kolom responsif */
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 4px;
+  padding: 0px;
+}
+
+.app-item {
+  background: #d6ddff;
+  border-radius: 12px;
+  padding: 5px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+.app-item:hover {
+  transform: translateY(-3px);
+}
+
+.app-item img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+/* 🔹 POPUP STYLE */
+.popup {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+.popup-content {
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px 25px;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  position: relative;
+  animation: zoomIn 0.4s ease;
+}
+
+.popup-content h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #333;
+}
+.popup-content p {
+  font-size: 14px;
+  color: #929191;
+  margin-bottom: 10px;
+}
+.popup-content small {
+  display: block;
+  color: #ff0000;
+  font-size: 12px;
+  margin: 5px 0;
+}
+
+/* Tombol tutup */
+.close-btn {
+  margin-top: 15px;
+  background: #ff6464;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.close-btn:hover {
+  background: #d84b4b;
+}
+
+/* Animasi muncul & hilang */
+@keyframes fadeIn {
+  from {opacity: 0;} to {opacity: 1;}
+}
+@keyframes zoomIn {
+  from {transform: scale(0.7); opacity: 0;}
+  to {transform: scale(1); opacity: 1;}
+}
+@keyframes zoomOut {
+  from {transform: scale(1); opacity: 1;}
+  to {transform: scale(0.7); opacity: 0;}
+}
+
+
+
+
+
   </style>
 </head>
 <body>
@@ -2731,6 +2845,18 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <img src="TenderUlogo.webp" alt="icon2">
     <img src="weelivelogo.webp" alt="icon3">
     <img src="bling.webp" alt="icon4">
+    <img src="Voya.webp" alt="icon5">
+    <img src="BuzzCast.webp" alt="icon6">
+    <img src="Dico.webp" alt="icon5">
+    <img src="joy-live.webp" alt="icon3">
+    <img src="sugo.webp" alt="icon4">
+    <img src="MICO.webp" alt="icon5">
+    <img src="17LIVE.webp" alt="icon6">
+    <img src="Litgo-Chat.webp" alt="icon5">
+    <img src="Kachi.webp" alt="icon3">
+    <img src="Chamet.webp" alt="icon4">
+    <img src="Honey.webp" alt="icon5">
+    <img src="GOGO LIVE.webp" alt="icon6">
     <img src="ti.livelogo.webp" alt="icon5">
     <img src="chatologo.webp" alt="icon6">
   </div>
@@ -2935,6 +3061,63 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 ">    Lihat Total Data
   </button>
 </div>
+
+
+<section class="section-support">
+  <h2>Aplikasi Baru 2025-2026</h2>
+
+  <div class="app-grid">
+    <div class="app-item" data-title="17LIVE-Live Streaming" data-desc="**Bergabunglah dalam pesta 17LIVE - mainkan permainan, menangkan Baby Coins, dan dukung streamer favorit Anda**
+17LIVE adalah platform siaran langsung yang menampilkan streamer paling menarik di seluruh dunia. Tonton, berbicara, dan dukung streamer favorit Anda dengan banyak hadiah animasi mewah. Dengan lebih dari 50 juta unduhan di seluruh dunia dan ribuan streamer - Dapat menemukan yang eksklusif untuk Anda di seluruh batas...">
+      <img src="17LIVE.webp" alt="App">
+      <h4>17LIVE</h4>
+    </div>
+    <div class="app-item" data-title="Dico - Video Chat & Meet" data-desc="Dico hadir! Bertujuan membangun komunitas global, Dico menyatukan jutaan pengguna asli dari seluruh dunia. Di sini, Anda akan dilindungi dengan aman dan terjamin oleh kami. Mulailah mencari dan mengobrol video dengan orang lain. Bertemu. Berkomunikasi. Berbagi. Nikmati. Selamat datang di dunia Dicoers!
+Temui tim Dico kami yang unggul! Khawatir server tidak stabil? Tim Dico kami berdedikasi untuk terus meningkatkan aplikasi demi memfasilitasi interaksi yang lebih baik...">
+      <img src="Dico.webp" alt="App">
+      <h4>Dico</h4>
+    </div>
+    <div class="app-item" data-title="Voya-Cari teman di dekatmu" data-desc="Apakah Anda selalu merasa tidak terhubung di sekitar Anda?Apakah ingin banget Anda ajak bicara?
+Pernahkah Anda benar-benar bertemu orang asli di aplikasi sosial?
+Apakah Anda siap untuk mempelajari lebih banyak tentang Voya?
+Voya adalah platform sosial tempat Anda dapat bertemu orang-orang yang menarik, menjalin pertemanan baru.">
+      <img src="Voya.webp" alt="App">
+      <h4>Voya</h4>
+    </div>
+    <div class="app-item" data-title="Kachi-Obrolan,Panggilan,Pesta" data-desc="Apakah Anda kesulitan menemukan seseorang untuk diajak ngobrol dalam kehidupan nyata? Ingin berteman tetapi tidak tahu harus mulai dari mana? Kachi hadir untuk membantu!Kachi adalah platform sosial yang nyata dan dapat diandalkan yang memungkinkan Anda dengan mudah bertemu teman baru melalui obrolan.">
+      <img src="Kachi.webp" alt="App">
+      <h4>Kachi</h4>
+    </div>
+    <div class="app-item" data-title="GOGO LIVE Streaming Video Chat" data-desc="GOGO LIVE adalah cara terbaik untuk melihat siaran langsung favorit Anda. Ini gratis, cepat dan mudah untuk menonton beberapa hiburan terbaik secara langsung! Temui teman-teman baru di seluruh dunia, terima dan kirim hadiah virtual.Anda juga bisa menjadi penyiar dan mendapatkan hadiah dan peluang...">
+      <img src="GOGO LIVE.webp" alt="App">
+      <h4>GOGO LIVE</h4>
+    </div>
+        <div class="app-item" data-title="Joi-Live Video Chatting App" data-desc="Selamat datang di Joi Video Chatting App!
+Siap untuk terhubung dengan dunia? Lakukan video chat 1-dgn-1 dengan jutaan orang baru menarik dan temukan teman baru di seluruh dunia dengan hanya satu sentuhan. Video chat berpasangan secara mudah dan instan hanya dengan Joi.
+
+Fitur Utama
+😍 Filter gender dan lokasi...">
+      <img src="joy-live.webp" alt="App">
+      <h4>Joi-Live</h4>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- Popup -->
+<div class="popup" id="popup">
+  <div class="popup-content">
+    <h3 id="popup-title"></h3>
+    <p id="popup-desc"></p>
+    <small>Aplikasi ini telah diperbaharui 3 hari yang lalu</small>
+    <small>Developer: Layanan Pelanggan</small>
+    <button class="close-btn" onclick="closePopup()">Tutup</button>
+  </div>
+</div>
+
+
+
+
 
 <!-- POPUP PROFIL -->
 <div id="profilePopup" class="popup">
@@ -3797,6 +3980,102 @@ const APLIKASI = [
     {
     nama: "Mako",
     logo: "makologo.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+      {
+    nama: "Dico",
+    logo: "Dico.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+        {
+    nama: "Voya",
+    logo: "Voya.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+          {
+    nama: "BuzzCast",
+    logo: "BuzzCast.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+            {
+    nama: "Joy-Live",
+    logo: "joy-live.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+              {
+    nama: "SUGO",
+    logo: "sugo.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+                {
+    nama: "MICO",
+    logo: "MICO.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+                  {
+    nama: "17LIVE",
+    logo: "17LIVE.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+   {
+    nama: "Litgo",
+    logo: "Litgo-Chat.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+   {
+    nama: "Kachi",
+    logo: "Kachi.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+  {
+    nama: "Chamet",
+    logo: "Chamet.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+  {
+    nama: "Honey Jar",
+    logo: "Honey.webp",
+    paket: [
+      { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
+      { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
+    ]
+  },
+  {
+    nama: "GOGO LIVE",
+    logo: "GOGO LIVE.webp",
     paket: [
       { nama:"60 Coin", desc:"Starter Pack", harga:"Rp 12.000" },
       { nama:"120 Coin", desc:"Best Deal", harga:"Rp 20.000" }
@@ -5364,6 +5643,46 @@ document.addEventListener("DOMContentLoaded", tampilkanPostinganManual);
 
 
 
+const popup = document.getElementById('popup');
+const popupTitle = document.getElementById('popup-title');
+const popupDesc = document.getElementById('popup-desc');
+const closeBtn = document.querySelector('#popup .close-btn');
+
+// buka popup saat item diklik
+document.querySelectorAll('.app-item').forEach(item => {
+  item.addEventListener('click', () => {
+    popupTitle.textContent = item.getAttribute('data-title');
+    popupDesc.textContent = item.getAttribute('data-desc');
+    popup.style.display = 'flex';
+  });
+});
+
+// fungsi tutup popup
+function closePopup() {
+  // tambahkan animasi keluar
+  const content = document.querySelector('.popup-content');
+  content.style.animation = 'zoomOut 0.3s ease forwards';
+  
+  setTimeout(() => {
+    popup.style.display = 'none';
+    content.style.animation = 'zoomIn 0.4s ease'; // reset animasi
+  }, 300);
+}
+
+// klik tombol tutup
+closeBtn.addEventListener('click', closePopup);
+
+// klik di luar konten popup
+popup.addEventListener('click', (e) => {
+  if (e.target === popup) {
+    closePopup();
+  }
+});
+
+// tekan tombol ESC
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closePopup();
+});
 
 
 
