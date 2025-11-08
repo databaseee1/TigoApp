@@ -818,7 +818,7 @@ button[onclick="prosesTarik()"] {
 #offlineBanner img {
   width: 100%;
   max-width: 380px; /* biar nggak kepanjangan */
-  border-radius: 70px;
+  border-radius: 10px;
   box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 
@@ -2324,6 +2324,420 @@ button[onclick="prosesTarik()"] {
 
 
 
+
+
+
+.level-popup {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  display: none;
+  z-index: 9999;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+.level-popup.show {
+  display: block;
+  animation: fadeInOut 2.6s ease-in-out;
+}
+.level-popup img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 3px rgb(255, 255, 255));
+}
+
+@keyframes fadeInOut {
+  0% {opacity:0; transform: translate(-50%, 8px);}
+  10% {opacity:1; transform: translate(-50%, 0);}
+  85% {opacity:1; transform: translate(-50%, 0);}
+  100% {opacity:0; transform: translate(-50%, -8px);}
+}
+
+
+
+
+
+
+
+
+#scroll-section {
+  padding: 10px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scroll-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.scroll-img {
+  width: 45%;
+  opacity: 0;
+  transition: all 1s ease;
+  transform: translateY(40px);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* Awal posisi */
+.left-img {
+  transform: translateX(-100px);
+}
+.right-img {
+  transform: translateX(100px);
+}
+
+/* Saat muncul */
+.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.contact-section {
+  max-width: 600px;
+  margin: 0px auto;
+  padding: 5px;
+  font-family: "Poppins", sans-serif;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+  line-height: 1.7;
+  color: #333;
+}
+
+.contact-section h3 {
+  margin-top: 25px;
+  font-size: 1.2rem;
+  color: #1d1d1d;
+  border-left: 4px solid #007bff;
+  padding-left: 10px;
+}
+
+.info-box {
+  border: 1px solid #e3e3e3;
+  border-radius: 12px;
+  padding: 15px 20px;
+  margin-top: 15px;
+  background: #fafafa;
+}
+
+.divider {
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(to right, #007bff, #00c6ff);
+  margin: 20px 0;
+  border-radius: 2px;
+}
+
+.divider.thin {
+  height: 1px;
+  background: #dcdcdc;
+  margin: 10px 0;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+
+
+
+
+
+
+
+.policy-section {
+  background: #f9f9f9;
+  padding: 40px 15px;
+  font-family: "Poppins", sans-serif;
+  color: #333;
+}
+
+.policy-container {
+  max-width: 700px;
+  margin: auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 10px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+  line-height: 1.7;
+}
+
+.policy-title {
+  font-size: 1.2rem;
+  color: #1d1d1d;
+  margin-bottom: 10px;
+  border-left: 4px solid #007bff;
+  padding-left: 10px;
+}
+
+.divider {
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(to right, #007bff, #00c6ff);
+  margin: 20px 0;
+  border-radius: 2px;
+}
+
+.info-box {
+  background: #f3f7ff;
+  border-left: 4px solid #007bff;
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin: 15px 0;
+  color: #333;
+}
+
+.info-list {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+.info-list li {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eaeaea;
+  position: relative;
+}
+
+.info-list li::before {
+  content: "•";
+  color: #007bff;
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+.info-list li:last-child {
+  border-bottom: none;
+}
+
+
+
+
+
+
+
+
+.tigo-info-section {
+  background: #f7f8fa;
+  padding: 0px 0px;
+  font-family: "Poppins", sans-serif;
+  color: #333;
+}
+
+.tigo-container {
+  max-width: 800px;
+  margin: auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+  line-height: 1.7;
+}
+
+.tigo-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #222;
+  border-left: 5px solid #007bff;
+  padding-left: 12px;
+}
+
+.tigo-subtitle {
+  margin-top: 25px;
+  font-size: 1.1rem;
+  color: #007bff;
+}
+
+.divider {
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(to right, #007bff, #00c6ff);
+  margin: 25px 0;
+  border-radius: 2px;
+}
+
+.info-list {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+.info-list li {
+  padding: 10px 12px;
+  border-bottom: 1px solid #ececec;
+  position: relative;
+}
+
+.info-list li::before {
+  content: "•";
+  color: #007bff;
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+.info-box {
+  background: #eef6ff;
+  border-left: 4px solid #007bff;
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+  color: #333;
+}
+
+.highlight-box {
+  background: #f0fff5;
+  border-left: 4px solid #28a745;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 25px;
+  color: #222;
+  font-style: italic;
+}
+
+
+
+
+
+
+.tigo-topup-section {
+  background: #f8f9fb;
+  padding: 0px 0px;
+  font-family: "Poppins", sans-serif;
+  color: #333;
+}
+
+.tigo-container {
+  max-width: 800px;
+  margin: auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+  line-height: 1.7;
+}
+
+.tigo-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #222;
+  border-left: 5px solid #007bff;
+  padding-left: 12px;
+}
+
+.divider {
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(to right, #007bff, #00c6ff);
+  margin: 25px 0;
+  border-radius: 2px;
+}
+
+.info-box {
+  background: #eef6ff;
+  border-left: 4px solid #007bff;
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.highlight-box {
+  background: #f0fff5;
+  border-left: 4px solid #28a745;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 25px;
+  color: #222;
+  font-style: italic;
+}
+
+.highlight-box.success {
+  background: #e8f7ff;
+  border-left: 4px solid #00aaff;
+}
+
+.info-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.info-list li {
+  padding: 10px 12px;
+  border-bottom: 1px solid #ececec;
+  position: relative;
+}
+
+.info-list li::before {
+  content: "✔";
+  color: #007bff;
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+
+
+
+
+
+
+
+  /* Styling popup biar muncul tengah & halus */
+  #popupBuktiHost {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  #popupBuktiHost.show {
+    display: flex;
+    opacity: 1;
+  }
+
+
+
+
+
+
   </style>
 </head>
 <body>
@@ -2397,38 +2811,90 @@ button[onclick="prosesTarik()"] {
     <span class="syarat-close" onclick="closeSyarat()">✕</span>
     <h2>Syarat & Ketentuan</h2>
     <div class="syarat-content">
-      <p>
-        Kami hanya akan menggunakan data pribadi Anda yang diizinkan oleh hukum setempat. Umumnya, kami akan menggunakan data pribadi Anda dalam situasi berikut:
-      </p>
-      <p>
-        Bagaimana Anda dapat menghubungi kami?<br>
 
-Layanan Tigo dioperasikan oleh<br>
+<div class="contact-section">
+  <p>
+    Kami hanya akan menggunakan data pribadi Anda yang diizinkan oleh hukum setempat. 
+    Umumnya, kami akan menggunakan data pribadi Anda dalam situasi berikut:
+  </p>
 
-Perusahaan Teknologi Junyue, Terbatas<br>
+  <div class="divider"></div>
 
-2-60-8-201, HIGASHIIKEBUKURO<br>
+  <h3>Bagaimana Anda dapat menghubungi kami?</h3>
+  <p>Layanan Tigo dioperasikan oleh</p>
 
-TOSHIMA-KU JP<br>
+  <div class="info-box">
+    <p><strong>Perusahaan Teknologi Junyue, Terbatas</strong></p>
+    <p>2-60-8-201, HIGASHIIKEBUKURO</p>
+    <p>TOSHIMA-KU JP</p>
+    <div class="divider thin"></div>
+    <p><strong>Email:</strong> <a href="mailto:info@tigo.chat">info@tigo.chat</a></p>
+  </div>
+</div>
 
-Jika Anda memiliki pertanyaan atau komentar tentang Kebijakan ini, Anda dapat mengirim email ke info@tigo.chat
+<section id="scroll-section">
+  <div class="scroll-container">
+    <img src="c2.png" alt="Gambar Kiri" class="scroll-img left-img">
+    <img src="c3.png" alt="Gambar Kanan" class="scroll-img right-img">
+  </div>
+</section>
 
-<br><br>Cara Menghapus Akun Anda<br><br>
+<section class="policy-section">
+  <div class="policy-container">
+    <h3 class="policy-title">Cara Menghapus Akun Anda</h3>
+    <div class="divider"></div>
 
-Demi keamanan pengelolaan akun Anda, kami menyediakan fitur hapus akun cepat di Aplikasi. Anda dapat mengeklik Pengaturan Akun di Pengaturan Aplikasi untuk melihat opsi Hapus Akun. Setelah mengeklik, Anda dapat mengikuti petunjuk yang memandu pengguna untuk menghapus akun. Demi keamanan akun Anda, setelah Anda mengonfirmasi penghapusan informasi akun, Anda akan keluar dan kami akan menyimpan akun Anda selama 7 hari. Dalam 7 hari, Anda dapat masuk kembali kapan saja untuk memulihkan akun dan menyimpan semua informasi akun. Setelah lebih dari tujuh hari, kami akan menghapus semua data akun Anda dan tidak dapat dipulihkan dengan cara apa pun. Jika Anda telah menghapus aplikasi, Anda dapat mengisi informasi yang relevan dan mengirimkan aplikasi.
-      </p>
-      <p>
-        Kebijakan Privasi Junyue Technology Co., Limited (“Tigo”, “kami” atau “milik kami”) menjelaskan bagaimana dan mengapa kami mengumpulkan, menyimpan, menggunakan dan/atau membagikan (“Memproses”) informasi pribadi Anda saat Anda menggunakan layanan kami (“Layanan”).<br>
-        Jika Anda tidak setuju dengan kebijakan dan praktik kami, mohon jangan gunakan Layanan kami. Jika Anda masih memiliki pertanyaan atau kekhawatiran, silakan hubungi kami melalui <br>
-         Kami mengumpulkan informasi pribadi yang Anda berikan untuk mendaftar Layanan, menyatakan minat untuk mendapatkan informasi tentang kami atau produk dan layanan kami, saat Anda berpartisipasi dalam aktivitas Layanan, atau saat Anda menghubungi kami.<br>
-         o Nomor telepon<br>
-         o Alamat email<br>
-         o Nomor Penggunaan<br>
-         o Informasi pembayaran<br>
-         o Kata Sandi<br>
-         o Ulang Tahun<br>
-          Pengguna dapat memberikan informasi pribadi Anda saat menggunakan Layanan kami, misalnya saat berinteraksi dengan Anda atau mengirimkan laporan yang melibatkan Anda.
-      </p>
+    <p>
+      Demi keamanan pengelolaan akun Anda, kami menyediakan fitur hapus akun cepat di Aplikasi.
+      Anda dapat mengeklik <strong>Pengaturan Akun</strong> di Pengaturan Aplikasi untuk melihat opsi <strong>Hapus Akun</strong>.
+      Setelah mengeklik, Anda dapat mengikuti petunjuk yang memandu pengguna untuk menghapus akun.
+    </p>
+    <p>
+      Demi keamanan akun Anda, setelah Anda mengonfirmasi penghapusan informasi akun,
+      Anda akan keluar dan kami akan menyimpan akun Anda selama <strong>7 hari</strong>.
+      Dalam 7 hari, Anda dapat masuk kembali kapan saja untuk memulihkan akun dan menyimpan semua informasi akun.
+    </p>
+    <p>
+      Setelah lebih dari tujuh hari, kami akan menghapus semua data akun Anda dan tidak dapat dipulihkan dengan cara apa pun.
+      Jika Anda telah menghapus aplikasi, Anda dapat mengisi informasi yang relevan dan mengirimkan aplikasi.
+    </p>
+
+    <div class="divider"></div>
+
+    <h3 class="policy-title">Kebijakan Privasi Junyue Technology Co., Limited</h3>
+
+    <p>
+      Kebijakan Privasi <strong>Junyue Technology Co., Limited</strong> (“Tigo”, “kami” atau “milik kami”) menjelaskan bagaimana dan mengapa kami mengumpulkan, menyimpan, menggunakan dan/atau membagikan (“Memproses”) informasi pribadi Anda saat Anda menggunakan layanan kami (“Layanan”).
+    </p>
+
+    <div class="info-box">
+      <p>Jika Anda tidak setuju dengan kebijakan dan praktik kami, mohon jangan gunakan Layanan kami.</p>
+      <p>Jika Anda masih memiliki pertanyaan atau kekhawatiran, silakan hubungi kami.</p>
+    </div>
+
+    <p>
+      Kami mengumpulkan informasi pribadi yang Anda berikan untuk mendaftar Layanan,
+      menyatakan minat untuk mendapatkan informasi tentang kami atau produk dan layanan kami,
+      saat Anda berpartisipasi dalam aktivitas Layanan, atau saat Anda menghubungi kami.
+    </p>
+
+    <ul class="info-list">
+      <li>Nomor telepon</li>
+      <li>Alamat email</li>
+      <li>Nomor penggunaan</li>
+      <li>Informasi pembayaran</li>
+      <li>Kata sandi</li>
+      <li>Tanggal lahir</li>
+    </ul>
+
+    <p>
+      Pengguna dapat memberikan informasi pribadi Anda saat menggunakan Layanan kami,
+      misalnya saat berinteraksi dengan Anda atau mengirimkan laporan yang melibatkan Anda.
+    </p>
+  </div>
+</section>
+
+
     </div>
   </div>
 </div>
@@ -2442,70 +2908,75 @@ Demi keamanan pengelolaan akun Anda, kami menyediakan fitur hapus akun cepat di 
     <span class="host-close" onclick="closeHost()">✕</span>
     <h2>Tentang Host</h2>
     <div class="host-content">
-      <p>
-Menjadi Host di Aplikasi Live 1 vs 1<br>
+ <section class="host-section">
+  <div class="host-container">
+    <h2 class="host-title">Menjadi Host di Aplikasi Live 1 vs 1</h2>
+    <div class="divider"></div>
 
-Aplikasi live 1 vs 1 kini semakin populer sebagai tempat hiburan sekaligus peluang penghasilan. Konsepnya sederhana: host melakukan siaran langsung dan berinteraksi dengan penonton secara pribadi melalui video call satu lawan satu.
+    <p>
+      Aplikasi live 1 vs 1 kini semakin populer sebagai tempat hiburan sekaligus peluang penghasilan.
+      Konsepnya sederhana: host melakukan siaran langsung dan berinteraksi dengan penonton secara pribadi melalui video call satu lawan satu.
+    </p>
 
-<br>Apa itu Host Live 1 vs 1?<br>
+    <h3 class="host-subtitle">Apa itu Host Live 1 vs 1?</h3>
+    <p>
+      Host adalah seseorang yang mendaftar di aplikasi untuk melakukan siaran atau panggilan langsung.
+      Tugasnya menghibur, berbicara, atau sekadar menemani penonton dalam sesi live 1 vs 1.
+    </p>
 
-–Host adalah seseorang yang mendaftar di aplikasi untuk melakukan siaran atau panggilan langsung. Tugasnya menghibur, berbicara, atau sekadar menemani penonton dalam sesi live 1 vs 1.
+    <h3 class="host-subtitle">Keuntungan Menjadi Host</h3>
+    <ul class="info-list">
+      <li><strong>Fleksibel:</strong> bisa siaran dari mana saja dan kapan saja. Target harian minimal 1 jam, dan jika melebihi target, penghasilan akan meningkat.</li>
+      <li><strong>Batas usia:</strong> minimal 20 tahun ke atas.</li>
+      <li><strong>Interaksi lebih dekat:</strong> host berbicara langsung dengan penonton, menciptakan suasana akrab dan peluang gift lebih besar.</li>
+    </ul>
 
-<br>Keuntungan Menjadi Host<br>
+    <div class="info-box">
+      <p><strong>Penghasilan Tambahan:</strong> host bisa mendapatkan hadiah virtual, komisi per sesi, serta bonus dari agency mitra resmi aplikasi.</p>
+    </div>
 
-Fleksibel<br>
-– bisa siaran dari mana saja dan kapan saja.
-– kewajiban target dalam harian yaitu 1 jam dalam 1 hari , jika melebihi dari target maka hasil akan bertambah sesuai dengan jam tayang.
-–batas umur wajib di atas dari 20+
+    <h3 class="host-subtitle">Syarat Umum Menjadi Host</h3>
+    <ul class="info-list">
+      <li>Memiliki akun terdaftar di aplikasi.</li>
+      <li>Mengisi data diri dengan benar (nama, kontak, rekening).</li>
+      <li>Memiliki perangkat dengan kamera dan koneksi internet stabil.</li>
+      <li>Berusia sesuai ketentuan aplikasi (minimal 18+).</li>
+    </ul>
 
-–Interaksi Lebih Dekat<br>
- – host berbicara langsung dengan penonton, membuat suasana lebih akrab.
- – mendapatkan lebih banyak gift jika penonton puas dengan anda
+    <h3 class="host-subtitle">Tips Agar Sukses Jadi Host</h3>
+    <ul class="info-list">
+      <li>Tampil percaya diri dan ramah.</li>
+      <li>Buat suasana interaktif agar penonton betah.</li>
+      <li>Konsisten online untuk meningkatkan peluang sesi panggilan.</li>
+      <li>Jaga kualitas gambar dan suara selama siaran.</li>
+    </ul>
 
-<br><br>Penghasilan Tambahan<br> 
-– host bisa mendapatkan hadiah virtual atau komisi dari setiap sesi.selain itu host juga bisa mendapatkan komisi dari hasil gaji mingguan melalui masing masing agency yang sudah berkerja sama dengan pihak aplikasi aplikasi tertentu.<br>
+    <div class="divider"></div>
 
-<br>Syarat Umum Menjadi Host<br>
+    <h2 class="host-title">Syarat & Larangan Host</h2>
+    <div class="divider"></div>
 
-–Memiliki akun terdaftar di aplikasi.<br>
-–Mengisi data diri dengan benar (nama, kontak, rekening).<br>
-–Memiliki perangkat dengan kamera dan koneksi internet stabil.<br>
-–Umur sesuai ketentuan aplikasi (biasanya 18+).<br>
+    <ul class="info-list">
+      <li><strong>Aktif minimal 1 jam per hari:</strong> semakin lama live, semakin besar penghasilan mingguan.</li>
+      <li><strong>Data pribadi lengkap:</strong> wajib mencantumkan nama, nomor rekening, dan bank.</li>
+      <li><strong>Membaca syarat & ketentuan:</strong> agar tidak terjadi pelanggaran saat bekerja.</li>
+      <li><strong>Deposit awal Rp 500.000:</strong> masuk ke saldo akun host dan bisa ditarik kembali.</li>
+      <li><strong>Tujuan rekening valid:</strong> pastikan data benar agar pencairan tidak tertunda.</li>
+    </ul>
 
-<br>Tips Agar Sukses Jadi Host<br>
+    <div class="alert-box">
+      <h3>🚫 LARANGAN BAGI HOST</h3>
+      <ul>
+        <li>Dilarang merekam layar saat panggilan video — pelanggaran akan langsung <strong>BANNED</strong>.</li>
+        <li>Dilarang melakukan percakapan tidak pantas; host wajib menjaga etika.</li>
+        <li>Dilarang curang (cheat) atau mengganti rekening tanpa izin admin.</li>
+        <li>Tidak boleh memaksa user melakukan hal yang tidak nyaman.</li>
+        <li>Dilarang menggunakan kamera hitam saat siaran.</li>
+      </ul>
+    </div>
+  </div>
+</section>
 
-–Tampil percaya diri dan ramah.<br>
-–Buat suasana interaktif agar penonton betah.<br>
-–Konsisten online agar peluang mendapatkan panggilan lebih besar.<br>
-–Jaga kualitas gambar dan suara.<br>      </p>
-      <p>
-        <br><br>SYARAT & LARANGAN HOST<br><br>
-
-Aktif Minimal 1 Jam per Hari<br>
-– Host wajib melakukan siaran/panggilan minimal 1 jam setiap harinya. Jika lebih, penghasilan mingguan akan semakin besar.
-
-<br>Data Pribadi Lengkap<br>
-– Menyediakan nama lengkap, nama rekening, nomor rekening, dan nama bank untuk keperluan pencairan hasil.
-
-<br>Membaca Syarat & Ketentuan<br>
-– Host wajib memahami aturan agar tidak terjadi kesalahan saat menjalankan tugas.
-
-<br>Deposit Awal<br>
-– Setelah diterima, host diwajibkan membayar biaya deposit sebesar Rp 500.000. Biaya ini akan masuk ke saldo akun host dan bisa ditarik kembali ke rekening.
-
-<br>Tujuan Rekening yang Valid<br>
-– Pastikan data rekening benar agar pencairan hasil tidak mengalami keterlambatan.
-
-<br><br><br>LARANGAN BAGI HOST<br><br><br>
-
-– Dilarang Merekam Layar saat panggilan video. Jika terdeteksi, akun otomatis BANNED dan saldo hangus.<br>
-– Tidak Boleh Dekat Anak-Anak, hanya diperbolehkan untuk usia 18+,Percakapan Kotor Dilarang. <br>
-– host wajib menjaga etika dalam setiap sesi.<br>
-– Dilarang Curang (Cheat) pada akun, pelanggaran akan berakibat BANNED.<br>
-– Pergantian Rekening wajib melalui konfirmasi admin terlebih dahulu.<br>
-– Tidak Boleh Memaksa User untuk melakukan hal yang tidak nyaman.<br>
-– Tidak Boleh Menggunakan Kamera Hitam saat siaran.<br>
-      </p>
     </div>
   </div>
 </div>
@@ -2520,51 +2991,71 @@ Aktif Minimal 1 Jam per Hari<br>
     <span class="agency-close" onclick="closeAgency()">✕</span>
     <h2>Tentang Agency</h2>
     <div class="agency-content">
+ 
+   <section class="tigo-info-section">
+  <div class="tigo-container">
+    <h2 class="tigo-title">Tentang Top Up di Tigohost Indonesia</h2>
+    <div class="divider"></div>
+
+    <p>
+      Aplikasi <strong>Live 1 vs 1</strong> kini menjadi salah satu bentuk hiburan digital paling diminati. 
+      Melalui layanan ini, pengguna dapat melakukan panggilan video pribadi dengan host, 
+      menciptakan interaksi yang lebih akrab, eksklusif, dan menyenangkan.
+    </p>
+
+    <h3 class="tigo-subtitle">Apa Itu Aplikasi Live 1 vs 1?</h3>
+    <p>
+      Aplikasi ini adalah platform interaksi digital yang mempertemukan pengguna dan host melalui video call privat. 
+      Tidak seperti live streaming biasa yang diikuti banyak penonton, konsep 1 vs 1 memberikan pengalaman yang lebih fokus dan personal.
+    </p>
+
+    <h3 class="tigo-subtitle">Fitur Utama</h3>
+    <ul class="info-list">
+      <li><strong>Video Call Privat:</strong> komunikasi langsung antara host dan pengguna tanpa gangguan.</li>
+      <li><strong>Sistem Koin:</strong> pengguna membeli koin untuk menikmati layanan dan memberikan hadiah virtual.</li>
+      <li><strong>Hadiah Virtual:</strong> bentuk apresiasi pengguna kepada host selama sesi panggilan.</li>
+      <li><strong>Event Khusus:</strong> aktivitas rutin yang menambah keseruan di aplikasi.</li>
+      <li><strong>Gaji Mingguan:</strong> diberikan kepada host yang aktif sesuai target jam tayang.</li>
+    </ul>
+
+    <div class="divider"></div>
+
+    <h2 class="tigo-title">Peran Agency dalam Aplikasi Live 1 vs 1</h2>
+    <div class="divider"></div>
+
+    <p>
+      Untuk mendukung profesionalitas para host, aplikasi bekerja sama dengan <strong>agency resmi</strong> 
+      yang berperan penting dalam operasional dan pengembangan talenta.
+    </p>
+
+    <div class="info-box">
+      <ul class="info-list">
+        <li><strong>Perekrut Host Baru:</strong> membantu pendaftaran dan seleksi host agar diterima di aplikasi.</li>
+        <li><strong>Pendamping Host:</strong> memberikan panduan, pelatihan, dan arahan etika siaran.</li>
+        <li><strong>Penghubung Resmi:</strong> menjembatani komunikasi antara host dan pihak aplikasi.</li>
+        <li><strong>Pengelola Penghasilan:</strong> memastikan pembayaran gaji dan bonus dilakukan dengan lancar dan transparan.</li>
+      </ul>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 class="tigo-subtitle">Agency Tigohost Indonesia</h3>
+    <p>
+      Sejak <strong>2016</strong>, <strong>PT. Agency Tigohost Indonesia</strong> telah menjalin kerja sama dengan berbagai 
+      platform hiburan live 1 vs 1. Agency ini membantu ribuan host untuk berkembang, 
+      memperoleh penghasilan, dan menjaga profesionalitas dalam dunia hiburan digital.
+    </p>
+
+    <div class="highlight-box">
       <p>
-        Tentang Top up di Tigohost indonesia
+        Dengan adanya agency, host mendapatkan dukungan manajemen, pelatihan, 
+        dan bimbingan agar lebih profesional dalam memberikan layanan. 
+        Agency juga bertanggung jawab menjaga kualitas host dan memberikan laporan rutin sesuai ketentuan.
       </p>
-      <p>
-        Aplikasi Live 1 vs 1: Hiburan Digital Modern
+    </div>
+  </div>
+</section>
 
-Aplikasi live 1 vs 1 kini menjadi salah satu bentuk hiburan digital paling diminati. Melalui layanan ini, pengguna bisa melakukan panggilan video satu lawan satu dengan host secara langsung, menciptakan interaksi yang lebih pribadi, akrab, dan eksklusif.
-
-Apa itu Aplikasi Live 1 vs 1?
-
-Aplikasi ini adalah platform interaksi digital yang mempertemukan pengguna dengan host melalui video call privat. Tidak seperti live streaming biasa yang melibatkan banyak penonton, konsep 1 vs 1 menghadirkan pengalaman lebih intim, fokus, dan personal.
-
-Fitur Utama
-
-Video Call Privat 
-– komunikasi langsung antara host dan pengguna.
-
-–Sistem Koin, pengguna membeli koin untuk menikmati layanan dan memberikan hadiah virtual.<br>
-Hadiah Virtual <br>
-– bentuk apresiasi dari pengguna kepada host.<br>
-– Event Khusus <br>
-– aktivitas rutin yang menambah keseruan dalam aplikasi.<br>
-– Gaji mingguan bagi host yang aktif sesuai jam tayang.<br>
-
-<br><br>Peran Agency dalam Aplikasi Live 1 vs 1<br><br>
-
-Untuk mendukung kelancaran dan profesionalitas host, aplikasi bekerja sama dengan agency resmi. Agency berfungsi sebagai:
-<br>
-– Perekrut Host Baru (bonus harian)<br>
-– membantu proses pendaftaran agar lebih mudah diterima aplikasi Pendamping Host<br> 
-– memberi arahan cara live yang baik, menjaga etika, dan meningkatkan kualitas interaksi,
-Penghubung Resmi<br>
-– menjadi perantara komunikasi antara host dan aplikasi.
-Pengelola Penghasilan <br>
-– memastikan pembayaran gaji dan bonus berjalan lancar serta transparan.
-Agency Tigohost Indonesia<br>
-
-<br><br>Sejak 2016, PT. Agency Tigohost Indonesia telah menjalin kerja sama dengan berbagai aplikasi hiburan live 1 vs 1. Agency ini membantu ribuan host untuk berkembang, mendapatkan penghasilan, dan menjaga profesionalitas dalam dunia hiburan digital.
-      </p>
-      <p>
-        Dengan adanya agency, host dapat memperoleh dukungan manajemen, 
-        pelatihan, dan bimbingan agar lebih profesional dalam memberikan 
-        layanan. Agency juga bertanggung jawab menjaga kualitas host dan 
-        memberikan laporan rutin sesuai ketentuan.
-      </p>
     </div>
   </div>
 </div>
@@ -2579,37 +3070,61 @@ Agency Tigohost Indonesia<br>
     <span class="topup-close" onclick="closeTopup()">✕</span>
     <h2>Tentang Top Up</h2>
     <div class="topup-content">
-      <p>
-        Tentang Top up di Tigohost indonesia
-      </p>
-      <p>
-        Contoh isi:
-        Top Up adalah proses pengisian saldo dalam bentuk koin atau kredit 
-        yang digunakan untuk menikmati layanan aplikasi, seperti panggilan 
-        video privat, hadiah virtual, hingga akses eksklusif tertentu.
-      </p>
+ <section class="tigo-topup-section">
+  <div class="tigo-container">
+    <h2 class="tigo-title">Tentang Top Up di Tigohost Indonesia</h2>
+    <div class="divider"></div>
+
+    <p>
+      <strong>Top Up</strong> adalah proses pengisian saldo dalam bentuk koin atau kredit 
+      yang digunakan untuk menikmati berbagai layanan di aplikasi, seperti panggilan video privat, 
+      pemberian hadiah virtual, hingga akses ke fitur eksklusif tertentu.
+    </p>
+
+    <div class="highlight-box">
       <p>
         Dengan melakukan top up, pengguna dapat mendukung host favorit, 
-        bergabung dalam event khusus, serta memperoleh pengalaman interaksi 
-        yang lebih seru dan eksklusif. 
+        berpartisipasi dalam event khusus, dan merasakan pengalaman interaksi 
+        yang lebih seru serta eksklusif di dalam aplikasi.
       </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2 class="tigo-title">Dukungan Agency</h2>
+    <p>
+      Sejak <strong>2016</strong>, <strong>PT. Agency Tigohost Indonesia</strong> telah bekerja sama dengan 
+      berbagai platform hiburan digital untuk mendukung para host dan pengguna. 
+      Melalui sistem pendaftaran resmi dan transparan, agency memastikan hal-hal berikut:
+    </p>
+
+    <div class="info-box">
+      <ul class="info-list">
+        <li>Rekrutmen host secara profesional dan terbuka.</li>
+        <li>Pendampingan penuh untuk setiap host baru.</li>
+        <li>Jaminan keamanan dalam transaksi dan pencairan hasil.</li>
+        <li>Transparansi penuh dalam kerja sama dengan aplikasi partner.</li>
+      </ul>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2 class="tigo-title">Komitmen Kami</h2>
+    <p>
+      <strong>PT. Agency Tigohost Indonesia</strong> selalu berkomitmen untuk menjaga 
+      kepercayaan pengguna, mendukung kreativitas host, dan menghadirkan 
+      pengalaman hiburan yang <em>menyenangkan, aman, dan bernilai tinggi</em>.
+    </p>
+
+    <div class="highlight-box success">
       <p>
-        <br>Dukungan Agency<br>
-
-Sejak 2016, PT. Agency Tigohost Indonesia telah bekerja sama dengan berbagai aplikasi hiburan digital untuk mendukung para host dan pengguna. Melalui sistem pendaftaran resmi, agency memastikan:
-<br>
--- rekrutmen host yang profesional<br>
-
---Pendampingan penuh untuk host baru<br>
-
---Jaminan keamanan transaksi & pencairan hasil<br>
-
---Transparansi kerja sama dengan aplikasi partner<br>
-
-<br><br>Komitmen Kami<br><br>
-
-PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna, mendukung kreativitas host, serta menghadirkan pengalaman hiburan yang menyenangkan, aman, dan bernilai.
+        Kami percaya bahwa setiap host memiliki potensi besar untuk berkembang 
+        di dunia hiburan digital, dan kami siap menjadi jembatan menuju kesuksesan mereka.
       </p>
+    </div>
+  </div>
+</section>
+
     </div>
   </div>
 </div>
@@ -2986,8 +3501,12 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 <div class="profile-icons">
   <div class="profile-icon-wrapper">
     <img src="c24.jpg" id="iconProfile1" class="profile-icon" alt="Andre lesmana">
-    <img src="user_level_3_male_icon.png" class="overlay-icon" alt="">
+<img src="user_level_3_male_icon.png" class="overlay-icon" alt="Level 3">
+<div id="level-popup" class="level-popup" role="status" aria-hidden="true">⚠️ Istimewa Level akun host</div>
+
   </div>
+
+
   <div class="profile-icon-wrapper">
     <img src="c25.jpg" id="iconProfile2" class="profile-icon" alt="Adoll santra">
     <img src="user_level_3_icon.png" class="overlay-icon" alt="">
@@ -3038,7 +3557,8 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 
 
 
-<div style="display:flex; justify-content:center; background:#d8d8d8 ; margin-top:30px;">
+<div style="display:flex; justify-content:center; gap:10px; background:#d8d8d8; margin-top:30px;">
+  <!-- 🔹 Tombol Lihat Total Data -->
   <button onclick="window.location.href='https://databaseee1.github.io/TigoApp/analisist%20data%20host/'" 
     style="
       background:#B600FF; 
@@ -3052,15 +3572,89 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
       display:flex;
       align-items:center;
       gap:8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* efek 3D */
+      box-shadow:0 4px 6px rgba(0,0,0,0.3);
     ">
-<img src="msg_icon_friend.png" alt="Logo" style="
-  width:25px; 
-  height:25px; 
-  filter: brightness(0) invert(1);
-">    Lihat Total Data
+    <img src="msg_icon_friend.png" alt="Logo" style="
+      width:25px; 
+      height:25px; 
+      filter:brightness(0) invert(1);
+    "> 
+    Lihat Total Data
+  </button>
+
+  <!-- 🔹 Tombol Lihat Bukti Host -->
+  <button onclick="openPopupBukti()" 
+    style="
+      background:#0096FF; 
+      color:#fff; 
+      padding:12px 25px; 
+      border:none; 
+      border-radius:8px; 
+      font-size:14px; 
+      font-weight:bold;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      box-shadow:0 4px 6px rgba(0,0,0,0.3);
+    ">
+    <img src="float_video_1_f.png" alt="Logo" style="
+      width:25px; 
+      height:25px; 
+    "> 
+    Lihat Bukti Host
   </button>
 </div>
+
+<!-- 🔹 POPUP BUKTI HOST -->
+<div id="popupBuktiHost" style="
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.7);
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+">
+  <div style="
+    background:#fff;
+    border-radius:12px;
+    padding:15px;
+    width:90%;
+    max-width:420px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  ">
+    <!-- Tombol Tutup -->
+    <span onclick="closePopupBukti()" style="
+      position:absolute;
+      top:10px; right:15px;
+      font-size:22px;
+      font-weight:bold;
+      color:#333;
+      cursor:pointer;
+    ">&times;</span>
+
+    <h3 style="margin-bottom:10px; color:#333;">Bukti Host</h3>
+
+    <!-- 🔸 Area Gambar/Video -->
+    <div id="buktiContainer" style="border-radius:10px; overflow:hidden;">
+      <!-- Elemen media akan dimasukkan lewat JS -->
+    </div>
+
+    <!-- 🔸 Navigasi -->
+    <div style="margin-top:12px; display:flex; justify-content:space-between;">
+      <button onclick="prevMedia()" style="background:#B600FF;color:#fff;border:none;padding:8px 15px;border-radius:8px;font-weight:bold;cursor:pointer;">← Sebelumnya</button>
+      <button onclick="nextMedia()" style="background:#0096FF;color:#fff;border:none;padding:8px 15px;border-radius:8px;font-weight:bold;cursor:pointer;">Selanjutnya →</button>
+    </div>
+
+    <!-- 🔸 Indikator -->
+    <p id="indikator" style="margin-top:8px;font-size:13px;color:#666;">1 / 15</p>
+  </div>
+</div>
+
 
 
 <section class="section-support">
@@ -3839,12 +4433,12 @@ Fitur Utama
     <span class="closeX" onclick="closeCoins()">Tutup ✕</span>
     <h2>MENU COIN APLIKASI</h2>
     <p class="muted">
-      Coin dengan Diamond pada aplikasi tetap sama menjadi coin.
+      Coin dengan Diamond pada aplikasi tetap sama menjadi Token menyesuaikan masing masing aplikasi.
     </p>
 
     <!-- 🔹 Banner Offline -->
     <div id="offlineBanner">
-      <img src="bannercoin.jpg" alt="Banner Offline" />
+      <img src="bannerrrrr10.jpg" alt="Banner Offline" />
     </div>
 
     <!-- Grid logo aplikasi -->
@@ -5206,41 +5800,46 @@ const GAP_MS      = 1400;    // jeda antar spawn (ms)
 /* ==== Data contoh ==== */
 const messages = [
 
-  "(Host) Raka telah menerima Rp 9.250.000",
-  "(Host) Galih telah menerima Rp 5.900.000",
-  "(Host) Hendra telah menerima Rp 6.450.000",
-  "(Host) Angga telah menerima Rp 7.300.000",
-  "(Host) Yudi telah menerima Rp 8.150.000",
-  
-  "(Host) Joko telah menerima Rp 4.950.000",
+
+
+  "(Baru) Rian baru saja mendaftar host",
   "(Host) Bayu telah menerima Rp 5.600.000",
-  "(Host) Aldianto telah menerima Rp 7.750.000",
+  "(Baru) Dinda baru saja mendaftar host",
   "(Host) Ilham telah menerima Rp 8.900.000",
-  "(Host) Arman telah menerima Rp 6.800.000",
+  "(Baru) Aldi baru saja mendaftar host",
   "(Host) Rangga telah menerima Rp 7.950.000",
-  "(Host) Adi telah menerima Rp 9.350.000",
+  "(Baru) Citra baru saja mendaftar host",
   "(Host) Lutfi telah menerima Rp 5.450.000",
-  "(Host) Wisnu telah menerima Rp 6.250.000",
+  "(Baru) Wulan baru saja mendaftar host",
   "(Host) Fikri telah menerima Rp 8.500.000",
 
+
+  "(Host) Raka telah menerima Rp 9.250.000",
+  "(Baru) Galih baru saja mendaftar host",
+  "(Host) Hendra telah menerima Rp 6.450.000",
+  "(Baru) Ayu baru saja mendaftar host",
+  "(Host) Yudi telah menerima Rp 8.150.000",
+  
+
+
   // ✅ 20 Nama Cewek
-  "(Host) Sinta telah menerima Rp 4.850.000",
+  "(Baru) Fikri baru saja mendaftar host",
   "(Host) Rani telah menerima Rp 6.250.000",
-  "(Host) Wulan telah menerima Rp 7.500.000",
+  "(Baru) Rani baru saja mendaftar host",
     "(Host) Irfan telah menerima Rp 4.788.000",
-  "(Host) Bagas telah menerima Rp 6.450.000",
+  "(Baru) Andre baru saja mendaftar host",
   "(Host) Dimas telah menerima Rp 7.200.000",
-  "(Host) Rian telah menerima Rp 4.950.000",
+  "(Baru) Sinta baru saja mendaftar host",
   "(Host) Andi telah menerima Rp 5.300.000",
-  "(Host) Bima telah menerima Rp 8.250.000",
+  "(Baru) Putri baru saja mendaftar host",
   "(Host) Farhan telah menerima Rp 4.600.000",
-  "(Host) Reza telah menerima Rp 6.750.000",
+  "(Baru) Dimas baru saja mendaftar host",
   "(Host) Fahri telah menerima Rp 7.850.000",
-  "(Host) Ardi telah menerima Rp 9.100.000",
+  "(Baru) Melati baru saja mendaftar host",
   "(Host) Aldi telah menerima Rp 4.500.000",
-  "(Host) Rio telah menerima Rp 5.750.000",
+  "(Baru) Bimo baru saja mendaftar host",
   "(Host) Yoga telah menerima Rp 8.000.000",
-  "(Host) Rizky telah menerima Rp 6.200.000",
+  "(Baru) Intan baru saja mendaftar host",
   "(Host) Fajar telah menerima Rp 4.890.000",
   "(Host) Ayu telah menerima Rp 8.150.000",
   "(Host) Dinda telah menerima Rp 4.900.000",
@@ -5566,6 +6165,86 @@ document.addEventListener("DOMContentLoaded", () => {
 const postinganManual = [
 
 
+{
+  judul: "Update Periode 11 Sedang Dalam Proses oleh Tim PT. AGENCY TIGOHOST INDONESIA",
+  gambar: "loading update priode11.png",
+  deskripsi: `
+<div style="
+  background:#ffffff;
+  border-radius:12px;
+  padding:20px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+  font-family:'Poppins', sans-serif;
+  color:#333;
+">
+  <div style="
+    height:6px;
+    width:120px;
+    background:linear-gradient(90deg, #B600FF, #0096FF);
+    border-radius:4px;
+    margin-bottom:15px;
+  "></div>
+
+  <h2 style="
+    font-size:20px;
+    font-weight:700;
+    margin-bottom:10px;
+    color:#222;
+  ">
+    📰 Update Periode 11 Sedang Dalam Proses
+  </h2>
+
+  <hr style="border:0; border-top:1px solid #ddd; margin:15px 0;">
+
+  <p style="line-height:1.8; font-size:15px; text-align:justify;">
+    Halo rekan host dan mitra kami yang kami banggakan,
+  </p>
+
+  <p style="line-height:1.8; font-size:15px; text-align:justify;">
+    Kami informasikan bahwa <strong>update untuk <em>Periode 11</em> saat ini sedang dalam proses</strong> oleh 
+    tim <strong>PT. Agency Tigohost Indonesia</strong> bersama 
+    <strong>pihak aplikasi yang bekerja sama dengan pihak terkait.</strong>
+  </p>
+
+  <p style="line-height:1.8; font-size:15px; text-align:justify;">
+    Seluruh data dan hasil kegiatan host saat ini tengah melalui beberapa tahap penting, di antaranya:
+  </p>
+
+  <ul style="line-height:1.8; font-size:15px; margin-left:20px;">
+  <li>Analisis serta validasi oleh tim internal,</li>
+  <li>Sinkronisasi data dengan sistem aplikasi mitra, dan</li>
+  <li>Proses konfirmasi akhir dari pihak terkait.</li>
+  </ul>
+
+  <p style="line-height:1.8; font-size:15px; text-align:justify;">
+    Setiap langkah dilakukan dengan cermat untuk memastikan seluruh data tercatat dengan 
+    <strong>akurasi tinggi</strong> dan mengikuti standar kerja sama resmi antara 
+    <strong>PT. Agency Tigohost Indonesia</strong> dan pihak aplikasi mitra.
+  </p>
+
+  <p style="line-height:1.8; font-size:15px; text-align:justify;">
+    Kami mengucapkan terima kasih atas kesabaran serta kerja sama yang baik dari seluruh host 
+    selama proses ini berlangsung. Tim kami berkomitmen memberikan hasil terbaik dan 
+    memastikan seluruh tahapan berjalan secara profesional, terkoordinasi, dan transparan.
+  </p>
+
+  <p style="line-height:1.8; font-size:15px; text-align:justify;">
+    Informasi lebih lanjut mengenai perkembangan <strong>Periode 11</strong> akan disampaikan 
+    melalui <strong>dashboard resmi host Tigohost.</strong>
+  </p>
+
+  <hr style="border:0; border-top:2px solid #B600FF; margin:25px 0 10px;">
+
+  <p style="font-size:14px; font-weight:600; color:#555;">
+    Salam Profesional,<br>
+    <span style="color:#B600FF;">PT. Agency Tigohost Indonesia</span>
+  </p>
+</div>
+  `,
+  nama: "Layanan Pelanggan",
+  waktu: "9 November 2025"
+},
+
 
   {
     judul: "Perayaan 11 Tahun Kerja Sama PT. AGENCY TIGOHOST INDONESIA dan Otoritas Jasa Keuangan (OJK)",
@@ -5676,35 +6355,193 @@ document.querySelectorAll('.app-item').forEach(item => {
   });
 });
 
-// fungsi tutup popup
-function closePopup() {
-  // tambahkan animasi keluar
-  const content = document.querySelector('.popup-content');
-  content.style.animation = 'zoomOut 0.3s ease forwards';
-  
-  setTimeout(() => {
-    popup.style.display = 'none';
-    content.style.animation = 'zoomIn 0.4s ease'; // reset animasi
-  }, 300);
+
+
+
+
+
+
+(function(){
+  window.showLevelInfo = function(text = "Istimewa Level akun host", duration = 2500) {
+    const popup = document.getElementById('level-popup');
+    if (!popup) return;
+
+    // Bersihkan timeout lama jika ada
+    if (window._levelPopupTimeout) {
+      clearTimeout(window._levelPopupTimeout);
+    }
+
+    // Masukkan gambar + teks (pakai innerHTML biar bisa ada <img>)
+    popup.innerHTML = `
+      <img src="certification_award_verify_badge_male.png" alt="ikon" class="level-icon">
+      <span>${text}</span>
+    `;
+
+    popup.classList.add('show');
+    popup.setAttribute('aria-hidden', 'false');
+
+    // Sembunyikan otomatis
+    window._levelPopupTimeout = setTimeout(() => {
+      popup.classList.remove('show');
+      popup.setAttribute('aria-hidden', 'true');
+    }, duration);
+  };
+
+  // Event listener untuk semua .overlay-icon
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.overlay-icon').forEach(el => {
+      el.addEventListener('click', () => {
+        window.showLevelInfo("Level akun host");
+      });
+    });
+  });
+})();
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  const images = document.querySelectorAll('.scroll-img');
+
+  function checkScroll() {
+    const triggerBottom = window.innerHeight * 0.85;
+
+    images.forEach(img => {
+      const imgTop = img.getBoundingClientRect().top;
+
+      if (imgTop < triggerBottom) {
+        img.classList.add('visible');
+      } else {
+        img.classList.remove('visible'); // supaya animasi bisa muncul lagi saat di-scroll ke atas
+      }
+    });
+  }
+
+  window.addEventListener('scroll', checkScroll);
+  checkScroll(); // jalankan pertama kali
+});
+
+
+
+
+
+
+
+
+
+/* ==========================
+   🔹 DATA GALERI
+========================== */
+const mediaList = [
+
+  // 🔸 5 video
+  { type: 'video', src: 'video1.mp4' },
+  { type: 'video', src: 'video2.mp4' },
+  { type: 'video', src: 'video3.mp4' },
+  { type: 'video', src: 'video4.mp4' },
+  { type: 'video', src: 'video5.mp4' },
+
+
+
+
+// 🔸 10 gambar
+  { type: 'img', src: 'bukti1.jpg' },
+  { type: 'img', src: 'bukti2.png' },
+  { type: 'img', src: 'bukti3.png' },
+  { type: 'img', src: 'bukti4.png' },
+  { type: 'img', src: 'bukti5.png' },
+  { type: 'img', src: 'bukti6.png' },
+  { type: 'img', src: 'bukti7.jpg' },
+  { type: 'img', src: 'bukti8.jpg' },
+  { type: 'img', src: 'bukti9.jpg' },
+  { type: 'img', src: 'bukti10.jpg' },
+
+
+];
+
+let currentIndex = 0;
+
+/* ==========================
+   🔹 FUNGSI UTAMA
+========================== */
+function showMedia(index) {
+  const container = document.getElementById('buktiContainer');
+  container.innerHTML = '';
+  const item = mediaList[index];
+  if (!item) return;
+
+  if (item.type === 'img') {
+    const img = document.createElement('img');
+    img.src = item.src;
+    img.style.width = '100%';
+    img.style.borderRadius = '10px';
+    container.appendChild(img);
+  } else {
+    const video = document.createElement('video');
+    video.src = item.src;
+    video.controls = true;
+    video.style.width = '100%';
+    video.style.borderRadius = '10px';
+    container.appendChild(video);
+  }
+
+  document.getElementById('indikator').textContent = `${index + 1} / ${mediaList.length}`;
 }
 
-// klik tombol tutup
-closeBtn.addEventListener('click', closePopup);
+/* ==========================
+   🔹 NAVIGASI (HARUS GLOBAL)
+========================== */
+window.nextMedia = function() {
+  currentIndex = (currentIndex + 1) % mediaList.length;
+  showMedia(currentIndex);
+};
 
-// klik di luar konten popup
-popup.addEventListener('click', (e) => {
-  if (e.target === popup) {
-    closePopup();
-  }
+window.prevMedia = function() {
+  currentIndex = (currentIndex - 1 + mediaList.length) % mediaList.length;
+  showMedia(currentIndex);
+};
+
+/* ==========================
+   🔹 POPUP
+========================== */
+window.openPopupBukti = function() {
+  const popup = document.getElementById('popupBuktiHost');
+  popup.style.display = 'flex';
+  popup.style.opacity = '1';
+  popup.style.transition = 'opacity 0.3s ease';
+  currentIndex = 0;
+  showMedia(currentIndex);
+};
+
+window.closePopupBukti = function() {
+  const popup = document.getElementById('popupBuktiHost');
+  popup.style.opacity = '0';
+  setTimeout(() => { popup.style.display = 'none'; }, 300);
+
+  // Stop semua video saat ditutup
+  document.querySelectorAll('#buktiContainer video').forEach(v => {
+    v.pause();
+    v.currentTime = 0;
+  });
+};
+
+/* ==========================
+   🔹 EVENT PENDUKUNG
+========================== */
+// klik area luar → tutup popup
+document.addEventListener('click', function(e) {
+  const popup = document.getElementById('popupBuktiHost');
+  if (!popup || popup.style.display !== 'flex') return;
+  const content = popup.querySelector('div[style*="background:#fff"]');
+  if (e.target.closest('button[onclick*="openPopupBukti"]')) return;
+  if (content && !content.contains(e.target)) closePopupBukti();
 });
 
-// tekan tombol ESC
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closePopup();
+// tombol ESC
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closePopupBukti();
 });
-
-
-
 
     </script>
 
