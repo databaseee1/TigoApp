@@ -2355,6 +2355,24 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 <!-- ✅ User DPO -->
 <div id="userdpo" class="page" style="display:none; padding:20px;">
   <h2>Permintaan Withdraw User</h2>
+
+  <!-- 🔍 Pencarian User -->
+<input
+  type="text"
+  id="searchUserDPO"
+  placeholder="Cari Nama / Email / No WA..."
+  style="
+    width:100%;
+    padding:10px;
+    margin-bottom:12px;
+    border-radius:10px;
+    border:1px solid #ccc;
+    outline:none;
+  "
+  onkeyup="searchUserDPO()"
+/>
+
+
   <table border="1" width="100%" style="border-collapse:collapse;text-align:center;">
     <thead style="background:#eee;">
       <tr>
@@ -2432,6 +2450,24 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 <!-- ✅ Saldo Host -->
 <div id="saldoHostAdmin" class="page" style="display:none; padding:20px;">
   <h2>Kelola Saldo Host</h2>
+
+<!-- 🔍 Pencarian Saldo Host -->
+<input
+  type="text"
+  id="searchSaldoHost"
+  placeholder="Cari Nama / Email / No WA..."
+  style="
+    width:100%;
+    padding:10px;
+    margin:12px 0;
+    border-radius:10px;
+    border:1px solid #ccc;
+    outline:none;
+  "
+  onkeyup="searchSaldoHost()"
+/>
+
+
   <table id="saldoHostTable" border="1" style="width:100%; border-collapse:collapse; margin-top:10px;">
     <thead style="background:#7f3586;color:#fff;">
       <tr>
@@ -2692,6 +2728,25 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 <!-- ✅ Update Tagihan -->
 <div id="updateTagihan" class="page" style="display:none; padding:20px;">
   <h2>Atur Tagihan</h2>
+
+<!-- 🔍 Pencarian Tagihan -->
+<input
+  type="text"
+  id="searchTagihan"
+  placeholder="Cari Nama / Email / No WA..."
+  style="
+    width:100%;
+    padding:10px;
+    margin:12px 0;
+    border-radius:10px;
+    border:1px solid #ccc;
+    outline:none;
+  "
+  onkeyup="searchTagihanUser()"
+/>
+
+
+  
   <table border="1" cellpadding="8" cellspacing="0" style="width:100%; text-align:left; border-collapse:collapse;">
     <thead style="background:#f5f5f5;">
       <tr>
@@ -3011,7 +3066,36 @@ function showPage(pageId) {
 
 
 
+function searchUserDPO() {
+  const input = document.getElementById("searchUserDPO").value.toLowerCase();
+  const rows = document.querySelectorAll("#userdpoTableBody tr");
 
+  rows.forEach(row => {
+    const text = row.innerText.toLowerCase();
+    row.style.display = text.includes(input) ? "" : "none";
+  });
+}
+
+function searchTagihanUser() {
+  const input = document.getElementById("searchTagihan").value.toLowerCase();
+  const rows = document.querySelectorAll("#userTable tr");
+
+  rows.forEach(row => {
+    const text = row.innerText.toLowerCase();
+    row.style.display = text.includes(input) ? "" : "none";
+  });
+}
+
+
+function searchSaldoHost() {
+  const input = document.getElementById("searchSaldoHost").value.toLowerCase();
+  const rows = document.querySelectorAll("#saldoHostTable tbody tr");
+
+  rows.forEach(row => {
+    const text = row.innerText.toLowerCase();
+    row.style.display = text.includes(input) ? "" : "none";
+  });
+}
 
 
 
