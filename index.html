@@ -51,7 +51,7 @@ body {
   font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
   background: var(--bg);
   color: #1f2937;
-  padding-bottom: 70px; /* sesuaikan tinggi nav fixed di bawah */
+  padding-bottom: 0px; /* sesuaikan tinggi nav fixed di bawah */
   padding-top: 70px;
   margin: 0;
 
@@ -2231,13 +2231,24 @@ button[onclick="prosesTarik()"] {
   padding: 0px;
 }
 
+/* Animasi masuk dari kanan ke kiri */
+/* awal: disembunyikan */
 .app-item {
-  background: #d6ddff;
-  border-radius: 12px;
-  padding: 5px;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  transition: 0.3s;
+  opacity: 0;
+  transform: translateX(40px);
+  transition: none;
+}
+
+/* saat sudah terlihat */
+.app-item.show {
+  animation: slideInRight 0.9s ease-out forwards;
+}
+
+@keyframes slideInRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .app-item:hover {
@@ -2735,7 +2746,93 @@ a:hover {
 
 
 
+.popup-sosmed {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 9999;
+}
 
+.popup-box {
+  background: #fff;
+  width: 260px;
+  margin: 120px auto;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.popup-box h3 {
+  margin-bottom: 10px;
+}
+
+.popup-box a {
+  display: block;
+  padding: 8px;
+  margin: 5px 0;
+  background: #f1f1f1;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #000;
+  font-weight: 500;
+}
+
+.popup-box button {
+  margin-top: 10px;
+  padding: 6px 12px;
+  border: none;
+  background: #111;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#logoAgency {
+  opacity: 0;
+  transform: translateX(40px);
+  animation: slideInRight 1.2s ease-out forwards;
+}
+
+@keyframes slideInRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+
+
+
+.footer {
+  background: #0f172a;
+  padding: 15px 10px;
+  text-align: center;
+  color: #fff;
+}
+
+.footer-social {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 8px;
+}
+
+.footer-social a {
+  color: #cbd5f5;
+  text-decoration: none;
+  font-size: 13px;
+  transition: 0.3s;
+}
+
+.footer-social a:hover {
+  color: #ffffff;
+}
+
+.footer-copy {
+  font-size: 12px;
+  color: #94a3b8;
+}
 
 
   </style>
@@ -2762,8 +2859,31 @@ a:hover {
 </div>
       <!-- HAMBURGER -->
 <!-- Tombol hamburger -->
-<div id="hamburgerBtn">☰</div>
+<div style="display:flex; align-items:center; gap:10px;">
+  <div id="hamburgerBtn">☰</div>
 
+  <!-- LOGO SOSIAL -->
+  <img
+    src="ic_launcher.png"
+    id="logoAgency"
+    style="width:32px; height:32px; cursor:pointer;"
+    alt="Agency"
+  >
+</div>
+
+<!-- POPUP SOSIAL MEDIA -->
+<div id="popupSosmed" class="popup-sosmed">
+  <div class="popup-box">
+    <h3>Social Media Agency</h3>
+
+    <a href="https://tiktok.com/@agencykamu" target="_blank">TikTok</a>
+    <a href="https://instagram.com/agencykamu" target="_blank">Instagram</a>
+    <a href="https://facebook.com/agencykamu" target="_blank">Facebook</a>
+    <a href="mailto:agency@email.com">Email</a>
+
+    <button onclick="closeSosmed()">Tutup</button>
+  </div>
+</div>
 <!-- Popup Menu -->
 <div id="menuuPopup" class="menuu-popup">
   <div class="menu-content">
@@ -3724,7 +3844,7 @@ Fitur Utama
     <p id="popup-desc"></p>
     <small>Aplikasi ini telah diperbaharui 3 hari yang lalu</small>
     <small>Developer: Layanan Pelanggan</small>
-    <button class="close-btn" onclick="closePopup()">Tutup</button>
+    <button class="close-btn" onclick="closePopup()"></button>
   </div>
 </div>
 
@@ -4394,6 +4514,19 @@ Fitur Utama
 ">
 </div>
 
+<footer class="footer">
+  <div class="footer-social">
+    <a href="https://www.instagram.com/agencytigohostv2/" target="_blank">Instagram</a>
+    <a href="https://facebook.com/agencykamu" target="_blank">Facebook</a>
+    <a href="https://tiktok.com/@agencykamu" target="_blank">TikTok</a>
+    <a href="https://twitter.com/agencykamu" target="_blank">Twitter</a>
+  </div>
+
+  <div class="footer-copy">
+    © 2025 Agency Indonesia. All Rights Reserved.
+  </div>
+</footer>
+
 
 
 
@@ -4527,6 +4660,17 @@ Fitur Utama
 </form>
 
 <div id="status-coin" style="display:none; margin-top:15px; padding:10px; border:1px solid #ccc; border-radius:8px;"></div>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4706,16 +4850,16 @@ const APLIKASI = [
 ];
 
 const KOMENTAR_DEFAULT = [
-  {nama:"Della Anjani", tanggal:"02 Sept 2025", teks:"lumayan sih,Pelayanan cepat, verifikasi juga aman,gaji juga masi di berikan.", verified:true, avatar:"cewek10.jpeg"},
-  {nama:"Rafli Pratama", tanggal:"2 Sept 2025", teks:"heran sih , awalnya saya kira ribet ,ternyata semudah ini untuk dapatkan akun host nya.", verified:true, avatar:"cowok2.webp"},
-  {nama:"Salsa Putri", tanggal:"2 Sept 2025", teks:"dah jalan 1 tahun di agency ini masih dibayar juga alhamdulilah.", verified:true, avatar:"cewek11.jpeg"},
-  {nama:"Arga Saputra", tanggal:"1 Sept 2025", teks:"harga deposit menyesuaikan lah dengan hasil harian sama mingguannya.", verified:true, avatar:"cowok4.png"},
-  {nama:"Nadia Siregar", tanggal:"29 Agu 2025", teks:"cs nya kadang lambat respon nya , walaupun respon nya memuaskan, tapi its oke sih untuk pelayanan virtual,terimakasih pt agency.", verified:true, avatar:"cewek12.jpg"},
-  {nama:"Hansen Leo", tanggal:"20 Agu 2025", teks:"oke mantap lah untuk host yang ga terlalu banyak target", verified:true, avatar:"rahmad.jpg"},
-  {nama:"Maya Zahra", tanggal:"20 Agu 2025", teks:"kenapa depositnya besar sekarang ya dari pada dulu dudu.", verified:true, avatar:"cewek13.jpeg"},
-  {nama:"Marliaa Salsa", tanggal:"19 Agu 2025", teks:"2x daftar di tolak , yang ke 3x nya baru diterima,terimakasih.", verified:true, avatar:"cewek14.jpeg"},
-  {nama:"Kirana Dewi", tanggal:"20 Agu 2025", teks:"Rekomendasi untuk host baru.", verified:true, avatar:"cewek15.jpeg"},
-  {nama:"Farel N", tanggal:"21 Agu 2025", teks:"Navigasi mudah dipahami.", verified:true, avatar:"alan juno.jpg"}
+  {nama:"Della Anjani", tanggal:"21 Desember 2025", teks:"lumayan sih,Pelayanan cepat, verifikasi juga aman,gaji juga masi di berikan.", verified:true, avatar:"cewek10.jpeg"},
+  {nama:"Rafli Pratama", tanggal:"20 Desember 2025", teks:"heran sih , awalnya saya kira ribet ,ternyata semudah ini untuk dapatkan akun host nya.", verified:true, avatar:"cowok2.webp"},
+  {nama:"Salsa Putri", tanggal:"19 Desember 2025", teks:"dah jalan 1 tahun di agency ini masih dibayar juga alhamdulilah.", verified:true, avatar:"cewek11.jpeg"},
+  {nama:"Arga Saputra", tanggal:"16 Desember 2025", teks:"harga deposit menyesuaikan lah dengan hasil harian sama mingguannya.", verified:true, avatar:"cowok4.png"},
+  {nama:"Nadia Siregar", tanggal:"17 Desember 2025", teks:"cs nya kadang lambat respon nya , walaupun respon nya memuaskan, tapi its oke sih untuk pelayanan virtual,terimakasih pt agency.", verified:true, avatar:"cewek12.jpg"},
+  {nama:"Hansen Leo", tanggal:"08 Desember 2025", teks:"oke mantap lah untuk host yang ga terlalu banyak target", verified:true, avatar:"rahmad.jpg"},
+  {nama:"Maya Zahra", tanggal:"08 Desember 2025", teks:"kenapa depositnya besar sekarang ya dari pada dulu dudu.", verified:true, avatar:"cewek13.jpeg"},
+  {nama:"Marliaa Salsa", tanggal:"06 Desember 2025", teks:"2x daftar di tolak , yang ke 3x nya baru diterima,terimakasih.", verified:true, avatar:"cewek14.jpeg"},
+  {nama:"Kirana Dewi", tanggal:"03 Desember 2025", teks:"Rekomendasi untuk host baru.", verified:true, avatar:"cewek15.jpeg"},
+  {nama:"Farel N", tanggal:"01 Desember 2025", teks:"Navigasi mudah dipahami.", verified:true, avatar:"alan juno.jpg"}
 ];
 
 // ===== Init =====
@@ -6242,7 +6386,7 @@ const postinganManual = [
 </div>
   `,
   nama: "Layanan Pelanggan",
-  waktu: "9 November 2025"
+  waktu: "21 Desember 2025"
 },
 
 
@@ -6341,19 +6485,44 @@ document.addEventListener("DOMContentLoaded", tampilkanPostinganManual);
 
 
 
-const popup = document.getElementById('popup');
-const popupTitle = document.getElementById('popup-title');
-const popupDesc = document.getElementById('popup-desc');
-const closeBtn = document.querySelector('#popup .close-btn');
+ const popup = document.getElementById('popup');
+  const popupTitle = document.getElementById('popup-title');
+  const popupDesc = document.getElementById('popup-desc');
+  const closeBtn = document.querySelector('#popup .close-btn');
 
-// buka popup saat item diklik
-document.querySelectorAll('.app-item').forEach(item => {
-  item.addEventListener('click', () => {
-    popupTitle.textContent = item.getAttribute('data-title');
-    popupDesc.textContent = item.getAttribute('data-desc');
-    popup.style.display = 'flex';
+  const items = document.querySelectorAll('.app-item');
+
+  /* ===============================
+     POPUP SAAT APP-ITEM DIKLIK
+  =============================== */
+  items.forEach(item => {
+    item.addEventListener('click', () => {
+      popupTitle.textContent = item.getAttribute('data-title');
+      popupDesc.textContent = item.getAttribute('data-desc');
+      popup.style.display = 'flex';
+    });
   });
-});
+
+  closeBtn.onclick = () => {
+    popup.style.display = 'none';
+  };
+
+  /* ===============================
+     ANIMASI SAAT DISCROLL
+  =============================== */
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach((entry, index) => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationDelay = `${index * 0.08}s`;
+        entry.target.classList.add('show');
+        obs.unobserve(entry.target); // animasi hanya sekali
+      }
+    });
+  }, {
+    threshold: 0.2
+  });
+
+  items.forEach(item => observer.observe(item));
 
 
 
@@ -6542,6 +6711,31 @@ document.addEventListener('click', function(e) {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closePopupBukti();
 });
+
+
+
+
+
+  const logo = document.getElementById("logoAgency");
+
+  logo.onclick = () => {
+    popup.style.display = "block";
+  };
+
+  function closeSosmed() {
+    popup.style.display = "none";
+  }
+
+  // klik area gelap untuk tutup
+  popup.addEventListener("click", function(e){
+    if(e.target === this){
+      closeSosmed();
+    }
+  });
+
+
+
+
 
     </script>
 
