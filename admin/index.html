@@ -2966,7 +2966,7 @@ function setLoginStatus(type, message = "") {
   // ✅ Semua status (online, error, offline) hilang setelah 3 detik
   setTimeout(() => {
     statusBoxLogin.style.display = "none";
-  }, 4000);
+  }, 500);
 }
 
 // ✅ Tampilkan status logout
@@ -2977,7 +2977,7 @@ function setLogoutStatus(message = "") {
   statusTextLogout.style.color = "red";
   statusMessageLogout.textContent = message;
 
-  setTimeout(() => statusBoxLogout.style.display = "none", 3000);
+  setTimeout(() => statusBoxLogout.style.display = "none", 1000);
 }
 
 // ✅ Cek Status Login Saat Halaman Dibuka
