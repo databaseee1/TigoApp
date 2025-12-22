@@ -1667,7 +1667,8 @@ label {
       <img src="credit.png" style="width:20px; height:20px; margin-right:8px;">
       <span style="font-size:16px; font-weight:bold;">0</span>
     </div>
-    <span style="color:#888; font-size:13px;">1 Token = 1 Credits</span>
+    <span style="color:#888; font-size:1
+    3px;">1 Token = 1 Credits</span>
   </div>
 
 <!-- Grid Pilihan -->
@@ -1745,14 +1746,49 @@ label {
 </div>
 
 
-  <!-- Tombol Menukarkan -->
-  <div style="padding:16px;">
-    <button style="width:100%; padding:12px; background:#ccc; color:#fff; border:none; border-radius:20px; font-size:15px;">
-      Menukarkan
+<!-- Tombol Menukarkan token -->
+<div style="padding:16px;">
+  <button 
+    id="btnredeemuret"
+    style="width:100%; padding:12px; background:#9a27c5; color:#fff; border:none; border-radius:20px; font-size:15px;">
+    Menukarkan
+  </button>
+</div>
+
+<div id="redeemAlert" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+">
+  <div style="
+    background:#fff;
+    padding:18px;
+    border-radius:14px;
+    max-width:300px;
+    text-align:center;
+    font-size:14px;
+  ">
+    <p style="margin-bottom:14px;">
+      Maaf, penukaran tidak dapat dilakukan.<br>
+      Periksa kembali <strong>Saldo host</strong> anda .
+    </p>
+
+    <button id="closeRedeemAlert" style="
+      background:#6a0dad;
+      color:#fff;
+      border:none;
+      padding:8px 18px;
+      border-radius:18px;
+      cursor:pointer;
+    ">
+      Tutup
     </button>
   </div>
 </div>
-
 
 
 
@@ -2206,18 +2242,18 @@ label {
         transition: transform 5.90s;
         gap:0px;
     ">
-        <div class="carousel-item"><img src="cewek10.jpeg"></div>
-        <div class="carousel-item"><img src="cewek11.jpeg"></div>
-        <div class="carousel-item"><img src="cewek12.jpg"></div>
-        <div class="carousel-item"><img src="cewek13.jpeg"></div>
-        <div class="carousel-item"><img src="cewek15.jpeg"></div>
-        <div class="carousel-item"><img src="cewek16.jpeg"></div>
-        <div class="carousel-item"><img src="cewek20.jpg"></div>
-        <div class="carousel-item"><img src="cewek21.jpeg"></div>
-        <div class="carousel-item"><img src="cewek22.jpeg"></div>
-        <div class="carousel-item"><img src="cewek23.jpeg"></div>
-        <div class="carousel-item"><img src="cewek24.jpeg"></div>
-        <div class="carousel-item"><img src="cewek25.jpeg"></div>
+        <div class="carousel-item"><img src="cewek01.jpeg"></div>
+        <div class="carousel-item"><img src="cewek02.jpeg"></div>
+        <div class="carousel-item"><img src="cewek03.jpg"></div>
+        <div class="carousel-item"><img src="m4.jpeg"></div>
+        <div class="carousel-item"><img src="m5.jpeg"></div>
+        <div class="carousel-item"><img src="m6.jpeg"></div>
+        <div class="carousel-item"><img src="m7.jpg"></div>
+        <div class="carousel-item"><img src="m8.jpeg"></div>
+        <div class="carousel-item"><img src="m9.jpeg"></div>
+        <div class="carousel-item"><img src="m10.jpeg"></div>
+        <div class="carousel-item"><img src="m11.jpeg"></div>
+        <div class="carousel-item"><img src="m12.jpeg"></div>
         <div class="carousel-item"><img src="cewek26.jpg"></div>
         <div class="carousel-item"><img src="cewek27.jpeg"></div>
         <div class="carousel-item"><img src="cewek28.jpeg"></div>
@@ -2227,15 +2263,15 @@ label {
         <div class="carousel-item"><img src="cewek23.jpeg"></div>
         <div class="carousel-item"><img src="cewek12.jpg"></div>
         <div class="carousel-item"><img src="cewek10.jpeg"></div>
-        <div class="carousel-item"><img src="cewek11.jpeg"></div>
-        <div class="carousel-item"><img src="cewek12.jpg"></div>
-        <div class="carousel-item"><img src="cewek13.jpeg"></div>
-        <div class="carousel-item"><img src="cewek15.jpeg"></div>
-        <div class="carousel-item"><img src="cewek16.jpeg"></div>
-        <div class="carousel-item"><img src="cewek20.jpg"></div>
-        <div class="carousel-item"><img src="cewek21.jpeg"></div>
-        <div class="carousel-item"><img src="cewek22.jpeg"></div>
-        <div class="carousel-item"><img src="cewek23.jpeg"></div>
+        <div class="carousel-item"><img src="m5.jpeg"></div>
+        <div class="carousel-item"><img src="m1.jpeg"></div>
+        <div class="carousel-item"><img src="m2.jpeg"></div>
+        <div class="carousel-item"><img src="m3.jpeg"></div>
+        <div class="carousel-item"><img src="m4.jpeg"></div>
+        <div class="carousel-item"><img src="m5.jpeg"></div>
+        <div class="carousel-item"><img src="m6.jpeg"></div>
+        <div class="carousel-item"><img src="m7.jpeg"></div>
+        <div class="carousel-item"><img src="m8.jpg"></div>
         <div class="carousel-item"><img src="cewek24.jpeg"></div>
         <div class="carousel-item"><img src="cewek25.jpeg"></div>
         <div class="carousel-item"><img src="cewek26.jpg"></div>
@@ -4295,7 +4331,24 @@ document.addEventListener("gesturestart", (e) => {
 
 
 
+const btnRedeemUret = document.getElementById("btnredeemuret");
+const redeemAlert = document.getElementById("redeemAlert");
+const closeRedeemAlert = document.getElementById("closeRedeemAlert");
 
+btnRedeemUret.addEventListener("click", (e) => {
+  e.preventDefault();
+  redeemAlert.style.display = "flex";
+});
+
+closeRedeemAlert.addEventListener("click", () => {
+  redeemAlert.style.display = "none";
+});
+
+redeemAlert.addEventListener("click", (e) => {
+  if (e.target === redeemAlert) {
+    redeemAlert.style.display = "none";
+  }
+});
 
 
 </script>
