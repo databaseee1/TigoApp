@@ -2000,12 +2000,22 @@ button[onclick="prosesTarik()"] {
 
   
 
-    .profile-icon-wrapper {
-    position: relative;
-    width: 70px;
-    height: 70px;
-    flex-shrink: 0;
-  }
+.profile-icon-wrapper{
+  width: 110px;   /* sesuaikan ukuran profil */
+  height: 80px;
+  background-image: url('im_red_pack_not_open_bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  border-radius: 50%; /* kalau mau bulat */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+}
+
 
   .profile-icons {
     display: flex;
@@ -2064,13 +2074,22 @@ button[onclick="prosesTarik()"] {
     color: #444;
   }
 
-  .popup-profile-img {
-    width: 50px; 
-    height: 50px;
-    border-radius: 50%;
-    margin: 10px 0;
-    object-fit: cover;
-  }
+.popup-profile-img {
+  width: 50px; 
+  height: 50px;
+  border-radius: 50%;
+  margin: 10px 0;
+  object-fit: cover;
+}
+
+/* background di belakang foto */
+.popup-profile-bg{
+  padding: 6px; /* tebal background */
+  border-radius: 50%;
+  background: url('im_red_pack_opened_bg.png') center/cover no-repeat;
+}
+
+
 
   /* Gift Grid */
    #profileGiftContainer {
@@ -2756,7 +2775,7 @@ a:hover {
 
 .popup-box {
   background: #fff;
-  width: 260px;
+  width: 460px;
   margin: 120px auto;
   padding: 15px;
   border-radius: 10px;
@@ -2833,6 +2852,26 @@ a:hover {
   font-size: 12px;
   color: #94a3b8;
 }
+
+
+
+
+.warning-label{
+  color: #e53935;            /* merah */
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;                  /* jarak teks & icon */
+}
+
+.warning-icon{
+  width: 30px;
+  height: 30px;
+}
+
+
+
+
 
 
   </style>
@@ -3566,7 +3605,11 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
             </div>
           </div>
 
-          <label>(Kosongkan Terlebih dahulu)</label>
+          <label class="warning-label">
+  (Kosongkan Terlebih dahulu)
+  <img src="cert_failed_blur_avatar.png" alt="Peringatan" class="warning-icon">
+</label>
+
           <input type="file" name="profil" accept="image/*" />
 
 <button class="btn" type="submit">Daftar Sekarang</button>
@@ -3598,19 +3641,19 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 <!-- GRID FOTO -->
 <div class="foto-grid">
   <div class="foto-box" onclick="openProfile(0)">
-    <img src="cewek25.jpeg" alt="Host 1">
+    <img src="k1.jpg" alt="Host 1">
   </div>
   <div class="foto-box" onclick="openProfile(1)">
-    <img src="cewek11.jpeg" alt="Host 2">
+    <img src="k6.jpg" alt="Host 2">
   </div>
   <div class="foto-box" onclick="openProfile(2)">
-    <img src="cewek12.jpg" alt="Host 3">
+    <img src="k3.jpg" alt="Host 3">
   </div>
   <div class="foto-box" onclick="openProfile(3)">
-    <img src="athia.jpeg" alt="Host 4">
+    <img src="k4.jpg" alt="Host 4">
   </div>
     <div class="foto-box" onclick="openProfile(4)">
-    <img src="rra.jpeg" alt="Host 5">
+    <img src="k5.jpg" alt="Host 5">
   </div>
 </div>
 
@@ -3620,7 +3663,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
  <div class="profile-box"></div>
 <div class="profile-icons">
   <div class="profile-icon-wrapper">
-    <img src="c24.jpg" id="iconProfile1" class="profile-icon" alt="Andre lesmana">
+    <img src="c51.jpg" id="iconProfile1" class="profile-icon" alt="Andre lesmana">
 <img src="user_level_3_male_icon.png" class="overlay-icon" alt="Level 3">
 <div id="level-popup" class="level-popup" role="status" aria-hidden="true">⚠️ Istimewa Level akun host</div>
 
@@ -3628,19 +3671,19 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 
 
   <div class="profile-icon-wrapper">
-    <img src="c25.jpg" id="iconProfile2" class="profile-icon" alt="Adoll santra">
+    <img src="c44.jpg" id="iconProfile2" class="profile-icon" alt="Adoll santra">
     <img src="user_level_3_icon.png" class="overlay-icon" alt="">
   </div>
   <div class="profile-icon-wrapper">
-    <img src="c20.jpg" id="iconProfile3" class="profile-icon" alt="Prima adit">
+    <img src="c45.jpg" id="iconProfile3" class="profile-icon" alt="Prima adit">
     <img src="user_level_9_icon.png" class="overlay-icon" alt="">
   </div>
   <div class="profile-icon-wrapper">
-    <img src="c21.jpg" id="iconProfile4" class="profile-icon" alt="Kurnia pratana">
+    <img src="c46.jpg" id="iconProfile4" class="profile-icon" alt="Kurnia pratana">
     <img src="user_level_8_male_icon.png" class="overlay-icon" alt="">
   </div>
   <div class="profile-icon-wrapper">
-    <img src="c23.jpg" id="iconProfile5" class="profile-icon" alt="aboy swwa">
+    <img src="c48.jpg" id="iconProfile5" class="profile-icon" alt="aboy swwa">
     <img src="user_level_10_male_icon.png" class="overlay-icon" alt="">
   </div>
 </div>
@@ -3652,8 +3695,10 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <span id="profilePopupClose" class="popup-close">&times;</span>
     
 <h3 id="profilePopupTitle">Profil</h3>
-<img id="profilePopupImage" src="" alt="Foto Profil" class="popup-profile-img">
 
+<div class="popup-profile-bg">
+  <img id="profilePopupImage" src="" alt="Foto Profil" class="popup-profile-img">
+</div>
 
 
 
