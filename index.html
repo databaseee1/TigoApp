@@ -127,12 +127,6 @@ main{max-width:1100px; margin:18px auto 90px; padding:0 0px}
 @media(min-width:840px){.grid{grid-template-columns:1.4fr .9fr}}
 
 
-
-
-
-
-
-
 .card{
   background:#8d57ff;
   border:1px solid rgba(255, 255, 255, 0.2);
@@ -2929,6 +2923,84 @@ a:hover {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.wa-chat{
+  height:320px;
+  overflow-y:auto;
+  background:#ece5dd;
+  padding:10px;
+  font-family:Arial, sans-serif;
+}
+
+.bubble{
+  max-width:75%;
+  padding:8px 12px;
+  margin:6px 0;
+  border-radius:8px;
+  font-size:14px;
+  line-height:1.4;
+  word-wrap:break-word;
+}
+
+.me{
+  background:#dcf8c6;
+  margin-left:auto;
+  border-bottom-right-radius:2px;
+}
+
+.bot{
+  background:#fff;
+  margin-right:auto;
+  border-bottom-left-radius:2px;
+}
+
+.wa-input{
+  display:flex;
+  gap:6px;
+  padding:6px;
+  background:#f0f0f0;
+}
+
+.wa-input input{
+  flex:1;
+  padding:8px;
+  border-radius:20px;
+  border:1px solid #ccc;
+}
+
+.wa-input button{
+  padding:8px 14px;
+  border:none;
+  border-radius:20px;
+  background:#25d366;
+  color:white;
+  cursor:pointer;
+}
+
+
+
+
+
+
+
+
+
+
   </style>
 </head>
 <body>
@@ -4617,6 +4689,21 @@ Fitur Utama
 ">
 </div>
 
+
+
+
+
+<div id="chatBox" class="wa-chat"></div>
+
+<div class="wa-input">
+  <input id="userInput" placeholder="Ketik pesan">
+  <button onclick="sendChat()">Kirim</button>
+</div>
+
+
+
+
+
 <footer class="footer">
   <div class="footer-social">
     <a href="https://www.instagram.com/agencytigohostv2/" target="_blank">Instagram</a>
@@ -4629,7 +4716,6 @@ Fitur Utama
     © 2025 Agency Indonesia. All Rights Reserved.
   </div>
 </footer>
-
 
 
 
@@ -6838,6 +6924,180 @@ document.getElementById('appsGrid').addEventListener('click', function () {
     block: 'center'
   });
 });
+
+
+
+
+
+
+
+
+
+const badWords = [
+  "anjing", "babi", "kontol", "memek", "bangsat", "tolol", "goblok", "ngentot"
+];
+function containsBadWord(text) {
+  return badWords.some(word => text.includes(word));
+}
+
+
+const botData = [
+  {
+    keywords: ["halo", "hai","malam","selamat malam","mlm", "assalamualaikum"],
+    replies: [
+      "Halo 👋 ada yang bisa dibantu?",
+      "Hai! Silakan tanyakan ya 😊",
+      "Halo kak.ada yang bisa saya bantu?"
+    ]
+  },
+  {
+    keywords: ["harga", "biaya", "tarif"],
+    replies: [
+      "Untuk biaya bisa dilihat di menu syarat & ketentuan pada host ya.",
+      "Info biaya lengkap ada di halaman utama.",
+      "Harga menyesuaikan paket yang dipilih."
+    ]
+  },
+    {
+    keywords: ["kontol", "pepek", "bangsat","kontol kau","binatang kau", "binatang","anjing", "babi", "jancuk", "jancok", "memek", "ngentot"],
+    replies: [
+      "⚠️ Mohon gunakan bahasa yang sopan ya kak 🙏."
+    ]
+  },
+  {
+    keywords: ["tigo", "tenderu", "tenderu", "weelive", "ayar", "bling", "chato", "maco"],
+    replies: [
+      "Bisa ya kak,silakan periksa pada bagian paling atas dan isi formulir pendaftaran anda untuk melakukan pendaftaran agency ya kak."
+    ]
+  },
+
+ {
+    keywords: ["alamat", "lokasi", "tempat tinggal","cabangnya dimana", "cabang nya dimana rupanya", "kantornya dimana", "kantor", "cabang", "kantor pusat", "pusatnya dimana"],
+    replies: [
+      "Anda dapat melihat alamat cabang dan pusat pada menu garis 3 pojok kanan bagian atas, lalu klik MENU *KONTAK*."
+    ]
+  },
+
+  {
+    keywords: ["daftar", "register", "gabung,cara daftarnya"],
+    replies: [
+      "Untuk daftar, klik tombol *Daftar* lalu isi data.",
+      "Proses pendaftaran sangat mudah dan cepat.",
+      "Silakan registrasi lewat menu Daftar ya.",
+      "Cara daftar silakan lihat pada bagian atas ya kak."
+    ]
+  },
+
+
+  {
+    keywords: ["mahal banget", "mahal", "kok besar biayanya"],
+    replies: [
+      "besar, klik  *w* w isi w.",
+      "Maaf kak,sudah salah satu syarat dan ketentuan yang dijanjikan ya kak.",
+      "Maaf kak,sudah salah satu syarat dan ketentuan yang dijanjikan ya kak."
+    ]
+  },
+
+
+  {
+    keywords: ["admin", "cs","minta tolong", "bantuan"],
+    replies: [
+      "CS kami aktif setiap hari 😊",
+      "Admin siap membantu kamu.",
+      "Silakan sampaikan kendala kamu."
+    ]
+  }
+];
+
+// ================== AMBIL BALASAN BOT ==================
+function getBotReply(text) {
+  for (let item of botData) {
+    if (item.keywords.some(k => text.includes(k))) {
+      return {
+        type: "text",
+        message: item.replies[Math.floor(Math.random() * item.replies.length)]
+      };
+    }
+  }
+
+  return {
+    type: "contact",
+    message: "Maaf, pertanyaan anda sedang dalam antrian atau bahasa yang sulit dimengerti oleh bots.\nSilakan hubungi admin kami untuk informasi lebih lanjut tanpa antrian.",
+    totalHost: 320,
+    wa: "6285609362496" // ganti nomor admin
+  };
+}
+
+// ================== SEND CHAT ==================
+window.sendChat = function () {
+  const input = document.getElementById("userInput");
+  const chatBox = document.getElementById("chatBox");
+  const text = input.value.trim().toLowerCase();
+  if (!text) return;
+
+  // bubble kamu
+  const me = document.createElement("div");
+  me.className = "bubble me";
+  me.innerText = text;
+  chatBox.appendChild(me);
+
+  input.value = "";
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  // 🚫 CEK KATA KOTOR (LANGSUNG BALAS, TANPA TYPING)
+  if (containsBadWord(text)) {
+    const bot = document.createElement("div");
+    bot.className = "bubble bot";
+    bot.innerText = "⚠️ Mohon gunakan bahasa yang sopan ya kak 🙏";
+    chatBox.appendChild(bot);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    return;
+  }
+
+  // indikator mengetik
+  const typing = document.createElement("div");
+  typing.className = "bubble bot";
+  typing.innerText = "Mengetik...";
+  chatBox.appendChild(typing);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  // balasan bot (delay)
+  setTimeout(() => {
+    typing.remove();
+
+    const reply = getBotReply(text);
+    const bot = document.createElement("div");
+    bot.className = "bubble bot";
+
+    if (reply.type === "contact") {
+      bot.innerHTML = `
+        <div>${reply.message}</div>
+        <div style="margin-top:4px;font-size:12px;color:#555">
+          📊 Total host aktif: ${reply.totalHost}
+        </div>
+        <a href="https://wa.me/${reply.wa}" target="_blank"
+           style="
+             display:inline-block;
+             margin-top:6px;
+             padding:6px 12px;
+             background:#25D366;
+             color:#fff;
+             border-radius:16px;
+             text-decoration:none;
+             font-size:13px;
+           ">
+          Hubungi
+        </a>
+      `;
+    } else {
+      bot.innerText = reply.message;
+    }
+
+    chatBox.appendChild(bot);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }, 1200);
+};
+
 
     </script>
 
