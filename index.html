@@ -1997,7 +1997,7 @@ button[onclick="prosesTarik()"] {
 
 .profile-icon-wrapper{
   width: 110px;   /* sesuaikan ukuran profil */
-  height: 80px;
+  height: 70px;
   background-image: url('im_red_pack_not_open_bg.png');
   background-size: cover;
   background-position: center;
@@ -2019,8 +2019,8 @@ button[onclick="prosesTarik()"] {
   }
 
   .profile-icon {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     object-fit: cover;
     cursor: pointer;
@@ -3806,7 +3806,15 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <img src="user_level_9_icon.png" class="overlay-icon" alt="">
   </div>
   <div class="profile-icon-wrapper">
-    <img src="c46.jpg" id="iconProfile4" class="profile-icon" alt="Kurnia pratana">
+    <img src="rahmad.jpg" id="iconProfile4" class="profile-icon" alt="Kurnia pratana">
+    <img src="user_level_8_male_icon.png" class="overlay-icon" alt="">
+  </div>
+    <div class="profile-icon-wrapper">
+    <img src="c46.jpg" id="iconProfile6" class="profile-icon" alt="badilin sytag">
+    <img src="user_level_8_male_icon.png" class="overlay-icon" alt="">
+  </div>
+    <div class="profile-icon-wrapper">
+    <img src="shi caim.jpg" id="iconProfile7" class="profile-icon" alt="Dede pryogi">
     <img src="user_level_8_male_icon.png" class="overlay-icon" alt="">
   </div>
   <div class="profile-icon-wrapper">
@@ -4790,11 +4798,18 @@ Fitur Utama
   <span class="soldout">Habis Terjual</span>
 </div>
 
-    <div class="option" onclick="selectOption('2500 Coin', 'Rp 250.000', 'Diskon 40%')">
+<div class="option disabled-option">
+  <img src="coin.png" class="coin-icon">
+  <span class="coin">2500 Coin</span> - Rp 250.000 
+  <span class="soldout">Habis Terjual</span>
+</div>
+
+    <div class="option" onclick="selectOption('5000+200 Coin', 'Rp 510.000', 'Diskon 40%')">
       <img src="coin.png" class="coin-icon">
-      <span class="coin">2500 Coin</span> - Rp 250.000 
+      <span class="coin">5000+200 Coin</span> - Rp 510.000 
       <span class="discount">Diskon 40%</span>
     </div>
+
     <div class="option" onclick="selectOption('6500 Coin', 'Rp 600.000', 'Diskon 30%')">
       <img src="coin.png" class="coin-icon">
       <span class="coin">6500 Coin</span> - Rp 600.000 
@@ -4833,7 +4848,7 @@ Fitur Utama
   <option value="">-- Pilih Metode Pembayaran --</option>
   <option value="bca">Bank BCA (SEDANG MAINTENANCE)</option>
   <option value="bri">Bank BRI</option>
-  <option value="ovo">OVO</option>
+  <option value="ovo">OVO (SEDANG MAINTENANCE)</option>
   <option value="gopay">GoPay (SEDANG MAINTENANCE)</option>
   <option value="qris">QRIS</option>
 </select><br>
@@ -5108,8 +5123,8 @@ const tujuanPembayaran = {
   `,
   ovo: `
     <div>
-      <p>No. OVO: <b>0822 7515 3933</b><br>
-      A/n <b>MAHESA DIRTA PERDANA</b></p>
+      <p>No. OVO: <b>SEDANG MAINTENANCE</b><br>
+      A/n <b>PT AGENCY TIGOHOST INDONESIA</b></p>
       <small style="color:#d00; font-style:italic;">
         (Silakan transfer pada rekening tujuan dan kirim bukti transaksi ke CS jika coin tidak masuk)
       </small>
@@ -5127,7 +5142,7 @@ const tujuanPembayaran = {
   `
 };
 
-const waAdmin = "6283140478081"; // nomor WA admin
+const waAdmin = "6285609362496"; // nomor WA admin
 
 function handleCoinPurchase(e) {
   e.preventDefault();
@@ -6414,6 +6429,8 @@ const profileData = {
   profileIcon2: { name: " Adoll santra", image: "cowok4.png" },
   profileIcon3: { name: "Prima adit", image: "cewek62.jpeg" },
   profileIcon4: { name: "Kurnia pratana", image: "cewek63.jpeg" },
+  profileIcon6: { name: "badilin sytag", image: "cewek63.jpeg" },
+  profileIcon7: { name: "Dede pryogi", image: "cewek63.jpeg" },
   profileIcon5: { name: "aboy swwa", image: "cewek64.jpeg" }
 };
 
@@ -6445,10 +6462,27 @@ const giftsByProfile = {
   ],
   iconProfile4: [
     { img: "gift_14.png", jumlah: 20, level: "x" },
+    { img: "gift_58.png", jumlah: 71, level: "x" },
+    { img: "gift_59.png", jumlah: 62, level: "x" },
+    { img: "giftring.png", jumlah: 12, level: "x" }
+  ],
+    iconProfile6: [
+    { img: "gift4.png", jumlah: 20, level: "x" },
+    { img: "gift_14.png", jumlah: 24, level: "x" },
+    { img: "gift_58.png", jumlah: 71, level: "x" },
+    { img: "giftring.png", jumlah: 12, level: "x" }
+  ],
+    iconProfile7: [
+    { img: "gift_14.png", jumlah: 20, level: "x" },
+    { img: "gift4.png", jumlah: 19, level: "x" },
+    { img: "gift5.png", jumlah: 27, level: "x" },
     { img: "giftring.png", jumlah: 12, level: "x" }
   ],
   iconProfile5: [
     { img: "giftlambor.png", jumlah: 5, level: "x" },
+    { img: "gift2.png", jumlah: 11, level: "x" },
+    { img: "gift_58.png", jumlah: 71, level: "x" },
+    { img: "gift_59.png", jumlah: 62, level: "x" },
     { img: "gift_35.png", jumlah: 40, level: "x" }
   ]
 };
@@ -6979,7 +7013,7 @@ const botData = [
   },
 
   {
-    keywords: ["daftar", "register", "gabung,cara daftarnya"],
+    keywords: ["daftar","cara jadi host","cara jadi agency", "register", "gabung,cara daftarnya"],
     replies: [
       "Untuk daftar, klik tombol *Daftar* lalu isi data.",
       "Proses pendaftaran sangat mudah dan cepat.",
