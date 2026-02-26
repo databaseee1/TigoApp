@@ -225,8 +225,8 @@ label {
 
 /* Offline Icon */
 .offline-icon {
-  width: 25px;
-  height: 25px;
+  width: 23px;
+  height: 23px;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -969,7 +969,7 @@ label {
   .chat-info p {
     margin: 2px 0 0;
     font-size: 13px;
-    color: #555;
+    color: #969696;
   }
 
   .chat-time {
@@ -1069,9 +1069,28 @@ label {
   <!-- HEADER BEKU -->
   <header class="sticky-header">
     <h1>Credits Withdraw</h1>
-    <div style="display:flex;gap:10px;align-items:center">
-      <img id="offlineBtn" class="offline-icon" src="match_his_icon.png" alt="offline" title="Buka History" />
-    </div>
+<div style="display:flex;gap:10px;align-items:center">
+  
+  <!-- ICON BARU -->
+  <img 
+    id="newIcon"
+    class="offline-icon"
+    src="indonesialogo.png"
+    alt="icon"
+    title="Icon Baru"
+    style="cursor:pointer;"
+  />
+
+  <!-- ICON LAMA -->
+  <img 
+    id="offlineBtn"
+    class="offline-icon"
+    src="match_his_icon.png"
+    alt="offline"
+    title="Buka History"
+  />
+
+</div>
   </header>
 
 
@@ -1341,13 +1360,91 @@ label {
     <span style="font-weight:bold; font-size:16px;">Edit Data</span>
 
     <!-- Gambar kanan -->
-    <img src="system_notice_help_icon.png" alt="Icon kanan" style="
+<img id="csBtn"
+     src="system_notice_help_icon.png"
+     style="
       width:70px; 
       height:30px; 
       position:absolute; 
       right:30px; 
       cursor:pointer;
-    ">
+">
+
+<!-- POPUP LAYANAN PELANGGAN -->
+<div id="csPopup" style="
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+">
+
+  <div style="
+    background:#fff;
+    width:90%;
+    max-width:400px;
+    padding:20px;
+    border-radius:12px;
+    position:relative;
+  ">
+
+  <!-- Tombol Close -->
+  <span id="closePopup" style="
+    position:absolute;
+    top:12px;
+    right:15px;
+    font-size:18px;
+    cursor:pointer;
+    font-weight:bold;
+  ">
+    ✕
+  </span>
+
+    <h3 style="margin-top:0;">Layanan Pelanggan</h3>
+
+    <label>Nama Anda :</label>
+    <input type="text" id="csNama" style="width:100%;margin-bottom:10px;padding:8px;">
+
+    <label>Nomor WhatsApp :</label>
+    <input type="text" id="csWa" style="width:100%;margin-bottom:10px;padding:8px;">
+
+    <label>Kategori :</label>
+    <select id="csKategori" style="width:100%;margin-bottom:10px; border-radius: 10px; padding:8px;">
+      <option>Penipuan</option>
+      <option>Lupa sandi</option>
+      <option>Cara verifikasi</option>
+      <option>Ganti rekening penarikan</option>
+      <option>Ganti nama</option>
+      <option>Ganti jenis kelamin</option>
+      <option>Berapa gaji perminggu</option>
+      <option>Cara penarikan</option>
+    </select>
+
+    <label>Penjelasan lain :</label>
+    <textarea id="csPesan" style="width:100%;  border-radius: 10px; margin-bottom:15px;padding:8px;"></textarea>
+
+<button type="button" id="kirimBtn"
+  style="
+    width:100%;
+    padding:10px;
+    background:#a400b8;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+">
+  Lapor Sekarang
+</button>
+
+  </div>
+</div>
+
+
   </div>
 
   <!-- KONTEN -->
@@ -1538,7 +1635,23 @@ label {
       <div id="viewNoRek" style="color:#333; margin-top:4px;">-</div>
     </div>
   </div>
-
+<div style="
+  margin-top:18px;
+  padding:12px;
+  background:#fff4e5;
+  border-left:4px solid #ff9800;
+  border-radius:8px;
+  font-size:13px;
+  color:#444;
+  line-height:1.5;
+">
+  <b>Informasi:</b><br>
+  Rekening penarikan tidak dapat diubah sendiri. 
+  Untuk melakukan perubahan, silakan hubungi 
+    <span style="color:#d32f2f; font-weight:600;">
+    Layanan Pelanggan
+  </span>.
+</div>
 </div>
 
 
@@ -1922,24 +2035,24 @@ label {
     border-radius:8px;
     z-index:1000;
   ">
-    <img src="gift_103.png" class="giftOption" data-points="10" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_14.png" class="giftOption" data-points="20" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_35.png" class="giftOption" data-points="30" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="giftkiss.png" class="giftOption" data-points="50" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="giftbear.png" class="giftOption" data-points="230" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_96.png" class="giftOption" data-points="125" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_77.png" class="giftOption" data-points="135" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_59.png" class="giftOption" data-points="140" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_58.png" class="giftOption" data-points="170" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_59.png" class="giftOption" data-points="100" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="giftlambor.png" class="giftOption" data-points="600" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="giftring.png" class="giftOption" data-points="200" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift.png" class="giftOption" data-points="5" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift2.png" class="giftOption" data-points="212" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift3.png" class="giftOption" data-points="118" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift4.png" class="giftOption" data-points="325" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift5.png" class="giftOption" data-points="310" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_61.png" class="giftOption" data-points="90" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_103.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_14.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_35.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="giftkiss.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="giftbear.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_96.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_77.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_59.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_58.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_59.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="giftlambor.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="giftring.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift2.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift3.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift4.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift5.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+    <img src="gift_61.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
   </div>
 
 
@@ -2207,7 +2320,7 @@ label {
       justify-content:center; 
       align-items:center;
       z-index:1000;">
-      <div style="background:#fff; border-radius:12px; padding:20px; max-width:400px; width:90%; text-align:center; position:relative;">
+      <div style="background:#f7f7f7; border-radius:12px; padding:20px; max-width:400px; width:90%; text-align:center; position:relative;">
         <span class="closePanggilan" style="position:absolute; top:10px; right:15px; font-size:20px; color:#686868; cursor:pointer;">✖</span>
         <img src="page_empty_icon.png" style="max-width:60px; height:60px;">
         <p style="margin-top:10px; color:#212121; font-weight:bold;">Tidak ada history panggilan</p>
@@ -2246,14 +2359,14 @@ label {
         <div class="carousel-item"><img src="cewek02.jpeg"></div>
         <div class="carousel-item"><img src="cewek03.jpg"></div>
         <div class="carousel-item"><img src="m4.jpeg"></div>
-        <div class="carousel-item"><img src="m5.jpeg"></div>
-        <div class="carousel-item"><img src="m6.jpeg"></div>
-        <div class="carousel-item"><img src="m7.jpg"></div>
-        <div class="carousel-item"><img src="m8.jpeg"></div>
-        <div class="carousel-item"><img src="m9.jpeg"></div>
-        <div class="carousel-item"><img src="m10.jpeg"></div>
-        <div class="carousel-item"><img src="m11.jpeg"></div>
-        <div class="carousel-item"><img src="m12.jpeg"></div>
+        <div class="carousel-item"><img src="cewek37.jpeg"></div>
+        <div class="carousel-item"><img src="cewek32.jpg"></div>
+        <div class="carousel-item"><img src="cewek31.jpeg"></div>
+        <div class="carousel-item"><img src="cewek30.jpeg"></div>
+        <div class="carousel-item"><img src="cewek29.jpeg"></div>
+        <div class="carousel-item"><img src="cewek28.jpeg"></div>
+        <div class="carousel-item"><img src="cewek27.jpeg"></div>
+        <div class="carousel-item"><img src="cewek26.jpg"></div>
         <div class="carousel-item"><img src="cewek26.jpg"></div>
         <div class="carousel-item"><img src="cewek27.jpeg"></div>
         <div class="carousel-item"><img src="cewek28.jpeg"></div>
@@ -2263,15 +2376,15 @@ label {
         <div class="carousel-item"><img src="cewek23.jpeg"></div>
         <div class="carousel-item"><img src="cewek12.jpg"></div>
         <div class="carousel-item"><img src="cewek10.jpeg"></div>
-        <div class="carousel-item"><img src="m5.jpeg"></div>
-        <div class="carousel-item"><img src="m1.jpeg"></div>
-        <div class="carousel-item"><img src="m2.jpeg"></div>
-        <div class="carousel-item"><img src="m3.jpeg"></div>
-        <div class="carousel-item"><img src="m4.jpeg"></div>
-        <div class="carousel-item"><img src="m5.jpeg"></div>
-        <div class="carousel-item"><img src="m6.jpeg"></div>
-        <div class="carousel-item"><img src="m7.jpeg"></div>
-        <div class="carousel-item"><img src="m8.jpg"></div>
+        <div class="carousel-item"><img src="cewek25.jpeg"></div>
+        <div class="carousel-item"><img src="cewek24.jpeg"></div>
+        <div class="carousel-item"><img src="cewek23.jpeg"></div>
+        <div class="carousel-item"><img src="cewek22.jpeg"></div>
+        <div class="carousel-item"><img src="cewek21.jpeg"></div>
+        <div class="carousel-item"><img src="cewek14.jpeg"></div>
+        <div class="carousel-item"><img src="cewek15.jpeg"></div>
+        <div class="carousel-item"><img src="cewek13.jpeg"></div>
+        <div class="carousel-item"><img src="cewek41.jpeg"></div>
         <div class="carousel-item"><img src="cewek24.jpeg"></div>
         <div class="carousel-item"><img src="cewek25.jpeg"></div>
         <div class="carousel-item"><img src="cewek26.jpg"></div>
@@ -2500,7 +2613,7 @@ label {
       <img src="message_see_me_item_icon.png" alt="Pengunjung" class="chat-avatar">
       <div class="chat-info">
         <h4>Notifikasi</h4>
-        <p>Amelia mici mengunjungi saya 19 kali</p>
+        <p>Amelia mici mengunjungi saya 24 kali</p>
       </div>
       <span class="notifi-badge">63</span>
     </div>
@@ -2522,13 +2635,25 @@ label {
 
 
   <div class="chat-item" onclick="openChat('user1')" data-chat-id="user1">
+    <img src="cewek38.jpeg" alt="User" class="chat-avatar">
+    <div class="chat-info">
+      <h4>Dwi antika <span class="host-badge">Vip</span></h4>
+      <p>Mengirim anda pesan...</p>
+    </div>
+    <span class="chat-time">19:57</span>
+    <span class="badge-new">7</span>
+  </div>
+
+
+
+  <div class="chat-item" onclick="openChat('user1')" data-chat-id="user1">
     <img src="cewek42.jpeg" alt="User" class="chat-avatar">
     <div class="chat-info">
       <h4>Chika <span class="host-badge">HOST</span></h4>
-      <p>abanggg?</p>
+      <p>Mengirim anda pesan...</p>
     </div>
     <span class="chat-time">18:45</span>
-    <span class="badge-new">6</span>
+    <span class="badge-new">10</span>
   </div>
 
 
@@ -2536,7 +2661,7 @@ label {
     <img src="cewek41.jpeg" alt="User" class="chat-avatar">
     <div class="chat-info">
       <h4>Yulia <span class="host-badge">HOST</span></h4>
-      <p>baru jadi agency y ?</p>
+      <p>Mengirim anda pesan...</p>
     </div>
     <span class="chat-time">18:40</span>
     <span class="badge-new">1</span>
@@ -2557,7 +2682,7 @@ label {
   left:0;
   width:100%; 
   height:100%;
-  background:#fff;
+  background:rgb(232 232 232);
   display:none;
   align-items:center;
   justify-content:center;
@@ -4349,6 +4474,93 @@ redeemAlert.addEventListener("click", (e) => {
     redeemAlert.style.display = "none";
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function(){
+
+  const popup = document.getElementById("csPopup");
+  const btnBuka = document.getElementById("csBtn");
+  const btnKirim = document.getElementById("kirimBtn");
+  const btnClose = document.getElementById("closePopup");
+
+  // Buka popup
+  btnBuka.addEventListener("click", function(){
+    popup.style.display = "flex";
+  });
+
+  // Tutup popup (tombol X)
+  btnClose.addEventListener("click", function(){
+    popup.style.display = "none";
+  });
+
+  // Klik area gelap untuk tutup
+  popup.addEventListener("click", function(e){
+    if(e.target === popup){
+      popup.style.display = "none";
+    }
+  });
+
+  // Kirim ke WhatsApp
+  btnKirim.addEventListener("click", function(){
+
+    const nama = document.getElementById("csNama").value.trim();
+    const wa = document.getElementById("csWa").value.trim();
+    const kategori = document.getElementById("csKategori").value;
+    const pesan = document.getElementById("csPesan").value.trim();
+
+    if(!nama || !wa){
+      alert("Nama dan Nomor WhatsApp wajib diisi!");
+      return;
+    }
+
+    const nomorCS = "6281377431251";
+
+    const text =
+      "Halo Layanan Pelanggan,\n\n" +
+      "Nama : " + nama + "\n" +
+      "Nomor WhatsApp : " + wa + "\n" +
+      "Kategori : " + kategori + "\n" +
+      "Penjelasan : " + pesan;
+
+    const url = "https://wa.me/" + nomorCS + "?text=" + encodeURIComponent(text);
+
+    window.location.href = url;
+  });
+
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+
+  const btn = document.getElementById("csBtn");
+  const popup = document.getElementById("csPopup");
+
+  btn.addEventListener("click", function() {
+    popup.style.display = "flex";
+  });
+
+});
+
+
+
+
+
+
+
+
 
 
 </script>
