@@ -2161,9 +2161,10 @@ label {
     <div class="history-top" style="background:#f7f7f7; display:flex; align-items:center; padding:10px; border-bottom:1px solid #eee;">
       
       <!-- Tombol kembali -->
-      <button id="closePopup" style="background:none; border:none; padding:0; cursor:pointer; margin-right:10px;">
-        <img src="back_black.png" alt="Kembali" style="width:22px; height:22px;">
-      </button>
+<button id="closebalikki" onclick="window.history.back()" 
+  style="background:none; border:none; padding:0; cursor:pointer; margin-right:10px;">
+  <img src="back_black.png" alt="Kembali" style="width:22px; height:22px;">
+</button>
 
       <!-- Teks tengah -->
       <div style="flex:1;">
@@ -4558,9 +4559,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
+document.getElementById("closebalikki").addEventListener("click", function() {
 
+  if (document.referrer !== "") {
+    window.history.back();
+  } else {
+    window.location.href = "index.html";
+  }
 
-
+});
 
 
 </script>
