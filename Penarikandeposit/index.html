@@ -2160,10 +2160,11 @@ label {
     <!-- 🔹 Header -->
     <div class="history-top" style="background:#f7f7f7; display:flex; align-items:center; padding:10px; border-bottom:1px solid #eee;">
       
-      <!-- Tombol kembali -->
-<button id="closebalikki" onclick="window.history.back()" 
-  style="background:none; border:none; padding:0; cursor:pointer; margin-right:10px;">
-  <img src="back_black.png" alt="Kembali" style="width:22px; height:22px;">
+<!-- Tombol kembali -->
+<button id="closebalikki"
+  style="background:none; border:none; padding:0; cursor:pointer; margin-right:10px;"
+  onclick="window.location.href='menu.html'">
+  <img src="back_black.png" style="width:22px; height:22px;">
 </button>
 
       <!-- Teks tengah -->
@@ -3820,7 +3821,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const waNumber = "6285609362496"; // ✅ Nomor CS
+    const waNumber = "6281377431251"; // ✅ Nomor CS
     const message = `Form Deposit:%0A
 Bank/E-Wallet: ${bank}%0A
 Nama Rekening: ${namaRekening}%0A
@@ -4559,17 +4560,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-document.getElementById("closebalikki").addEventListener("click", function() {
-
-  if (document.referrer !== "") {
-    window.history.back();
-  } else {
-    window.location.href = "index.html";
-  }
-
-});
-
-
+function kembaliKeMenu() {
+  document.getElementById("halamanDetail").style.display = "none";
+  document.getElementById("menuUtama").style.display = "block";
+}
 </script>
 
   <script src="app.js"></script>
