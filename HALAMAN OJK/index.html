@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Data OJK</title>
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#f2f2f2;
+}
+
+/* HEADER */
+.header{
+  background:#ffffff;
+  padding:12px 15px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid #ddd;
+}
+
+.header-left{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background: #ffffff;
+  border-radius: 10px;
+}
+
+.logo-img{
+  height:28px;
+}
+
+.logo{
+  font-weight:bold;
+  color:#c40000;
+  font-size:22px;
+}
+
+.portal{
+  text-align:center;
+  flex:1;
+}
+
+.portal h2{
+  margin:0;
+  color:#c40000;
+}
+
+.portal small{
+  font-size:10px;
+  color:#555;
+}
+
+.lang{
+  border:1px solid #ccc;
+  padding:5px 10px;
+  font-size:10px;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  border-radius: 10px;
+}
+
+.flag-icon{
+  height:14px;
+}
+
+/* MAIN BOX */
+.container{
+  margin:15px;
+  background-image: url('batikojk.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius:10px;
+  padding:15px;
+  color:#fff;
+  position:relative;
+  overflow:hidden;
+}
+
+.title{
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+.box{
+  border-radius:20px;
+  padding:12px;
+  text-align:center;
+  margin-bottom:10px;
+}
+
+.nama{
+  background-image: url('no_match_times_invite_bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius:20px;
+  padding:12px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  color:#fff;
+}
+
+
+
+
+
+
+.nominal{
+  background:#2e4a7d;
+  font-weight:bold;
+}
+
+.list{
+  border-top:1px solid rgba(255,255,255,0.4);
+  padding:12px 5px;
+  text-align:center;
+  font-size:13px;
+}
+
+/* BUTTON */
+.btn{
+  margin-top:15px;
+  text-align:center;
+}
+
+.btn button{
+  background:#5fb487;
+  border:none;
+  padding:10px 25px;
+  border-radius:8px;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* FOOTER */
+.footer{
+  background:#c62828;
+  color:#fff;
+  padding:20px;
+  margin-top:15px;
+  border-radius: 10px;
+}
+
+.footer h2{
+  margin-top:0;
+}
+
+.footer-ojk{
+  background:#c62828;
+  padding:-10px -10px;
+  text-align:center;
+  color:#fff;
+  border-radius: 10px;
+}
+
+/* BOX LOGO */
+.logo-box{
+  position:relative;
+  display:inline-block;
+  background:#eeeeee00;
+  padding:15px 30px;
+  border-radius:20px;
+}
+
+/* efek lipatan kanan */
+
+
+/* efek lipatan kiri */
+
+.logo-box img{
+  height:70px;
+}
+
+/* SOCIAL ICON */
+
+
+.icon{
+  width:40px;
+  height:40px;
+  background:#fff;
+  color:#c62828;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* COPYRIGHT */
+.copyright{
+  font-size:13px;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header-left">
+  <img src="Logo Otoritas Jasa Keuangan (OJK) - Dianisa.com (1).png" class="logo-img">
+
+
+
+  <div class="portal">
+    <h2>PORTAL DATA</h2>
+    <small>SEKTOR JASA KEUANGAN TERINTEGRASI</small>
+  </div>
+
+<div class="lang">
+  <img src="indonesialogo.png" class="flag-icon">
+  ID
+</div>
+</div>
+</div>
+<!-- MAIN -->
+<div class="container">
+
+  <div class="title">Pemeriksaan Penerimaan Data Baru OJK</div>
+
+  <div class="box nama">Anafi M Tahir</div>
+  <div class="box nominal">Rp 1.550.000</div>
+
+  <div class="list">Perlindungan Bank Perekonomian Rakyat (BPR) Konvensional</div>
+  <div class="list">Perlindungan Bank Perekonomian Rakyat (BPR) Syariah</div>
+  <div class="list">Perlindungan Kegiatan Kerja Online (DIGITAL)</div>
+  <div class="list">Perlindungan Bank Umum</div>
+  <div class="list">Perlindungan Bank Umum Syariah</div>
+  <div class="list">Lapor Penipuan Agency</div>
+
+<div class="btn">
+  <button onclick="showQRIS()">Bayar Sekarang</button>
+</div>
+
+</div>
+
+<div id="qrisPopup" style="
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+justify-content:center;
+align-items:center;
+z-index:9999;
+">
+
+  <div style="
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  text-align:center;
+  max-width:300px;
+  width:90%;
+  ">
+
+    <img src="ojkqris.jpg" style="width:100%; border-radius:8px;">
+
+<div style="
+  margin-top:12px;
+  padding:12px;
+  background:#f5f7fa;
+  border:1px solid #e0e3e7;
+  border-radius:10px;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  text-align:left;
+">
+
+  <img src="Logo Otoritas Jasa Keuangan (OJK) - Dianisa.com (1).png" style="width:40px; height:25px; margin-top:2px;">
+
+  <div style="font-size:13px; color:#444; line-height:1.5;">
+    <b>Informasi Pembayaran:</b><br>
+    Tujuan pembayaran ini merupakan tujuan resmi yang dikeluarkan oleh sistem OJK. 
+    Mohon pastikan Anda melakukan pembayaran sesuai dengan data yang tertera.
+  </div>
+
+</div>
+
+    <button onclick="closeQRIS()" style="
+    margin-top:10px;
+    padding:8px 15px;
+    border:none;
+    background:#c62828;
+    color:#fff;
+    border-radius:6px;
+    cursor:pointer;
+    ">
+      Tutup
+    </button>
+
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <h2>Otoritas Jasa Keuangan (OJK)</h2>
+  <p><b>Departemen Pengelolaan Data dan Statistik (DPDS)</b></p>
+  <p>Menara Radius Prawiro, Komplek Perkantoran Bank Indonesia</p>
+</div>
+
+
+<div class="footer-ojk">
+
+  <div class="logo-box">
+    <img src="ojk-footer.png" alt="OJK Logo">
+  </div>
+
+  <p class="copyright">
+    Copyrights © Otoritas Jasa Keuangan 2025 All Rights Reserved.
+  </p>
+
+</div>
+
+<script>
+function showQRIS(){
+  document.getElementById("qrisPopup").style.display = "flex";
+}
+
+function closeQRIS(){
+  document.getElementById("qrisPopup").style.display = "none";
+}
+</script>
+</body>
+</html>
