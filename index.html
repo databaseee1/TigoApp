@@ -3014,8 +3014,12 @@ a:hover {
   padding: 20px;
   border-radius: 10px;
   text-align: center;
-  width: 80%;
-  max-width: 300px;
+  width: 100%;
+  max-width: 500px;
+  
+  max-height: 80vh;      /* 🔥 batasi tinggi */
+  overflow-y: auto;      /* 🔥 aktifkan scroll */
+
   box-shadow: 0 5px 20px rgba(0,0,0,0.3);
 }
 
@@ -3039,6 +3043,110 @@ a:hover {
   from { transform: scale(0.5); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+
+
+
+
+
+.popup-topup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  
+  background: rgba(0,0,0,0.6);
+  z-index: 9999; /* 🔥 WAJIB tinggi */
+}
+
+
+/* CONTAINER UTAMA */
+.cara-deposit {
+  font-family: Arial, sans-serif;
+}
+
+/* STEP BOX */
+.cara-deposit .step {
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  text-align: left;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* TEXT */
+.cara-deposit .step p {
+  margin: 5px 0;
+  color: #333;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* JUDUL LANGKAH */
+.cara-deposit .step b {
+  color: #000;
+  font-size: 17px;
+}
+
+/* GAMBAR */
+.cara-deposit .step img {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+
+/* STEP KHUSUS (HIGHLIGHT) */
+.cara-deposit .step-highlight {
+  background: linear-gradient(135deg, #fff, #f1f1f1);
+  border-left: 5px solid #c62828;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  position: relative;
+}
+
+/* JUDUL */
+.cara-deposit .step-highlight b {
+  color: #c62828;
+  font-size: 15px;
+}
+
+/* TEXT */
+.cara-deposit .step-highlight p {
+  color: #222;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* GAMBAR */
+.cara-deposit .step-highlight img {
+  width: 100%;
+  margin-top: 12px;
+  border-radius: 10px;
+}
+
+/* OPTIONAL ICON LABEL */
+.cara-deposit .step-highlight::before {
+  content: "PENTING";
+  position: absolute;
+  top: -10px;
+  left: 15px;
+  background: #c62828;
+  color: #fff;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 5px;
+}
+
+
+
+
+
 
 
 
@@ -3506,6 +3614,55 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
       <li><b>Tutorial</b>
         <ul>
           <ul class="menu-liist">
+
+
+<li id="btn-deposit">Cara Deposit Akun Host</li>
+
+
+<div id="caraDepositPopup" class="popup-topup">
+  <div class="popup-box">
+    <span class="popup-close" id="btn-close-deposit">✕</span>
+
+    <h2 style="color: black;">Cara Deposit Akun</h2>
+
+    <div class="popup-content">
+
+<div class="cara-deposit">
+  <div class="step">
+    <p><b>Langkah 1.</b><br>
+    Masuk ke halaman deposit pada akun host Anda. klik pada menu tanda (+)</p>
+    <img src="cara1.jpeg">
+  </div>
+
+  <div class="step">
+    <p><b>Langkah 2.</b><br>
+    Periksa minimal Nominal deposit Dan Masukkan nominal deposit sesuai ketentuan sistem.</p>
+    <p>hilangkan tanda titik pada input nominal , contoh 430000.</p>
+    <img src="cara2.jpeg">
+  </div>
+
+<div class="step step-highlight">
+  <p><b>Penjelasan.</b></p>
+
+  <p>
+    Setiap akun memiliki ketentuan minimal deposit yang berbeda-beda sesuai dengan sistem yang berlaku. 
+    Nominal minimal deposit telah ditentukan secara otomatis berdasarkan data dan status akun masing-masing.
+  </p>
+
+  <p>
+    Oleh karena itu, pengguna diharapkan untuk memeriksa terlebih dahulu jumlah minimal deposit yang tertera 
+    pada akun sebelum melakukan pembayaran, agar proses aktivasi dapat berjalan dengan lancar.
+  </p>
+
+  <img src="rate_app_light.png">
+</div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+            
   <li onclick="openCaraTopup()">Cara Top Up</li>
 </ul>
 
@@ -7243,6 +7400,19 @@ window.sendChat = function () {
 function tutupPopup() {
   document.getElementById("popup-status").style.display = "none";
 }
+
+
+
+
+
+document.getElementById("btn-deposit").addEventListener("click", function() {
+  document.getElementById("caraDepositPopup").style.display = "flex";
+});
+function closeCaraDeposit() {
+  document.getElementById("caraDepositPopup").style.display = "none";
+}
+
+document.getElementById("btn-close-deposit").addEventListener("click", closeCaraDeposit);
 
     </script>
 
