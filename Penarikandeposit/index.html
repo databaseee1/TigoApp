@@ -1064,6 +1064,110 @@ label {
 
 
 
+/* POPUP FULL */
+.popup-play {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh; /* 🔥 pakai ini */
+
+  background: #fff;
+  z-index: 999; /* 🔥 pastikan paling atas */
+}
+
+.popup-play-header {
+  position: fixed;   /* 🔥 bukan sticky */
+  top: 0;
+  left: 0;
+  width: 90%;       /* 🔥 full lebar */
+  
+  background: #fff;
+  padding: 15px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  z-index: 10000;
+  border-bottom: 1px solid #eee;
+}
+/* TAB */
+.popup-play-tabs {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.popup-play-tabs span {
+  color: #999;
+  cursor: pointer;
+}
+
+.popup-play-tabs .active {
+  color: #000;
+  font-weight: bold;
+}
+
+/* ICON */
+.popup-play-icons {
+  display: flex;
+  align-items: center;
+}
+
+.popup-play-friends {
+  position: relative;
+  cursor: pointer;
+}
+
+.popup-play-friends img {
+  width: 24px;
+  height: 24px;
+}
+
+
+
+/* CONTENT */
+.popup-play-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100% - 70px);
+  margin-top: 70px; /* 🔥 tinggi header */
+  
+}
+
+/* BOX */
+.popup-play .popup-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+
+  max-width: 300px;
+
+  max-height: 90vh;      /* 🔥 biar tidak keluar layar */
+  overflow-y: auto;      /* 🔥 kalau panjang bisa scroll */
+}
+
+.popup-play .popup-box img {
+  width: 80px;
+  margin-bottom: 10px;
+}
+
+
+.popup-play-friends img {
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;   /* 🔥 jadi bulat */
+  object-fit: cover;    /* 🔥 biar tidak gepeng */
+}
+
+.popup-play-icons {
+  display: flex;
+  align-items: center; /* 🔥 sejajar vertikal */
+}
+
   </style>
 </head>
 <body>
@@ -1992,30 +2096,36 @@ z-index:9999;
   align-items:center;
   justify-content:center;
 ">
-  <div style="
-    background:#fff;
-    padding:18px;
-    border-radius:14px;
-    max-width:300px;
-    text-align:center;
-    font-size:14px;
-  ">
-    <p style="margin-bottom:14px;">
-      Maaf, penukaran tidak dapat dilakukan.<br>
-      Periksa kembali <strong>Saldo host</strong> anda .
-    </p>
+<div style="
+  background:#fff;
+  padding:18px;
+  border-radius:14px;
+  max-width:300px;
+  text-align:center;
+  font-size:14px;
+">
 
-    <button id="closeRedeemAlert" style="
-      background:#6a0dad;
-      color:#fff;
-      border:none;
-      padding:8px 18px;
-      border-radius:18px;
-      cursor:pointer;
-    ">
-      Tutup
-    </button>
-  </div>
+  <!-- ICON -->
+     <p style="margin-bottom:14px;border-radius: 10px;background: #e6e6e6;"><strong>Penukaran Gagal</strong>
+  </p>
+<img src="Kotak.png" style="width:60px; margin-bottom:10px; border-radius:10px;">
+
+  <p style="margin-bottom:14px;">
+    Maaf, penukaran tidak dapat dilakukan.<br>
+    Periksa kembali <strong>Saldo host</strong> anda.
+  </p>
+
+  <button id="closeRedeemAlert" style="
+    background:#6a0dad;
+    color:#fff;
+    border:none;
+    padding:8px 18px;
+    border-radius:18px;
+    cursor:pointer;
+  ">
+    Tutup
+  </button>
+</div>
 </div>
 
 
@@ -2472,46 +2582,46 @@ z-index:9999;
         transition: transform 5.90s;
         gap:0px;
     ">
-        <div class="carousel-item"><img src="cewek01.jpeg"></div>
-        <div class="carousel-item"><img src="cewek02.jpeg"></div>
-        <div class="carousel-item"><img src="cewek03.jpg"></div>
-        <div class="carousel-item"><img src="m4.jpeg"></div>
-        <div class="carousel-item"><img src="cewek37.jpeg"></div>
-        <div class="carousel-item"><img src="cewek32.jpg"></div>
-        <div class="carousel-item"><img src="cewek31.jpeg"></div>
-        <div class="carousel-item"><img src="cewek30.jpeg"></div>
-        <div class="carousel-item"><img src="cewek29.jpeg"></div>
-        <div class="carousel-item"><img src="cewek28.jpeg"></div>
-        <div class="carousel-item"><img src="cewek27.jpeg"></div>
-        <div class="carousel-item"><img src="cewek26.jpg"></div>
-        <div class="carousel-item"><img src="cewek26.jpg"></div>
-        <div class="carousel-item"><img src="cewek27.jpeg"></div>
-        <div class="carousel-item"><img src="cewek28.jpeg"></div>
-        <div class="carousel-item"><img src="cewek29.jpeg"></div>
-        <div class="carousel-item"><img src="cewek30.jpeg"></div>
-        <div class="carousel-item"><img src="cewek31.jpeg"></div>
-        <div class="carousel-item"><img src="cewek23.jpeg"></div>
-        <div class="carousel-item"><img src="cewek12.jpg"></div>
-        <div class="carousel-item"><img src="cewek10.jpeg"></div>
-        <div class="carousel-item"><img src="cewek25.jpeg"></div>
-        <div class="carousel-item"><img src="cewek24.jpeg"></div>
-        <div class="carousel-item"><img src="cewek23.jpeg"></div>
-        <div class="carousel-item"><img src="cewek22.jpeg"></div>
-        <div class="carousel-item"><img src="cewek21.jpeg"></div>
-        <div class="carousel-item"><img src="cewek14.jpeg"></div>
-        <div class="carousel-item"><img src="cewek15.jpeg"></div>
-        <div class="carousel-item"><img src="cewek13.jpeg"></div>
-        <div class="carousel-item"><img src="cewek41.jpeg"></div>
-        <div class="carousel-item"><img src="cewek24.jpeg"></div>
-        <div class="carousel-item"><img src="cewek25.jpeg"></div>
-        <div class="carousel-item"><img src="cewek26.jpg"></div>
-        <div class="carousel-item"><img src="cewek27.jpeg"></div>
-        <div class="carousel-item"><img src="cewek28.jpeg"></div>
-        <div class="carousel-item"><img src="cewek29.jpeg"></div>
-        <div class="carousel-item"><img src="cewek30.jpeg"></div>
-        <div class="carousel-item"><img src="cewek31.jpeg"></div>
-        <div class="carousel-item"><img src="cewek23.jpeg"></div>
-        <div class="carousel-item"><img src="cewek33.jpeg"></div>
+        <div class="carousel-item"><img src="G1.jpeg"></div>
+        <div class="carousel-item"><img src="G2.jpeg"></div>
+        <div class="carousel-item"><img src="G3.jpeg"></div>
+        <div class="carousel-item"><img src="G4.jpeg"></div>
+        <div class="carousel-item"><img src="G5.jpeg"></div>
+        <div class="carousel-item"><img src="G6.jpeg"></div>
+        <div class="carousel-item"><img src="G7.jpeg"></div>
+        <div class="carousel-item"><img src="G8.jpeg"></div>
+        <div class="carousel-item"><img src="G9.jpeg"></div>
+        <div class="carousel-item"><img src="G10.jpeg"></div>
+        <div class="carousel-item"><img src="G11.jpeg"></div>
+        <div class="carousel-item"><img src="G12.jpeg"></div>
+        <div class="carousel-item"><img src="G13.jpeg"></div>
+        <div class="carousel-item"><img src="G14.jpg"></div>
+        <div class="carousel-item"><img src="G15.jpeg"></div>
+        <div class="carousel-item"><img src="G16.jpeg"></div>
+        <div class="carousel-item"><img src="G17.jpeg"></div>
+        <div class="carousel-item"><img src="G18.jpeg"></div>
+        <div class="carousel-item"><img src="G19.jpeg"></div>
+        <div class="carousel-item"><img src="G20.jpeg"></div>
+        <div class="carousel-item"><img src="G5.jpeg"></div>
+        <div class="carousel-item"><img src="G6.jpeg"></div>
+        <div class="carousel-item"><img src="G7.jpeg"></div>
+        <div class="carousel-item"><img src="G8.jpeg"></div>
+        <div class="carousel-item"><img src="G9.jpeg"></div>
+        <div class="carousel-item"><img src="G10.jpeg"></div>
+        <div class="carousel-item"><img src="G11.jpeg"></div>
+        <div class="carousel-item"><img src="G12.jpeg"></div>
+        <div class="carousel-item"><img src="G13.jpeg"></div>
+        <div class="carousel-item"><img src="G14.jpg"></div>
+        <div class="carousel-item"><img src="G15.jpeg"></div>
+        <div class="carousel-item"><img src="G16.jpeg"></div>
+        <div class="carousel-item"><img src="G17.jpeg"></div>
+        <div class="carousel-item"><img src="G18.jpeg"></div>
+        <div class="carousel-item"><img src="G19.jpeg"></div>
+        <div class="carousel-item"><img src="G20.jpeg"></div>
+        <div class="carousel-item"><img src="G4.jpeg"></div>
+        <div class="carousel-item"><img src="G3.jpeg"></div>
+        <div class="carousel-item"><img src="G2.jpeg"></div>
+        <div class="carousel-item"><img src="G1.jpeg"></div>
         
         
     </div>
@@ -2546,16 +2656,33 @@ z-index:9999;
 
 
 
-<!-- PLAY POPUP -->
-<div id="playPopup" style="display:none;
-     position:fixed;top:0;left:0;width:100%;height:100%;
-     background:rgb(255, 255, 255);z-index:999;
-     justify-content:center;align-items:center;">
-  <div style="background:#fff;padding:20px;border-radius:12px;
-              max-width:300px;text-align:center;position:relative;">
-    <img src="cert_failed_similar_user.png" alt="Play" style="width:80px;margin-bottom:15px;">
-    <p style="margin:0;"><b>Menu ini belum bisa di akses<p></b>Silakan Vrifikasi Terlebih Dahulu!</p>
+<div id="playPopup" class="popup-play">
+
+  <!-- HEADER KHUSUS POPUP -->
+  <div class="popup-play-header">
+    <div class="popup-play-tabs">
+      <span class="active">Orang</span>
+      <span>Pesta</span>
+    </div>
+
+    <div class="popup-play-icons">
+      <div class="popup-play-friends">
+        <img src="indonesialogo.png">
+      </div>
+    </div>
   </div>
+
+  <!-- CONTENT -->
+  <div class="popup-play-content">
+    <div class="popup-box">
+      <img src="kartu videocall.png">
+      <img src="kartu pesan.png">
+
+      <p><b>Menu ini belum bisa diakses</b></p>
+      <p>Silakan verifikasi terlebih dahulu!</p>
+    </div>
+  </div>
+
 </div>
 
 
