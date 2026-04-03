@@ -2996,8 +2996,49 @@ a:hover {
 
 
 
+.popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 80%;
+  max-width: 300px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.popup-content button {
+  margin-top: 10px;
+  padding: 8px 15px;
+  border: none;
+  background: #7d00dd;
+  color: white;
+  border-radius: 5px;
+}
 
 
+.popup-logo {
+  width: 40px;
+  margin-bottom: 10px;
+  animation: zoomIn 0.6s ease;
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
 
 
 
@@ -3635,6 +3676,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 </div>        
 <div class="slider-container">
   <div id="conbank" class="slider">
+    <img src="tigogambar.webp" alt="icon6">
     <img src="tigogambar.webp" alt="icon1">
     <img src="TenderUlogo.webp" alt="icon2">
     <img src="weelivelogo.webp" alt="icon3">
@@ -3660,6 +3702,8 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <img src="GOGO LIVE.webp" alt="icon6">
     <img src="ti.livelogo.webp" alt="icon5">
     <img src="chatologo.webp" alt="icon6">
+    <img src="poca.webp" alt="icon6">
+    
   </div>
   <div class="dots"></div>
 </div>
@@ -3740,7 +3784,19 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
           <input type="file" name="profil" accept="image/*" />
 
 <button class="btn" type="submit">Daftar Sekarang</button>
-<div id="status-daftar" class="status-box"></div>
+
+<div id="popup-status" class="popup">
+  <div class="popup-content">
+    <img src="privacy_content_selected.png" class="popup-logo">
+    
+    <div class="status-box">
+  <p id="status-text"></p>
+    </div>
+
+    <button id="btn-ok" type="button">OK</button>
+  </div>
+</div>
+
           <p class="help">Dengan menekan tombol di atas, Anda menyetujui syarat & ketentuan Agency.</p>
         </form>
 
@@ -4721,7 +4777,7 @@ Fitur Utama
   </div>
 
   <div class="footer-copy">
-    © 2025 Agency Indonesia. All Rights Reserved.
+    © 2026 Agency Indonesia. All Rights Reserved.
   </div>
 </footer>
 
@@ -5842,12 +5898,22 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstati
         createdAt: new Date()
       });
 
-      document.getElementById("status-daftar").innerText = "✅ Data berhasil dikirim!,untuk hasil akan kami hubungi melalui Whatsapp/Email dalam 2 hari kerja";
-      form.reset();
+function tampilkanPopup(pesan) {
+  document.getElementById("status-text").innerText = pesan;
+  document.getElementById("popup-status").style.display = "flex";
+}
+
+document.getElementById("btn-ok").addEventListener("click", function() {
+  document.getElementById("popup-status").style.display = "none";
+});
+
+
+
+tampilkanPopup("✅ Data berhasil dikirim! Untuk hasil akan kami hubungi melalui Whatsapp/Email dalam 2 hari kerja");
+form.reset();
     } catch (err) {
       console.error("Error:", err);
-      document.getElementById("status-daftar").innerText = "❌ Gagal Mendaftar,(pendaftaran kami tolak)!";
-    }
+tampilkanPopup("❌ Gagal Mendaftar, pendaftaran kami tolak!");    }
   }
 
   // 🔥 aktifkan listener
@@ -6448,51 +6514,79 @@ const profileData = {
 const giftsByProfile = {
   iconProfile1: [
     { img: "gift_96.png", jumlah: 23, level: "x" },
-    { img: "gift_1.png", jumlah: 46,  level: "x" },
-    { img: "gift5.png", jumlah: 2,  level: "x" },
+    { img: "baru13.png", jumlah: 46,  level: "x" },
+    { img: "gift_1.png", jumlah: 38,  level: "x" },
+    { img: "gift5.png", jumlah: 3,  level: "x" },
+    { img: "baru4.png", jumlah: 2,  level: "x" },
     { img: "gift4.png", jumlah: 15,  level: "x" },
-    { img: "gift3.png", jumlah: 11,  level: "x" },
+    { img: "baru11.png", jumlah: 11,  level: "x" },
     { img: "gift_14.png", jumlah: 9,  level: "x" },
     { img: "gift_58.png", jumlah: 9,  level: "x" },
     { img: "giftring.png", jumlah: 27, level: "x" }
   ],
   iconProfile2: [
     { img: "gift_35.png", jumlah: 30, level: "x" },
-    { img: "gift_77.png", jumlah: 30, level: "x" },
+    { img: "baru1.png", jumlah: 30, level: "x" },
+    { img: "baru10.png", jumlah: 20, level: "x" },
+    { img: "baru14.png", jumlah: 20, level: "x" },
     { img: "gift_103.png", jumlah: 30, level: "x" },
     { img: "giftkiss.png", jumlah: 30, level: "x" },
     { img: "gift_14.png", jumlah: 30, level: "x" },
     { img: "giftlambor.png", jumlah: 18, level: "x" }
   ],
   iconProfile3: [
+    { img: "baru13.png", jumlah: 12, level: "x" },
     { img: "gift_103.png", jumlah: 15, level: "x" },
     { img: "gift_14.png", jumlah: 15, level: "x" },
+    { img: "baru3.png", jumlah: 25, level: "x" },
+    { img: "baru5.png", jumlah: 45, level: "x" },
+    { img: "baru6.png", jumlah: 45, level: "x" },
+    { img: "baru7.png", jumlah: 65, level: "x" },
     { img: "gift_96.png", jumlah: 7, level: "x" }
   ],
   iconProfile4: [
     { img: "gift_14.png", jumlah: 20, level: "x" },
     { img: "gift_58.png", jumlah: 71, level: "x" },
     { img: "gift_59.png", jumlah: 62, level: "x" },
+    { img: "baru10.png", jumlah: 80, level: "x" },
+    { img: "baru8.png", jumlah: 4, level: "x" },
+    { img: "baru12.png", jumlah: 34, level: "x" },
+    { img: "baru3.png", jumlah: 120, level: "x" },
     { img: "giftring.png", jumlah: 12, level: "x" }
   ],
     iconProfile6: [
     { img: "gift4.png", jumlah: 20, level: "x" },
+    { img: "baru8.png", jumlah: 44, level: "x" },
     { img: "gift_14.png", jumlah: 24, level: "x" },
     { img: "gift_58.png", jumlah: 71, level: "x" },
+    { img: "baru11.png", jumlah: 51, level: "x" },
+    { img: "baru6.png", jumlah: 11, level: "x" },
+    { img: "baru2.png", jumlah: 13, level: "x" },
     { img: "giftring.png", jumlah: 12, level: "x" }
   ],
     iconProfile7: [
+      { img: "baru14.png", jumlah: 19, level: "x" },
+      { img: "baru13.png", jumlah: 39, level: "x" },
+      { img: "baru12.png", jumlah: 26, level: "x" },
+      { img: "baru11.png", jumlah: 15, level: "x" },
+      { img: "baru10.png", jumlah: 14, level: "x" },
     { img: "gift_14.png", jumlah: 20, level: "x" },
+    { img: "baru9.png", jumlah: 19, level: "x" },
     { img: "gift4.png", jumlah: 19, level: "x" },
     { img: "gift5.png", jumlah: 27, level: "x" },
     { img: "giftring.png", jumlah: 12, level: "x" }
   ],
   iconProfile5: [
-    { img: "giftlambor.png", jumlah: 5, level: "x" },
+    { img: "baru6.png", jumlah: 5, level: "x" },
+    { img: "baru8.png", jumlah: 75, level: "x" },
+    { img: "baru10.png", jumlah: 18, level: "x" },
+    { img: "baru9.png", jumlah: 51, level: "x" },
+    { img: "baru3.png", jumlah: 14, level: "x" },
+    { img: "baru1.png", jumlah: 11, level: "x" },
+    { img: "baru4.png", jumlah: 18, level: "x" },
+    { img: "giftlambor.png", jumlah: 18, level: "x" },
     { img: "gift2.png", jumlah: 11, level: "x" },
-    { img: "gift_58.png", jumlah: 71, level: "x" },
-    { img: "gift_59.png", jumlah: 62, level: "x" },
-    { img: "gift_35.png", jumlah: 40, level: "x" }
+    { img: "gift_58.png", jumlah: 71, level: "x" }
   ]
 };
  function openProfilePopup(id, src, name) {
@@ -7144,6 +7238,11 @@ window.sendChat = function () {
   }, 1200);
 };
 
+
+
+function tutupPopup() {
+  document.getElementById("popup-status").style.display = "none";
+}
 
     </script>
 
