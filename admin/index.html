@@ -1015,45 +1015,70 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const lastActiveText = formatTimestamp(data.lastActive);
 
-    tr.innerHTML = `
-      <td>${data.nama || '-'}</td>
-      <td>${data.umur || '-'}</td>
-      <td>${data.jk || '-'}</td>
-      <td>${data.wa || '-'}</td>
-      <td>${data.email || '-'}</td>
-      <td>${data.app || '-'}</td>
-      <td>${data.bank || '-'}</td>
-      <td>${data.namaRek || '-'}</td>
-      <td>${data.noRek || '-'}</td>
-      <td>${data.fotoURL ? `<img src="${data.fotoURL}" width="50">` : ''}</td>
-      <td>
-        ${data.verified 
-          ? `<span style="color:green;font-weight:bold;">Diverifikasi</span>` 
-          : `<span style="color:red;font-weight:bold;">Unverifikasi</span>`}
-      </td>
-      <td class="last-active">${lastActiveText}</td> <!-- 🔹 Kolom terakhir online -->
-               <td class="aksi-cell">
-        <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px;">
-          <button class="verify-btn" data-id="${userId}" data-status="true">Verifikasi</button>
-          <button class="verify-btn" data-id="${userId}" data-status="false">Batalkan</button>
+tr.innerHTML = `
+  <td><input class="edit-input" data-field="nama" value="${data.nama || ''}"></td>
+  <td><input class="edit-input" data-field="umur" value="${data.umur || ''}"></td>
+  <td><input class="edit-input" data-field="jk" value="${data.jk || ''}"></td>
+  <td><input class="edit-input" data-field="wa" value="${data.wa || ''}"></td>
+  <td><input class="edit-input" data-field="email" value="${data.email || ''}"></td>
+  <td><input class="edit-input" data-field="app" value="${data.app || ''}"></td>
+  <td><input class="edit-input" data-field="bank" value="${data.bank || ''}"></td>
+  <td><input class="edit-input" data-field="namaRek" value="${data.namaRek || ''}"></td>
+  <td><input class="edit-input" data-field="noRek" value="${data.noRek || ''}"></td>
 
-          <button class="delete-btn" data-id="${userId}" 
-            style="color:#fff; background:red;">Delete</button>
-          <button class="mark-btn" data-id="${userId}" 
-            style="background:orange; color:#fff;">Sudah</button>
+  <td>${data.fotoURL ? `<img src="${data.fotoURL}" width="50">` : ''}</td>
 
-          <button class="note-btn" data-id="${userId}" data-nama="${data.nama || '-'}" 
-            style="background:#4caf50; color:#fff;">Catatan</button>
-          <div id="suuukkses-${userId}" class="suuukkses-btn" 
-            style="padding:5px 10px; background:#ddd; border-radius:4px; cursor:pointer; text-align:center;">
-            Sukses
-          </div>
-<button class="copy-row-btn" data-id="${userId}" style="background:#2196f3; color:#fff;">Terima</button>
-<button class="copdata-btn" data-id="${userId}" style="background:#9c27b0; color:#fff;">Copy Data</button>        </div>
-      </td>
-      </td>
-      
-    `;
+  <td>
+    ${data.verified 
+      ? `<span style="color:green;font-weight:bold;">Diverifikasi</span>` 
+      : `<span style="color:red;font-weight:bold;">Unverifikasi</span>`}
+  </td>
+
+  <td class="last-active">${lastActiveText}</td>
+
+  <td class="aksi-cell">
+    <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px;">
+      <button class="verify-btn" data-id="${userId}" data-status="true">Verifikasi</button>
+      <button class="verify-btn" data-id="${userId}" data-status="false">Batalkan</button>
+
+      <button class="delete-btn" data-id="${userId}" style="color:#fff; background:red;">Delete</button>
+      <button class="mark-btn" data-id="${userId}" style="background:orange; color:#fff;">Sudah</button>
+
+      <button class="note-btn" data-id="${userId}" data-nama="${data.nama || '-'}" style="background:#4caf50; color:#fff;">Catatan</button>
+
+      <div id="suuukkses-${userId}" class="suuukkses-btn" 
+        style="padding:5px 10px; background:#ddd; border-radius:4px; cursor:pointer; text-align:center;">
+        Sukses
+      </div>
+
+      <button class="copy-row-btn" data-id="${userId}" style="background:#2196f3; color:#fff;">Terima</button>
+      <button class="copdata-btn" data-id="${userId}" style="background:#9c27b0; color:#fff;">Copy Data</button>
+    </div>
+  </td>
+`;
+
+
+// ========================
+// 🔥 AUTO UPDATE FIREBASE SAAT EDIT
+// ========================
+document.addEventListener("input", async (e) => {
+  if (e.target.classList.contains("edit-input")) {
+    const input = e.target;
+    const row = input.closest("tr");
+    const userId = row.id.replace("row-", "");
+    const field = input.dataset.field;
+
+    try {
+      await updateDoc(doc(db, "pendaftaran", userId), {
+        [field]: input.value
+      });
+
+      console.log("Auto update:", field, input.value);
+    } catch (err) {
+      console.error("Gagal update:", err);
+    }
+  }
+});
 
   
   // ✅ Jika statusHijau = true → seluruh baris hijau
@@ -1464,7 +1489,7 @@ async function loadSaldoUsers() {
 loadSaldoUsers();
 
 
-
+let cacheUsers = {};
   // ========================
   // 🔹 Render Withdraw
   // ========================
@@ -1687,12 +1712,13 @@ function loadChatHistory(userId) {
 
       // ✅ Ikon hapus
       const deleteIcon = document.createElement('img');
-      deleteIcon.src = 'servant_icon.png';
+      deleteIcon.src = 'im_msg_delete.png';
       deleteIcon.alt = 'Hapus';
       deleteIcon.title = 'Hapus Pesan';
       deleteIcon.classList.add('delete-icon'); // CSS hover effect
       deleteIcon.style.width = '18px';
       deleteIcon.style.height = '18px';
+      deleteIcon.style.background = '#ffe78d';
       deleteIcon.style.cursor = 'pointer';
       deleteIcon.style.marginLeft = '8px';
 
@@ -1889,6 +1915,24 @@ table th {
   color: #ffffff;
 }
 
+
+
+.edit-input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  color: inherit; /* 🔥 ini kuncinya */
+}
+
+.edit-input::placeholder {
+  color: #ccc;
+}
+
+.edit-input:focus {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
 
 
 
@@ -2223,7 +2267,7 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
     width:90%;
     text-align:center;
   ">
-    <img src="servant_icon.png" alt="Offline" style="width:50px;height:50px;margin-bottom:15px;">
+    <img  src="servant_icon.png"alt="Offline" style="width:50px;height:50px;margin-bottom:15px;">
     <h2 style="margin-bottom:20px;color:#fff;">Login Admin</h2>
     <input type="text" id="adminEmail" placeholder="Cingkong" style="margin-bottom:10px;padding:8px;border-radius:10px;width:100%;box-sizing:border-box;">
     <input type="password" id="adminPin" placeholder="Password" style="margin-bottom:10px;padding:8px;border-radius:10px;width:100%;box-sizing:border-box;">
