@@ -1134,7 +1134,6 @@ label {
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: center;
   overflow-y: auto;
 }
 
@@ -1169,6 +1168,58 @@ label {
   align-items: center; /* 🔥 sejajar vertikal */
 }
 
+
+
+
+#ikan-popup {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 per baris */
+  gap: 6px;
+  padding: 20px;
+}
+
+/* style gambar */
+#ikan-popup img {
+  width: 100%;
+  height: 80px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    width: 60%;   /* dari 100% jadi lebih kecil */
+  margin: auto; /* biar tetap tengah */
+  animation: floatUpDown 2s infinite ease-in-out;
+}
+
+/* 🔥 efek redup (optional) */
+#ikan-popup img:nth-child(1),
+#ikan-popup img:nth-child(2) {
+  opacity: 0.8;
+}
+
+#ikan-popup img:nth-child(3),
+#ikan-popup img:nth-child(4) {
+  opacity: 0.4;
+}
+
+#ikan-popup img:nth-child(5),
+#ikan-popup img:nth-child(6) {
+  opacity: 0.3;
+}
+
+
+/* animasi */
+@keyframes floatUpDown {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+/* 🔥 delay biar gak barengan */
+#ikan-popup img:nth-child(1) { animation-delay: 0s; }
+#ikan-popup img:nth-child(2) { animation-delay: 0.2s; }
+#ikan-popup img:nth-child(3) { animation-delay: 0.4s; }
+#ikan-popup img:nth-child(4) { animation-delay: 0.6s; }
+#ikan-popup img:nth-child(5) { animation-delay: 0.8s; }
+#ikan-popup img:nth-child(6) { animation-delay: 1s; }
   </style>
 </head>
 <body>
@@ -2674,7 +2725,29 @@ z-index:9999;
   </div>
 
   <!-- CONTENT -->
+
+
+  
+    <div id="ikan-popup">
+  <img src="default_pic_100.png">
+  <img src="default_pic_100.png">
+
+  <img src="default_pic_100.png">
+  <img src="default_pic_100.png">
+
+  <img src="default_pic_100.png">
+  <img src="default_pic_100.png">
+</div>
+
+
+
+
+
+
   <div class="popup-play-content">
+
+
+
     <div class="popup-box">
       <img src="kartu videocall.png">
       <img src="kartu pesan.png">
