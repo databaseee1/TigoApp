@@ -3493,7 +3493,42 @@ button{
   z-index:5;
 }
 
+.tigoskripsi{
+  position:absolute;
+  bottom:-70px; /* lebih tinggi dari tigohost */
+  left:50%;
+  transform:translateX(-50%);
 
+  color:#ffffff;
+  font-size:13px;
+  text-align:center;
+  width:80%;
+
+  z-index:5;
+}
+
+
+
+
+
+.klikDev{
+  color:#8ebeef; /* biru */
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.2s;
+  text-decoration:underline;
+}
+
+/* hover */
+.klikDev:hover{
+  color:#0b7dda;
+  text-shadow:0 0 5px rgba(33,150,243,0.6);
+}
+
+/* klik */
+.klikDev:active{
+  transform:scale(0.95);
+}
 
   </style>
 </head>
@@ -4563,6 +4598,11 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <b class="coin">30000+1000 Coin</b> - 
     <b class="price">Rp2.010.220</b>
   </span>
+</div>
+<div class="tigoskripsi">
+  Promo resmi coin yang telah dikeluarkan oleh pihak <span class="klikDev" onclick="window.open('https://wa.me/6281234567890')">
+  developer app
+</span>
 </div>
 <div class="tigohost">#tigohostindonesia</div>
   </div>
