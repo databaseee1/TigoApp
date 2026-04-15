@@ -4636,7 +4636,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     <h3>Form Pembelian</h3>
     <input id="idAkun" placeholder="ID Akun">
     <input id="namaRek" placeholder="Nama Rekening">
-    <input id="Aplikasi" placeholder="Nama Aplikasi Anda">
+    <input id="bank" placeholder="Nama Bank Anda">
     <input id="jumlah" readonly>
     <button onclick="kirimWA()">Bayar Sekarang</button>
   </div>
@@ -5650,7 +5650,7 @@ function kirimWA(){
     return;
   }
 
-  let text = `Halo Admin,%0AID Akun: ${id}%0ANama: ${nama}%0ABank: ${bank}%0AJumlah: ${jumlah}`;
+  let text = `Halo Admin,%0AID Akun: ${id}%0ANama: ${nama}%0AAplikasi: ${bank}%0AJumlah: ${jumlah}`;
 
   window.open(`https://wa.me/6283175745023?text=${text}`,'_blank');
 }
