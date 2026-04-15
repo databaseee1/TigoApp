@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promo Coin FIX</title>
+<style>
+body{font-family:sans-serif;margin:0}
+
+#floatingPromo{
+  position:fixed;
+  right:10px;
+  top:40%;
+  background:#ff9800;
+  color:#fff;
+  padding:12px;
+  border-radius:10px;
+  cursor:pointer;
+  z-index:999;
+}
+
+#promoBox{
+  display:none;
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.8);
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+}
+
+.promoContent{
+  background:#fff;
+  padding:20px;
+  border-radius:15px;
+  text-align:center;
+}
+
+.coinOption{
+  background:#4caf50;
+  color:#fff;
+  padding:10px;
+  margin:10px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+#fullPopup{
+  display:none;
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:#fff;
+  z-index:2000;
+  overflow:auto;
+  padding:20px;
+}
+
+.logoGrid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+}
+
+.logoGrid div{
+  background:#eee;
+  padding:20px;
+  text-align:center;
+  cursor:pointer;
+  border-radius:10px;
+}
+
+#formSection{
+  display:none;
+  margin-top:20px;
+}
+
+input,button{
+  width:100%;
+  padding:10px;
+  margin:5px 0;
+}
+
+button{
+  background:#2196f3;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+}
+</style>
+</head>
+<body>
+
+<div id="floatingPromo">🔥 Promo</div>
+
+<div id="promoBox">
+  <div class="promoContent">
+    <h2>Promo Coin</h2>
+    <div class="coinOption" onclick="selectCoin(50000)">50.000 Coin - Rp50.000</div>
+    <div class="coinOption" onclick="selectCoin(100000)">100.000 Coin - Rp90.000</div>
+    <div class="coinOption" onclick="selectCoin(200000)">200.000 Coin - Rp150.000</div>
+  </div>
+</div>
+
+<div id="fullPopup">
+  <h2>Pilih Metode</h2>
+  <div class="logoGrid">
+    <div onclick="showForm()">BCA</div>
+    <div onclick="showForm()">BRI</div>
+    <div onclick="showForm()">MANDIRI</div>
+    <div onclick="showForm()">OVO</div>
+    <div onclick="showForm()">DANA</div>
+    <div onclick="showForm()">GOPAY</div>
+    <div onclick="showForm()">QRIS</div>
+    <div onclick="showForm()">LINKAJA</div>
+    <div onclick="showForm()">SHOPEEPAY</div>
+    <div onclick="showForm()">SEA BANK</div>
+  </div>
+
+  <div id="formSection">
+    <h3>Form Pembelian</h3>
+    <input id="idAkun" placeholder="ID Akun">
+    <input id="namaRek" placeholder="Nama Rekening">
+    <input id="bank" placeholder="Nama Bank Anda">
+    <input id="jumlah" readonly>
+    <button onclick="kirimWA()">Bayar Sekarang</button>
+  </div>
+</div>
+
+<script>
+let selectedAmount = 0;
+
+const floatingPromo = document.getElementById('floatingPromo');
+const promoBox = document.getElementById('promoBox');
+const fullPopup = document.getElementById('fullPopup');
+
+floatingPromo.addEventListener('click', ()=>{
+  promoBox.style.display='flex';
+});
+
+function selectCoin(amount){
+  selectedAmount = amount;
+  promoBox.style.display='none';
+  fullPopup.style.display='block';
+}
+
+function showForm(){
+  document.getElementById('formSection').style.display='block';
+  document.getElementById('jumlah').value = selectedAmount;
+}
+
+function kirimWA(){
+  let id = document.getElementById('idAkun').value;
+  let nama = document.getElementById('namaRek').value;
+  let bank = document.getElementById('bank').value;
+  let jumlah = document.getElementById('jumlah').value;
+
+  let text = `Halo Admin,%0AID Akun: ${id}%0ANama: ${nama}%0ABank: ${bank}%0AJumlah: ${jumlah}`;
+
+  window.open(`https://wa.me/6281234567890?text=${text}`,'_blank');
+}
+</script>
+
+</body>
+</html>

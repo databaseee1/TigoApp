@@ -3170,6 +3170,331 @@ a:hover {
 
 
 
+
+.logoGrid img{
+  width:40px;
+  height:40px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto 5px;
+  border-radius: 10px;
+}
+
+.logoGrid span{
+  font-size:12px;
+  font-weight:bold;
+}
+
+
+/* FLOATING PROMO */
+#floatingPromo{
+  position:fixed;
+  right:15px;
+  top:85%;
+  width:50px;
+  height:50px;
+  background:url('im_red_pack_not_open_bg - Copy.png') no-repeat center;
+  background-size:cover;
+  border-radius:50%;
+  cursor:pointer;
+  z-index:999;
+  box-shadow:0 8px 20px rgba(0,0,0,0.3);
+  animation:floatPromo 2.5s ease-in-out infinite;
+}
+
+#floatingPromo:hover{
+  transform:scale(1.1);
+}
+
+@keyframes floatPromo{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+  100%{transform:translateY(0)}
+}
+
+/* CLOSE BUTTON */
+#closePromo{
+  position:fixed;
+  right:10px;
+  top:calc(85% - 10px);
+  background:#000;
+  color:#fff;
+  width:22px;
+  height:22px;
+  font-size:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  cursor:pointer;
+  z-index:1000;
+
+  /* animasi sama seperti floating */
+  animation:floatClose 2.5s ease-in-out infinite;
+  transition:0.3s;
+}
+
+/* hover effect */
+#closePromo:hover{
+  transform:scale(1.2);
+  background:#ff4444;
+}
+
+/* animasi gerak */
+@keyframes floatClose{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+  100%{transform:translateY(0)}
+}
+
+/* POPUP PROMO */
+#promoBox{
+  display:none;
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.8);
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+}
+
+.promoContent{
+  background:#fff;
+  padding:20px;
+  border-radius:15px;
+  text-align:center;
+  animation:zoomIn .3s;
+}
+
+@keyframes zoomIn{
+  from{transform:scale(0.7);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
+.coinOption{
+  background:#4caf50;
+  color:#fff;
+  padding:10px;
+  margin:10px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* FULL POPUP */
+#fullPopup{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:#fff;
+  z-index:9999; /* NAHKAN INI */
+  overflow:auto;
+  padding:20px;
+}
+
+.logoGrid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.logoGrid div{
+  background:#fff;
+  padding:15px;
+  text-align:center;
+  border-radius:12px;
+  cursor:pointer;
+  transition:all 0.25s ease;
+  box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* HOVER EFFECT */
+.logoGrid div:hover{
+  transform:translateY(-5px) scale(1.05);
+  box-shadow:0 10px 20px rgba(0,0,0,0.2);
+  background:#f5faff;
+}
+
+/* EFEK KLIK (TEKAN) */
+.logoGrid div:active{
+  transform:scale(0.95);
+}
+
+.logoGrid img{
+  width:40px;
+  height:40px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto 5px;
+}
+
+.logoGrid span{
+  font-size:12px;
+  font-weight:bold;
+}
+/* FORM */
+#formSection{
+  display:none;
+  margin-top:20px;
+  position:relative;
+  z-index:3000; /* lebih tinggi dari nav */
+}
+
+input,button{
+  width:100%;
+  padding:10px;
+  margin:5px 0;
+}
+
+button{
+  background:#7c3aed;
+  color:#fff;
+  border:none;
+  border-radius:10px;
+}
+
+
+
+.frame{
+  display:none; /* ⬅️ INI PENTING */
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+  background:rgba(0,0,0,0.7);
+}
+.bgFrame{
+  width:100%;
+  display:block;
+}
+
+/* INI POSISI AREA PUTIH */
+#promoInside{
+  position:absolute;
+  top:210px;   /* atur sesuai gambar */
+  left:45px;
+  right:45px;
+  text-align:center;
+}
+
+/* styling coin */
+.coinOption{
+  background:#4caf50;
+  color:#fff;
+  padding:8px;
+  margin:6px 0;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:13px;
+}
+
+.coinOption{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  background:url('say_hi_dialog_widget - Copy.png') no-repeat center;
+  background-size:cover;
+
+  color:#fff;
+  padding:10px;
+  margin:8px 0;
+  border-radius:12px;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+/* logo kiri */
+.coinOption img{
+  width:35px;
+  height:35px;
+  object-fit:contain;
+}
+
+/* text */
+.coinOption span{
+  font-size:13px;
+  font-weight:bold;
+}
+
+/* hover */
+.coinOption:hover{
+  transform:scale(1.03);
+  background:#43a047;
+}
+
+/* klik */
+.coinOption:active{
+  transform:scale(0.95);
+}
+
+
+
+/* coin kuning */
+.coin{
+  color:#c6a809;
+}
+
+/* harga putih */
+.price{
+  color:#9342c4;
+}
+
+
+.closeFrame{
+  position:absolute;
+  top:230px;
+  right:40px;
+  background:#8c00a6;
+  color:#fff;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  cursor:pointer;
+  z-index:10;
+  transition:0.3s;
+}
+
+/* hover */
+.closeFrame:hover{
+  background:#440250;
+  transform:scale(1.2);
+}
+
+
+
+.tigohost{
+  position:absolute;
+  bottom:-120px;
+  left:50%;
+  transform:translateX(-50%);
+
+  background:url('no_match_times_charge_bg.png') no-repeat center;
+  background-size:cover;
+
+  padding:10px 20px;
+  border-radius:12px;
+
+  color:#fff;
+  font-size:14px;
+  font-weight:600;
+  text-align:center;
+
+  z-index:5;
+}
+
+
+
   </style>
 </head>
 <body>
@@ -4193,6 +4518,138 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 
 
 
+
+
+<div id="closePromo">✕</div>
+<div id="floatingPromo"></div>
+
+<!-- FRAME GAMBAR -->
+<div class="frame">
+
+  <div class="closeFrame" onclick="closeFrame()">✕</div>
+
+  <img src="super_pack_bg.png" class="bgFrame">
+
+  <div id="promoInside">
+    <h2>.</h2>
+
+<div class="coinOption" onclick="selectCoin('6500+300 Coin - Rp510.200')">
+  <img src="tokens_3.png">
+  <span>
+    <b class="coin">6500+300 Coin</b> - 
+    <b class="price">Rp510.200</b>
+  </span>
+</div>
+
+<div class="coinOption" onclick="selectCoin('13000+500 Coin - Rp854.200')">
+  <img src="tokens_4.png">
+  <span>
+    <b class="coin">13000+500 Coin</b> - 
+    <b class="price">Rp854.200</b>
+  </span>
+</div>
+
+<div class="coinOption" onclick="selectCoin('20000+700 Coin - Rp1.510.820')">
+  <img src="tokens_5.png">
+  <span>
+    <b class="coin">20000+700 Coin</b> - 
+    <b class="price">Rp1.510.820</b>
+  </span>
+</div>
+
+<div class="coinOption" onclick="selectCoin('30000+1000 Coin - Rp2.010.220')">
+  <img src="tokens_6.png">
+  <span>
+    <b class="coin">30000+1000 Coin</b> - 
+    <b class="price">Rp2.010.220</b>
+  </span>
+</div>
+<div class="tigohost">#tigohostindonesia</div>
+  </div>
+</div>
+
+<!-- POPUP FULL -->
+<div id="fullPopup">
+
+  <div class="logoGrid">
+    <div onclick="showForm('Mako')">
+      <img src="makologo.webp"><span>Mako</span>
+    </div>
+
+    <div onclick="showForm('Tigo')">
+      <img src="tigogambar.webp"><span>Tigo</span>
+    </div>
+
+    <div onclick="showForm('Ayar')">
+      <img src="ayarlogo.webp"><span>Ayar</span>
+    </div>
+
+    <div onclick="showForm('Chato')">
+      <img src="chatologo.webp"><span>Chato</span>
+    </div>
+
+    <div onclick="showForm('Bling')">
+      <img src="bling.webp"><span>Bling</span>
+    </div>
+
+    <div onclick="showForm('TenderU')">
+      <img src="TenderUlogo.webp"><span>TenderU</span>
+    </div>
+
+    <div onclick="showForm('Meego')">
+      <img src="meegologo.webp"><span>Meego</span>
+    </div>
+
+    <div onclick="showForm('Chamet')">
+      <img src="Chamet.webp"><span>Chamet</span>
+    </div>
+
+    <div onclick="showForm('Weelive')">
+      <img src="weelivelogo.webp"><span>Weelive</span>
+    </div>
+
+        <div onclick="showForm('MICO')">
+      <img src="MICO.webp"><span>MICO</span>
+    </div>
+        <div onclick="showForm('17LIVE')">
+      <img src="17LIVE.webp"><span>17LIVE</span>
+    </div>
+        <div onclick="showForm('Kachi')">
+      <img src="Kachi.webp"><span>Kachi</span>
+    </div>
+        <div onclick="showForm('GOGO LIVE')">
+      <img src="GOGO LIVE.webp"><span>GOGO LIVE</span>
+    </div>
+        <div onclick="showForm('Litgo-Chat')">
+      <img src="Litgo-Chat.webp"><span>Litgo</span>
+    </div>
+        <div onclick="showForm('Dico')">
+      <img src="Dico.webp"><span>Dico</span>
+    </div>
+          <div onclick="showForm('Joy-Live')">
+      <img src="joy-live.webp"><span>Joy-Live</span>
+    </div>
+
+  </div>
+
+  <div id="formSection">
+    <h3>Form Pembelian</h3>
+    <input id="idAkun" placeholder="ID Akun">
+    <input id="namaRek" placeholder="Nama Rekening">
+    <input id="bank" placeholder="Nama Bank Anda">
+    <input id="jumlah" readonly>
+    <button onclick="kirimWA()">Bayar Sekarang</button>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
 <section class="section-support">
   <h2>Aplikasi Baru 2025-2026</h2>
 
@@ -5110,8 +5567,99 @@ Fitur Utama
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
  
 <script>
+
+
+
+let selectedText = "";
+
+// ambil element
+const floatingPromo = document.getElementById('floatingPromo');
+const frame = document.querySelector('.frame');
+const fullPopup = document.getElementById('fullPopup');
+
+// buka frame (gambar)
+floatingPromo.onclick = () => {
+  frame.style.display = 'flex';
+};
+
+
+function closeFrame(){
+  document.querySelector('.frame').style.display = 'none';
+}
+
+// tombol close
+document.getElementById('closePromo').onclick = () => {
+  floatingPromo.style.display = 'none';
+  document.getElementById('closePromo').style.display = 'none';
+};
+
+// pilih coin (dari dalam gambar)
+function selectCoin(text){
+  selectedText = text;
+  frame.style.display='none';
+  fullPopup.style.display='block';
+}
+
+// pilih metode + auto isi form
+function showForm(method){
+  if(!selectedText){
+    alert("Pilih promo coin dulu!");
+    return;
+  }
+
+  document.getElementById('formSection').style.display='block';
+  document.getElementById('jumlah').value = selectedText;
+  document.getElementById('bank').value = method;
+}
+
+// kirim WA
+function kirimWA(){
+  let id = document.getElementById('idAkun').value;
+  let nama = document.getElementById('namaRek').value;
+  let bank = document.getElementById('bank').value;
+  let jumlah = document.getElementById('jumlah').value;
+
+  if(!id || !nama || !bank){
+    alert("Lengkapi data dulu!");
+    return;
+  }
+
+  let text = `Halo Admin,%0AID Akun: ${id}%0ANama: ${nama}%0ABank: ${bank}%0AJumlah: ${jumlah}`;
+
+  window.open(`https://wa.me/6281234567890?text=${text}`,'_blank');
+}
+
+
+
+
+
+
 // ===== Data =====
 const APLIKASI = [
   {
@@ -7433,6 +7981,21 @@ function closeCaraDeposit() {
 }
 
 document.getElementById("btn-close-deposit").addEventListener("click", closeCaraDeposit);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     </script>
 
