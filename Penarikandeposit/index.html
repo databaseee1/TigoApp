@@ -39,6 +39,12 @@
       });
     }
   });
+
+
+
+
+
+  
 </script>
 
 
@@ -3673,8 +3679,8 @@ btnLogout.addEventListener("click", () => {
 
 
 
-
-// ---------- SUBMIT DEPOSIT ----------
+// ---------- SUBMIT PENARIKAN ----------
+// ---------- SUBMIT PENARIKAN ----------
 btnKirim.addEventListener("click", async () => {
   if (!currentUser) {
     Swal.fire({ icon: "warning", text: "Silakan login dahulu." });
@@ -3689,6 +3695,7 @@ btnKirim.addEventListener("click", async () => {
     Swal.fire({ icon: "warning", text: "Semua Form harus diisi." });
     return;
   }
+
   if (isNaN(nominal) || nominal < 300000) {
     nomErr.style.display = "block";
     return;
@@ -3697,49 +3704,74 @@ btnKirim.addEventListener("click", async () => {
   }
 
   try {
-    // 🔹 1. Simpan dulu ke subcollection user
-    const subRef = await addDoc(
-      collection(db, "pendaftaran", currentUser.uid, "historydeposit"),
-      {
-        namaPengirim,
-        bank,
-        nominal,
-        status: "pending",
-        timestamp: Timestamp.now(),
-        userEmail: currentUser.email,
-        userWA: currentUser.wa,
-        uid: currentUser.uid,
-      }
-    );
 
-    // 🔹 2. Simpan juga ke global dengan link ke subId
+    // ambil data user
+    const userRef = doc(db, "pendaftaran", currentUser.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      Swal.fire({ icon: "error", text: "Data user tidak ditemukan." });
+      return;
+    }
+
+    const userData = userSnap.data();
+    const saldo = userData.saldo || 0;
+
+    // 🔴 cek saldo cukup
+    if (nominal > saldo) {
+      Swal.fire({
+        icon: "warning",
+        text: "Saldo tidak mencukupi."
+      });
+      return;
+    }
+
+    // 🔹 hitung saldo baru
+    const saldoBaru = saldo - nominal;
+
+    // 🔹 update saldo
+    await updateDoc(userRef, {
+      saldo: saldoBaru
+    });
+
+    // 🔹 simpan history user
+const subRef = await addDoc(
+  collection(db, "pendaftaran", currentUser.uid, "historydeposit"),
+  {
+    namaPengirim,
+    bank,
+    nominal,
+    status: "pending",   // ✅ tunggu admin
+    timestamp: Timestamp.now(),
+    uid: currentUser.uid,
+  }
+);
+
+    // 🔹 simpan global
     await addDoc(collection(db, "historydeposit"), {
       namaPengirim,
       bank,
       nominal,
-      status: "pending",
+      status: "pending", // menunggu admin
       timestamp: Timestamp.now(),
-      userEmail: currentUser.email,
-      userWA: currentUser.wa,
       uid: currentUser.uid,
-      subId: subRef.id,   // simpan id subcollection
+      subId: subRef.id,
     });
 
     document.getElementById("depositForm").reset();
+
     Swal.fire({
       icon: "success",
-      text: "Permintaan Penarikan berhasil dikirim (status: pending).",
+      text: "Penarikan berhasil.",
       timer: 1500,
       showConfirmButton: false,
     });
+
   } catch (err) {
-    console.error("Deposit error:", err);
-    Swal.fire({ icon: "error", text: "Gagal mengirim Penarikan." });
+    console.error("Withdraw error:", err);
+    Swal.fire({ icon: "error", text: "Gagal melakukan penarikan." });
   }
 });
-
-
-
 
 
 
