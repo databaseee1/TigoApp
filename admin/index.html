@@ -8,6 +8,13 @@
 <script type="module" src="/js/admin.js"></script>
 
 
+
+
+
+
+
+
+
 <!-- Firebase SDK -->
 <script type="module">
 import { 
@@ -1797,117 +1804,6 @@ document.getElementById('saveAnalisis').addEventListener('click', async () => {
 
 
 
-function loadBottomWithdraw(){
-  console.log("Halaman Buttom Withdraw dibuka");
-
-  // nanti di sini kamu bisa ambil data user dari Firebase
-}
-
-
-
-
-const listWithdrawUser = document.getElementById("listWithdrawUser");
-const searchWithdrawUser = document.getElementById("searchWithdrawUser");
-
-searchWithdrawUser.addEventListener("input", function () {
-
-  const keyword = this.value.toLowerCase();
-  const cards = listWithdrawUser.children;
-
-  for (let i = 0; i < cards.length; i++) {
-
-    const card = cards[i];
-    const name = card.querySelector("b").innerText.toLowerCase();
-
-    if (name.includes(keyword)) {
-      card.style.display = "flex";
-    } else {
-      card.style.display = "none";
-    }
-
-  }
-
-});
-
-let unsubscribeWithdraw = null;
-
-window.loadBottomWithdraw = function () {
-
-  if (unsubscribeWithdraw) {
-    unsubscribeWithdraw();
-  }
-
-  listWithdrawUser.innerHTML = "Loading...";
-
-  unsubscribeWithdraw = onSnapshot(collection(db, "pendaftaran"), (snapshot) => {
-
-    listWithdrawUser.innerHTML = "";
-
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data();
-      const userId = docSnap.id;
-
-      const userData = {
-        marked: data.marked ?? false,
-        nama: data.nama ?? "-",
-        namaRek: data.namaRek ?? "-",
-        noRek: data.noRek ?? "-"
-      };
-
-      const div = document.createElement("div");
-      div.style = `
-        background:#fff;
-        margin:10px 0;
-        padding:15px;
-        border-radius:10px;
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        box-shadow:0 4px 10px rgba(0,0,0,0.1);
-      `;
-
-      div.innerHTML = `
-        <div>
-          <b>${userData.nama}</b><br>
-          <small>Rek: ${userData.namaRek}</small><br>
-          <small>No: ${userData.noRek}</small><br>
-          <small style="color:${userData.marked ? 'green' : 'red'}">
-            ${userData.marked ? "BISA WTIHDRAW" : "DITUTUP"}
-          </small>
-        </div>
-
-        <button style="
-          padding:8px 14px;
-          border:none;
-          border-radius:20px;
-          cursor:pointer;
-          font-weight:600;
-          background:${userData.marked ? '#6a0dad' : '#999'};
-          color:#fff;
-        ">
-          ${userData.marked ? "Disable" : "Enable"}
-        </button>
-      `;
-
-      const btn = div.querySelector("button");
-
-      btn.onclick = async () => {
-        btn.disabled = true;
-
-        await updateDoc(doc(db, "pendaftaran", userId), {
-          marked: !userData.marked
-        });
-
-        btn.disabled = false;
-      };
-
-      listWithdrawUser.appendChild(div);
-    });
-
-  });
-
-};
-
 
 
 
@@ -2389,9 +2285,7 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
         <a href="#" onclick="showPage('saldoHostAdmin'); toggleDropdown();">Saldo Host</a>
         <a href="#" onclick="showPage('userdpo'); toggleDropdown();">Request Withdraw</a>
         <a href="#" onclick="showPage('updateTagihan'); toggleDropdown();">Tagihan</a>
-        <a href="#" onclick="showPage('bottomWithdraw'); loadBottomWithdraw(); toggleDropdown();">
-    Buttom Withdraw
-  </a>
+      
         <a href="#" onclick="showPage('tambahCreditSection'); toggleDropdown(); openTambahCredit();">Tambah Credit</a>
         <a href="#" onclick="showPage('kelolaCoin'); toggleDropdown();">Kelola Coin</a>
 <a href="#" onclick="showPage('chatControl'); loadChatControl(); toggleDropdown();"> Kontrol Chat</a>
@@ -2933,31 +2827,6 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
 </div>
 
 
-
-
-
-
-
-<div id="bottomWithdraw" style="display:none;">
-  <h2>Kontrol Withdraw User</h2>
-
-  <!-- SEARCH -->
-  <input 
-    type="text" 
-    id="searchWithdrawUser"
-    placeholder="Cari nama user..."
-    style="
-      width:50%;
-      padding:10px;
-      border-radius:8px;
-      border:1px solid #ccc;
-      margin-bottom:10px;
-      outline:none;
-    "
-  >
-
-  <div id="listWithdrawUser"></div>
-</div>
 
 
 

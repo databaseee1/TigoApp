@@ -3410,7 +3410,7 @@ button{
 /* INI POSISI AREA PUTIH */
 #promoInside{
   position:absolute;
-  top:210px;   /* atur sesuai gambar */
+  top:195px;   /* atur sesuai gambar */
   left:45px;
   right:45px;
   text-align:center;
@@ -3482,7 +3482,7 @@ button{
 
 .closeFrame{
   position:absolute;
-  top:230px;
+  top:200px;
   right:40px;
   background:#8c00a6;
   color:#fff;
@@ -3563,6 +3563,36 @@ button{
   transform:scale(0.95);
 }
 
+
+
+
+
+
+/* animasi utama */
+@keyframes floatCS{
+  0%{transform:translateY(0)}
+  50%{transform:translateY(-12px)}
+  100%{transform:translateY(0)}
+}
+
+/* ICON */
+#btnCS img{
+  animation: floatCS 2.5s ease-in-out infinite;
+}
+
+/* 🔥 CLOSE IKUT ANIMASI */
+#btnCS div{
+  animation: floatCS 2.5s ease-in-out infinite;
+}
+
+/* hover biar lebih hidup */
+#btnCS img:hover{
+  transform:scale(1.1);
+}
+
+#btnCS div:hover{
+  transform:scale(1.2);
+}
   </style>
 </head>
 <body>
@@ -4589,10 +4619,61 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 
 
 
+
 <div id="formWA" style="
 position:fixed;
 bottom:110px;
 right:20px;
+=======
+
+
+
+
+<!-- ================= TOMBOL ================= -->
+<div id="btnCS" style="
+position:fixed;
+top:80%;
+right:14px;
+transform:translateY(-50%);
+z-index:999;
+">
+
+  <!-- tombol close -->
+  <div onclick="closeCS(event)" style="
+  position:absolute;
+  top:-8px;
+  right:-8px;
+  background:red;
+  color:#fff;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  font-size:12px;
+  text-align:center;
+  line-height:18px;
+  cursor:pointer;
+  ">
+  ✕
+  </div>
+
+  <!-- icon -->
+  <img src="servant_icon.png" onclick="openForm()" style="
+  width:55px;
+  height:55px;
+  border-radius:50%;
+  cursor:pointer;
+  box-shadow:0 5px 20px rgba(0,0,0,0.3);
+  ">
+</div>
+
+
+<div id="formWA" style="
+display:none;
+position:fixed;
+top:50%;
+right:70px;
+transform:translateY(-50%);
+>>>>>>> f45dc18 (update tampilan cs + form)
 background:#fff;
 padding:15px;
 border-radius:12px;
@@ -8113,12 +8194,68 @@ document.getElementById("btn-close-deposit").addEventListener("click", closeCara
 
 
 
-
-
     </script>
 
 
+<script>
+document.addEventListener("DOMContentLoaded", function(){
 
+  const form = document.getElementById("formWA");
+  const startBtn = document.getElementById("btnStart");
+
+  // buka form
+  window.openForm = function(){
+    form.style.display = "block";
+  };
+
+window.closeForm = function(){
+  document.getElementById("formWA").style.display = "none";
+};
+
+  // close tombol CS
+  window.closeCS = function(e){
+    e.stopPropagation(); // biar ga ikut klik icon
+    document.getElementById("btnCS").style.display = "none";
+  };
+
+  // klik mulai chat
+  startBtn.onclick = function(){
+    let wa = document.getElementById("wa").value;
+    let email = document.getElementById("email").value;
+
+    if(!wa || !email){
+      alert("Harap isi nomor WhatsApp dan email!");
+      return;
+    }
+
+    form.style.display = "none";
+
+    if(typeof Tawk_API !== "undefined"){
+
+      // nama sesuai nomor WA
+      Tawk_API.setAttributes({
+        name: "WhatsApp " + wa,
+        email: email,
+        phone: wa
+      }, function(){});
+
+      // buka chat
+      Tawk_API.showWidget();
+      Tawk_API.maximize();
+
+      // kirim ke dashboard
+      setTimeout(function(){
+        Tawk_API.addEvent("DATA CUSTOMER", {
+          "WhatsApp": wa,
+          "Email": email
+        });
+      }, 800);
+
+    }
+  };
+
+});
+</script>
 
 </body>
 </html>
