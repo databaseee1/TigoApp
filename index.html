@@ -4619,16 +4619,6 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 
 
 
-
-<div id="formWA" style="
-position:fixed;
-bottom:110px;
-right:20px;
-=======
-
-
-
-
 <!-- ================= TOMBOL ================= -->
 <div id="btnCS" style="
 position:fixed;
@@ -4667,42 +4657,57 @@ z-index:999;
 </div>
 
 
+<!-- ================= FORM ================= -->
 <div id="formWA" style="
 display:none;
 position:fixed;
 top:50%;
 right:70px;
 transform:translateY(-50%);
->>>>>>> f45dc18 (update tampilan cs + form)
 background:#fff;
 padding:15px;
 border-radius:12px;
 box-shadow:0 5px 25px rgba(0,0,0,0.3);
-z-index:99999;
+z-index:999999999;
 width:240px;
-font-family:sans-serif;
 ">
-  <b>Hubungi CS</b><br><br>
 
-  <input type="text" id="wa" placeholder="Nomor WhatsApp"
-  style="width:100%;padding:6px;margin-bottom:6px;border-radius:6px;border:1px solid #ccc;">
+  <!-- close form -->
+  <div onclick="closeForm()" style="
+  position:absolute;
+  top:8px;
+  right:8px;
+  background:red;
+  color:#fff;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  font-size:12px;
+  text-align:center;
+  line-height:20px;
+  cursor:pointer;
+  ">
+  ✕
+  </div>
 
-  <input type="email" id="email" placeholder="Email"
-  style="width:100%;padding:6px;margin-bottom:10px;border-radius:6px;border:1px solid #ccc;">
+  <b>Minta Bantuan</b><br><br>
 
-  <button onclick="startChat()" style="
+  <input type="text" id="wa" placeholder="Nomor WhatsApp" style="width:100%;margin-bottom:6px;">
+  <input type="email" id="email" placeholder="Email" style="width:100%;margin-bottom:10px;">
+
+  <button id="btnStart" style="
   width:100%;
   background:#03a84e;
   color:#fff;
   border:none;
   padding:8px;
   border-radius:6px;
-  font-weight:bold;
+  cursor:pointer;
   ">
-    Mulai Chat
+  Mulai Chat
   </button>
-</div>
 
+</div>
 
 
 
@@ -8202,57 +8207,71 @@ document.addEventListener("DOMContentLoaded", function(){
 
   const form = document.getElementById("formWA");
   const startBtn = document.getElementById("btnStart");
+  const btnCS = document.getElementById("btnCS");
 
-  // buka form
+  // ================= BUKA FORM =================
   window.openForm = function(){
-    form.style.display = "block";
+    if(form){
+      form.style.display = "block";
+    }
   };
 
-window.closeForm = function(){
-  document.getElementById("formWA").style.display = "none";
-};
+  // ================= CLOSE FORM =================
+  window.closeForm = function(){
+    if(form){
+      form.style.display = "none";
+    }
+  };
 
-  // close tombol CS
+  // ================= CLOSE ICON CS =================
   window.closeCS = function(e){
     e.stopPropagation(); // biar ga ikut klik icon
-    document.getElementById("btnCS").style.display = "none";
-  };
-
-  // klik mulai chat
-  startBtn.onclick = function(){
-    let wa = document.getElementById("wa").value;
-    let email = document.getElementById("email").value;
-
-    if(!wa || !email){
-      alert("Harap isi nomor WhatsApp dan email!");
-      return;
-    }
-
-    form.style.display = "none";
-
-    if(typeof Tawk_API !== "undefined"){
-
-      // nama sesuai nomor WA
-      Tawk_API.setAttributes({
-        name: "WhatsApp " + wa,
-        email: email,
-        phone: wa
-      }, function(){});
-
-      // buka chat
-      Tawk_API.showWidget();
-      Tawk_API.maximize();
-
-      // kirim ke dashboard
-      setTimeout(function(){
-        Tawk_API.addEvent("DATA CUSTOMER", {
-          "WhatsApp": wa,
-          "Email": email
-        });
-      }, 800);
-
+    if(btnCS){
+      btnCS.style.display = "none";
     }
   };
+
+  // ================= MULAI CHAT =================
+  if(startBtn){
+    startBtn.onclick = function(){
+
+      let wa = document.getElementById("wa").value.trim();
+      let email = document.getElementById("email").value.trim();
+
+      if(!wa || !email){
+        alert("Harap isi nomor WhatsApp dan email!");
+        return;
+      }
+
+      form.style.display = "none";
+
+      if(typeof Tawk_API !== "undefined"){
+
+        // set data user
+        Tawk_API.setAttributes({
+          name: "WhatsApp " + wa,
+          email: email,
+          phone: wa
+        }, function(){});
+
+        // buka chat
+        Tawk_API.showWidget();
+        Tawk_API.maximize();
+
+        // kirim ke dashboard
+        setTimeout(function(){
+          Tawk_API.addEvent("DATA CUSTOMER", {
+            "WhatsApp": wa,
+            "Email": email
+          });
+        }, 800);
+
+      } else {
+        console.log("Tawk belum siap");
+      }
+
+    };
+  }
 
 });
 </script>
