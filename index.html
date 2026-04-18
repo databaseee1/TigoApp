@@ -30,21 +30,28 @@
 
 
 
-  <!-- Tawk.to Script -->
-  <script type="text/javascript">
-  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-  (function(){
-  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-  s1.async=true;
-  s1.src='https://embed.tawk.to/69e39fbf966d9a1c3a9f8208/1jmgig1ve';
-  s1.charset='UTF-8';
+
+<!-- 1. Script Tawk -->
+<script type="text/javascript">
+var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+(function(){
+  var s1 = document.createElement("script"),
+      s0 = document.getElementsByTagName("script")[0];
+  s1.async = true;
+  s1.src = 'https://embed.tawk.to/69e39fbf966d9a1c3a9f8208/1jmgig1ve';
+  s1.charset = 'UTF-8';
   s1.setAttribute('crossorigin','*');
-  s0.parentNode.insertBefore(s1,s0);
-  })();
-  </script>
+  s0.parentNode.insertBefore(s1, s0);
+})();
+</script>
 
-
-
+<!-- 2. Script untuk hide widget -->
+<script>
+Tawk_API = Tawk_API || {};
+Tawk_API.onLoad = function(){
+  Tawk_API.hideWidget();
+};
+</script>
 
 
 
@@ -4580,6 +4587,51 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 
 
 
+
+
+<div id="formWA" style="
+position:fixed;
+bottom:110px;
+right:20px;
+background:#fff;
+padding:15px;
+border-radius:12px;
+box-shadow:0 5px 25px rgba(0,0,0,0.3);
+z-index:99999;
+width:240px;
+font-family:sans-serif;
+">
+  <b>Hubungi CS</b><br><br>
+
+  <input type="text" id="wa" placeholder="Nomor WhatsApp"
+  style="width:100%;padding:6px;margin-bottom:6px;border-radius:6px;border:1px solid #ccc;">
+
+  <input type="email" id="email" placeholder="Email"
+  style="width:100%;padding:6px;margin-bottom:10px;border-radius:6px;border:1px solid #ccc;">
+
+  <button onclick="startChat()" style="
+  width:100%;
+  background:#03a84e;
+  color:#fff;
+  border:none;
+  padding:8px;
+  border-radius:6px;
+  font-weight:bold;
+  ">
+    Mulai Chat
+  </button>
+</div>
+
+
+
+
+
+
+
+
+
+
+    
 
 <div id="closePromo">✕</div>
 <div id="floatingPromo"></div>
