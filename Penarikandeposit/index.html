@@ -766,7 +766,7 @@ label {
   filter: blur(6px);
   transform: scale(1.1);
   z-index: 1;
-  transition: background 0.3s ease-in-out; /* efek halus saat ganti */
+  transition: background 0.1s ease-in-out; /* efek halus saat ganti */
 }
 
 
@@ -1867,32 +1867,36 @@ z-index:9999;
   box-shadow:0 2px 6px rgba(0,0,0,0.05);
 ">
 
+<div style="font-family:'Segoe UI', Roboto, Arial, sans-serif;">
+
   <!-- Nama Bank -->
-  <div style="margin-bottom:12px; display:flex; align-items:center; gap:10px;">
-    <img src="ic_checked.png" alt="icon" style="width:22px; height:22px;">
+  <div style="margin-bottom:14px; display:flex; align-items:flex-start; gap:10px;">
+    <img src="ic_checked.png" style="width:22px; height:22px; margin-top:2px;">
     <div>
-      <b>Nama Bank :</b>
-      <div id="viewBank" style="color:#333; margin-top:4px;">-</div>
+      <div style="font-size:12px; color:#888;">Nama Bank</div>
+      <div id="viewBank" style="font-size:15px; font-weight:600; color:#111; margin-top:2px;">-</div>
     </div>
   </div>
 
   <!-- Nama Rekening -->
-  <div style="margin-bottom:12px; display:flex; align-items:center; gap:10px;">
-    <img src="ic_checked.png" alt="icon" style="width:22px; height:22px;">
+  <div style="margin-bottom:14px; display:flex; align-items:flex-start; gap:10px;">
+    <img src="ic_checked.png" style="width:22px; height:22px; margin-top:2px;">
     <div>
-      <b>Nama Rekening :</b>
-      <div id="viewNamaRek" style="color:#333; margin-top:4px;">-</div>
+      <div style="font-size:12px; color:#888;">Nama Rekening</div>
+      <div id="viewNamaRek" style="font-size:15px; font-weight:600; color:#111; margin-top:2px;">-</div>
     </div>
   </div>
 
   <!-- Nomor Rekening -->
-  <div style="display:flex; align-items:center; gap:10px;">
-    <img src="ic_checked.png" alt="icon" style="width:22px; height:22px;">
+  <div style="display:flex; align-items:flex-start; gap:10px;">
+    <img src="ic_checked.png" style="width:22px; height:22px; margin-top:2px;">
     <div>
-      <b>Nomor Rekening :</b>
-      <div id="viewNoRek" style="color:#333; margin-top:4px;">-</div>
+      <div style="font-size:12px; color:#888;">Nomor Rekening</div>
+      <div id="viewNoRek" style="font-size:15px; font-weight:600; color:#111; margin-top:2px; letter-spacing:1px;">-</div>
     </div>
   </div>
+
+</div>
 
 </div>
 
@@ -2164,7 +2168,7 @@ z-index:9999;
 ">
 
   <!-- ICON -->
-     <p style="margin-bottom:14px;border-radius: 10px;background: #e6e6e6;"><strong>Penukaran Gagal</strong>
+     <p style="margin-bottom:14px;border-radius: 10px;"><strong>Penukaran Gagal</strong>
   </p>
 <img src="Kotak.png" style="width:60px; margin-bottom:10px; border-radius:10px;">
 
@@ -2226,27 +2230,31 @@ z-index:9999;
   position: fixed;
   top: 0;
   left: 0;
+  background: #ffffff;
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column; /* biar bisa turun ke bawah */
   align-items: center;
   justify-content: center;
   z-index: 9999;
   overflow: hidden;
 ">
+
   <!-- ✅ Login card -->
   <div id="loginCard" class="login-card" style="
+    min-height: 620px;
     background: #fff;
     padding: 20px;
     border-radius: 12px;
-    width: 300px;
+    width: 340px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     position: relative;
-    z-index: 2; /* pastikan di atas background */
+    z-index: 2;
   ">
     <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
       <div style="width:44px; height:44px; border-radius:10px; overflow:hidden; background:var(--soft); display:flex; align-items:center; justify-content:center;">
-        <img src="servant_icon.png" alt="Offline" style="width:100%; height:100%; object-fit:cover;" />
+        <img src="servant_icon.png" style="width:100%; height:100%; object-fit:cover;" />
       </div>
       <div>
         <div style="font-weight:700">LOGIN PENARIKAN</div>
@@ -2254,19 +2262,119 @@ z-index:9999;
       </div>
     </div>
 
-    <label style="font-size:14px; font-weight:600;">Email</label>
-    <input id="loginEmail" type="text" placeholder="email@example.com" 
-      style="font-size:14px; width:100%; padding:10px 12px; margin-bottom:12px; border:1px solid #ccc; border-radius:8px;" />
+<!-- BOX FORM LOGIN -->
+<div style="
+  margin-top:15px;
+  padding:15px;
+  border-radius:12px;
 
-    <label style="font-size:14px; font-weight:600;">Password</label>
-    <input id="loginWA" type="text" placeholder="xxxx(ops!)" 
-      style="font-size:14px; width:100%; padding:10px 12px; border:1px solid #ccc; border-radius:8px;" />
+  background: url('no_match_times_top_bg.png') no-repeat center;
+  background-size: cover;
 
-    <div style="margin-top:12px;display:flex;gap:8px; justify-content:flex-end;">
-      <button id="btnLogin" class="btn btn-primary">Masuk</button>
-    </div>
+  border:1px solid rgb(131 14 182 / 30%);
+  backdrop-filter: blur(6px);
+">
+
+  <label style="font-size:14px; font-weight:600;">Email</label>
+  <input id="loginEmail" type="text" placeholder="email@example.com" 
+    style="font-size:14px; width:100%; padding:10px 12px; margin-bottom:12px; border:1px solid #ccc; border-radius:8px;" />
+
+  <label style="font-size:14px; font-weight:600;">Password</label>
+  <input id="loginWA" type="text" placeholder="xxxx(ops!)" 
+    style="font-size:14px; width:100%; padding:10px 12px; border:1px solid #ccc; border-radius:8px;" />
+
+  <div style="margin-top:12px;display:flex;gap:8px; justify-content:flex-end;">
+    <button id="btnLogin" class="btn btn-primary">Masuk</button>
   </div>
+
 </div>
+
+      <!-- ✅ MENU BAWAH (TERPISAH DARI BOX) -->
+<div style="
+  margin-top:20px;
+  display:flex;
+  gap:25px;
+  align-items:center;
+  justify-content:center;
+
+  background: url('no_match_times_charge_bg.png') no-repeat center;
+  background-size: cover;
+
+  padding: 15px 20px; /* biar isi tidak mepet */
+  border-radius: 12px;
+">
+
+    <!-- Email -->
+    <div style="text-align:center; cursor:pointer;">
+      <img src="im_chat_ticket_icon.png" style="width:40px; height:40px;">
+      <div style="font-size:12px; color:#fff;">Free Chat</div>
+    </div>
+
+    <!-- Facebook -->
+    <div style="text-align:center; cursor:pointer;">
+      <img src="reward_vip_icon_small.png" style="width:40px; height:40px;">
+      <div style="font-size:12px; color:#fff;">Host Vip</div>
+    </div>
+
+    <!-- Daftar -->
+    <div style="text-align:center; cursor:pointer;">
+      <img src="video_ticket_icon.png" style="width:40px; height:40px;">
+      <div style="font-size:12px; color:#fff;">Free Video</div>
+
+
+
+
+
+
+<div id="terfooter" style="
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 2;
+">
+
+  <!-- Logo 1 -->
+  <img src="ic_launcher_circle.png" style="
+    height: 35px;
+    object-fit: contain;
+  ">
+
+  <!-- Logo 2 -->
+  <img src="agencylogo.png" style="
+    height: 35px;
+    object-fit: contain;
+  ">
+
+</div>
+
+
+    </div>
+    
+
+  </div>
+  </div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     <!-- Action (deposit) -->
     <div id="actionCard" class="action-card" style="display:none">
@@ -2446,8 +2554,10 @@ z-index:9999;
 <!-- Tombol kembali -->
 <button id="closebalikki"
   style="background:none; border:none; padding:0; cursor:pointer; margin-right:10px;"
-  onclick="window.location.href='menu.html'">
+  onclick="document.getElementById('historyPopup').style.display='none';">
+  
   <img src="back_black.png" style="width:22px; height:22px;">
+  
 </button>
 
       <!-- Teks tengah -->
@@ -3639,19 +3749,21 @@ function forceLogout(pesanHTML, icon = "offline.png", title = "Pemberitahuan") {
   const jumlahTagihanEl = document.getElementById("jumlahTagihan");
   if (jumlahTagihanEl) jumlahTagihanEl.textContent = "Rp 0";
 
-  Swal.fire({
-    title: title,
-    html: pesanHTML,
-    imageUrl: icon,
-    imageWidth: 80,
-    imageHeight: 80,
-    confirmButtonText: "OK",
-    width: 400,
-    customClass: {
-      popup: "swal-rounded",
-      confirmButton: "swal-btn"
-    }
-  });
+Swal.fire({
+  title: title,
+  html: pesanHTML,
+  imageUrl: icon,
+  imageWidth: 80,
+  imageHeight: 80,
+  confirmButtonText: "Kembali",
+  width: 400,
+  customClass: {
+    popup: "swal-rounded",
+    confirmButton: "swal-btn"
+  }
+}).then(() => {
+  location.reload(); // 🔥 otomatis reload
+});
 }
 
 
@@ -3861,41 +3973,93 @@ itemEl.addEventListener("click", () => {
   else statusColor = "#a7a7a7";
 
 const html = `
-  <div style="font-family: 'Arial', sans-serif; font-size:14px; color:#333;">
-    <div style="background:#fff; border-radius:12px; padding:16px; box-shadow:0 2px 6px rgba(0,0,0,0.1);">
+  <div style="font-family:'Arial', sans-serif; font-size:14px; color:#333;">
 
-      <div style="margin-bottom:14px; text-align:center;">
-        <div style="font-size:16px; font-weight:bold; color:#111;">Detail Transaksi</div>
+    <div style="
+      background:#ffffff;
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.08);
+      border:1px solid #f0f0f0;
+    ">
+
+      <!-- HEADER -->
+      <div style="text-align:center; margin-bottom:18px;">
+        <div style="font-size:16px; font-weight:700; color:#111;">
+          Detail Transaksi
+        </div>
+        <div style="font-size:12px; color:#888; margin-top:4px;">
+          Informasi lengkap transaksi anda
+        </div>
       </div>
 
-      <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-        <span>Nama Pengirim</span>
+      <!-- ITEM -->
+      <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f5f5f5;">
+        <span style="color:#777;">Nama Penerima</span>
         <span style="font-weight:600; color:#111;">${item.namaPengirim || "-"}</span>
       </div>
 
-      <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-        <span>Bank</span>
-        <span style="font-weight:600; color:#111;">${item.bank || "-"}</span>
+<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f5f5f5;">
+  <span style="color:#777;">Bank</span>
+
+  <span style="
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-weight:600;
+    color:#111;
+  ">
+    <img src="certification_award_verify_badge_male.png" style="width:20px; height:20px; object-fit:contain;">
+    ${item.bank || "-"}
+  </span>
+</div>
+
+<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f5f5f5;">
+  <span style="color:#777;">Nominal IDR</span>
+
+  <span style="
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-weight:700;
+    font-size:15px;
+    color:#16a34a;
+  ">
+    <img src="mine_rucksack_icon.png" style="width:18px; height:18px; object-fit:contain;">
+    Rp ${(item.nominal || 0).toLocaleString('id-ID')}
+  </span>
+</div>
+
+      <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f5f5f5;">
+        <span style="color:#777;">Status Penarikan</span>
+        <span style="
+          font-weight:700;
+          font-size:12px;
+          padding:4px 10px;
+          border-radius:999px;
+          background:${statusColor}20;
+          color:${statusColor};
+          text-transform:uppercase;
+        ">
+          ${status}
+        </span>
       </div>
 
-      <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-        <span>Nominal</span>
-        <span style="font-weight:700; color:#0f9d58;">${formatRpShort(item.nominal || 0)}</span>
-      </div>
-
-      <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-        <span>Status</span>
-        <span style="font-weight:700; text-transform:uppercase; color:${statusColor};">${status}</span>
-      </div>
-
-      <div style="display:flex; justify-content:space-between; margin-top:12px; font-size:13px; color:#666;">
-        <span>Tanggal</span>
-        <span>${formatDate(item.timestamp)}</span>
+      <div style="display:flex; justify-content:space-between; padding:12px 0;">
+        <span style="color:#777;">Tanggal</span>
+        <span style="font-size:13px; color:#555;">
+          ${formatDate(item.timestamp)}
+        </span>
       </div>
 
     </div>
+
   </div>
 `;
+
+
+
+
 
 Swal.fire({
   html,
@@ -4824,9 +4988,6 @@ redeemAlert.addEventListener("click", (e) => {
     redeemAlert.style.display = "none";
   }
 });
-
-
-
 
 
 
