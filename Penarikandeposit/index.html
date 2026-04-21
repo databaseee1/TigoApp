@@ -174,7 +174,7 @@ img, button {
 
 .saldo-box #saldoHost {
   color: #e91e63;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
 }
 
@@ -354,7 +354,7 @@ label {
 }
 
 .status-pill.tolak {
-  background-color: red;
+  background-color: rgb(255, 255, 255);
 }
 
 
@@ -461,7 +461,7 @@ label {
 
 .tagihan-box span {
   color: #e91e63;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: bold;
   margin-left: 5px;
 }
@@ -1388,40 +1388,118 @@ label {
     </h3>
 
     <!-- 🔹 Form Penarikan -->
-    <form id="depositForm" onsubmit="return false;" style="max-width:420px; margin:auto;">
+<form id="depositForm" onsubmit="return false;" style="max-width:420px; margin:auto; font-family:sans-serif;">
 
-      <!-- Nama Pengirim -->
-      <div style="margin-bottom:12px;">
-        <label for="namaPengirim" style="display:block; margin-bottom:4px;">Nama Penerima</label>
-        <input id="namaPengirim" type="text" placeholder="Nama pengirim" required 
-               style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;" />
-      </div>
+  <!-- Nama Pengirim -->
+  <div style="margin-bottom:16px;">
+    <label for="namaPengirim" style="display:block; margin-bottom:6px; font-size:13px; color:#555;">
+      Nama Penerima
+    </label>
+    <input id="namaPengirim" type="text" placeholder="Nama pengirim" required 
+           style="
+           width:100%;
+           padding:12px;
+           border-radius:10px;
+           border:1px solid #e5e7eb;
+           font-size:14px;
+           outline:none;
+           transition:all 0.2s;
+           box-sizing:border-box;"
+           
+           onfocus="this.style.borderColor='#111'; this.style.boxShadow='0 0 0 2px rgba(0,0,0,0.05)'"
+           onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
+    />
+  </div>
 
-      <!-- Bank / E-Wallet -->
-      <div style="margin-bottom:12px;">
-        <label for="bank" style="display:block; margin-bottom:4px;">Bank / E-Wallet</label>
-        <div style="position:relative; display:flex; align-items:center;">
-          <img src="dana.png" alt="icon" 
-               style="position:absolute; left:10px; width:50px; height:50px; opacity:0.7;" />
-          <input id="bank" type="text" required
-                 style="padding-left:40px; width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;" />
-        </div>
-      </div>
+  <!-- Bank / E-Wallet -->
+  <div style="margin-bottom:16px;">
+    <label for="bank" style="display:block; margin-bottom:6px; font-size:13px; color:#555;">
+      Bank / E-Wallet
+    </label>
 
-      <!-- Nominal -->
-      <div style="margin-bottom:8px;">
-        <label for="nominal" style="display:block; margin-bottom:4px;">Nominal Penarikan (Rp)</label>
-        <input id="nominal" type="number" placeholder="500000" min="0" required
-               style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;" />
-        <small id="nomErr" style="color:red; display:none;">Minimal Rp 500.000</small>
-      </div>
+    <div style="position:relative;">
+      <img src="dana.png" alt="DANA"
+           style="
+           position:absolute;
+           left:12px;
+           top:50%;
+           transform:translateY(-50%);
+           width:22px;
+           height:22px;
+           object-fit:contain;
+           pointer-events:none;" />
 
-      <!-- Tombol Aksi -->
-      <div style="margin-top:16px; display:flex; gap:10px; justify-content:flex-end;">
-        <button id="btnKirim" class="btn btn-primary" type="button">Tarik</button>
-        <button id="btnKembali" class="btn btn-muted" type="button">Kembali</button>
-      </div>
-    </form>
+      <input id="bank" type="text" required placeholder="Pilih Bank / E-Wallet"
+             style="
+             width:100%;
+             padding:12px 14px 12px 44px;
+             border-radius:10px;
+             border:1px solid #e5e7eb;
+             font-size:14px;
+             outline:none;
+             transition:all 0.2s;
+             box-sizing:border-box;
+             background:#fff;"
+             
+             onfocus="this.style.borderColor='#111'; this.style.boxShadow='0 0 0 2px rgba(0,0,0,0.05)'"
+             onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
+      />
+    </div>
+  </div>
+
+  <!-- Nominal -->
+  <div style="margin-bottom:12px;">
+    <label for="nominal" style="display:block; margin-bottom:6px; font-size:13px; color:#555;">
+      Nominal Penarikan (Rp)
+    </label>
+    <input id="nominal" type="number" placeholder="500000" min="0" required
+           style="
+           width:100%;
+           padding:12px;
+           border-radius:10px;
+           border:1px solid #e5e7eb;
+           font-size:14px;
+           outline:none;
+           transition:all 0.2s;
+           box-sizing:border-box;"
+           
+           onfocus="this.style.borderColor='#111'; this.style.boxShadow='0 0 0 2px rgba(0,0,0,0.05)'"
+           onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
+    />
+    <small id="nomErr" style="color:#ef4444; display:none; font-size:12px;">
+      Minimal Rp 500.000
+    </small>
+  </div>
+
+  <!-- Tombol -->
+  <div style="margin-top:20px; display:flex; gap:10px;">
+    <button id="btnKirim" type="button"
+            style="
+            flex:1;
+            padding:12px;
+            border:none;
+            border-radius:10px;
+            background:#9800e9;
+            color:#fff;
+            font-size:14px;
+            cursor:pointer;">
+      Tarik
+    </button>
+
+    <button id="btnKembali" type="button"
+            style="
+            flex:1;
+            padding:12px;
+            border-radius:10px;
+            border:1px solid #ddd;
+            background:#dcdcdc;
+            font-size:14px;
+            cursor:pointer;">
+      Kembali
+    </button>
+  </div>
+
+</form>
   </div>
 
   <!-- Instruksi -->
@@ -2483,6 +2561,8 @@ z-index:9999;
     display:flex;
     justify-content:space-between;
     align-items:center;
+    border-radius:1px 10px  1px  10px;
+    background: #cacaca;
   ">
     <b id="legalPopupTitle">Judul</b>
     <span onclick="closeLegalPopup()" style="cursor:pointer;font-size:18px;">✕</span>
@@ -4028,12 +4108,22 @@ const subRef = await addDoc(
 
     document.getElementById("depositForm").reset();
 
-    Swal.fire({
-      icon: "success",
-      text: "Penarikan berhasil.",
-      timer: 1500,
-      showConfirmButton: false,
-    });
+Swal.fire({
+  icon: "success",
+  title: "Penarikan Berhasil",
+  html: `
+    <div style="font-size:14px; color:#555; line-height:1.5;">
+      Periksa status penarikan Anda pada<br>
+      <b>Catatan Pembayaran</b>
+    </div>
+  `,
+  timer: 115000,
+  showConfirmButton: false,
+  background: "#fff",
+  color: "#111",
+  iconColor: "#16a34a",
+  backdrop: "rgba(0,0,0,0.4)"
+});
 
   } catch (err) {
     console.error("Withdraw error:", err);
@@ -4095,7 +4185,36 @@ function openHistoryPopup() {
         left.className = "tx-left";
         const main = document.createElement("div");
         main.className = "tx-main";
-        main.textContent = "Punya Uang";
+        
+
+
+        let status = (item.status || "pending").toLowerCase();
+let mainText = "Punya Uang";
+
+if (status === "tolak") {
+  mainText = "Tidak disetujui";
+} else if (status === "pending") {
+  mainText = "Dalam ulasan";
+} else if (status === "approve") {
+  mainText = "Punya uang";
+}
+
+main.textContent = mainText;
+
+
+main.style.fontWeight = "450";
+
+if (status === "tolak") {
+  main.style.color = "#ef0217";
+} else if (status === "pending") {
+  main.style.color = "#5d52f6";
+} else {
+  main.style.color = "#111";
+}
+
+
+
+
         const sub = document.createElement("div");
         sub.className = "tx-sub";
         sub.textContent = formatDate(item.timestamp);
@@ -4108,6 +4227,9 @@ function openHistoryPopup() {
         const amt = document.createElement("div");
         amt.className = "tx-amount";
         amt.textContent = formatRpShort(item.nominal);
+       amt.style.color = "#acaaaa";
+       amt.style.fontWeight = "500"; // lebih keliatan
+        
 
         const st = document.createElement("div");
         st.className = `status-pill ${item.status || "pending"}`;
