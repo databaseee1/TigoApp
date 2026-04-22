@@ -1288,6 +1288,136 @@ label {
 }
 
 
+
+
+
+
+
+.hidden {
+  display: none;
+}
+
+
+
+
+
+
+#pestaGrid img {
+  width: 96%;
+  border-radius: 10px;
+  display: block;
+}
+
+
+#pestaGrid .grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* gambar */
+.img-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.img-wrap img {
+  width: 100%;
+  display: block;
+}
+
+/* icon kecil kanan bawah gambar */
+.mini-icon {
+  position: absolute !important;
+  right: 6px;
+  bottom: 6px;
+
+  width: 54px !important;
+  height: 54px !important;
+
+  object-fit: cover;
+  border-radius: 50%;
+  background: #fff;
+  padding: 2px;
+
+  display: block;
+}
+
+/* info bawah */
+.info {
+  padding: 8px;
+}
+
+/* baris judul + jumlah pemain */
+.row-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* judul */
+.title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* host */
+.host {
+  font-size: 12px;
+  color: #777;
+  margin-top: 2px;
+}
+
+/* jumlah pemain */
+.players {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+}
+
+.img-wrap img:first-child {
+  width: 100%;
+  display: block;
+}
+
+
+
+
+@keyframes pop {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+
+
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999; /* PENTING */
+}
+
+
+.hidden {
+  display: none;
+}
+
   </style>
 </head>
 <body>
@@ -3069,8 +3199,8 @@ z-index:9999;
   <!-- HEADER KHUSUS POPUP -->
   <div class="popup-play-header">
     <div class="popup-play-tabs">
-      <span class="active">Orang</span>
-      <span>Pesta</span>
+      <span id="tabOrang" class="active">Orang</span>
+      <span id="btnPesta">Pesta</span>
     </div>
 
     <div class="popup-play-icons">
@@ -3081,6 +3211,186 @@ z-index:9999;
   </div>
 
   <!-- CONTENT -->
+
+<div id="pestaGrid" class="hidden">
+  <div class="grid">
+
+    <!-- CARD 1-->
+    <div class="card">
+      <div class="img-wrap">
+        <img src="demo_icon_gexing1.webp">
+
+        <!-- icon kecil pojok kanan bawah -->
+        <img class="mini-icon" src="game_guess_dice_loading_bg.webp">
+      </div>
+
+      <div class="info">
+        <div class="row-top">
+          <div>
+            <div class="title">Funny game</div>
+            <div class="host">Dice</div>
+          </div>
+
+<div class="players">👥<span class="playerCount">2931</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ulang card 2-->
+    <div class="card">
+      <div class="img-wrap">
+        <img src="demo_icon_heibai1.png">
+        <img class="mini-icon" src="game_roulette_loading_bg.webp">
+      </div>
+
+      <div class="info">
+        <div class="row-top">
+          <div>
+            <div class="title">Lucky Day</div>
+            <div class="host">Roulette</div>
+          </div>
+
+<div class="players">👥<span class="playerCount">1820</span></div>
+        </div>
+      </div>
+    </div>
+
+
+        <!-- ulang card 3-->
+    <div class="card">
+      <div class="img-wrap">
+        <img src="demo_icon_nuansediao1.webp">
+        <img class="mini-icon" src="teen_patti_loading_bg.webp">
+      </div>
+
+      <div class="info">
+        <div class="row-top">
+          <div>
+            <div class="title">Teen Patti</div>
+            <div class="host">Lucky Party</div>
+          </div>
+
+<div class="players">👥<span class="playerCount">5400</span></div>        </div>
+      </div>
+    </div>
+
+
+        <!-- ulang card 4-->
+    <div class="card">
+      <div class="img-wrap">
+        <img src="demo_icon_lengsediao1.webp">
+        <img class="mini-icon" src="game_guess_dice_loading_bg.webp">
+      </div>
+
+      <div class="info">
+        <div class="row-top">
+          <div>
+            <div class="title">Let`s play together</div>
+            <div class="host">Roulette</div>
+          </div>
+
+          <div class="players">👥<span class="playerCount">2520</span></div>
+        </div>
+      </div>
+    </div>
+
+
+            <!-- ulang card 5-->
+    <div class="card">
+      <div class="img-wrap">
+        <img src="demo_icon_bailiang1.webp">
+        <img class="mini-icon" src="game_roulette_loading_bg.webp">
+      </div>
+
+      <div class="info">
+        <div class="row-top">
+          <div>
+            <div class="title">Lucky Day</div>
+            <div class="host">Roulette</div>
+          </div>
+
+          <div class="players">👥<span class="playerCount">820</span></div>
+        </div>
+      </div>
+    </div>
+
+
+            <!-- ulang card 6-->
+    <div class="card">
+      <div class="img-wrap">
+        <img src="demo_icon_xiaoqingxin1.webp">
+        <img class="mini-icon" src="teen_patti_loading_bg.webp">
+      </div>
+
+      <div class="info">
+        <div class="row-top">
+          <div>
+            <div class="title">Win Win Win!</div>
+            <div class="host">Roulette</div>
+          </div>
+
+          <div class="players">👥<span class="playerCount">1644</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- kamu bisa lanjut copy card ini -->
+
+
+
+
+  </div>
+  <!-- MODAL -->
+<div id="popupError" class="popup hidden">
+  <div class="popup-box">
+<div 
+  style="
+    font-size:18px;
+    font-weight:600;
+    color:#1f1f1f;
+    margin-bottom:6px;
+    text-align:center;
+  "
+>
+  Pertandingan Gagal
+</div>
+
+<div 
+  style="
+    font-size:13.5px;
+    color:#7a7a7a;
+    line-height:1.5;
+    margin-bottom:18px;
+    text-align:center;
+  "
+>
+  Hanya dapat dimainkan oleh host yang aktif
+</div>
+    <button 
+  onclick="closePopup()" 
+  style="
+    background:#d6d6d6;
+    color:#222;
+    border:none;
+    padding:10px 20px;
+    border-radius:12px;
+    font-size:14px;
+    font-weight:500;
+    cursor:pointer;
+    transition:0.2s;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  "
+  onmouseover="this.style.background='#bfbfbf'; this.style.transform='scale(1.03)'"
+  onmouseout="this.style.background='#d6d6d6'; this.style.transform='scale(1)'"
+  onmousedown="this.style.transform='scale(0.97)'"
+>
+  Tutup
+</button>
+  </div>
+</div>
+</div>
+
+
 
 
   
@@ -3094,9 +3404,6 @@ z-index:9999;
   <img src="default_pic_100.png">
   <img src="default_pic_100.png">
 </div>
-
-
-
 
 
 
@@ -3314,7 +3621,7 @@ z-index:9999;
       <h4>Dwi antika <span class="host-badge">Vip</span></h4>
       <p>Mengirim anda pesan...</p>
     </div>
-    <span class="chat-time">19:57</span>
+    <span class="chat-time">--:--</span>
     <span class="badge-new">7</span>
   </div>
 
@@ -3326,7 +3633,7 @@ z-index:9999;
       <h4>Chika <span class="host-badge">HOST</span></h4>
       <p>Mengirim anda pesan...</p>
     </div>
-    <span class="chat-time">18:45</span>
+    <span class="chat-time">--:--</span>
     <span class="badge-new">10</span>
   </div>
 
@@ -3337,7 +3644,7 @@ z-index:9999;
       <h4>Yulia <span class="host-badge">HOST</span></h4>
       <p>Mengirim anda pesan...</p>
     </div>
-    <span class="chat-time">18:40</span>
+    <span class="chat-time">--:--</span>
     <span class="badge-new">1</span>
   </div>
   
@@ -3356,7 +3663,7 @@ z-index:9999;
   left:0;
   width:100%; 
   height:100%;
-  background:rgb(232 232 232);
+  background:rgb(255, 255, 255);
   display:none;
   align-items:center;
   justify-content:center;
@@ -3368,7 +3675,7 @@ z-index:9999;
     text-align:center;
     font-size:16px;
     color:#333;
-    background:#f9f9f9;
+    background:#fbfbfb;
     padding:20px;
     border-radius:10px;
   ">
@@ -5656,6 +5963,202 @@ window.closeLegalPopup = function(){
 };
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+
+  const btnPesta = document.getElementById("btnPesta");
+  const tabOrang = document.getElementById("tabOrang");
+
+  const pestaGrid = document.getElementById("pestaGrid");
+  const ikanPopup = document.getElementById("ikan-popup");
+  const mainContent = document.querySelector(".popup-play-content");
+
+  // 👉 klik PESTA
+  btnPesta.onclick = function() {
+    pestaGrid.classList.remove("hidden");
+
+    ikanPopup.classList.add("hidden");
+    mainContent.classList.add("hidden");
+
+    btnPesta.classList.add("active");
+    tabOrang.classList.remove("active");
+  };
+
+  // 👉 klik ORANG (BALIK)
+  tabOrang.onclick = function() {
+    pestaGrid.classList.add("hidden");
+
+    ikanPopup.classList.remove("hidden");
+    mainContent.classList.remove("hidden");
+
+    btnPesta.classList.remove("active");
+    tabOrang.classList.add("active");
+  };
+
+});
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const cards = document.querySelectorAll('.card');
+  const popup = document.getElementById('popupError');
+
+  cards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      e.preventDefault();
+
+      popup.classList.remove('hidden');
+    });
+  });
+
+  window.closePopup = function () {
+    popup.classList.add('hidden');
+  };
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const counters = document.querySelectorAll(".playerCount");
+
+// tiap counter punya base value sendiri
+let values = Array.from(counters).map(el => parseInt(el.textContent));
+
+// tipe behavior tiap counter (biar tidak sama)
+const behavior = [
+  "stable",   // stabil
+  "rising",   // sering naik
+  "volatile"  // naik turun ekstrem
+];
+
+function getChange(type) {
+  if (type === "stable") {
+    return [5, -5, 10, -8, 3, -3];
+  }
+
+  if (type === "rising") {
+    return [20, 30, 50, -10, 15, 5];
+  }
+
+  if (type === "volatile") {
+    return [100, -120, 80, -90, 200, -150];
+  }
+}
+
+// jam ramai / sepi simulasi
+function getMultiplier() {
+  const hour = new Date().getHours();
+
+  if (hour >= 18 && hour <= 23) {
+    return 1.5; // malam ramai
+  } else if (hour >= 1 && hour <= 6) {
+    return 0.5; // sepi
+  }
+  return 1;
+}
+
+function updateAll() {
+  const mult = getMultiplier();
+
+  counters.forEach((el, i) => {
+    const type = behavior[i % behavior.length];
+    const changes = getChange(type);
+
+    const change = changes[Math.floor(Math.random() * changes.length)] * mult;
+
+    const steps = 10;
+    let step = 0;
+
+    const interval = setInterval(() => {
+      values[i] += change / steps;
+      el.textContent = Math.round(values[i]);
+
+      step++;
+      if (step >= steps) clearInterval(interval);
+    }, 300);
+  });
+}
+
+// 🔥 spike event (kadang tiba-tiba ramai)
+function randomSpike() {
+  const index = Math.floor(Math.random() * values.length);
+  values[index] += Math.floor(Math.random() * 300);
+
+  counters[index].style.color = "#00c853";
+  setTimeout(() => {
+    counters[index].style.color = "";
+  }, 1000);
+}
+
+// update normal tiap 10 detik
+setInterval(updateAll, 10000);
+
+// spike acak tiap 30–60 detik
+setInterval(randomSpike, Math.random() * 30000 + 30000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  function getOrCreateBaseTime() {
+    let saved = localStorage.getItem("firstLoginTime");
+
+    if (!saved) {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, "0");
+      const m = String(now.getMinutes()).padStart(2, "0");
+
+      saved = `${h}:${m}`;
+      localStorage.setItem("firstLoginTime", saved);
+    }
+
+    return saved;
+  }
+
+  const timeElements = document.querySelectorAll(".chat-time");
+
+  const timeValue = getOrCreateBaseTime();
+
+  timeElements.forEach(el => {
+    el.textContent = timeValue;
+  });
+
+});
 
 
 
