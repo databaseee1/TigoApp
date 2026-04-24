@@ -1456,6 +1456,17 @@ label {
   display:none;
 }
 
+.hidden {
+  display: none !important;
+}
+
+
+
+.small-swal {
+  font-size: 13px !important;
+  border-radius: 12px !important;
+  transform: scale(0.95);
+}
 
 
   </style>
@@ -3623,25 +3634,132 @@ z-index:9999;
   <!-- Isi daftar chat -->
   <div id="pageChat" style="margin-top:70px; padding:1px;">
 
-  <div class="chat-item laporan" onclick="openChat('chatLayananHost', this)" 
-     style="display:flex; align-items:center; gap:10px;">
+ <div class="chat-item laporan cs-item" style="display:flex; align-items:center; gap:10px;">
   
-  <div class="chat-avatar" style="
-      width: 40px; 
-      height: 40px; 
-      -webkit-mask: url('servant_icon.png') no-repeat center;
-      -webkit-mask-size: contain;
-      mask: url('servant_icon.png') no-repeat center;
-      mask-size: contain;
-      background-image: url('servant_icon.png'); 
-      background-size: cover;
-      background-position: center;
-  "></div>
+  <div class="chat-avatar" style="width:40px; height:40px;
+    -webkit-mask:url('servant_icon.png') no-repeat center;
+    -webkit-mask-size:contain;
+    mask:url('servant_icon.png') no-repeat center;
+    mask-size:contain;
+    background-image:url('servant_icon.png'); 
+    background-size:cover;
+    background-position:center;">
+  </div>
 
   <div class="chat-info">
-    <h4>Layanan Pelanggan</h4>
+<div style="position:relative; display:inline-block;">
+  <h4 style="margin:0;">
+    Layanan Pelanggan
+  </h4>
+
+  <span id="badge"
+    style="
+      position:absolute;
+      top:-2px;
+      right:0;
+      background:red;
+      color:white;
+      padding:2px 6px;
+      border-radius:999px;
+      font-size:11px;
+      min-width:18px;
+      text-align:center;
+      display:none;
+    ">
+  </span>
+</div>
     <p id="lastMessage"></p>
   </div>
+
+</div>
+
+
+<div id="popupPesan" style="
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  background:#fff;
+  z-index:99999;
+  overflow:hidden;
+  font-family:sans-serif;
+">
+
+  <!-- HEADER -->
+ <div style="
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px;
+  flex-shrink:0;
+">
+
+  <!-- tombol back (kiri) -->
+  <img src="back_gray.png" onclick="tutupPesan()" style="
+    position:absolute;
+    left:12px;
+    width:20px;
+    cursor:pointer;
+  ">
+
+  <!-- judul (tengah) -->
+  <b>Layanan Pelanggan</b>
+
+</div>
+
+  <!-- ISI CHAT -->
+  <div id="listPesan" style="
+    flex:1;
+    overflow-y:auto;
+    background:#ffffff;
+    padding:10px;
+    min-height:0;
+  "></div>
+
+  <!-- INPUT -->
+<!-- INPUT -->
+<!-- INPUT -->
+<div style="
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:10px;
+  padding-bottom:70px;
+  background:#fff;
+  flex-shrink:0;
+  position:relative;
+  z-index:10;
+">
+
+  <!-- kiri -->
+  <img src="im_cs_image.png" style="width:30px;">
+
+  <!-- input DISABLE -->
+  <input type="text" placeholder="Ketik pesan..." style="
+    flex:1;
+    padding:10px;
+    border-radius:13px;
+    
+    outline:none;
+    background:#e9e9e9;
+    position:relative;
+    z-index:2;
+    pointer-events:auto;
+  " autocomplete="off">
+
+  <!-- kirim -->
+<img src="send_im_msg_icon.png"
+  style="width:33px; "
+  onclick="Swal.fire({
+    icon: 'warning',
+    text: 'Akun anda belum memenuhi syarat saat ini untuk mengirim pesan Layanan pelanggan melalui aplikasi'
+  })">
+</div>
+
 </div>
 
       <!-- Tempat isi chat -->
@@ -3776,11 +3894,15 @@ z-index:9999;
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
 import { 
   getFirestore, collection, query, where, getDocs, addDoc,
-  doc,updateDoc, getDoc, onSnapshot, arrayUnion , Timestamp, orderBy
+  doc, updateDoc, getDoc, onSnapshot, arrayUnion, Timestamp, orderBy, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+import { 
+  getAuth, onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // ---------- FIREBASE CONFIG ----------
 const firebaseConfig = {
@@ -3794,6 +3916,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 
 
@@ -3812,6 +3935,29 @@ const closeBankPopup = document.getElementById("closeBankPopup");
 
 btnAkunUangTunai.addEventListener("click", async () => {
   if (!currentUser) return;
+
+  // 🔥 loading dulu
+Swal.fire({
+  title: "Memuat data",
+  text: "Mohon tunggu sebentar",
+  width: "260px",
+  padding: "10px",
+  backdrop: true,
+  allowOutsideClick: false,
+  showConfirmButton: false,
+  customClass: {
+    popup: "small-swal"
+  },
+  didOpen: () => {
+    Swal.showLoading();
+  }
+});
+
+    setTimeout(() => {
+    Swal.close();
+  }, 3000);
+
+
 
   try {
     const userRef = doc(db, "pendaftaran", currentUser.uid);
@@ -4179,8 +4325,12 @@ btnLogin.addEventListener("click", async () => {
     });
 
     // set current user
-    currentUser = { uid: userId, email, wa, ...userData };
-    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+// set current user
+currentUser = { uid: userId, email, wa, ...userData };
+localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+// 🔥 TAMBAHAN PENTING
+localStorage.setItem("uid", userId);
 
     // tampilkan dashboard
    
@@ -4453,17 +4603,39 @@ btnKirim.addEventListener("click", async () => {
     });
 
     // 🔹 simpan history user
+
+
+const kurs = 16000;
+const jumlah = Number(nominal) || 0;
+const usd = (jumlah / kurs).toFixed(2);
+const uid = currentUser.uid;
+
 const subRef = await addDoc(
-  collection(db, "pendaftaran", currentUser.uid, "historydeposit"),
+  collection(db, "pendaftaran", uid, "historydeposit"),
   {
     namaPengirim,
     bank,
-    nominal,
-    status: "pending",   // ✅ tunggu admin
-    timestamp: Timestamp.now(),
-    uid: currentUser.uid,
+    nominal: jumlah,
+    status: "pending",
+    timestamp: serverTimestamp(),
+    uid: uid,
+
+    pesan_pending: ` Aplikasi Penarikan $${usd} Rp ${jumlah.toLocaleString('id-ID')} Anda telah diajukan, penarikan akan dikreditkan ke akun anda dalam waktu 2 hari kerja, dan anda akan diberi tahu segera setelah diterima harap bersabar~`,
+
+    pesan_ditolak: ` Permintaan pencairan anda $${usd} Rp ${jumlah.toLocaleString('id-ID')} ditolak, mungkin karena adanya jumlah tagihan yang belum diselesaikan. kredit telah dikembalikan ke akun anda. harap perbaiki sebelum mengajukan kembali~`,
+
+    pesan_berhasil: ` Penarikan telah dibayarkan jumlahnya adalah $${usd} (Rp ${jumlah.toLocaleString('id-ID')}), silakan periksa di platform rekening pengumpulan yang sesuai.`
   }
 );
+
+
+
+
+
+
+
+
+
 
     // 🔹 simpan global
     await addDoc(collection(db, "historydeposit"), {
@@ -4972,14 +5144,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const namaBank = form.namaBank.value;
     const nominal = form.nominal.value;
 
-    if (!bank || !namaRekening || !namaBank || !nominal) {
-      alert("Harap isi semua Form!");
-      return;
-    }
-    if (nominal < 500000) {
-      alert("Minimal deposit Rp 500.000");
-      return;
-    }
+if (!bank || !namaRekening || !namaBank || !nominal) {
+  Swal.fire({
+    icon: "warning",
+    title: "Peringatan",
+    text: "Harap isi semua Form!"
+  });
+  return;
+}
+
+if (nominal < 500000) {
+  Swal.fire({
+    icon: "error",
+    title: "Gagal",
+    text: "Minimal deposit Rp 500.000"
+  });
+  return;
+}
 
     const waNumber = "6283143935076"; // ✅ Nomor CS
     const message = `Form Deposit:%0A
@@ -5255,15 +5436,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-    const btnKasKeluar = document.getElementById("btnKasKeluar");
-    const formPenarikan = document.getElementById("formPenarikan");
-    const btnKembali = document.getElementById("btnKembali");
+ const btnKasKeluar = document.getElementById("btnKasKeluar");
+const formPenarikan = document.getElementById("formPenarikan");
+const btnKembali = document.getElementById("btnKembali");
 
-
-// klik Kas Keluar => tampilkan form
+// klik Kas Keluar => loading dulu 3 detik baru tampil form
 btnKasKeluar.addEventListener("click", () => {
-  formPenarikan.style.display = "block";
-  btnKasKeluar.style.display = "none";
+
+  Swal.fire({
+    title: "Memuat...",
+    text: "Mohon tunggu sebentar",
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
+
+  setTimeout(() => {
+    Swal.close();
+
+    formPenarikan.style.display = "block";
+    btnKasKeluar.style.display = "none";
+
+  }, 3000);
 });
 
 // klik Kembali => sembunyikan form
@@ -5276,7 +5471,6 @@ btnKembali.addEventListener("click", () => {
 document.getElementById("imgCloseBank").addEventListener("click", () => {
   document.getElementById("bankPopup").style.display = "none";
 });
-
 
 
 const btnRedeem = document.getElementById("btnRedeem");
@@ -5449,43 +5643,300 @@ showNotif("Data berhasil diperbarui!\nSilahkan Refresh kembali");
 
 
 
-(function(){
-  const popup = document.getElementById('chatPopup');
-  const body = document.body;
 
-  // buka popup
-  window.openChat = function() {
-    popup.style.display = 'flex';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const chatPopup = document.getElementById('chatPopup');
+  const popupPesan = document.getElementById("popupPesan");
+  const body = document.body;
+  const csItem = document.querySelector('.cs-item');
+
+  // 🔥 pastikan popup CS tidak muncul saat load
+  if (popupPesan) {
+    popupPesan.classList.add("hidden");
+  }
+
+  // =========================
+  // ✅ KHUSUS LAYANAN PELANGGAN
+  // =========================
+  if (csItem) {
+    csItem.addEventListener('click', function(e) {
+
+      e.stopPropagation();
+      e.preventDefault();
+
+      if (e.stopImmediatePropagation) {
+        e.stopImmediatePropagation();
+      }
+
+      if (popupPesan) {
+        popupPesan.classList.remove("hidden");
+      }
+
+      if (typeof loadPesan === "function") {
+        loadPesan();
+      }
+
+    });
+  }
+
+  // =========================
+  // ✅ CHAT BIASA
+  // =========================
+  window.openChat = function () {
+    if (!chatPopup) return;
+
+    chatPopup.style.display = 'flex';
     body.style.overflow = 'hidden';
   };
 
-  // tutup popup (ESC atau klik luar box)
-  window.closeChat = function() {
-    popup.style.display = 'none';
+  window.closeChat = function () {
+    if (!chatPopup) return;
+
+    chatPopup.style.display = 'none';
     body.style.overflow = '';
   };
 
-  // bikin semua chat-item bisa klik
+  // 🔥 semua chat kecuali CS
   document.querySelectorAll('.chat-item').forEach(item => {
-    item.addEventListener('click', () => openChat());
+
+    if (item.classList.contains('cs-item')) return;
+
+    item.addEventListener('click', function () {
+      openChat();
+    });
+
   });
 
-  // tutup dengan ESC
+  // ESC untuk tutup chat
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeChat();
   });
 
-  // tutup dengan klik di luar box
-  popup.addEventListener('click', e => {
-    if (e.target === popup) closeChat();
-  });
-})();
+  // klik luar untuk tutup chat
+  if (chatPopup) {
+    chatPopup.addEventListener('click', e => {
+      if (e.target === chatPopup) closeChat();
+    });
+  }
+
+});
+
+
+window.tutupPesan = function() {
+  const popupPesan = document.getElementById("popupPesan");
+  if (popupPesan) {
+    popupPesan.classList.add("hidden");
+  }
+
+  // 🔥 balikin scroll body (biar normal lagi)
+  document.body.style.overflow = "";
+};
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let unsubscribePesan = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadPesan();
+});
+
+function loadPesan() {
+
+  const list = document.getElementById("listPesan");
+  const badge = document.getElementById("badge");
+
+  const uid = localStorage.getItem("uid");
+
+  if (!uid) {
+    list.innerHTML = "<div>Silakan login terlebih dahulu</div>";
+    return;
+  }
+
+  if (unsubscribePesan) unsubscribePesan();
+
+  unsubscribePesan = onSnapshot(
+    collection(db, "pendaftaran", uid, "historydeposit"),
+    (snapshot) => {
+
+      const docs = snapshot.docs.map(d => ({
+        id: d.id,
+        ...d.data()
+      }));
+
+      // 🔥 sort terbaru ke bawah
+      docs.sort((a, b) =>
+        (a.timestamp?.seconds || 0) - (b.timestamp?.seconds || 0)
+      );
+
+      // =========================
+      // 🔥 HITUNG UNREAD (FIX PENTING)
+      // =========================
+      const unread = docs.filter(item => item.read !== true).length;
+
+      // =========================
+      // 🔥 UPDATE BADGE (FORCE ALWAYS)
+      // =========================
+      if (badge) {
+        badge.innerText = unread;
+
+        if (unread > 0) {
+          badge.style.display = "inline-block";
+        } else {
+          badge.style.display = "none";
+        }
+      }
+
+      // =========================
+      // 🔥 RENDER LIST
+      // =========================
+      list.innerHTML = "";
+
+      docs.forEach(item => {
+
+        let text = "Tidak ada pesan";
+
+        if (item.status === "pending") {
+          text = item.pesan_pending || "Menunggu proses...";
+        }
+
+        if (item.status === "tolak") {
+          text = item.pesan_ditolak || "Selamat datang di Layanan pelanggan";
+        }
+
+        if (item.status === "approve") {
+          text = item.pesan_berhasil || "Penarikan berhasil";
+        }
+
+        const div = document.createElement("div");
+
+        div.style.cssText = `
+          display:flex;
+          gap:8px;
+          margin-bottom:16px;
+          cursor:pointer;
+        `;
+
+        div.innerHTML = `
+          <img src="servant_icon.png"
+            style="width:32px;height:32px;border-radius:50%;">
+
+          <div style="max-width:90%;">
+            <div style="
+  font-size:13px;
+  font-weight:600;
+  color:#555;
+  margin-bottom:6px;
+  line-height:1.2;
+">
+  Layanan Pelanggan
+</div>
+
+            <div style="background:#f1f1f1; font-family: system-ui; color: #5c5959; font-weight: 500;  padding:10px 14px;border-radius:12px;font-size:14px;">
+              ${text}
+            </div>
+          </div>
+        `;
+
+        // =========================
+        // 🔥 MARK AS READ (FIX REALTIME)
+        // =========================
+        div.onclick = async () => {
+
+          const ref = doc(db, "pendaftaran", uid, "historydeposit", item.id);
+
+          await updateDoc(ref, {
+            read: true
+          });
+
+          // ❗ langsung update UI lokal biar instant (tanpa delay snapshot)
+          item.read = true;
+
+          const newUnread = docs.filter(d => d.read !== true).length;
+
+          if (badge) {
+            badge.innerText = newUnread;
+
+            if (newUnread > 0) {
+              badge.style.display = "inline-block";
+            } else {
+              badge.style.display = "none";
+            }
+          }
+        };
+
+        list.appendChild(div);
+      });
+    }
+  );
+}
+
+
+
+
+
+
+function formatPesanCS(item) {
+
+  // 🔥 ambil langsung dari Firebase
+  if (item.status === "pending") {
+    return item.pesan_pending || "Menunggu proses...";
+  }
+
+  if (item.status === "ditolak") {
+    return item.pesan_ditolak || "Permintaan ditolak";
+  }
+
+  if (item.status === "berhasil") {
+    return item.pesan_berhasil || "Penarikan berhasil";
+  }
+
+  return "";
+}
 
 
 
@@ -5693,10 +6144,15 @@ document.addEventListener("DOMContentLoaded", function(){
     const kategori = document.getElementById("csKategori").value;
     const pesan = document.getElementById("csPesan").value.trim();
 
-    if(!nama || !wa){
-      alert("Nama dan Nomor WhatsApp wajib diisi!");
-      return;
-    }
+    if (!nama || !wa) {
+  Swal.fire({
+    icon: "warning",
+    title: "Peringatan",
+    text: "Nama dan Nomor WhatsApp wajib diisi!",
+    confirmButtonText: "OK"
+  });
+  return;
+}
 
     const nomorCS = "6283143935076";
 
@@ -6225,6 +6681,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+
+
+
+
+
+
 
 
 
