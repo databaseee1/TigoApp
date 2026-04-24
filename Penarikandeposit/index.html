@@ -880,11 +880,26 @@ label {
 }
 
 /* 🔹 Avatar */
+.avatar-box {
+  position: relative;
+  display: inline-block;
+}
+
 .chat-avatar {
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  object-fit: cover;
+}
+
+.status-dot {
+  position: absolute;
+  bottom: 4px;
+  right: 9px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #28ff31;
+  display: none;
 }
 
 /* 🔹 Info Chat */
@@ -919,7 +934,7 @@ label {
 
 /* 🔹 Badge Notifikasi */
 .notifi-badge {
-  background: #e91e63;
+  background: #ff0000;
   color: #fff;
   font-size: 11px;
   padding: 3px 7px;
@@ -1467,6 +1482,29 @@ label {
   border-radius: 12px !important;
   transform: scale(0.95);
 }
+
+
+
+
+
+
+
+
+
+.vip {
+  background: rgb(181, 43, 1);
+  color: #000;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin: 0 6px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+
+
+
 
 
   </style>
@@ -3771,19 +3809,19 @@ z-index:9999;
       <img src="message_see_me_item_icon.png" alt="Pengunjung" class="chat-avatar">
       <div class="chat-info">
         <h4>Notifikasi</h4>
-        <p>Amelia mici mengunjungi saya 24 kali</p>
+        <p id="visitorText">Memuat</p>
       </div>
-      <span class="notifi-badge">63</span>
+      <span class="notifi-badge" id="notifBadge">0</span>
     </div>
 
     <div class="chat-item" onclick="openChat('pengumuman')">
       <img src="notifikasi.png" alt="Pengumuman" class="chat-avatar">
       <div class="chat-info">
         <h4>Notifikasi</h4>
-        <p>Sisilaaa461 telah mengikuti anda, dan and...</p>
+        <p id="followText">Memuat...</p>
       </div>
       
-      <span class="chat-time">--:--</span>
+      <span class="chat-time" id="chatTime">--:--</span>
     </div>
 
     <!-- Chat User 1 -->
@@ -3793,33 +3831,42 @@ z-index:9999;
 
 
   <div class="chat-item" onclick="openChat('user1')" data-chat-id="user1">
-    <img src="cewek38.jpeg" alt="User" class="chat-avatar">
+    <div class="avatar-box" data-on="29000" data-off="41000">
+  <img src="cewek38.jpeg" class="chat-avatar">
+  <span class="status-dot"></span>
+</div>
     <div class="chat-info">
       <h4>Dwi antika <span class="host-badge">Vip</span></h4>
-      <p>Mengirim anda pesan...</p>
+      <p>yuk video call kejar jam tayang beb</p>
     </div>
     <span class="chat-time">--:--</span>
-    <span class="badge-new">7</span>
+    <span class="badge-new">1</span>
   </div>
 
 
 
   <div class="chat-item" onclick="openChat('user1')" data-chat-id="user1">
-    <img src="cewek42.jpeg" alt="User" class="chat-avatar">
+    <div class="avatar-box" data-on="210000" data-off="24000">
+  <img src="cewek42.jpeg" class="chat-avatar">
+  <span class="status-dot"></span>
+</div>
     <div class="chat-info">
-      <h4>Chika <span class="host-badge">HOST</span></h4>
-      <p>Mengirim anda pesan...</p>
+      <h4>Chika <span class="host-badge">Host</span></h4>
+      <p>kamu host baru bg</p>
     </div>
     <span class="chat-time">--:--</span>
-    <span class="badge-new">10</span>
+    <span class="badge-new">2</span>
   </div>
 
 
   <div class="chat-item" onclick="openChat('user1')" data-chat-id="user1">
-    <img src="cewek41.jpeg" alt="User" class="chat-avatar">
+    <div class="avatar-box" data-on="55000" data-off="55000">
+  <img src="cewek41.jpeg" class="chat-avatar">
+  <span class="status-dot"></span>
+</div>
     <div class="chat-info">
-      <h4>Yulia <span class="host-badge">HOST</span></h4>
-      <p>Mengirim anda pesan...</p>
+      <h4>Yulia <span class="host-badge">Host</span></h4>
+      <p>vc om kan free vc akun host</p>
     </div>
     <span class="chat-time">--:--</span>
     <span class="badge-new">1</span>
@@ -5975,7 +6022,7 @@ function formatPesanCS(item) {
     } else {
       tabPermintaan.style.borderBottom = '3px solid #d7d7d7';
       tabTeman.style.borderBottom = '3px solid transparent';
-      tabContent.textContent = 'Belum ada permintaan';
+      tabContent.textContent = 'Tidak dapat menampilkan permintaan teman';
     }
   }
 
@@ -6690,6 +6737,248 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
+document.addEventListener("DOMContentLoaded", function () {
+
+const data = [
+  "🌹TELUGU LOCAL🌹mengunjungi saya 24 kali",
+  "🌸LARA🌸 mengunjungi saya 8 kali",
+  "nana mengunjungi saya 1 kali",
+  "Carolina 😘 mengunjungi saya 2 kali",
+  "zoya 💋 mengunjungi saya 5 kali",
+  "cewek manja mengunjungi saya 3 kali",
+  "Jennie 🌸 mengunjungi saya 1 kali",
+
+  "Amelia mici mengunjungi saya 4 kali",
+  "Diva❤️ mengunjungi saya 1 kali",
+  "Tiara03 mengunjungi saya 3 kali",
+  "userYcuFj465 mengunjungi saya 1 kali",
+  "👉sho0w aLL👌 mengunjungi saya 5 kali",
+  "VIKY✌️🍀 mengunjungi saya 8 kali",
+  "💕 Dulce mengunjungi saya 2 kali",
+
+  "hot X heart ♥️ mengunjungi saya 14 kali",
+  "Miel 🐝 mengunjungi saya 2 kali",
+  "Queen Rani mengunjungi saya 1 kali",
+  "Lilis dwi mengunjungi saya 1 kali",
+  "lukis senja mengunjungi saya 2 kali",
+  "Renny mengunjungi saya 11 kali",
+  "Aurora👑 mengunjungi saya 3 kali",
+  "hani love mengunjungi saya 5 kali",
+  "Lolita mengunjungi saya 7 kali",
+  "sayangku mengunjungi saya 9 kali",
+
+  "Call it's talk 🤙 mengunjungi saya 14 kali",
+  "seli451 mengunjungi saya 2 kali",
+  "👑Sofia🥰🧸 mengunjungi saya 1 kali",
+  "charlot mengunjungi saya 1 kali",
+  "ozzi mengunjungi saya 2 kali",
+  "goyang dumang mengunjungi saya 11 kali",
+  "pink peanut mengunjungi saya 3 kali",
+  "nadia mengunjungi saya 5 kali",
+  "pentil kecil mengunjungi saya 7 kali",
+
+  "Seriii mengunjungi saya 14 kali",
+  "dulce encanto✨️ mengunjungi saya 2 kali",
+  "Maritza mengunjungi saya 1 kali",
+  "gebby vcx mengunjungi saya 1 kali",
+  "PALOMA mengunjungi saya 2 kali",
+  "Smiiley💋 mengunjungi saya 11 kali",
+  "sasa mengunjungi saya 3 kali",
+  "chanmi 🌸 mengunjungi saya 5 kali",
+  "AnnaCantik mengunjungi saya 7 kali",
+  "miraaaaa mengunjungi saya 1 kali",
+
+  "sweet angel 💕 mengunjungi saya 6 kali",
+  "baby girl 😘 mengunjungi saya 4 kali",
+  "moonlight 🌙 mengunjungi saya 9 kali",
+  "rose queen 🌹 mengunjungi saya 12 kali",
+  "dark princess 🖤 mengunjungi saya 2 kali",
+  "cutie pie 🍓 mengunjungi saya 7 kali",
+  "love bug 💖 mengunjungi saya 3 kali",
+  "angelic vibes 👼 mengunjungi saya 5 kali",
+  "starlight ⭐ mengunjungi saya 8 kali",
+  "blossom 🌸 mengunjungi saya 10 kali"
+];
+
+const el = document.getElementById("visitorText");
+
+if (!el) return; // 🔥 cegah error kalau elemen tidak ada
+
+let i = parseInt(localStorage.getItem("visitorIndex"));
+if (isNaN(i)) i = 0;
+
+// VIP random aman
+let vipList = localStorage.getItem("vipList");
+vipList = vipList ? JSON.parse(vipList) : null;
+
+if (!vipList || vipList.length !== data.length) {
+  vipList = data.map(() => Math.random() < 0.6);
+  localStorage.setItem("vipList", JSON.stringify(vipList));
+}
+
+function render() {
+  el.innerHTML =
+    (vipList[i] ? '<span style="background:#e91e63;color:#fff;padding:2px 6px;border-radius:6px;font-size:10px;font-weight:bold;margin-right:6px;">Host</span>' : '') +
+    data[i];
+}
+
+render();
+
+setInterval(() => {
+  i = (i + 1) % data.length;
+  localStorage.setItem("visitorIndex", i);
+  render();
+}, 3000);
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const data = [
+  "Sisilaaa461", "Aurel", "Nabila", "Karin", "Lia", "Salsa", "Nana", "Cindy", "Rani", "Dinda",
+  "Bella", "Putri", "Vania", "Zahra", "Maya", "Nadia", "Tasya", "Rika", "Siska", "Luna",
+  "Amelia", "Dewi", "Fitri", "Yulia", "Indah", "Ayu", "Sari", "Melisa", "Clara", "Mira",
+  "Shinta", "Anisa", "Eka", "Novi", "Rina", "Della", "Jihan", "Olla", "Fani", "Vina",
+  "Lestari", "Rosa", "Putriya", "Gina", "Mutiara", "Kezia", "Sabrina", "Elisa", "Tania", "Nisa",
+  "Bellaa", "Carla", "Diana", "Erika", "Fira", "Gita", "Hana", "Intan", "Jessy", "Kania",
+  "Laras", "Mona", "Nindy", "Olivia", "Pia", "Queen", "Raisa", "Sania", "Tia", "Uma",
+  "Vira", "Winda", "Xena", "Yani", "Zizi", "Alisa", "Bianca", "Caca", "Dora", "Elin",
+  "Farah", "Gaby", "Helena", "Ivana", "Jasmine", "Kayla", "Lily", "Mell", "Nora", "Ocha",
+  "Pasha", "Qila", "Rara", "Sasa", "Tika", "Ulfa", "Vivi", "Wulan", "Yola", "Zara"
+];
+
+const el = document.getElementById("followText");
+
+let i = 0;
+
+function render() {
+  el.textContent = data[i] + " telah mengikuti anda, dan ...";
+}
+
+render();
+
+setInterval(() => {
+  i = (i + 1) % data.length;
+  render();
+}, 12000);
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+const el = document.getElementById("notifBadge");
+
+if (!el) return;
+
+// ambil nilai dari localStorage
+let count = parseInt(localStorage.getItem("notifCount"));
+if (isNaN(count)) count = 0;
+
+// fungsi tampilkan
+function render() {
+  el.textContent = count > 99 ? "99+" : count;
+}
+
+render();
+
+// naik tiap 3 detik
+setInterval(() => {
+  count++;
+
+  localStorage.setItem("notifCount", count);
+  render();
+}, 3000);
+
+});
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+const boxes = document.querySelectorAll(".avatar-box");
+
+boxes.forEach((box) => {
+  const dot = box.querySelector(".status-dot");
+
+  const onTime = parseInt(box.dataset.on) || 3000;
+  const offTime = parseInt(box.dataset.off) || 5000;
+
+  function cycle() {
+    dot.style.display = "block"; // ON
+
+    setTimeout(() => {
+      dot.style.display = "none"; // OFF
+
+      setTimeout(cycle, offTime);
+    }, onTime);
+  }
+
+  cycle();
+});
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+const el = document.getElementById("chatTime");
+
+if (!el) return;
+
+function updateTime() {
+  const now = new Date();
+
+  let h = now.getHours();
+  let m = now.getMinutes();
+
+  // biar selalu 2 digit
+  h = h.toString().padStart(2, "0");
+  m = m.toString().padStart(2, "0");
+
+  el.textContent = `${h}:${m}`;
+}
+
+updateTime(); // tampil pertama
+
+setInterval(updateTime, 1000); // update tiap 1 detik
+
+});
 
 </script>
 
