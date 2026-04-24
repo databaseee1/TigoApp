@@ -3571,8 +3571,11 @@ z-index:9999;
 <!-- === Ganti atau tambahkan id ini pada elemen trigger-mu === -->
 <div id="friendsBtn" style="position:relative; font-size:20px; cursor:pointer;">
   <img src="msg_icon_friend.png" alt="Friends" style="width:24px; height:24px;">
-  <span style="position:absolute; top:-5px; right:-8px; background:red; color:white;
-               font-size:12px; padding:2px 6px; border-radius:50%;">0</span>
+<span id="badgeCounter"
+      style="position:absolute; top:-5px; right:-8px; background:red; color:white;
+      font-size:12px; padding:2px 6px; border-radius:50%;">
+  1
+</span>
 </div>
 <!-- === POPUP FULLSCREEN (menutupi nav + header) === -->
 <div id="friendsPopup" style="
@@ -6979,6 +6982,39 @@ updateTime(); // tampil pertama
 setInterval(updateTime, 1000); // update tiap 1 detik
 
 });
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+const el = document.getElementById("badgeCounter");
+if (!el) return;
+
+let count = parseInt(localStorage.getItem("badgeCounter"));
+
+if (isNaN(count)) count = 1;
+
+function render() {
+  el.textContent = count > 99 ? "99+" : count;
+}
+
+render();
+
+// naik tiap 2 menit
+setInterval(() => {
+  count++;
+
+  localStorage.setItem("badgeCounter", count);
+  render();
+
+}, 15000);
+
+});
+
+
+
 
 </script>
 
