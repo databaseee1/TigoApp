@@ -674,7 +674,11 @@ label {
   background: rgba(0,0,0,0.8);
   padding: 10px;
   border-radius: 8px;
-  z-index: 9999; /* juga di atas */
+  z-index: 9999;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
 }
 
 
@@ -1504,7 +1508,28 @@ label {
 
 
 
+.gift-box {
+  width: 55px;
+  height: 55px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: 0.2s;
+}
 
+.gift-box:hover {
+  transform: scale(1.08);
+  background: rgba(255,255,255,0.2);
+}
+
+.gift-box img {
+  width: 40px;
+}
 
 
   </style>
@@ -2872,40 +2897,78 @@ z-index:9999;
     style="position:absolute; top:10px; right:10px; width:40px; height:40px; cursor:pointer;">
 
 
-<!-- Popup Gift -->
-  <!-- Popup Gift -->
-  <div id="giftPopup" style="
-    display:none;
-    position:absolute;
-    top:60px; right:10px;
-    background-image:url('no_match_times_top_bg.png');
-    background-size:100% 100%;
-    background-repeat:no-repeat;
-    padding:10px;
-    border-radius:8px;
-    z-index:1000;
-  ">
-    <img src="gift_103.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_14.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_35.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="giftkiss.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="giftbear.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_96.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_77.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_59.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_58.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_59.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="giftlambor.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="giftring.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift2.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift3.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift4.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift5.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
-    <img src="gift_61.png" class="giftOption" data-points="Gagal" style="width:40px; margin:5px; cursor:pointer;">
+<div id="giftPopup" style="
+  display:none;
+  position:absolute;
+  top:60px; right:10px;
+  background-image:url('cert_scan_frame.png');
+  background-size:100% 100%;
+  padding:10px;
+  border-radius:8px;
+  z-index:1000;
+  grid-template-columns:repeat(5, 1fr);
+  gap:8px;
+">
+  
+  <div class="gift-box">
+    <img src="baru9.png" class="giftOption" data-points="Gagal">
   </div>
 
+  <div class="gift-box">
+    <img src="baru4.png" class="giftOption" data-points="Gagal">
+  </div>
 
+  <div class="gift-box">
+    <img src="baru8.png" class="giftOption" data-points="Gagal">
+  </div>
+
+  <div class="gift-box">
+    <img src="giftkiss.png" class="giftOption" data-points="Gagal">
+  </div>
+
+  <div class="gift-box">
+    <img src="giftbear.png" class="giftOption" data-points="Gagal">
+  </div>
+
+  <div class="gift-box">
+    <img src="gift_96.png" class="giftOption" data-points="Gagal">
+  </div>
+
+  <div class="gift-box">
+    <img src="gift_77.png" class="giftOption" data-points="Gagal">
+  </div>
+
+  <div class="gift-box">
+    <img src="baru1.png" class="giftOption" data-points="Gagal">
+  </div>
+
+  <div class="gift-box">
+    <img src="gift_58.png" class="giftOption" data-points="Gagal">
+  </div>
+
+  <div class="gift-box">
+    <img src="giftlambor.png" class="giftOption" data-points="Gagal">
+  </div>
+
+  <div class="gift-box">
+    <img src="baru10.png" class="giftOption" data-points="Gagal">
+  </div>
+
+  <div class="gift-box">
+    <img src="baru11.png" class="giftOption" data-points="Gagal">
+  </div>
+
+  <div class="gift-box">
+    <img src="baru13.png" class="giftOption" data-points="Gagal">
+  </div>
+  <div class="gift-box">
+    <img src="baru11.png" class="giftOption" data-points="Gagal">
+  </div>
+  <div class="gift-box">
+    <img src="baru3.png" class="giftOption" data-points="Gagal">
+  </div>
+
+</div>
 
 
 
@@ -5357,39 +5420,45 @@ chatSendBtn.addEventListener("click", () => {
 
 
 // ================== 🎁 GIFT FEATURE ==================
+document.addEventListener("DOMContentLoaded", function () {
+
 const giftBtn = document.getElementById("giftBtn");
 const giftPopup = document.getElementById("giftPopup");
 
-// buka / tutup popup gift
+if (!giftBtn || !giftPopup) return;
+
+// pastikan hidden dulu
+giftPopup.style.display = "none";
+
 giftBtn.addEventListener("click", () => {
-  giftPopup.style.display = (giftPopup.style.display === "block") ? "none" : "block";
+  if (giftPopup.style.display === "grid") {
+    giftPopup.style.display = "none";
+  } else {
+    giftPopup.style.display = "grid";
+  }
 });
 
-// klik gift → animasi muncul di chat
+// klik gift
 document.querySelectorAll(".giftOption").forEach(gift => {
   gift.addEventListener("click", () => {
-    giftPopup.style.display = "none"; 
 
-    // ambil poin dari atribut
+    giftPopup.style.display = "none";
+
     const points = gift.dataset.points || 0;
 
-    // clone gift buat animasi terbang
     const flyingGift = gift.cloneNode(true);
     flyingGift.classList.add("gift-flying");
     document.body.appendChild(flyingGift);
 
-    // bikin teks poin melayang
     const floatingPoints = document.createElement("div");
     floatingPoints.textContent = `-${points}`;
     floatingPoints.classList.add("points-flying");
     document.body.appendChild(floatingPoints);
 
-    // setelah animasi selesai
     setTimeout(() => {
       flyingGift.remove();
       floatingPoints.remove();
 
-      // masukin ke chat
       const wrapper = document.createElement("p");
       wrapper.style.margin = "5px 0";
       wrapper.style.textAlign = "center";
@@ -5401,19 +5470,17 @@ document.querySelectorAll(".giftOption").forEach(gift => {
       pointSpan.textContent = ` -${points}`;
       pointSpan.style.marginLeft = "6px";
       pointSpan.style.color = "yellow";
+
       wrapper.appendChild(pointSpan);
 
-      chatBox.appendChild(wrapper);
-      chatBox.scrollTop = chatBox.scrollHeight;
+      document.querySelector("#chatBox")?.appendChild(wrapper);
 
-      // gift di chat hilang setelah 10 detik
-      setTimeout(() => {
-        wrapper.remove();
-      }, 100000);
     }, 2500);
+
   });
 });
 
+});
 
 
 
