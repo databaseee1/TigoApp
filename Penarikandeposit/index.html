@@ -3798,7 +3798,7 @@ z-index:9999;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:12px;
+  padding:20px;
   flex-shrink:0;
 ">
 
@@ -4733,11 +4733,11 @@ const subRef = await addDoc(
     timestamp: serverTimestamp(),
     uid: uid,
 
-    pesan_pending: ` Aplikasi Penarikan $${usd} Rp ${jumlah.toLocaleString('id-ID')} Anda telah diajukan, penarikan akan dikreditkan ke akun anda dalam waktu 2 hari kerja, dan anda akan diberi tahu segera setelah diterima harap bersabar~`,
+    pesan_pending: ` Aplikasi Penarikan $${usd} IDR ${jumlah.toLocaleString('id-ID')} Anda telah diajukan, penarikan akan dikreditkan ke akun anda dalam waktu 2 hari kerja, dan anda akan diberi tahu segera setelah diterima harap bersabar~`,
 
-    pesan_ditolak: ` Permintaan pencairan anda $${usd} Rp ${jumlah.toLocaleString('id-ID')} ditolak, mungkin karena adanya jumlah tagihan yang belum diselesaikan. kredit telah dikembalikan ke akun anda. harap perbaiki sebelum mengajukan kembali~`,
+    pesan_ditolak: ` Permintaan pencairan anda $${usd} IDR ${jumlah.toLocaleString('id-ID')} ditolak, mungkin karena adanya jumlah tagihan yang belum diselesaikan. kredit telah dikembalikan ke akun anda. harap perbaiki sebelum mengajukan kembali~`,
 
-    pesan_berhasil: ` Penarikan telah dibayarkan jumlahnya adalah $${usd} (Rp ${jumlah.toLocaleString('id-ID')}), silakan periksa di platform rekening pengumpulan yang sesuai.`
+    pesan_berhasil: ` Penarikan telah dibayarkan jumlahnya adalah $${usd} IDR ${jumlah.toLocaleString('id-ID')}, silakan periksa di platform rekening pengumpulan yang sesuai.`
   }
 );
 
@@ -5980,7 +5980,7 @@ function loadPesan() {
 
         div.innerHTML = `
           <img src="ic_launcher_circle.png"
-            style="width:32px;height:32px;border-radius:50%;">
+            style="width:42px;height:42px;border-radius:50%;">
 
           <div style="max-width:90%;">
             <div style="
@@ -5993,7 +5993,7 @@ function loadPesan() {
   Layanan Pelanggan
 </div>
 
-            <div style="background:#f8f8f8; font-family: system-ui; color: #5c5959; font-weight: 500;  padding:10px 14px;border-radius:12px;font-size:14px;">
+            <div style="background:#f8f8f8; font-family: system-ui; color: #5c5959; font-weight: 500;  padding:10px 14px;border-radius:1px 12px 1px 10px;font-size:14px;">
               ${text}
             </div>
           </div>
