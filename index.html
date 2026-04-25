@@ -486,9 +486,35 @@ border-bottom-right-radius: 0;
 
 .closeX {
   position: absolute;
-  top: 15px; right: 20px;
-  font-size: 10px;
+  top: 14px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 16px;
+  font-weight: bold;
+  color: #555;
+
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 50%;
+
   cursor: pointer;
+  z-index: 9999;
+
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+/* hover efek elegan */
+.closeX:hover {
+  background: #ff4d4f;
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(255, 77, 79, 0.25);
 }
 
 .title {
@@ -679,9 +705,9 @@ input {
     .custom-select {
   border: 1px solid #ccc;
   border-radius: 6px;
-  background: #550973db;
+  background: #dddddddb;
   padding: 1px;
-  width: 350px;
+  width: 330px;
 }
 
 .option {
@@ -3632,12 +3658,12 @@ button{
 .text .coin{
   font-weight:600;
   font-size:14px;
-  color:#222;
+  color:#e96500;
 }
 
 .text .price{
   font-size:16px;
-  color:#666;
+  color:#004b5e;
   margin-top:2px;
 }
 
@@ -3649,8 +3675,9 @@ button{
 }
 
 .discount{
-  background:#00b894;
+  background:#ff0148;
   color:#fff;
+  font-size:11px;
 }
 
 .sold{
@@ -3785,6 +3812,30 @@ button{
 @keyframes spin{
   0%{transform: rotate(0deg);}
   100%{transform: rotate(360deg);}
+}
+
+
+
+
+.detail-harga{
+  margin: 10px 0;
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #2c3e50;
+  background: linear-gradient(135deg, #f8f9ff, #eef2ff);
+  border: 1px solid rgba(85, 9, 166, 0.15);
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* optional icon kecil di depan */
+.detail-harga::before{
+  content: "ℹ️";
+  font-size: 14px;
 }
 
 
@@ -5878,7 +5929,7 @@ Fitur Utama
 <!-- Modal -->
 <div class="modal" id="coinsModal">
   <div class="inner">
-    <span class="closeX" onclick="closeCoins()">Tutup ✕</span>
+    <span class="closeX" onclick="closeCoins()">✕</span>
     <h2>MENU COIN APLIKASI</h2>
     <p class="muted">
       Coin dengan Diamond pada aplikasi tetap sama menjadi Token menyesuaikan masing masing aplikasi.
@@ -5908,73 +5959,73 @@ Fitur Utama
       <img src="tokens_2.png" class="coin-icon">
       <div class="text">
         <div class="coin">880 Coin</div>
-        <div class="price">Rp 33.000</div>
+        <div class="price">IDR 33.000</div>
       </div>
     </div>
     <span class="badge sold">Habis</span>
   </div>
 
-  <div class="option disabled">
+    <div class="option" onclick="selectOption('2500 Coin', 'IDR 250.000', 'Diskon 10%')">
     <div class="left">
       <img src="tokens_2.png" class="coin-icon">
       <div class="text">
         <div class="coin">2500 Coin</div>
-        <div class="price">Rp 250.000</div>
+        <div class="price">IDR 250.000</div>
       </div>
     </div>
-    <span class="badge sold">Habis</span>
+    <span class="badge discount">-10%</span>
   </div>
 
-  <div class="option" onclick="selectOption('3500 Coin', 'Rp 305.000', 'Diskon 40%')">
+  <div class="option" onclick="selectOption('3500 Coin', 'IDR 305.000', 'Diskon 40%')">
     <div class="left">
       <img src="tokens_2.png" class="coin-icon">
       <div class="text">
         <div class="coin">3500 Coin</div>
-        <div class="price">Rp 305.000</div>
+        <div class="price">IDR 305.000</div>
       </div>
     </div>
     <span class="badge discount">-40%</span>
   </div>
 
-  <div class="option" onclick="selectOption('5000+200 Coin', 'Rp 510.000', 'Diskon 40%')">
+  <div class="option" onclick="selectOption('5000+200 Coin', 'IDR 510.000', 'Diskon 40%')">
     <div class="left">
       <img src="tokens_3.png" class="coin-icon">
       <div class="text">
         <div class="coin">5000+200 Coin</div>
-        <div class="price">Rp 510.000</div>
+        <div class="price">IDR 510.000</div>
       </div>
     </div>
     <span class="badge discount">-40%</span>
   </div>
 
-  <div class="option" onclick="selectOption('6500 Coin', 'Rp 600.000', 'Diskon 30%')">
+  <div class="option" onclick="selectOption('6500 Coin', 'IDR 600.000', 'Diskon 30%')">
     <div class="left">
       <img src="tokens_4.png" class="coin-icon">
       <div class="text">
         <div class="coin">7200+500 Coin</div>
-        <div class="price">Rp 600.000</div>
+        <div class="price">IDR 600.000</div>
       </div>
     </div>
     <span class="badge discount">-30%</span>
   </div>
 
-  <div class="option" onclick="selectOption('13000 Coin', 'Rp 1.100.000', 'Diskon 40%')">
+  <div class="option" onclick="selectOption('13000 Coin', 'IDR 1.100.000', 'Diskon 40%')">
     <div class="left">
       <img src="tokens_5.png" class="coin-icon">
       <div class="text">
         <div class="coin">14000+700 Coin</div>
-        <div class="price">Rp 1.100.000</div>
+        <div class="price">IDR 1.100.000</div>
       </div>
     </div>
     <span class="badge discount">-40%</span>
   </div>
 
-  <div class="option" onclick="selectOption('20000 Coin', 'Rp 1.900.000', 'Diskon 70%')">
+  <div class="option" onclick="selectOption('20000 Coin', 'IDR 1.900.000', 'Diskon 70%')">
     <div class="left">
       <img src="tokens_6.png" class="coin-icon">
       <div class="text">
         <div class="coin">25000+1000 Coin</div>
-        <div class="price">Rp 1.900.000</div>
+        <div class="price">IDR 1.900.000</div>
       </div>
     </div>
     <span class="badge discount">-70%</span>
@@ -5983,7 +6034,8 @@ Fitur Utama
 </div>
 </div>
 
-  <div id="detailHarga" style="margin:10px 0; font-size: 10px; font-weight:600; color:var(--primary-dark)"></div>
+<div id="detailHarga" class="detail-harga"></div>
+
 
 <form onsubmit="handleCoinPurchase(event)">
   <input type="text" name="id_app" placeholder="ID Aplikasi" required><br>
