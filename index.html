@@ -681,7 +681,7 @@ input {
   border-radius: 6px;
   background: #550973db;
   padding: 1px;
-  width: 310px;
+  width: 400px;
 }
 
 .option {
@@ -1776,7 +1776,7 @@ button[onclick="prosesTarik()"] {
 }
 
 .text {
-  background: #f0f2f5;
+  
   padding: 10px;
   border-radius: 12px;
   position: relative;
@@ -2950,7 +2950,7 @@ a:hover {
   font-size: 13px;
   color: #777;
   transform-origin: right center; /* buka dari kanan */
-  animation: bookOpen 2.6s ease-out forwards;
+  
   perspective: 800px;
 }
 
@@ -3593,6 +3593,201 @@ button{
 #btnCS div:hover{
   transform:scale(1.2);
 }
+
+.options{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.option{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 14px;
+  border-radius:12px;
+  background:#ffffff;
+  box-shadow:0 4px 10px rgba(0,0,0,0.06);
+  cursor:pointer;
+  transition:0.2s;
+  border:1px solid #eee;
+}
+
+.option:hover{
+  transform:scale(1.01);
+  box-shadow:0 6px 14px rgba(0,0,0,0.10);
+}
+
+.left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.coin-icon{
+  width:56px;
+  height:42px;
+}
+
+.text .coin{
+  font-weight:600;
+  font-size:14px;
+  color:#222;
+}
+
+.text .price{
+  font-size:16px;
+  color:#666;
+  margin-top:2px;
+}
+
+.badge{
+  font-size:11px;
+  padding:4px 10px;
+  border-radius:20px;
+  font-weight:600;
+}
+
+.discount{
+  background:#00b894;
+  color:#fff;
+}
+
+.sold{
+  background:#ddd;
+  color:#666;
+}
+
+/* disabled style */
+.disabled{
+  opacity:0.5;
+  pointer-events:none;
+  filter:grayscale(40%);
+}
+
+.popup{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.popup-box{
+  width: 320px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+  animation: popupShow 0.2s ease-in-out;
+  font-family: Arial, sans-serif;
+}
+
+@keyframes popupShow{
+  from{
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  to{
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Judul */
+.popup-box h3{
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+  text-align: center;
+}
+
+/* isi teks */
+.popup-box p{
+  margin: 6px 0;
+  font-size: 13px;
+  color: #444;
+}
+
+/* garis pemisah */
+.popup-box hr{
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 10px 0;
+}
+
+/* tombol bayar */
+#btnSudahBayar{
+  margin-top: 12px;
+  background: linear-gradient(135deg, #4CAF50, #2e7d32);
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+#btnSudahBayar:hover{
+  transform: scale(1.02);
+  box-shadow: 0 6px 15px rgba(76,175,80,0.3);
+}
+
+/* tombol tutup */
+.popup-box button:last-child{
+  background: #eee;
+  color: #333;
+  border-radius: 8px;
+  padding: 8px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+/* teks metode highlight */
+.popup-box b{
+  color: #111;
+}
+
+
+.loading-popup{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 10000;
+  color: #fff;
+  font-family: Arial;
+  backdrop-filter: blur(3px);
+}
+
+.spinner{
+  width: 45px;
+  height: 45px;
+  border: 4px solid rgba(255,255,255,0.3);
+  border-top: 4px solid #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin{
+  0%{transform: rotate(0deg);}
+  100%{transform: rotate(360deg);}
+}
+
+
   </style>
 </head>
 <body>
@@ -4564,6 +4759,35 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
     Lihat Bukti Host
   </button>
 </div>
+
+<!-- 🔹 Tombol Diskusi Pengguna -->
+<button onclick="window.location.href='http://127.0.0.1:5500/semua%20ada%20disnii/W%20AGENCY%20BARU/forumdiskusi/index.html'" 
+  style="
+    background:#00b894; 
+    color:#fff; 
+    padding:10px 14px; 
+    border:none; 
+    border-radius:8px; 
+    font-size:14px; 
+    font-weight:bold;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    box-shadow:0 4px 6px rgba(0,0,0,0.3);
+    width:fit-content;
+    margin:auto;
+  ">
+  
+  <img src="certification_award_icon_1.png" alt="Logo" style="
+    width:22px; 
+    height:22px; 
+    display:block;
+  "> 
+  
+  <span>Diskusi Pengguna</span>
+</button>
 
 <!-- 🔹 POPUP BUKTI HOST -->
 <div id="popupBuktiHost" style="
@@ -5674,67 +5898,89 @@ Fitur Utama
   
 <div class="custom-select" onclick="toggleOptions()">
   <div id="selectedOption" class="selected">
-    <img src="coin.png" class="coin-icon">
+    <img src="tokens_6.png" class="coin-icon">
     <span class="coin">- Pilih Paket -</span>
   </div>
-  <div id="options" class="options">
+<div id="options" class="options">
 
-<div class="option disabled-option">
-  <img src="coin.png" class="coin-icon">
-  <span class="coin">880 Coin</span> - Rp 33.000 
-  <span class="soldout">Habis Terjual</span>
-</div>
-
-
-<div class="option disabled-option">
-  <img src="coin.png" class="coin-icon">
-  <span class="coin">880 Coin</span> - Rp 33.000 
-  <span class="soldout">Habis Terjual</span>
-</div>
-
-<div class="option disabled-option">
-  <img src="coin.png" class="coin-icon">
-  <span class="coin">2500 Coin</span> - Rp 250.000 
-  <span class="soldout">Habis Terjual</span>
-</div>
-
-    <div class="option" onclick="selectOption('3520 Coin', 'Rp 305.000', 'Diskon 40%')">
-      <img src="coin.png" class="coin-icon">
-      <span class="coin">3500 Coin</span> - Rp 305.000 
-      <span class="discount">Diskon 40%</span>
+  <div class="option disabled">
+    <div class="left">
+      <img src="tokens_2.png" class="coin-icon">
+      <div class="text">
+        <div class="coin">880 Coin</div>
+        <div class="price">Rp 33.000</div>
+      </div>
     </div>
-
-
-    <div class="option" onclick="selectOption('5000+200 Coin', 'Rp 510.000', 'Diskon 40%')">
-      <img src="coin.png" class="coin-icon">
-      <span class="coin">5000+200 Coin</span> - Rp 510.000 
-      <span class="discount">Diskon 40%</span>
-    </div>
-
-
-
-    <div class="option" onclick="selectOption('6500 Coin', 'Rp 600.000', 'Diskon 30%')">
-      <img src="coin.png" class="coin-icon">
-      <span class="coin">6500 Coin</span> - Rp 600.000 
-      <span class="discount">Diskon 30%</span>
-    </div>
-    <div class="option" onclick="selectOption('13000 Coin', 'Rp 1.100.000', 'Diskon 40%')">
-      <img src="coin.png" class="coin-icon">
-      <span class="coin">13000 Coin</span> - Rp 1.100.000 
-      <span class="discount">Diskon 40%</span>
-    </div>
-    <div class="option" onclick="selectOption('20000 Coin', 'Rp 1.900.000', 'Diskon 70%')">
-      <img src="coin.png" class="coin-icon">
-      <span class="coin">20000 Coin</span> - Rp 1.900.000 
-      <span class="discount">Diskon 70%</span>
-    </div>
-        <div class="option" onclick="selectOption('30000 Coin', 'Rp 2.500.000', 'Diskon 79%')">
-      <img src="coin.png" class="coin-icon">
-      <span class="coin">30000 Coin</span> - Rp 2.500.000 
-      <span class="discount">Diskon 79%</span>
-    </div>
-
+    <span class="badge sold">Habis</span>
   </div>
+
+  <div class="option disabled">
+    <div class="left">
+      <img src="tokens_2.png" class="coin-icon">
+      <div class="text">
+        <div class="coin">2500 Coin</div>
+        <div class="price">Rp 250.000</div>
+      </div>
+    </div>
+    <span class="badge sold">Habis</span>
+  </div>
+
+  <div class="option" onclick="selectOption('3500 Coin', 'Rp 305.000', 'Diskon 40%')">
+    <div class="left">
+      <img src="tokens_2.png" class="coin-icon">
+      <div class="text">
+        <div class="coin">3500 Coin</div>
+        <div class="price">Rp 305.000</div>
+      </div>
+    </div>
+    <span class="badge discount">-40%</span>
+  </div>
+
+  <div class="option" onclick="selectOption('5000+200 Coin', 'Rp 510.000', 'Diskon 40%')">
+    <div class="left">
+      <img src="tokens_3.png" class="coin-icon">
+      <div class="text">
+        <div class="coin">5000+200 Coin</div>
+        <div class="price">Rp 510.000</div>
+      </div>
+    </div>
+    <span class="badge discount">-40%</span>
+  </div>
+
+  <div class="option" onclick="selectOption('6500 Coin', 'Rp 600.000', 'Diskon 30%')">
+    <div class="left">
+      <img src="tokens_4.png" class="coin-icon">
+      <div class="text">
+        <div class="coin">7200+500 Coin</div>
+        <div class="price">Rp 600.000</div>
+      </div>
+    </div>
+    <span class="badge discount">-30%</span>
+  </div>
+
+  <div class="option" onclick="selectOption('13000 Coin', 'Rp 1.100.000', 'Diskon 40%')">
+    <div class="left">
+      <img src="tokens_5.png" class="coin-icon">
+      <div class="text">
+        <div class="coin">14000+700 Coin</div>
+        <div class="price">Rp 1.100.000</div>
+      </div>
+    </div>
+    <span class="badge discount">-40%</span>
+  </div>
+
+  <div class="option" onclick="selectOption('20000 Coin', 'Rp 1.900.000', 'Diskon 70%')">
+    <div class="left">
+      <img src="tokens_6.png" class="coin-icon">
+      <div class="text">
+        <div class="coin">25000+1000 Coin</div>
+        <div class="price">Rp 1.900.000</div>
+      </div>
+    </div>
+    <span class="badge discount">-70%</span>
+  </div>
+
+</div>
 </div>
 
   <div id="detailHarga" style="margin:10px 0; font-size: 10px; font-weight:600; color:var(--primary-dark)"></div>
@@ -5764,6 +6010,12 @@ Fitur Utama
   style="background:#5509a6;color:white;padding:10px 16px;border:none;border-radius:6px;cursor:pointer;">
   Beli Koin
 </button>
+
+<div id="loadingPopup" class="loading-popup">
+  <div class="spinner"></div>
+  <p>Memproses...</p>
+</div>
+
   <div id="pembayaran"></div>
 </form>
 
@@ -5771,7 +6023,20 @@ Fitur Utama
 
 
 
+<div id="popupPayment" class="popup">
+  <div class="popup-box">
 
+    <h3>Metode Pembayaran</h3>
+
+    <div id="paymentContent"></div>
+
+    <button onclick="closePopup()" 
+      style="margin-top:10px;padding:8px 12px;border:none;border-radius:6px;background:#ccc;">
+      Tutup
+    </button>
+
+  </div>
+</div>
 
 
 
@@ -6145,15 +6410,58 @@ function handleCoinPurchase(e) {
   const idApp = form.id_app.value;
   const namaApp = form.nama_app.value;
   const waUser = form.wa.value;
-  const paket = form.paketSelect?.value || document.getElementById("paketSelect").value;
+  const paket = document.getElementById("paketSelect").value;
   const metode = form.pay.value;
 
-  // simpan data
-  const dataPembelian = { idApp, namaApp, waUser, paket };
+  const dataPembelian = { idApp, namaApp, waUser, paket, metode };
 
-  // tampilkan metode pembayaran + tombol
-  renderPembayaran(metode, dataPembelian);
+  showPaymentPopup(dataPembelian);
 }
+
+
+function showPaymentPopup(data) {
+  const container = document.getElementById("paymentContent");
+
+  const tujuan = tujuanPembayaran[data.metode] || "-";
+
+  container.innerHTML = `
+    <div style="text-align:left;margin-top:10px;">
+      <p><b>Metode:</b> ${data.metode.toUpperCase()}</p>
+      <p style="word-break:break-all;">${tujuan}</p>
+
+      <hr>
+
+      <p><b>Paket:</b> ${data.paket}</p>
+      <p><b>Nama:</b> ${data.namaApp}</p>
+
+      <button id="btnSudahBayar"
+        style="
+          margin-top:10px;
+          background:#4CAF50;
+          color:#fff;
+          padding:8px 12px;
+          border:none;
+          border-radius:6px;
+          cursor:pointer;
+          width:100%;
+        ">
+        Saya Sudah Bayar
+      </button>
+    </div>
+  `;
+
+  document.getElementById("popupPayment").style.display = "flex";
+
+  // 🔥 FIX EVENT DI SINI (INI KUNCINYA)
+  document.getElementById("btnSudahBayar").onclick = function () {
+    sudahBayar(data);
+  };
+}
+
+function closePopup(){
+  document.getElementById("popupPayment").style.display = "none";
+}
+
 
 function renderPembayaran(metode, dataPembelian) {
   const container = document.getElementById("pembayaran");
@@ -6176,17 +6484,22 @@ function renderPembayaran(metode, dataPembelian) {
   container.appendChild(div);
 }
 
-function sudahBayar(metode, dataPembelian) {
-  const pesan = `Halo Admin, saya sudah melakukan pembayaran.
+function sudahBayar(data) {
 
-ID App: ${dataPembelian.idApp}
-Nama App: ${dataPembelian.namaApp}
-No. WA: ${dataPembelian.waUser}
-Paket: ${dataPembelian.paket}
-Metode: ${metode.toUpperCase()}`;
+  const pesan = `
+Halo Admin, saya sudah melakukan pembayaran.
 
-  const url = `https://wa.me/${waAdmin}?text=${encodeURIComponent(pesan)}`;
-  window.open(url, "_blank");
+ID App: ${data.idApp}
+Nama App: ${data.namaApp}
+No. WA: ${data.waUser}
+Paket: ${data.paket}
+Metode: ${data.metode.toUpperCase()}
+`;
+
+  window.open(
+    `https://wa.me/${waAdmin}?text=${encodeURIComponent(pesan)}`,
+    "_blank"
+  );
 }
 
 function toggleOptions() {
@@ -6196,7 +6509,7 @@ function toggleOptions() {
 
 function selectOption(coin, harga, diskon) {
   document.getElementById("selectedOption").innerHTML =
-    `<img src="coin.png" class="coin-icon">
+    `<img src="tokens_6.png" class="coin-icon">
      <span class="coin">${coin}</span> - ${harga} 
      <span class="discount">${diskon}</span>`;
 
@@ -7995,7 +8308,28 @@ document.getElementById('appsGrid').addEventListener('click', function () {
 });
 
 
+document.getElementById("btnBeliKoin").addEventListener("click", function (e) {
+  e.preventDefault();
 
+  // tampilkan loading
+  document.getElementById("loadingPopup").style.display = "flex";
+
+  // simulasi delay (biar terasa proses)
+  setTimeout(() => {
+
+    document.getElementById("loadingPopup").style.display = "none";
+
+    // panggil popup pembayaran kamu
+    showPaymentPopup({
+      idApp: document.querySelector("[name='id_app']").value,
+      namaApp: document.querySelector("[name='nama_app']").value,
+      waUser: document.querySelector("[name='wa']").value,
+      paket: document.getElementById("paketSelect").value,
+      metode: document.querySelector("[name='pay']").value
+    });
+
+  }, 1200); // 1.2 detik loading
+});
 
 
 

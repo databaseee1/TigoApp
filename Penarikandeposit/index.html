@@ -2309,6 +2309,10 @@ z-index:9999;
 </div>
 
 
+
+
+
+
 <!-- 🔹 Tombol Google -->
 <button style="
   margin-top:20px; 
@@ -2325,6 +2329,33 @@ z-index:9999;
   font-weight:600;
 ">
   <!-- Kiri: ikon + teks -->
+
+  
+<div style="display:flex; align-items:center; gap:10px;">
+  <img src="destiny_icon_video_call.png" alt="icon" style="width:44px; height:44px;">
+  <span id="appText">Memuat</span>
+</div>
+
+
+
+<!-- 🔹 Tombol Google -->
+<button style="
+  margin-top:20px; 
+  width:100%; 
+  padding:14px; 
+  display:flex; 
+  align-items:center; 
+  justify-content:space-between;
+  background:#ffffff; 
+  border:1px solid #ddddddc2; 
+  border-radius:8px; 
+  cursor:pointer;
+  font-size:16px; 
+  font-weight:600;
+">
+  <!-- Kiri: ikon + teks -->
+
+  
   <div style="display:flex; align-items:center; gap:10px;">
     <img src="bind_google_icon.png" alt="icon" style="width:44px; height:44px;">
     <span>Google</span>
@@ -4040,7 +4071,6 @@ const auth = getAuth(app);
 
 
 
-
 const btnAkunUangTunai = document.getElementById("btnAkunUangTunai");
 const bankPopup = document.getElementById("bankPopup");
 const closeBankPopup = document.getElementById("closeBankPopup");
@@ -4476,6 +4506,48 @@ localStorage.setItem("uid", userId);
     Swal.fire({ icon: "error", text: "Terjadi error saat login,Periksa koneksi anda!." });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const el = document.getElementById("appText");
+  const uid = localStorage.getItem("uid");
+
+  if (!uid) {
+    el.textContent = "User tidak ditemukan (belum login)";
+    return;
+  }
+
+  const ref = doc(db, "pendaftaran", uid);
+
+  onSnapshot(ref, (snap) => {
+    if (snap.exists()) {
+      const data = snap.data();
+      el.textContent = data.app || "Tidak ada app";
+    } else {
+      el.textContent = "Data tidak ditemukan";
+    }
+  });
+
+});
+
+
+
+
+
+
+
 
 
 

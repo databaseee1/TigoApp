@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Forum Agency & Coin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{font-family:Arial;background:#9803b0;margin:0;}
+
+
+
+.header{
+  background:#9803b0;
+  color:#fff;
+  padding:15px;
+  text-align:center;
+
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  z-index:999;
+}
+
+.container{
+  max-width:500px;
+  margin:auto;
+  padding:10px;
+  margin-top:70px; /* ini penting */
+}
+
+
+
+.online-dot{
+  width:8px;
+  height:8px;
+  background:#00ff5e;
+  border-radius:50%;
+  display:inline-block;
+}
+
+
+.footer{
+  background:#3b3b3b;
+  color:#ccc;
+  margin-top:40px;
+  padding-top:20px;
+  font-size:13px;
+  border-radius: 10px;
+}
+
+.footer-inner{
+  max-width:500px;
+  margin:auto;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+}
+
+.footer-brand .logo{
+  font-size:16px;
+  font-weight:bold;
+  color:#fff;
+}
+
+.footer-brand .desc{
+  font-size:12px;
+  color:#aaa;
+}
+
+.footer-links{
+  display:flex;
+  justify-content:space-between;
+  color:#bbb;
+}
+
+.footer-links div{
+  cursor:pointer;
+}
+
+.footer-links div:hover{
+  color:#fff;
+}
+
+.footer-social{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.footer-social .icons img{
+  width:18px;
+  margin-left:10px;
+  opacity:0.8;
+}
+
+.footer-social .icons img:hover{
+  opacity:1;
+}
+
+.footer-bottom{
+  text-align:center;
+  padding:10px;
+  border-top:1px solid #222;
+  font-size:11px;
+  color:#777;
+}
+
+
+.view-more{
+  margin-top:10px;
+  padding:8px;
+  text-align:center;
+  border-radius:8px;
+  background:#f5f5f5;
+  font-size:13px;
+  cursor:pointer;
+  font-weight:500;
+}
+
+.view-more:hover{
+  background:#eaeaea;
+}
+
+
+.popup{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.hidden{
+  display:none;
+}
+
+.popup-box{
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  text-align:center;
+  width:260px;
+  animation:fadeIn 0.3s;
+}
+
+.popup-logo{
+  width:60px;
+  margin-bottom:10px;
+}
+
+.popup-text{
+  font-size:14px;
+  margin-bottom:15px;
+}
+
+.popup-box button{
+  padding:8px 20px;
+  border:none;
+  border-radius:6px;
+  background:#9803b0;
+  color:#fff;
+  cursor:pointer;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:scale(0.9);}
+  to{opacity:1; transform:scale(1);}
+}
+
+.post{background:#fff;padding:12px;border-radius:10px;margin-bottom:10px;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+.top{display:flex;align-items:center;}
+.avatar{width:40px;height:40px;border-radius:50%;margin-right:10px;object-fit:cover;}
+.name{font-weight:bold;}
+.time{font-size:12px;color:#777;}
+.text{margin-top:10px;font-size:14px;}
+.actions{margin-top:10px;display:flex;gap:15px;align-items:center;}
+.btn{cursor:pointer;display:flex;align-items:center;gap:5px;}
+.btn img{width:16px;}
+.comment-box{margin-top:10px;}
+
+input{
+  width:50%;
+  padding:8px;
+  border-radius:8px;
+  border:1px solid #ddd;
+  margin-top:10px;
+}
+
+
+
+
+
+.notif{
+  position:fixed;
+  top:60px;
+  right:10px;
+  background:#00c853;
+  color:#fff;
+  padding:10px 12px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.2);
+  z-index:9999;
+  animation:slideIn 0.4s;
+}
+
+.notif img{
+  width:20px;
+}
+
+.hidden{
+  display:none;
+}
+
+@keyframes slideIn{
+  from{transform:translateX(100%); opacity:0;}
+  to{transform:translateX(0); opacity:1;}
+}
+
+
+
+/* BACKDROP */
+.profile{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+  backdrop-filter: blur(4px);
+}
+
+/* BOX */
+.profile-box{
+  background:#fff;
+  width:280px;
+  border-radius:16px;
+  padding:20px 15px;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  animation:popUp 0.25s ease;
+}
+
+/* ANIMASI */
+@keyframes popUp{
+  from{
+    transform:scale(0.8);
+    opacity:0;
+  }
+  to{
+    transform:scale(1);
+    opacity:1;
+  }
+}
+
+/* AVATAR */
+.p-avatar{
+  width:75px;
+  height:75px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid #9803b0;
+  margin-bottom:10px;
+}
+
+/* NAMA */
+.p-name{
+  font-size:16px;
+  font-weight:600;
+  color:#222;
+}
+
+/* STATUS */
+.p-status{
+  font-size:13px;
+  margin-top:5px;
+  color:#9803b0;
+  font-weight:500;
+}
+
+/* KOTA */
+.p-city{
+  font-size:13px;
+  margin-top:4px;
+  color:#555;
+}
+
+/* GIFT */
+.p-gift{
+  font-size:13px;
+  margin-top:6px;
+  color:#ff9800;
+  font-weight:600;
+}
+
+/* BUTTON */
+.profile-box button{
+  margin-top:15px;
+  padding:7px 20px;
+  border:none;
+  border-radius:20px;
+  background:#9803b0;
+  color:#fff;
+  font-size:13px;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.profile-box button:hover{
+  background:#7a0290;
+}
+
+/* HIDDEN */
+.hidden{
+  display:none;
+}
+
+
+.profile-note{
+  margin-top:12px;
+  font-size:12px;
+  color:#666;
+  background:#f8f8f8;
+  padding:10px;
+  border-radius:10px;
+  line-height:1.5;
+  border:1px solid #eee;
+}
+
+
+
+/* BOX UTAMA */
+.profile-info-box{
+  margin-top:12px;
+  background:#fafafa;
+  border-radius:12px;
+  padding:12px;
+  border:1px solid #eee;
+}
+
+/* ROW */
+.info-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:6px 0;
+  border-bottom:1px solid #eee;
+}
+
+/* hapus garis terakhir */
+.info-row:last-child{
+  border-bottom:none;
+}
+
+/* LABEL (kiri) */
+.label{
+  font-size:12px;
+  color:#888;
+}
+
+/* VALUE (kanan) */
+.value{
+  font-size:13px;
+  font-weight:500;
+  color:#222;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<div class="header">Forum Agency & Coin</div>
+<div class="container" id="feed"></div>
+
+<div id="notifBox" class="notif hidden">
+  <img src="no_times_dialog_top_icon.png">
+  <span id="notifText"></span>
+</div>
+
+
+<!-- PROFILE CARD -->
+<div id="profileCard" class="profile hidden">
+
+  <div class="profile-box">
+
+    <!-- AVATAR -->
+    <img id="pAvatar" class="p-avatar" src="">
+
+<div class="profile-info-box">
+
+  <div class="info-row">
+    <span class="label">Nama</span>
+    <span id="pName" class="value">Memuat</span>
+  </div>
+
+  <div class="info-row">
+    <span class="label">Status</span>
+    <span id="pStatus" class="value">Memuat</span>
+  </div>
+
+  <div class="info-row">
+    <span class="label">Kota</span>
+    <span id="pCity" class="value">Memuat...</span>
+  </div>
+
+</div>
+
+    <!-- GIFT (akan kosong jika User) -->
+    <div id="pGift" class="p-gift"></div>
+
+    <div class="profile-note">
+  Informasi profil ditampilkan secara terbatas guna melindungi privasi pengguna, sesuai dengan kebijakan serta syarat dan ketentuan yang berlaku.
+</div>
+
+    <!-- BUTTON -->
+    <button onclick="closeProfile()">Tutup</button>
+
+  </div>
+
+</div>
+
+
+
+<div id="popup" class="popup hidden">
+  <div class="popup-box">
+    <img src="chat_icon_send_failure.png" class="popup-logo">
+    <div class="popup-text">
+      Tamu tidak diizinkan melihat diskusi lainnya
+    </div>
+    <button onclick="closePopup()">OK</button>
+  </div>
+</div>
+
+
+
+<footer class="footer">
+  <div class="footer-inner">
+
+    <div class="footer-brand">
+      <div class="logo">Forum Agency</div>
+      <div class="desc">
+        Platform diskusi pembelian coin & pengalaman host berbagai aplikasi live streaming.
+      </div>
+    </div>
+
+    <div class="footer-links">
+      <div>Beranda</div>
+      <div>Diskusi</div>
+      <div>Agency</div>
+      <div>Bantuan</div>
+    </div>
+
+    <div class="footer-social">
+      <span>Ikuti kami:</span>
+      <div class="icons">
+        <img src="bind_facebook_icon.png">
+        <img src="bind_google_icon.png">
+        <img src="bind_twitter_icon.png">
+        <img src="mine_bind_invite_code_icon.png">
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    © 2026 Forum Agency • Semua hak dilindungi
+  </div>
+</footer>
+
+
+
+
+<script>
+
+// ===== AVATAR =====
+const avatars = [
+"avatar1.jpg","9439726.jpg","9434619.jpg","9434619.jpg",
+"BuzzCast.webp","Chamet.webp","chatologo.webp",
+"17LIVE.webp","bling.webp",
+"meegologo.webp","makologo.webp","Litgo-Chat.webp",
+"joy-live.webp","GOGO LIVE.webp","Honey.webp","Dico.webp",
+"weelivelogo - Copy.webp","Voya - Copy.webp",
+"vietnam_12360402 - Copy.png","tigogambar.webp",
+"ti.livelogo.webp","TenderUlogo.webp","sugo.webp","MICO.webp"
+];
+
+// ===== DATA =====
+const names = [
+"Dina Putri","Riko Saputra","Andre Wijaya","Salsa Devi","Putra Ginting",
+"Rahma Sari","Budi Santoso","Yuni Lestari","Agus Pratama","Lina Marlina"
+];
+
+// ===== TOPIK =====
+const goodPosts = [
+"Coin masuk kurang dari 5 menit, agency nya mantap banget",
+"Daftar host langsung diterima, proses cepat",
+"Video call di Tigo lancar tanpa lag",
+"Top up coin di Weelive aman banget",
+"Agency bantu sampai aktif, recommended",
+"Host langsung dapat viewer setelah aktif",
+"Proses withdraw juga cepat banget",
+"Coin langsung masuk tanpa pending"
+];
+
+const badPosts = [
+"Coin belum masuk sudah 1 jam",
+"Daftar host masih pending terus",
+"Video call sering lag di aplikasi",
+"Agency lama responnya",
+"Tigo bagus tapi pembelian token agak ribet menurut saya",
+"Verifikasi terlalu lama"
+];
+
+// ===== KOMENTAR VARIASI (ANTI SAMA) =====
+// ===== GENERATOR KOMENTAR 100% UNIK =====
+function generateUniqueComment(i){
+
+  const apps = ["Tigo","Weelive","Mego","Ayo","Mako","Bling","Chato"];
+  const masalah = [
+    "pembelian coin",
+    "proses daftar host",
+    "verifikasi akun",
+    "sistem agency",
+    "video call",
+    "withdraw saldo"
+  ];
+
+  const respon = [
+    "lumayan cepat",
+    "agak lama",
+    "butuh perbaikan",
+    "cukup membantu",
+    "masih kurang stabil",
+    "sudah bagus"
+  ];
+
+  const saran = [
+    "semoga kedepannya lebih baik",
+    "harusnya bisa lebih cepat lagi",
+    "mungkin perlu update sistem",
+    "semoga segera diperbaiki",
+    "overall masih aman digunakan",
+    "tidak terlalu masalah bagi saya"
+  ];
+
+  const app = apps[i % apps.length];
+  const m = masalah[i % masalah.length];
+  const r = respon[i % respon.length];
+  const s = saran[i % saran.length];
+
+  // bikin unik pakai index
+  return `(${i+1}) Di aplikasi ${app}, pengalaman saya terkait ${m} itu ${r}, dan ${s}.`;
+}
+
+// ===== WAKTU =====
+function randomTime(){
+  const t = Math.random();
+  if(t<0.3) return Math.floor(Math.random()*5+1)+" hari lalu";
+  if(t<0.6) return Math.floor(Math.random()*10+1)+" jam lalu";
+  if(t<0.9) return Math.floor(Math.random()*59+1)+" menit lalu";
+  return "Aktif sekarang";
+}
+
+// ===== DATA PROFIL =====
+const cityList = [
+"Medan","Jakarta","Bandung","Surabaya","Makassar","Padang","Palembang",
+"Pekanbaru","Balikpapan","Pontianak","Banjarmasin","Manado","Ambon",
+"Kupang","Jayapura","Semarang","Yogyakarta","Malang","Solo","Bogor",
+"Depok","Tangerang","Bekasi","Cirebon","Tasikmalaya","Serang",
+"Mataram","Denpasar","Gorontalo","Kendari","Jambi","Bengkulu"
+];
+
+// acak kota
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+const cities = shuffle([...cityList]);
+
+// gift unik
+let giftList = [];
+for(let i=0;i<200;i++){
+  giftList.push(Math.floor(Math.random()*10000)+100);
+}
+
+// ===== GENERATE =====
+function generatePosts(){
+  const feed = document.getElementById("feed");
+
+  for(let i=0;i<100;i++){
+
+    const isGood = Math.random() < 0.8;
+
+    const text = isGood 
+      ? goodPosts[Math.floor(Math.random()*goodPosts.length)]
+      : badPosts[Math.floor(Math.random()*badPosts.length)];
+
+    const name = names[Math.floor(Math.random()*names.length)];
+    const avatar = avatars[i % avatars.length];
+
+    // ===== PROFIL DATA =====
+    const status = Math.random() < 0.5 ? "User" : "Host";
+    const city = cities[i % cities.length];
+    const gift = giftList[i];
+
+    // simpan
+    window["profile_"+i] = {name,avatar,status,city,gift};
+
+    let like = Math.floor(Math.random()*300)+50;
+    let dislike = Math.floor(Math.random()*50)+5;
+
+    const id = "post_"+i;
+
+    const post = document.createElement("div");
+    post.className = "post";
+
+    post.innerHTML = `
+      <div class="top">
+        <div style="position:relative;">
+  <img class="avatar" src="${avatar}" onclick="openProfile(${i})" style="cursor:pointer;">
+  ${Math.random() < 0.4 ? `
+    <span style="
+      position:absolute;
+      bottom:2px;
+      right:2px;
+      width:10px;
+      height:10px;
+      background:#00ff5e;
+      border-radius:50%;
+      border:2px solid #fff;
+    "></span>
+  ` : ''}
+</div>
+        <div>
+          <div class="name" onclick="openProfile(${i})" style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+  ${name}
+  ${Math.random() < 0.4 ? '<span class="online-dot"></span>' : ''}
+</div>
+          <div class="time">${randomTime()}</div>
+        </div>
+      </div>
+
+      <div class="text">${text}</div>
+
+      <div class="actions">
+        <div class="btn" onclick="like('${id}')">
+          <img src="cs_answer_up_pressed_icon.png"> <span id="like_${id}">${like}</span>
+        </div>
+        <div class="btn" onclick="dislike('${id}')">
+          <img src="cs_answer_down_pressed_icon.png"> <span id="dis_${id}">${dislike}</span>
+        </div>
+      </div>
+
+      <div class="comment-box">
+        <div class="view-more" onclick="showPopup()">
+  Lihat komentar lain
+</div>
+        <input placeholder="Tulis komentar..." onkeypress="sendComment(event,'${id}')">
+        <div id="comment_${id}"></div>
+      </div>
+    `;
+
+    feed.appendChild(post);
+
+    // ===== AUTO LIKE =====
+    setInterval(()=>{
+      like += Math.floor(Math.random()*10);
+      document.getElementById("like_"+id).innerText =
+        like < 1000 ? like : (like/1000).toFixed(1)+"K";
+    },4000);
+
+    // ===== KOMENTAR DEFAULT =====
+    let saved = localStorage.getItem(id);
+
+    if(!saved){
+      let commentList = [];
+
+      const uniqueComment = generateUniqueComment(i);
+      commentList.push(uniqueComment);
+
+      if(Math.random() > 0.5){
+        commentList.push(generateUniqueComment(i+100));
+      }
+
+      localStorage.setItem(id, JSON.stringify(commentList));
+    }
+
+    renderComment(id);
+  }
+}
+
+// ===== LIKE =====
+function like(id){
+  let el = document.getElementById("like_"+id);
+  el.innerText = parseInt(el.innerText)+1;
+}
+
+function dislike(id){
+  let el = document.getElementById("dis_"+id);
+  el.innerText = parseInt(el.innerText)+1;
+}
+
+// ===== KOMENTAR =====
+function sendComment(e,id){
+  if(e.key==="Enter"){
+    const val = e.target.value;
+    if(!val) return;
+
+    let data = JSON.parse(localStorage.getItem(id)) || [];
+    data.push(val);
+    localStorage.setItem(id, JSON.stringify(data));
+
+    renderComment(id);
+    e.target.value="";
+  }
+}
+
+function renderComment(id){
+  const box = document.getElementById("comment_"+id);
+  const data = JSON.parse(localStorage.getItem(id)) || [];
+
+box.innerHTML = data.map(d=>`
+  <div style="display:flex;gap:6px;margin-top:8px;">
+    
+    <img src="user_level_9_icon - Copy.png" 
+         style="width:14px;height:14px;margin-top:6px;">
+
+    <div style="
+      background:#f5f5f5;
+      padding:8px 10px;
+      border-radius:10px;
+      font-size:13px;
+      max-width:80%;
+      box-shadow:0 1px 3px rgba(0,0,0,0.1);
+    ">
+      ${d}
+    </div>
+
+  </div>
+`).join("");
+}
+
+// ===== PROFILE POPUP =====
+function openProfile(i){
+  const data = window["profile_"+i];
+
+  document.getElementById("pAvatar").src = data.avatar;
+  document.getElementById("pName").innerText = data.name;
+  document.getElementById("pStatus").innerText = "Status: " + data.status;
+  document.getElementById("pCity").innerText = "Kota: " + data.city;
+
+  if(data.status === "User"){
+    document.getElementById("pGift").innerText = "";
+  }else{
+    document.getElementById("pGift").innerText = "Gift: " + data.gift;
+  }
+
+  document.getElementById("profileCard").classList.remove("hidden");
+}
+
+function closeProfile(){
+  document.getElementById("profileCard").classList.add("hidden");
+}
+
+// ===== RUN =====
+generatePosts();
+
+function showPopup(){
+  document.getElementById("popup").classList.remove("hidden");
+}
+
+function closePopup(){
+  document.getElementById("popup").classList.add("hidden");
+}
+
+
+
+
+
+
+// ===== SHUFFLE =====
+function shuffle(arr){
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// ===== GENERATOR 200 NAMA 1 KATA (UNIK) =====
+function generateUniqueNames(){
+
+  let baseNames = [
+    "Adnan","Akbar","Alvin","Anwar","Arman","Arya","Azka","Bima","Bram",
+  "Candra","Danil","Darma","Dian","Doni","Edi","Eko","Erwin","Fadli",
+  "Fahmi","Fauzi","Gilang","Guntur","Hadi","Halim","Haris","Hilmi",
+  "Irfan","Ismail","Jamal","Johan","Kamal","Kurnia","Lukman","Mahdi",
+  "Maulana","Miftah","Miko","Naufal","Nizar","Oki","Prasetyo","Raka",
+  "Rangga","Reyhan","Ridho","Riyan","Salman","Sandi","Saputra","Satria",
+  "Setiawan","Sofyan","Subhan","Sultan","Surya","Syahrul","Taufik",
+  "Tegar","Umar","Udin","Vicky","Wawan","Yahya","Yanto","Yogi",
+  "Yudha","Zaki","Zidan","Zulfikar","Aman","Bahar","Chandra","Daffa",
+  "Danu","Dika","Fikran","Fitra","Hanan","Ihsan","Ikram","Ilman",
+  "Jefri","Kiki","Maman","Nico","Pandu","Qori","Rizwan","Seno",
+  "Tino","Ucup","Wira","Yayan","Zainal","Abid","Bagir","Faris"
+];
+
+  // hapus duplikat
+  baseNames = [...new Set(baseNames)];
+
+  // acak
+  baseNames = shuffle(baseNames);
+
+  const names = [];
+  let i = 0;
+
+  while(names.length < 200){
+    let name = baseNames[i % baseNames.length];
+
+    // biar tetap unik kalau keulang, kasih variasi halus
+    if(i >= baseNames.length){
+      name = name + (i+1); // contoh: Riko21
+    }
+
+    names.push(name);
+    i++;
+  }
+
+  return names;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ===== GENERATOR 200 NOTIF =====
+function generateNotifList(){
+
+  const kategori = ["coin","deposit","host","withdraw","promo","verifikasi"];
+  const list = [];
+
+  for(let i=0;i<200;i++){
+
+    const type = kategori[i % kategori.length];
+    let text = "";
+
+    if(type === "coin"){
+      const amount = Math.floor(Math.random()*90000)+10000;
+      const rupiah = amount * 10;
+      text = `Berhasil membeli ${amount} coin IDR ${rupiah.toLocaleString()}`;
+    }
+
+    else if(type === "deposit"){
+      const amount = Math.floor(Math.random()*20000)+5000;
+      text = `Deposit berhasil masuk ${amount} coin`;
+    }
+
+    else if(type === "host"){
+      text = `Host berhasil aktif melalui agency`;
+    }
+
+    else if(type === "withdraw"){
+      const rupiah = Math.floor(Math.random()*9000000)+100000;
+      text = `Withdraw berhasil diproses Rp ${rupiah.toLocaleString()}`;
+    }
+
+    else if(type === "promo"){
+      text = `Top up coin sukses`;
+    }
+
+    else if(type === "verifikasi"){
+      text = `Akun host berhasil diverifikasi`;
+    }
+
+    list.push(text);
+  }
+
+  return list;
+}
+
+// ===== DATA =====
+const notifList = generateNotifList();
+const namesList = generateUniqueNames();
+
+// ambil index terakhir (biar tidak reset)
+let notifIndex = parseInt(localStorage.getItem("notifIndex")) || 0;
+
+// ===== SHOW NOTIF =====
+function showNotif(){
+  const box = document.getElementById("notifBox");
+  const text = document.getElementById("notifText");
+
+  const currentText = notifList[notifIndex];
+  const currentName = namesList[notifIndex]; // 🔥 tidak random lagi
+
+  text.innerHTML = `
+    <span style="
+      color:#380074;
+      text-decoration:underline;
+      cursor:pointer;
+      font-weight:500;
+    ">
+      ${currentName}
+    </span>
+    ${currentText}
+  `;
+
+  box.classList.remove("hidden");
+
+  // lanjut ke notif berikutnya
+  notifIndex++;
+  if(notifIndex >= notifList.length) notifIndex = 0;
+
+  localStorage.setItem("notifIndex", notifIndex);
+
+  setTimeout(()=>{
+    box.classList.add("hidden");
+  },4000);
+}
+
+// ===== AUTO JALAN =====
+setInterval(showNotif,10000);
+
+// tampil pertama
+setTimeout(showNotif,2000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>
