@@ -380,9 +380,13 @@ border-bottom-right-radius: 0;
 
 .modal{position:fixed; inset:0; background:rgba(124,58,237,.9); backdrop-filter:blur(8px); display:none; z-index:60}
 .modal .inner{
-  max-width:1000px; margin:0px auto;
-  background:#fff; border:2px solid var(--primary);
-  border-radius:18px; padding:16px; color:#00ff3c
+  max-width:1000px; 
+  margin:0px auto;
+  background:#fff; 
+  border:2px solid var(--primary);
+  border-radius:18px; 
+  padding:16px; 
+  color:#3d3d3d;
 }
 .closeX{float:right; cursor:pointer; font-weight:700; color:var(--primary)}
 .app{
@@ -3705,46 +3709,64 @@ button{
 
 .popup-box{
   width: 320px;
-  background: #ffffff;
+  background: #fff;
   border-radius: 14px;
   padding: 18px;
   box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-  animation: popupShow 0.2s ease-in-out;
+  animation: pop .2s ease;
   font-family: Arial, sans-serif;
 }
 
-@keyframes popupShow{
-  from{
-    transform: scale(0.85);
-    opacity: 0;
-  }
-  to{
-    transform: scale(1);
-    opacity: 1;
-  }
+/* animasi */
+@keyframes pop{
+  from{transform: scale(0.9); opacity: 0;}
+  to{transform: scale(1); opacity: 1;}
 }
 
-/* Judul */
+/* judul */
 .popup-box h3{
   margin: 0;
   font-size: 16px;
   font-weight: 700;
-  color: #222;
   text-align: center;
+  color: #222;
 }
 
-/* isi teks */
-.popup-box p{
-  margin: 6px 0;
-  font-size: 13px;
-  color: #444;
+/* garis solid (atas) */
+.divider{
+  height: 1px;
+  background: #e6e6e6;
+  margin: 12px 0;
 }
 
-/* garis pemisah */
-.popup-box hr{
+/* garis putus-putus (seperti struk) */
+.divider.dashed{
+  height: 1px;
+  background: repeating-linear-gradient(
+    to right,
+    #ccc,
+    #ccc 6px,
+    transparent 6px,
+    transparent 12px
+  );
+}
+
+/* tombol */
+.btn-close{
+  margin-top: 10px;
+  width: 100%;
+  padding: 9px;
   border: none;
-  border-top: 1px solid #eee;
-  margin: 10px 0;
+  border-radius: 10px;
+  background: #f1f1f1;
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-close:hover{
+  background: #ddd;
 }
 
 /* tombol bayar */
@@ -3836,6 +3858,104 @@ button{
 .detail-harga::before{
   content: "ℹ️";
   font-size: 14px;
+}
+
+
+
+
+.rekening-box{
+  font-family: Arial;
+  padding: 12px;
+}
+
+/* tiap baris */
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px 0;
+  border-bottom:1px solid #eee;
+}
+
+/* label kecil */
+.label{
+  font-size:11px;
+  color:#888;
+}
+
+/* value teks */
+.value{
+  font-size:13px;
+  font-weight:600;
+  color:#222;
+}
+
+/* box nomor rekening */
+.box-copy{
+  background:#f7f7f7;
+  padding:10px;
+  border-radius:10px;
+  margin:8px 0;
+  border:1px solid #eaeaea;
+}
+
+/* nomor rekening */
+.rekening-number{
+  font-size:14px;
+  font-weight:700;
+  color:#111;
+  margin-top:3px;
+}
+
+/* icon copy */
+.copy-icon{
+  width:26px;
+  height:26px;
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.copy-icon:hover{
+  transform:scale(1.1);
+}
+
+
+
+
+.toast{
+  position: fixed;
+  bottom: 80px;
+  width: 90%;
+max-width: 420px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+
+  background: rgba(20, 20, 20, 0.92);
+  color: #fff;
+
+  padding: 12px 16px;
+  border-radius: 12px;
+
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+
+  opacity: 0;
+  visibility: hidden;
+
+  transition: all 0.25s ease;
+
+  z-index: 9999;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  backdrop-filter: blur(6px);
+}
+
+/* aktif */
+.toast.show{
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
 }
 
 
@@ -4627,7 +4747,7 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
   <img src="cert_failed_blur_avatar.png" alt="Peringatan" class="warning-icon">
 </label>
 
-          <input type="file" name="profil" accept="image/*" />
+<input type="file" name="profil" id="profilUpload" accept="image/*" />
 
 <button class="btn" type="submit">Daftar Sekarang</button>
 
@@ -4645,6 +4765,8 @@ PT. Agency Tigohost Indonesia selalu berfokus untuk menjaga kepercayaan pengguna
 
           <p class="help">Dengan menekan tombol di atas, Anda menyetujui syarat & ketentuan Agency.</p>
         </form>
+
+        <div id="toast" class="toast"></div>
 
 <!-- Container -->
 <div id="conbank">
@@ -6080,10 +6202,13 @@ Fitur Utama
 
     <h3>Metode Pembayaran</h3>
 
+    <div class="divider"></div>
+
     <div id="paymentContent"></div>
 
-    <button onclick="closePopup()" 
-      style="margin-top:10px;padding:8px 12px;border:none;border-radius:6px;background:#ccc;">
+    <div class="divider dashed"></div>
+
+    <button onclick="closePopup()" class="btn-close">
       Tutup
     </button>
 
@@ -6420,38 +6545,89 @@ function handleCoinPurchase(e){
   const box = document.getElementById('status-coin');
 }
 
+
+function renderRekening(id, metode, nomor, owner){
+  return `
+    <div class="rekening-box">
+
+      <!-- METODE -->
+      <div class="row">
+        <div class="label">Metode</div>
+        <div class="value">${metode}</div>
+      </div>
+
+      <!-- NO REKENING (BOX) -->
+      <div class="row box-copy">
+
+        <div>
+          <div class="label">No. Rekening</div>
+          <div class="rekening-number" id="${id}">${nomor}</div>
+        </div>
+
+        <img src="copy_id_icon.png" class="copy-icon" onclick="copyRekening('${id}')">
+
+      </div>
+
+      <!-- NAMA REKENING -->
+      <div class="row">
+        <div class="label">Nama Rekening</div>
+        <div class="value">${owner}</div>
+      </div>
+
+    </div>
+  `;
+}
+
+
+
   // daftar tujuan pembayaran sesuai metode
 const tujuanPembayaran = {
-  bca: "SEDANG MAINTENANCE",
-  bri: `
-    <div>
-      <p>No. Rekening: <b>530101021385505</b><br>
-      A/n <b>NURMALA BRI</b></p>
-      <small style="color:#d00; font-style:italic;">
-        (Silakan transfer pada rekening tujuan dan kirim bukti transaksi ke CS jika coin tidak masuk)
-      </small>
-    </div>
-  `,
-  ovo: `
-    <div>
-      <p>No. OVO: <b>SEDANG MAINTENANCE</b><br>
-      A/n <b>PT AGENCY TIGOHOST INDONESIA</b></p>
-      <small style="color:#d00; font-style:italic;">
-        (Silakan transfer pada rekening tujuan dan kirim bukti transaksi ke CS jika coin tidak masuk)
-      </small>
-    </div>
-  `,
+  bca: renderRekening(
+    "rekBca",
+    "No. Rekening",
+    "123***90",
+    "Metode tidak tersedia"
+  ),
+
+  bri: renderRekening(
+    "rekBri",
+    "No. Rekening",
+    "530101021385505",
+    "NURMALA"
+  ),
+
+  ovo: renderRekening(
+    "rekOvo",
+    "No. OVO",
+    "0812****890",
+    "Metode tidak tersedia"
+  ),
+
   gopay: "SEDANG MAINTENANCE",
+
   qris: `
     <div>
-      <img src="qris.jpg" alt="QRIS" style="width:200px; height:auto; border:1px solid #ccc; border-radius:10px;">
+      <img src="qris.jpg" style="width:200px;border-radius:10px;border:1px solid #ccc;">
       <br>
-      <small style="color:#d00; font-style:italic;">
-        (Silakan transfer pada rekening tujuan dan kirim bukti transaksi ke CS jika coin tidak masuk)
+      <small style="color:#d00;font-style:italic;">
+        (Silakan transfer dan kirim bukti ke CS)
       </small>
     </div>
   `
 };
+
+
+function copyRekening(id) {
+  const text = document.getElementById(id).innerText;
+
+  navigator.clipboard.writeText(text);
+
+  showToast("Berhasil di salin");
+}
+
+
+
+
 
 const waAdmin = "6283175745023"; // nomor WA admin
 
@@ -8660,6 +8836,42 @@ document.addEventListener("DOMContentLoaded", function(){
   }
 
 });
+
+
+
+
+
+
+
+document.getElementById("profilUpload").addEventListener("click", function(e){
+  e.preventDefault(); // ❗ biar tidak bisa upload
+
+  showToast("Tidak dapat mengisi foto pada saat mendaftar, guna untuk melindungi privasi, anda dapat mengisi pada saat di dalam akun anda.");
+});
+
+function showToast(msg){
+  const toast = document.getElementById("toast");
+  toast.innerText = msg;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 5500);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 
 </body>
