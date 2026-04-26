@@ -1623,6 +1623,38 @@ label {
   to { transform: rotate(360deg); }
 }
 
+
+
+#bankSelect .select-items {
+  max-height: 280px;
+  overflow-y: auto;
+
+  
+  scrollbar-color: #7d08d3 transparent;
+}
+
+/* Chrome / Edge / Safari */
+#bankSelect .select-items::-webkit-scrollbar {
+  width: 6px; /* track kecil */
+}
+
+#bankSelect .select-items::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* INI BAGIAN "BUTTON SCROLL" (thumb) */
+#bankSelect .select-items::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 20px;
+
+  min-height: 40px;   /* 🔥 bikin tombol scroll lebih besar */
+  border: 1px solid #e5e5e5;
+}
+
+/* efek saat disentuh */
+#bankSelect .select-items::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
   </style>
 </head>
 <body>
@@ -4004,7 +4036,7 @@ z-index:9999;
   overscroll-behavior:none;     /* ⬅️ hilangin tarik */
 ">
   <!-- Header -->
-<div style="position:fixed; top:0; left:0; width:95%; background:#fff; padding:15px; 
+<div style="position:fixed; top:10px; left:0; width:95%; background:#fff; padding:15px; 
             display:flex; justify-content:space-between; 
             align-items:center; z-index:10000;">
 
@@ -7896,6 +7928,49 @@ window.showToast5 = function () {
     toast.style.display = "none";
   }, 2000);
 };
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const bankList = document.querySelector("#bankSelect .select-items");
+
+  if (!bankList) return;
+
+  let isDown = false;
+  let startY;
+  let scrollTop;
+
+  bankList.addEventListener("mousedown", (e) => {
+    isDown = true;
+    startY = e.pageY - bankList.offsetTop;
+    scrollTop = bankList.scrollTop;
+  });
+
+  bankList.addEventListener("mouseleave", () => {
+    isDown = false;
+  });
+
+  bankList.addEventListener("mouseup", () => {
+    isDown = false;
+  });
+
+  bankList.addEventListener("mousemove", (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+
+    const y = e.pageY - bankList.offsetTop;
+    const walk = (y - startY) * 1.2;
+
+    bankList.scrollTop = scrollTop - walk;
+  });
+
+});
+
+
 
 
 </script>
