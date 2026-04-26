@@ -1600,6 +1600,18 @@ label {
 }
 
 
+#pullRefresh {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
   </style>
 </head>
 <body>
@@ -7272,7 +7284,11 @@ const page = document.getElementById("pageChat");
 const pull = document.getElementById("pullRefresh");
 
 let startY = 0;
+let currentY = 0;
 let isPulling = false;
+
+const MAX_PULL = window.innerHeight * 0.5; // ⬅️ setengah layar
+const THRESHOLD = 120; // ⬅️ jarak trigger refresh
 
 page.addEventListener("touchstart", (e) => {
   if (page.scrollTop === 0) {
@@ -7284,42 +7300,75 @@ page.addEventListener("touchstart", (e) => {
 page.addEventListener("touchmove", (e) => {
   if (!isPulling) return;
 
-  let moveY = e.touches[0].clientY;
-  let diff = moveY - startY;
+  currentY = e.touches[0].clientY;
+  let diff = currentY - startY;
 
   if (diff > 0) {
-    pull.style.height = diff + "px";
-    pull.innerHTML = diff > 80 ? "Lepas untuk refresh" : "↓ Tarik untuk menyegarkan";
+    // 🔥 efek resistance (biar halus & berat dikit)
+    let pullDistance = diff * 0.5;
+
+    // batasi maksimal
+    if (pullDistance > MAX_PULL) pullDistance = MAX_PULL;
+
+    pull.style.height = pullDistance + "px";
+
+    // teks dinamis
+    if (pullDistance > THRESHOLD) {
+      pull.innerHTML = "Lepas untuk refresh";
+    } else {
+      pull.innerHTML = "↓ Tarik untuk menyegarkan";
+    }
+
+    // biar gak scroll halaman
+    e.preventDefault();
   }
-});
+}, { passive: false });
 
 page.addEventListener("touchend", () => {
   if (!isPulling) return;
 
-  let height = parseInt(pull.style.height);
+  let height = parseInt(pull.style.height) || 0;
 
-  if (height > 80) {
-    pull.innerHTML = "⏳ Memuat...";
+  if (height > THRESHOLD) {
+    pull.innerHTML = `
+  <img src="loading2.png" style="
+    width:22px;
+    height:22px;
+    animation: spin 1s linear infinite;
+  ">
+`;
     
-    // 🔄 REFRESH DATA TANPA RELOAD
-    refreshData();
-  }
+    // tahan posisi sedikit
+    pull.style.height = "60px";
 
-  setTimeout(() => {
-    pull.style.height = "0px";
-    isPulling = false;
-  }, 500);
+    refreshData();
+
+    setTimeout(() => {
+      resetPull();
+    }, 800);
+  } else {
+    resetPull();
+  }
 });
 
+function resetPull() {
+  pull.style.transition = "height 0.3s ease";
+  pull.style.height = "0px";
 
-// 🔥 fungsi refresh (isi sesuai kebutuhan kamu)
+  setTimeout(() => {
+    pull.style.transition = "";
+  }, 300);
+
+  isPulling = false;
+}
+
+// 🔄 fungsi refresh
 function refreshData() {
   console.log("refresh jalan");
 
-  // contoh: reload data chat / firebase
+  // contoh:
   // loadChat();
 }
-
 
 
 
