@@ -1628,9 +1628,11 @@ label {
 #bankSelect .select-items {
   max-height: 280px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  border-radius: 15px;
 
-  
-  scrollbar-color: #7d08d3 transparent;
+  padding-right: 10px; /* 🔥 kasih ruang supaya gampang dipegang */
 }
 
 /* Chrome / Edge / Safari */
@@ -7936,36 +7938,30 @@ window.showToast5 = function () {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  const bankList = document.querySelector("#bankSelect .select-items");
-
-  if (!bankList) return;
+  const el = document.querySelector("#bankSelect .select-items");
+  if (!el) return;
 
   let isDown = false;
   let startY;
   let scrollTop;
 
-  bankList.addEventListener("mousedown", (e) => {
+  el.addEventListener("touchstart", (e) => {
     isDown = true;
-    startY = e.pageY - bankList.offsetTop;
-    scrollTop = bankList.scrollTop;
+    startY = e.touches[0].pageY;
+    scrollTop = el.scrollTop;
   });
 
-  bankList.addEventListener("mouseleave", () => {
-    isDown = false;
-  });
-
-  bankList.addEventListener("mouseup", () => {
-    isDown = false;
-  });
-
-  bankList.addEventListener("mousemove", (e) => {
+  el.addEventListener("touchmove", (e) => {
     if (!isDown) return;
-    e.preventDefault();
 
-    const y = e.pageY - bankList.offsetTop;
-    const walk = (y - startY) * 1.2;
+    const y = e.touches[0].pageY;
+    const walk = (startY - y);
 
-    bankList.scrollTop = scrollTop - walk;
+    el.scrollTop = scrollTop + walk;
+  });
+
+  el.addEventListener("touchend", () => {
+    isDown = false;
   });
 
 });
