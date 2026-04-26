@@ -3959,6 +3959,72 @@ max-width: 420px;
 }
 
 
+
+
+.logoBox2 {
+  height: 55vh;          /* tampil ±8 item */
+  overflow-y: auto;      /* scroll dalam box */
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  background: #8b2aeb;
+}
+
+.logoGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.logoGrid div {
+  text-align: center;
+  cursor: pointer;
+}
+
+.logoGrid div {
+  text-align: center;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+/* HOVER (mouse / sentuh) */
+.logoGrid div:hover {
+  background: #fa0c0c;
+  transform: scale(1.05);
+}
+
+/* ACTIVE (saat ditekan) */
+.logoGrid div:active {
+  transform: scale(0.95);
+  background: #e90000;
+}
+
+/* OPTIONAL: efek gambar */
+.logoGrid div img {
+  transition: 0.2s ease;
+}
+
+.logoGrid div:hover img {
+  filter: brightness(1.1);
+}
+
+.logoGrid img {
+  width: 55px;
+  height: 55px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.logoGrid span {
+  font-size: 12px;
+  display: block;
+  margin-top: 5px;
+}
+
+
+
   </style>
 </head>
 <body>
@@ -5169,8 +5235,12 @@ width:240px;
   </div>
 </div>
 
+
 <!-- POPUP FULL -->
 <div id="fullPopup">
+
+
+   <div class="logoBox2">
 
   <div class="logoGrid">
     <div onclick="showForm('Mako')">
@@ -5209,29 +5279,70 @@ width:240px;
       <img src="weelivelogo.webp"><span>Weelive</span>
     </div>
 
-        <div onclick="showForm('MICO')">
+    <div onclick="showForm('MICO')">
       <img src="MICO.webp"><span>MICO</span>
     </div>
-        <div onclick="showForm('17LIVE')">
+
+    <div onclick="showForm('17LIVE')">
       <img src="17LIVE.webp"><span>17LIVE</span>
     </div>
-        <div onclick="showForm('Kachi')">
+
+    <div onclick="showForm('Kachi')">
       <img src="Kachi.webp"><span>Kachi</span>
     </div>
-        <div onclick="showForm('GOGO LIVE')">
+
+    <div onclick="showForm('GOGO LIVE')">
       <img src="GOGO LIVE.webp"><span>GOGO LIVE</span>
     </div>
-        <div onclick="showForm('Litgo-Chat')">
+
+    <div onclick="showForm('Litgo-Chat')">
       <img src="Litgo-Chat.webp"><span>Litgo</span>
     </div>
-        <div onclick="showForm('Dico')">
+
+    <div onclick="showForm('Dico')">
       <img src="Dico.webp"><span>Dico</span>
     </div>
-          <div onclick="showForm('Joy-Live')">
+
+    <div onclick="showForm('Joy-Live')">
       <img src="joy-live.webp"><span>Joy-Live</span>
     </div>
 
+        <div onclick="showForm('Guya Pro')">
+      <img src="Guya Pro.webp"><span>Guya Pro</span>
+    </div>
+
+        <div onclick="showForm('Omega')">
+      <img src="joy-live.webp"><span>Omega</span>
+    </div>
+
+        <div onclick="showForm('MIGO')">
+      <img src="MIGO.webp"><span>MIGO</span>
+    </div>
+
+        <div onclick="showForm('Hala')">
+      <img src="Hala.webp"><span>Hala</span>
+    </div>
+
+        <div onclick="showForm('Poppo Live')">
+      <img src="Poppo Live.webp"><span>Poppo Live</span>
+    </div>
+
+        <div onclick="showForm('Papaya Live')">
+      <img src="Papaya Live.webp"><span>Papaya Live</span>
+    </div>
+
+        <div onclick="showForm('Vone: Live')">
+      <img src="Vone.webp"><span>Vone: Live</span>
+    </div>
+
+        <div onclick="showForm('Chatspin')">
+      <img src="Chatspin.webp"><span>Chatspin</span>
+    </div>
+
   </div>
+
+</div> 
+
 
   <div id="formSection">
     <h3>Form Pembelian</h3>
@@ -5241,9 +5352,8 @@ width:240px;
     <input id="jumlah" readonly>
     <button onclick="kirimWA()">Bayar Sekarang</button>
   </div>
+
 </div>
-
-
 
 
 
