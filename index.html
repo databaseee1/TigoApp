@@ -318,9 +318,9 @@ border-bottom-right-radius: 0;
 }
 
 #coinsModal h3 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
-  color: #730096;
+  color:#000000;
 }
 
 /* Label */
@@ -4024,6 +4024,12 @@ max-width: 420px;
 }
 
 
+select option:disabled {
+  color: #fff;
+  background: #e74c3c;
+  font-weight: bold;
+  border-radius:10px;
+}
 
   </style>
 </head>
@@ -6279,12 +6285,12 @@ Fitur Utama
 
 <select name="pay" id="pay" required onchange="showPayment(this.value)">
   <option value="">-- Pilih Metode Pembayaran --</option>
-  <option value="bca">Bank BCA (SEDANG MAINTENANCE)</option>
+  <option value="bca">Bank BCA ⚠ MAINTENANCE</option>
   <option value="bri">Bank BRI</option>
-  <option value="ovo">OVO (SEDANG MAINTENANCE)</option>
-  <option value="gopay">GoPay (SEDANG MAINTENANCE)</option>
+  <option value="ovo">OVO ⚠ MAINTENANCE</option>
+  <option value="gopay">GoPay ⚠ MAINTENANCE</option>
   <option value="qris">QRIS</option>
-</select><br>
+</select>
 
 <!-- Tempat tampil gambar -->
 <div id="paymentLogo" style="margin-top:10px;"></div>
@@ -6744,6 +6750,7 @@ const waAdmin = "6283175745023"; // nomor WA admin
 function handleCoinPurchase(e) {
   e.preventDefault();
 
+  const reff = generateReff(); // ⭐ INI YANG KURANG
   const form = e.target;
   const idApp = form.id_app.value;
   const namaApp = form.nama_app.value;
@@ -6754,6 +6761,20 @@ function handleCoinPurchase(e) {
   const dataPembelian = { idApp, namaApp, waUser, paket, metode };
 
   showPaymentPopup(dataPembelian);
+}
+
+
+
+
+function generateReff() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+
+  for (let i = 0; i < 8; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+
+  return result;
 }
 
 
@@ -6769,6 +6790,7 @@ function showPaymentPopup(data) {
 
       <hr>
 
+      <p><b>REFF:</b> #${generateReff()}</p>
       <p><b>Paket:</b> ${data.paket}</p>
       <p><b>Nama:</b> ${data.namaApp}</p>
 
@@ -6824,9 +6846,11 @@ function renderPembayaran(metode, dataPembelian) {
 
 function sudahBayar(data) {
 
+
   const pesan = `
 Halo Admin, saya sudah melakukan pembayaran.
 
+REFF: #${reff}
 ID App: ${data.idApp}
 Nama App: ${data.namaApp}
 No. WA: ${data.waUser}
@@ -8974,7 +8998,21 @@ function showToast(msg){
 
 
 
+document.addEventListener("DOMContentLoaded", () => {
+  const select = document.getElementById("pay");
 
+  for (let option of select.options) {
+
+    if (option.text.includes("MAINTENANCE")) {
+      option.disabled = true;
+
+      // ⚠ styling langsung (lebih kuat dari CSS)
+      option.style.color = "#fff";
+      option.style.backgroundColor = "#e74c3c";
+      option.style.fontWeight = "bold";
+    }
+  }
+});
 
 
 
