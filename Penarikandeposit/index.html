@@ -72,16 +72,6 @@ body {
   background: #ffffff;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 0px; /* tinggi status bar */
-  background: #ffffff;
-  z-index: 999999;
-}
 
 
     body {
@@ -132,13 +122,14 @@ img, button {
 /* Header beku */
 .sticky-header {
   position: sticky;   /* kalau cuma mau ikut scroll */
+  top: 0; /* ⬅️ WAJIB */
   z-index: 999;
   background: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  padding-top: env(safe-area-inset-top);
+  
 }
 html, body {
   height: 100%;
