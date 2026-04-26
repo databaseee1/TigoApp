@@ -132,7 +132,6 @@ img, button {
 /* Header beku */
 .sticky-header {
   position: sticky;   /* kalau cuma mau ikut scroll */
-  top: 0;
   z-index: 999;
   background: #fff;
   display: flex;
@@ -140,6 +139,12 @@ img, button {
   align-items: center;
   padding: 12px 16px;
 }
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 
 /* Kalau mau selalu nempel atas (tidak ikut scroll), ganti dengan: */
 /* 
@@ -178,11 +183,14 @@ img, button {
   font-weight: bold;
 }
 
-/* Container */
 .container {
   max-width: 420px;
-  margin: 18px auto;
+  margin: 0 auto;
   padding: 16px;
+  height: 100vh;
+  overflow-y: auto;
+
+  overscroll-behavior: contain; /* ⬅️ ini kunci utama */
 }
 
 /* Header */
@@ -1125,6 +1133,9 @@ label {
 
   display: flex;
   flex-direction: column;
+
+  overflow: hidden;              /* ⬅️ kunci scroll */
+  overscroll-behavior: none;     /* ⬅️ hilangin bounce */
 }
 
 
@@ -1635,7 +1646,7 @@ label {
 
 
 <!-- ✅ Box Kas -->
-<div style="background:#f1f0f0; border-radius:12px; padding:20px;  max-width:400px; margin:auto;">
+<div style="background:#f6f6f6; border-radius:12px; padding:20px;  max-width:400px; margin:auto;">
 
   <!-- Saldo Host -->
   <div class="saldo-box" style="display:flex; align-items:center; margin-bottom:12px;">
@@ -3196,9 +3207,22 @@ z-index:9999;
 <div id="historyPopup" class="history-popup" role="dialog" aria-hidden="true">
   <div class="history-panel" style="max-width:480px; margin:0 auto;">
 
-    <!-- 🔹 Header -->
-    <div class="history-top" style="background:#f7f7f7; display:flex; align-items:center; padding:10px; border-bottom:1px solid #eee;">
-      
+ 
+<!-- 🔹 Header -->
+<div class="history-top" style="
+  background:#f7f7f7;
+  display:flex;
+  align-items:center;
+  padding:10px;
+  border-bottom:1px solid #eee;
+
+  position: sticky;  /* ⬅️ bikin nempel */
+  top: 0;            /* ⬅️ posisi di atas */
+  z-index: 10;       /* ⬅️ biar nggak ketutup */
+">
+
+
+
 <!-- Tombol kembali -->
 <button id="closebalikki"
   style="background:none; border:none; padding:0; cursor:pointer; margin-right:10px;"
@@ -3306,16 +3330,20 @@ z-index:9999;
 
 <!-- POPUP DUNIA -->
 <div id="duniaPopup" class="popup-overlay" style="
-    display:none; 
-    position:fixed; 
-    top:0; 
-    left:0; 
-    width:100%; 
-    height:100%; 
-    background:rgba(0,0,0,0.5); 
-    justify-content:center; 
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100vh;
+    background:rgba(0,0,0,0.5);
+    justify-content:center;
     align-items:center;
-    z-index:999;">
+    z-index:999;
+
+    overflow:hidden;              /* ⬅️ kunci scroll */
+    overscroll-behavior:none;     /* ⬅️ hilangin tarik */
+">
   <div class="popup-box" style="
       background:#ffffff; 
       border-radius:12px; 
@@ -3731,11 +3759,14 @@ z-index:9999;
   display:none;
   position: fixed;
   top:0;
-   left:0;
-  width:100%; height:100%;
+  left:0;
+  width:100%;
+  height:100vh;
   background:#fff;
   z-index:999;
-  overflow-y:auto;
+
+  overflow:hidden;              /* ⬅️ kunci scroll */
+  overscroll-behavior:none;     /* ⬅️ hilangin tarik */
 ">
   <!-- Header -->
 <div style="position:fixed; top:0; left:0; width:95%; background:#fff; padding:15px; 
