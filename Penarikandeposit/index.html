@@ -561,7 +561,9 @@ label {
   border-radius: 6px;
   width: 100%;
   z-index: 99;
-  margin-top: 2px;
+  margin-top: -100px;
+  max-height: 370px; /* ⬅️ penting */
+  overflow-y: auto;  /* ⬅️ khusus vertical */
 }
 
 .select-items div {
@@ -1532,6 +1534,62 @@ label {
 }
 
 
+
+
+.select-group {
+  font-weight: bold;
+  pointer-events: none;
+  font-size: 13px;
+  color: #666;
+  padding: 8px 10px;
+  background: #f5f5f5;
+  cursor: default;
+}
+
+
+.select-items div {
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.select-items div img {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+}
+
+.select-items div:hover {
+  background: #f5f5f5;
+}
+
+
+
+
+/* 🏦 Bank China */
+.select-group.china {
+  background: #ffe5e5;
+  color: #c40000;
+  border-left: 4px solid #ff0000;
+}
+
+/* 🏦 Bank Indonesia */
+.select-group.indo {
+  background: #e5f0ff;
+  color: #0047c4;
+  border-left: 4px solid #005eff;
+}
+
+/* 💳 E-Wallet */
+.select-group.ewallet {
+  background: #e6fff2;
+  border-left: 4px solid #00b36b;
+  color: #000000;
+}
+
+
   </style>
 </head>
 <body>
@@ -1778,22 +1836,59 @@ label {
 <label>Bank/E-Wallet:</label>
 <div class="custom-select" id="bankSelect">
   <div class="select-selected">-- Pilih Bank/E-Wallet --</div>
-  <div class="select-items select-hide">
-    <div data-value="BANKofCHINA"><img src="Bank-of-China-Logo.png">BANKofCHINA</div>
-    <div data-value="CCB China"><img src="ccbi-logo.jpg">China Construction Bank (CCB)</div>
-    <div data-value="BANK ICBC"><img src="ICBC_Bank_logo.png">Bank of China Limited (ICBC Ltd.)</div>
-    <div data-value="BRI"><img src="bri.png"> BRI (Bank Rakyat Indonesia)</div>
-    <div data-value="BCA"><img src="bca.png"> BCA (Bank Central Asia)</div>
-    <div data-value="MANDIRI"><img src="mandiri.png"> MANDIRI</div>
-    <div data-value="DANA"><img src="dana.png"> DANA</div>
-    <div data-value="LINKAJA"><img src="link-aja-logo.png"> LINKAJA</div>
-    <div data-value="OVO"><img src="ovo.png"> OVO</div>
-    <div data-value="MANDIRI"><img src="mandiri.png"> MANDIRI</div>
-    <div data-value="SHOPEEPAY"><img src="ShopeePay.png"> SHOPEEPAY</div>
-    <div data-value="BANK DKI"><img src="bankjakarta.svg"> BANK DKI</div>
-    <div data-value="BANK JAGO"><img src="bankjago.png"> BANK JAGO</div>
-    <div data-value="QRIS"><img src="qris.jpg"> QRIS</div>
-  </div>
+
+
+<div class="select-items select-hide">
+
+    <!-- 💳 E-WALLET & DIGITAL -->
+  <div class="select-group ewallet">E-Wallet & Digital Payment</div>
+  <div data-value="QRIS"><img src="qris.jpg"> QRIS</div>
+  <div data-value="DANA"><img src="dana.png"> DANA</div>
+  <div data-value="LINKAJA"><img src="link-aja-logo.png"> LINKAJA</div>
+  <div data-value="OVO"><img src="ovo.png"> OVO</div>
+  <div data-value="SHOPEEPAY"><img src="ShopeePay.png"> SHOPEEPAY</div>
+  <div data-value="DOKU"><img src="DOKU.png"> DOKU</div>
+  <div data-value="Sakuku"><img src="sokuku.webp"> Sakuku</div>
+  <div data-value="Kredivo"><img src="Kredipo.webp"> Kredivo</div>
+  <div data-value="UOB TMRW Indonesia"><img src="UOB TMRW.webp"> UOB TMRW Indonesia</div>
+  <div data-value="i.saku"><img src="i.Saku.webp"> i.Saku</div>
+  <div data-value="OCTO by CIMB Niaga"><img src="octo by cimb.webp"> OCTO by CIMB Niaga</div>
+  <div data-value="SantrenPay"><img src="SantrenPay.webp"> SantrenPay</div>
+  <div data-value="Google Wallet"><img src="GoogleWallet.webp"> Google Wallet</div>
+  <div data-value="PayPal"><img src="Paypal.webp"> PayPal</div>
+  <div data-value="Cards - Mobile Wallet"><img src="Cards.webp"> Cards - Mobile Wallet</div>
+  <div data-value="i.saku"><img src="i.Saku.webp"> i.Saku</div>
+  <div data-value="neobank dari BNC Digital"><img src="Neobank.webp"> neobank dari BNC Digital</div>
+
+
+    <!-- 🏦 BANK OBSIONAL -->
+   <div class="select-group china">Bank Obsional</div>
+  <div data-value="OCBC Singapore"><img src="OCBC Singapore.webp">OCBC Singapore</div>
+  <div data-value="OCBC Malaysia"><img src="OCBC MALAYSIA.webp">OCBC Malaysia</div>
+  <div data-value="OCBC Business"><img src="OCBC Business.webp">OCBC Business</div>
+  <div data-value="OCBC HK/Macau Business Mobile"><img src="OCBC HK.webp">OCBC HK/Macau Business Mobile</div>
+
+  <!-- 🏦 BANK CHINA -->
+  <div class="select-group china">Bank China</div>
+  <div data-value="BANKofCHINA"><img src="Bank-of-China-Logo.png">BANKofCHINA</div>
+  <div data-value="CCB China"><img src="ccbi-logo.jpg">China Construction Bank (CCB)</div>
+  <div data-value="BANK ICBC"><img src="ICBC_Bank_logo.png">Bank of China Limited (ICBC Ltd.)</div>
+
+  <!-- 🏦 BANK INDONESIA -->
+  <div class="select-group indo">Bank Indonesia</div>
+  <div data-value="BRI"><img src="bri.png"> BRI (Bank Rakyat Indonesia)</div>
+  <div data-value="BCA"><img src="bca.png"> BCA (Bank Central Asia)</div>
+  <div data-value="BANK PERMATA ME"><img src="permata.webp"> BANK PERMATA ME</div>
+  <div data-value="MANDIRI"><img src="mandiri.png"> MANDIRI</div>
+  <div data-value="BANK DKI"><img src="bankjakarta.svg"> BANK DKI</div>
+  <div data-value="BANK JAGO"><img src="bankjago.png"> BANK JAGO</div>
+   <div data-value="MobilePanin"><img src="MobilePanin.webp"> MobilePanin</div>
+  <div data-value="BANK DKI"><img src="bankjakarta.svg"> BANK DKI</div>
+  <div data-value="BANK JAGO"><img src="bankjago.png"> BANK JAGO</div>
+
+
+</div>
+
 </div>
 
 <!-- hidden input untuk ambil value di JS -->
