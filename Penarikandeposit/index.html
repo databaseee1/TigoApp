@@ -1040,29 +1040,36 @@ label {
   }
 
 /* pastikan popup sembunyi dulu */
-/* Popup container */
 #callsPopup {
-  display: none;
   position: fixed;
-  top: 60px; /* tinggi header utama, sesuaikan */
+  top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  justify-content: center;
-  align-items: flex-start;
-  z-index: 999;
-}
-
-/* Konten popup */
-#callsPopupContent {
-  background: #fff;
   width: 100%;
-  max-width: 400px;
   height: 100%;
-  border-radius: 12px 12px 0 0;
-  overflow: hidden;
+
+  background: #fff;
+  display: none;
+
+  justify-content: center;
+  align-items: center;
+
+  z-index: 1000;
+
+  overflow: hidden; /* 🔒 luar tidak bisa scroll */
 }
 
+#callsPopupContent {
+  width: 100%;
+  height: 100%;
+
+  max-width: 420px;
+  background: #fff;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden; /* penting biar layout stabil */
+}
 /* Header popup */
 .popup-header {
   display: flex;
@@ -1639,14 +1646,35 @@ label {
 <div style="display:flex;gap:10px;align-items:center">
   
   <!-- ICON BARU -->
-  <img 
-    id="newIcon"
-    class="offline-icon"
-    src="indonesialogo.png"
-    alt="icon"
-    title="Icon Baru"
-    style="cursor:pointer;"
-  />
+<img 
+  id="newIcon"
+  class="offline-icon"
+  src="indonesialogo.png"
+  alt="icon"
+  title="Icon Baru"
+  style="cursor:pointer;"
+  onclick="showToast3()"
+/>
+
+
+<div id="toastNotif3" style="
+  position:fixed;
+  bottom:80px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#e9e9e9;
+  color:#000;
+  padding:10px 14px;
+  border-radius:10px;
+  display:none;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  z-index:999999;
+">
+  <img src="512x512.png" style="width:18px; height:18px;">
+  <span>Tidak dapat bertindak saat ini</span>
+</div>
 
   <!-- ICON LAMA -->
   <img 
@@ -2470,10 +2498,31 @@ z-index:9999;
   <!-- Kiri: ikon + teks -->
 
   
-<div style="display:flex; align-items:center; gap:10px;">
+<div style="display:flex; align-items:center; gap:10px;" onclick="showToast4()">
   <img src="destiny_icon_video_call.png" alt="icon" style="width:44px; height:44px;">
   <span id="appText">Memuat</span>
+
+  <div id="toastNotif4" style="
+  position:fixed;
+  bottom:80px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#e9e9e9;
+  color:#000;
+  padding:10px 14px;
+  border-radius:10px;
+  display:none;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  z-index:999999;
+">
+  <img src="512x512.png" style="width:18px; height:18px;">
+  <span>Tidak dapat bertindak saat ini</span>
 </div>
+</div>
+
+
 
 
 
@@ -2593,10 +2642,32 @@ z-index:9999;
   overflow-y:auto;
 ">
   <!-- Header -->
-  <div style="display:flex; align-items:center; padding:16px;">
-    <img src="back_gray.png" id="closeRedeem" style="width:20px; height:20px; cursor:pointer; margin-right:10px;">
-<h2 style="margin:0; font-size:16px; text-align:center;">Menukarkan</h2>
-  </div>
+<div style="
+  display:flex;
+  align-items:center;
+  padding:16px;
+  position:relative;
+">
+
+  <!-- ICON KIRI -->
+  <img src="back_gray.png" id="closeRedeem" style="
+    width:20px;
+    height:20px;
+    cursor:pointer;
+  ">
+
+  <!-- TEKS TENGAH -->
+  <h2 style="
+    margin:0;
+    font-size:16px;
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+  ">
+    Menukarkan
+  </h2>
+
+</div>
 
   <!-- Saldo -->
   <div style="padding:16px; display:flex; justify-content:space-between; align-items:center;">
@@ -3237,33 +3308,48 @@ z-index:9999;
 
 
 <!-- 🔹 Popup Riwayat -->
-<div id="historyPopup" class="history-popup" role="dialog" aria-hidden="true">
-  <div class="history-panel" style="max-width:480px; margin:0 auto;">
-
- 
-<!-- 🔹 Header -->
-<div class="history-top" style="
-  background:#f7f7f7;
-  display:flex;
-  align-items:center;
-  padding:10px;
-  border-bottom:1px solid #eee;
-
-  position: sticky;  /* ⬅️ bikin nempel */
-  top: 0;            /* ⬅️ posisi di atas */
-  z-index: 10;       /* ⬅️ biar nggak ketutup */
+<div id="historyPopup" class="history-popup" role="dialog" aria-hidden="true" style="
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100vh;
+  background:#fff;
+  z-index:9999;
+  display:none;
+  flex-direction:column;
+  overflow:hidden;
 ">
 
+  <div class="history-panel" style="
+    max-width:480px;
+    margin:0 auto;
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  ">
 
+    <!-- 🔹 Header -->
+    <div class="history-top" style="
+      background:#f7f7f7;
+      display:flex;
+      align-items:center;
+      padding:10px;
+      border-bottom:1px solid #eee;
+      position:sticky;
+      top:0;
+      z-index:10;
+      flex-shrink:0;
+    ">
 
-<!-- Tombol kembali -->
-<button id="closebalikki"
-  style="background:none; border:none; padding:0; cursor:pointer; margin-right:10px;"
-  onclick="document.getElementById('historyPopup').style.display='none';">
-  
-  <img src="back_black.png" style="width:22px; height:22px;">
-  
-</button>
+      <!-- Tombol kembali -->
+      <button id="closebalikki"
+        style="background:none; border:none; padding:0; cursor:pointer; margin-right:10px;"
+        onclick="document.getElementById('historyPopup').style.display='none'; document.body.style.overflow='';">
+        <img src="back_black.png" style="width:22px; height:22px;">
+      </button>
 
       <!-- Teks tengah -->
       <div style="flex:1;">
@@ -3272,27 +3358,65 @@ z-index:9999;
       </div>
 
       <!-- Tombol filter -->
-      <button id="filterBtn" style="background:none; border:none; padding:0; cursor:pointer;">
-        <img src="task_icon.png" alt="Filter" 
+      <button id="filterBtn" style="background:none; border:none; padding:0; cursor:pointer;" onclick="showToast5()">
+     <img src="task_icon.png" alt="Filter" 
      style="width:28px;height:28px;filter:invert(35%) sepia(85%) saturate(500%) hue-rotate(189deg);">
-      </button>
+     </button>
+
+     <div id="toastNotif5" style="
+  position:fixed;
+  bottom:80px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#e9e9e9;
+  color:#000;
+  padding:10px 14px;
+  border-radius:10px;
+  display:none;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  z-index:999999;
+">
+  <img src="512x512.png" style="width:18px; height:18px;">
+  <span>Tidak dapat bertindak saat ini</span>
+</div>
+     </div>
+
+    <!-- 🔥 AREA SCROLL (INI YANG DIPERBAIKI) -->
+    <div style="
+      flex:1;
+      overflow-y:auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+      background:#fff;
+    ">
+
+      <!-- 🔹 List transaksi -->
+      <div class="tx-list" id="txList" style="padding:0;">
+        
+        <!-- Contoh item -->
+        <div class="tx-item" style="
+          display:flex; 
+          justify-content:space-between; 
+          padding:12px 14px; 
+          border-bottom:1px solid #f5f5f5;
+        ">
+          <div class="tx-left">
+            <div class="tx-main" style="font-size:14px; color:#000;">Loading!</div>
+            <div class="tx-sub" style="font-size:12px; color:#888;">9/8 19:47:56</div>
+          </div>
+          <div class="tx-amount" style="font-size:12px; color:#333; font-weight:500;">
+            Rp 0
+          </div>
+        </div>
+
+      </div>
+
     </div>
 
-    <!-- 🔹 List transaksi -->
-    <div class="tx-list" id="txList" style="padding:0;">
-      <!-- Contoh item -->
-      <div class="tx-item" style="display:flex; justify-content:space-between; padding:12px 14px; border-bottom:1px solid #f5f5f5;">
-        <div class="tx-left">
-          <div class="tx-main" style="font-size:14px; color:#000;">Loading!</div>
-          <div class="tx-sub" style="font-size:12px; color:#888;">9/8 19:47:56</div>
-        </div>
-        <div class="tx-amount" style="font-size:12px; color:#333; font-weight:500;">Rp 0</div>
-      </div>
-    </div>
   </div>
 </div>
-
-
 
 
 
@@ -3377,18 +3501,22 @@ z-index:9999;
     overflow:hidden;              /* ⬅️ kunci scroll */
     overscroll-behavior:none;     /* ⬅️ hilangin tarik */
 ">
-  <div class="popup-box" style="
-      background:#ffffff; 
-      border-radius:12px; 
-      padding:20px; 
-      width:100%; height:100%; 
-      max-width:none; 
-      display:flex; 
-      flex-direction:column; 
-      position:relative;
-      align-items:center;
-      justify-content:center;
-  ">
+<div class="popup-box" style="
+  background:#ffffff; 
+  border-radius:12px; 
+  padding:20px; 
+  width:100%; 
+  height:100%; 
+  max-width:none; 
+  display:flex; 
+  flex-direction:column; 
+  position:relative;
+
+  overflow:hidden; /* ⬅️ penting: kunci semua scroll */
+
+  align-items:center;
+  justify-content:center;
+">
 
     <!-- HEADER SALDO -->
     <div class="saldo-header" style="
@@ -3412,30 +3540,85 @@ z-index:9999;
       <img id="openHistoryBtn" src="match_his_icon.png" alt="hispanggilll" style="width:22px; cursor:pointer;">
     </div>
 
-    <!-- POPUP HISTORY -->
-    <div id="hispanggilll" style="
-      display:none; 
-      position:fixed; 
-      top:0; 
-      left:0; 
-      width:100%; 
-      height:100%; 
-      background:#fff; 
-      justify-content:center; 
+<!-- POPUP HISTORY -->
+<div id="hispanggilll" style="
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:#fff;
+  z-index:1000;
+  overflow:hidden;
+">
+
+  <div style="
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+  ">
+
+    <!-- HEADER -->
+ <div style="
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:15px;
+  background:#fff;
+  flex-shrink:0;
+  font-weight:bold;
+  position:relative;
+">
+
+  <!-- KIRI (BACK BUTTON) -->
+  <img class="closePanggilan" src="back_gray.png" style="
+    width:20px;
+    height:20px;
+    cursor:pointer;
+  ">
+
+  <!-- TENGAH (TEXT CENTER) -->
+  <span style="
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+  ">
+    History Panggilan
+  </span>
+
+  <!-- KANAN (BIAR SEIMBANG) -->
+  <div style="width:20px;"></div>
+
+</div>
+
+    <!-- BODY (SCROLL AREA) -->
+    <div style="
+      flex:1;
+      overflow-y:auto;
+      display:flex;
+      flex-direction:column;
       align-items:center;
-      z-index:1000;">
-      <div style="background:#f7f7f7; border-radius:12px; padding:20px; max-width:400px; width:90%; text-align:center; position:relative;">
-        <span class="closePanggilan" style="position:absolute; top:10px; right:15px; font-size:20px; color:#686868; cursor:pointer;">✖</span>
-        <img src="page_empty_icon.png" style="max-width:60px; height:60px;">
-        <p style="margin-top:10px; color:#212121; font-weight:bold;">Tidak ada history panggilan</p>
-      </div>
+      justify-content:center;
+      padding:40px 20px;
+      text-align:center;
+    ">
 
+      <img src="page_empty_icon.png" style="width:60px; height:60px;">
 
-
-
-
+      <p style="
+        margin-top:10px;
+        color:#a6a6a6;
+        font-weight:400;
+      ">
+        Tidak ada history panggilan
+      </p>
 
     </div>
+
+  </div>
+</div>
 
 
 
@@ -3544,7 +3727,26 @@ z-index:9999;
 
     <div class="popup-play-icons">
       <div class="popup-play-friends">
-        <img src="indonesialogo.png">
+        <img src="indonesialogo.png" onclick="showToast2()" style="cursor:pointer;">
+        <div id="toastNotif2" style="
+  position:fixed;
+  bottom:80px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#e9e9e9;
+  color:#000;
+  padding:10px 14px;
+  border-radius:10px;
+  display:none;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  z-index:999999;
+">
+  <img src="512x512.png" style="width:18px; height:18px;">
+  <span>Tidak dapat bertindak saat ini</span>
+</div>
+        
       </div>
     </div>
   </div>
@@ -3901,7 +4103,9 @@ z-index:9999;
     <!-- Isi konten -->
     <div class="popup-body">
       <img src="page_empty_icon.png" alt="Gambar Panggilan">
-      <p>Belum ada riwayat panggilan</p>
+      <p style="color:#9a9a9a; font-size:14px;">
+  Belum ada riwayat panggilan
+</p>
     </div>
 
   </div>
@@ -3918,14 +4122,59 @@ z-index:9999;
 
 
   <!-- Menu titik tiga jadi gambar -->
-<div style="cursor:pointer;" onclick="openMenuPopup()">
+<div style="position:relative; display:inline-block; cursor:pointer;" onclick="toggleMenuPopup()">
+
   <img src="msg_icon_more_dot.png" alt="Menu" style="width:22px; height:22px;">
+
+  <!-- DROPDOWN -->
+  <div id="menuPopup" style="
+    display:none;
+    position:absolute;
+    top:30px;
+    right:0;
+    background:#e5e5e5;
+    border-radius:8px;
+    padding:6px 0;
+    min-width:180px;
+    
+    z-index:999;
+  ">
+
+ <div style="padding:8px 12px; font-size:13px; color:#000; cursor:pointer;"
+     onclick="showToast()">
+  Tandai semua sudah dibaca
+</div>
+
+<div style="padding:8px 12px; font-size:13px; color:#000; cursor:pointer;"
+     onclick="showToast()">
+  Hapus daftar pesan
+</div>
+
+  </div>
+
 </div>
 
 </div>
 </div>
 
-
+<div id="toastNotif" style="
+  position:fixed;
+  bottom:80px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgb(233 233 233);
+  color:#000;
+  padding:10px 14px;
+  border-radius:10px;
+  display:none;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  z-index:9999;
+">
+  <img src="512x512.png" style="width:18px; height:18px;">
+  <span>Tidak dapat bertindak saat ini</span>
+</div>
 
 
 <!-- Isi daftar chat -->
@@ -3987,47 +4236,50 @@ z-index:9999;
   </div>
 
   <!-- POPUP PESAN -->
-  <div id="popupPesan" style="
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100vh;
-    display:none;
-    flex-direction:column;
-    background:#fff;
-    z-index:99999;
-    overflow:hidden;
-    font-family:sans-serif;
+<div id="popupPesan" style="
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100vh;
+  display:none;
+  flex-direction:column;
+  background:#fff;
+  z-index:99999;
+  overflow:hidden;
+  font-family:sans-serif;
+">
+
+  <!-- HEADER -->
+  <div style="
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    flex-shrink:0;
   ">
-
-    <!-- HEADER -->
-    <div style="
-      position:relative;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-      flex-shrink:0;
+    <img src="back_gray.png" onclick="tutupPesan()" style="
+      position:absolute;
+      left:12px;
+      width:20px;
+      cursor:pointer;
     ">
-      <img src="back_gray.png" onclick="tutupPesan()" style="
-        position:absolute;
-        left:12px;
-        width:20px;
-        cursor:pointer;
-      ">
-      <b>Layanan Pelanggan</b>
-    </div>
+    <b>Layanan Pelanggan</b>
+  </div>
 
-    <!-- ISI CHAT -->
-    <div id="listPesan" style="
-      flex:1;
-      overflow-y:auto;
-      background:#ffffff;
-      padding:10px;
-      min-height:0;
-    "></div>
-
+  <!-- ISI CHAT (SATU-SATUNYA YANG SCROLL) -->
+  <div id="listPesan" style="
+    flex:1;
+    overflow-y:auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain; /* ⬅️ penting */
+    background:#ffffff;
+    padding:10px;
+    min-height:0;
+  ">
+  </div>
+  
     <!-- INPUT -->
     <div style="
       display:flex;
@@ -4440,7 +4692,7 @@ const tagList  = document.getElementById("tagList");
 const addTagBtn = document.getElementById("addTagBtn");
 
 
-
+document.body.style.overflow = "hidden";
 
 // Tambah Tag pakai tombol
 addTagBtn.addEventListener("click", async () => {
@@ -5461,12 +5713,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // ✅ Buka popup
   btnOpen.addEventListener("click", () => {
     popup.style.display = "flex";
+
+    // 🔒 kunci scroll background
+    document.body.style.overflow = "hidden";
   });
 
   // ✅ Tutup popup
   btnClose.addEventListener("click", () => {
     popup.style.display = "none";
+
+    // 🔓 balikin scroll
+    document.body.style.overflow = "";
   });
+
+
 
   // ✅ Klik Bayar Sekarang
   btnKirim.addEventListener("click", () => {
@@ -5749,22 +6009,24 @@ document.addEventListener("DOMContentLoaded", () => {
     // buka popup saat klik icon
     historyIcon.addEventListener("click", () => {
       historyPopup.style.display = "flex";
+      document.body.style.overflow = "hidden"; // 🔒 kunci scroll luar
     });
 
     // tutup popup saat klik tombol X
     closeHistoryPopup.addEventListener("click", () => {
       historyPopup.style.display = "none";
+      document.body.style.overflow = "auto"; // 🔓 buka scroll lagi
     });
 
     // tutup popup saat klik di luar box
     historyPopup.addEventListener("click", (e) => {
       if (e.target === historyPopup) {
         historyPopup.style.display = "none";
+        document.body.style.overflow = "auto"; // 🔓 buka scroll lagi
       }
     });
   }
 });
-
 
 
 
@@ -6019,16 +6281,36 @@ document.addEventListener("DOMContentLoaded", function () {
         e.stopImmediatePropagation();
       }
 
+      // ✅ tampilkan popup
       if (popupPesan) {
         popupPesan.classList.remove("hidden");
+
+        // 🔒 kunci background (INI YANG PENTING)
+        document.body.style.overflow = "hidden";
       }
 
+      // 🔄 load data chat
       if (typeof loadPesan === "function") {
         loadPesan();
       }
 
     });
   }
+
+
+
+// 🔓 fungsi tutup popup (WAJIB ADA)
+function tutupPesan() {
+  const popupPesan = document.getElementById("popupPesan");
+
+  if (popupPesan) {
+    popupPesan.classList.add("hidden");
+  }
+
+  // 🔓 balikin scroll
+  document.body.style.overflow = "";
+}
+  
 
   // =========================
   // ✅ CHAT BIASA
@@ -6334,17 +6616,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const backBtn = document.getElementById('backCallsPopup');
 
   if (openBtn && popup && backBtn) {
+
+    // 🔥 OPEN POPUP
     openBtn.addEventListener('click', () => {
       popup.style.display = 'flex';
+      document.body.style.overflow = 'hidden'; // 🔒 kunci scroll luar
     });
 
+    // 🔥 CLOSE POPUP (tombol back)
     backBtn.addEventListener('click', () => {
       popup.style.display = 'none';
+      document.body.style.overflow = 'auto'; // 🔓 balikin scroll
     });
 
+    // 🔥 CLOSE POPUP (klik luar box)
     popup.addEventListener('click', (e) => {
       if (e.target === popup) {
         popup.style.display = 'none';
+        document.body.style.overflow = 'auto'; // 🔓 balikin scroll
       }
     });
   }
@@ -7488,6 +7777,125 @@ function refreshWithdraw() {
 
 
 
+
+
+
+
+
+window.toggleMenuPopup = function () {
+  const menu = document.getElementById("menuPopup");
+  menu.style.display = (menu.style.display === "block") ? "none" : "block";
+};
+
+// klik luar untuk tutup
+document.addEventListener("click", function(e) {
+  const menu = document.getElementById("menuPopup");
+  const icon = document.querySelector('img[alt="Menu"]').parentElement;
+
+  if (!icon.contains(e.target)) {
+    menu.style.display = "none";
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+window.showToast = function () {
+  const toast = document.getElementById("toastNotif");
+
+  toast.style.display = "flex";
+
+  clearTimeout(window.toastTimer);
+
+  window.toastTimer = setTimeout(() => {
+    toast.style.display = "none";
+  }, 2000);
+};
+
+
+
+
+
+
+
+
+window.showToast2 = function () {
+  const toast = document.getElementById("toastNotif2");
+
+  if (!toast) return;
+
+  toast.style.display = "flex";
+
+  clearTimeout(window.toastTimer2);
+
+  window.toastTimer2 = setTimeout(() => {
+    toast.style.display = "none";
+  }, 2000);
+};
+
+
+
+
+
+
+
+
+window.showToast3 = function () {
+  const toast = document.getElementById("toastNotif3");
+
+  if (!toast) return;
+
+  toast.style.display = "flex";
+
+  clearTimeout(window.toastTimer3);
+
+  window.toastTimer3 = setTimeout(() => {
+    toast.style.display = "none";
+  }, 2000);
+};
+
+
+
+window.showToast4 = function () {
+  const toast = document.getElementById("toastNotif4");
+
+  if (!toast) return;
+
+  toast.style.display = "flex";
+
+  clearTimeout(window.toastTimer4);
+
+  window.toastTimer4 = setTimeout(() => {
+    toast.style.display = "none";
+  }, 2000);
+};
+
+
+
+window.showToast5 = function () {
+  const toast = document.getElementById("toastNotif5");
+
+  if (!toast) return;
+
+  toast.style.display = "flex";
+
+  clearTimeout(window.toastTimer5);
+
+  window.toastTimer5 = setTimeout(() => {
+    toast.style.display = "none";
+  }, 2000);
+};
 
 
 </script>
