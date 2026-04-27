@@ -1664,6 +1664,67 @@ label {
 #bankSelect .select-items::-webkit-scrollbar-thumb:hover {
   background: #666;
 }
+
+
+
+.hidden {
+  display: none;
+}
+
+
+
+#loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 99999999;
+}
+
+.hidden-loading {
+  display: none;
+}
+
+
+
+
+
+
+
+
+
+/* semua id yang diawali toastNotif */
+[id^="toastNotif"] {
+  opacity: 0;
+  transform: translate(-50%, 20px);
+}
+
+/* saat tampil (display:flex dari JS kamu) */
+[id^="toastNotif"][style*="display: flex"] {
+  animation: toastFadeInOut 2.5s ease forwards;
+}
+
+/* animasi masuk + diam + keluar */
+@keyframes toastFadeInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  80% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+}
+
   </style>
 </head>
 <body>
@@ -1698,20 +1759,21 @@ label {
 />
 
 
-<div id="toastNotif3" style="
+ <div id="toastNotif3" style="
   position:fixed;
   bottom:80px;
   left:50%;
   transform:translateX(-50%);
-  background:#e9e9e9;
-  color:#000;
+  background:rgb(101 101 101);
+  color:#ffffff;
   padding:10px 14px;
   border-radius:10px;
   display:none;
   align-items:center;
-  gap:8px;
+  gap:2px;
   font-size:13px;
   z-index:999999;
+  white-space:nowrap;
 ">
   <img src="512x512.png" style="width:18px; height:18px;">
   <span>Tidak dapat bertindak saat ini</span>
@@ -1726,7 +1788,15 @@ label {
     title="Buka History"
   />
 
+  <!-- LOADING -->
+<div id="loading" class="loading hidden">
+  <div class="spinner"></div>
 </div>
+
+
+</div>
+
+
   </header>
 
     <!-- 🔽 PINDAH KE SINI -->
@@ -2543,20 +2613,21 @@ z-index:9999;
   <img src="destiny_icon_video_call.png" alt="icon" style="width:44px; height:44px;">
   <span id="appText">Memuat</span>
 
-  <div id="toastNotif4" style="
+ <div id="toastNotif4" style="
   position:fixed;
   bottom:80px;
   left:50%;
   transform:translateX(-50%);
-  background:#e9e9e9;
-  color:#000;
+  background:rgb(101 101 101);
+  color:#ffffff;
   padding:10px 14px;
   border-radius:10px;
   display:none;
   align-items:center;
-  gap:8px;
+  gap:2px;
   font-size:13px;
   z-index:999999;
+  white-space:nowrap;
 ">
   <img src="512x512.png" style="width:18px; height:18px;">
   <span>Tidak dapat bertindak saat ini</span>
@@ -2662,6 +2733,12 @@ z-index:9999;
 </div>
 
 
+<!-- LOADING -->
+<div id="loading" class="loading hidden">
+  <div class="spinner"></div>
+</div>
+
+
 <!-- ===== Menu Tombol Menukar ===== -->
 <div id="btnRedeem" 
      style="display:flex; justify-content:space-between; align-items:center; padding:14px 16px; cursor:pointer; background:#fff;">
@@ -2671,6 +2748,14 @@ z-index:9999;
   </span>
  <img src="right_arrow_gray.png" alt="arrow" style="width:18px; height:18px; opacity:0.6;">
 </div>
+
+
+<!-- LOADING -->
+<div id="loading" class="loading hidden">
+  <div class="spinner"></div>
+</div>
+
+
 
 <!-- ===== POPUP FULLSCREEN ===== -->
 <div id="redeemPopup" style="
@@ -3010,26 +3095,49 @@ z-index:9999;
 
     </div>
         <!-- LOGO BAWAH -->
-    <div style="
-      margin-top:15px;
-      display:flex;
-      justify-content:center;
-      z-index: 9999;
-    ">
-      <div style="
-        display:flex;
-        align-items:center;
-        gap:10px;
-        padding:8px 14px;
-        background:#e490ff;
-        border-radius:50px;
-        box-shadow:0 2px 10px rgba(0,0,0,0.08);
-      ">
-        <img src="ic_launcher_circle.png" style="height:28px; border-radius: 15px;">
-        <div style="width:1px;height:20px;background:#ddd;"></div>
-        <img src="agencylogo.png" style="height:28px; border-radius:15px;">
-      </div>
-    </div>
+   <div style="
+  margin-top:15px;
+  display:flex;
+  justify-content:center;
+  z-index:9999;
+" onclick="showNotif6()">
+
+  <div style="
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 14px;
+    background:#e490ff;
+    border-radius:50px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+  ">
+    <img src="ic_launcher_circle.png" style="height:28px; border-radius:15px;">
+    <div style="width:1px;height:20px;background:#ddd;"></div>
+    <img src="agencylogo.png" style="height:28px; border-radius:15px;">
+  </div>
+
+</div>
+
+
+ <div id="toastNotif6" style="
+  position:fixed;
+  bottom:50px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgb(101 101 101);
+  color:#ffffff;
+  padding:10px 14px;
+  border-radius:10px;
+  display:none;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  z-index:999999;
+  white-space:nowrap;
+">
+  <img src="512x512.png" style="width:18px; height:18px;">
+  <span>Tidak dapat bertindak saat ini</span>
+</div>
 
 <!-- ✅ MENU 1 BARIS -->
 <div style="
@@ -3085,18 +3193,19 @@ z-index:9999;
   flex-direction:column;
 ">
 
-  <div style="
-    padding:15px;
-    border-bottom:1px solid #eee;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    border-radius:1px 10px  1px  10px;
-    background: #cacaca;
-  ">
-    <b id="legalPopupTitle">Judul</b>
-    <span onclick="closeLegalPopup()" style="cursor:pointer;font-size:18px;">✕</span>
-  </div>
+<div style="
+  padding:15px;
+  border-bottom:1px solid #eee;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-radius:1px 10px 1px 10px;
+  background:#a722b1;
+  color:#fff;
+">
+  <b id="legalPopupTitle">Judul</b>
+  <span onclick="closeLegalPopup()" style="cursor:pointer;font-size:18px;color:#fff;">✕</span>
+</div>
 
   <div id="legalPopupContent" style="
     padding:15px;
@@ -3405,20 +3514,21 @@ z-index:9999;
      style="width:28px;height:28px;filter:invert(35%) sepia(85%) saturate(500%) hue-rotate(189deg);">
      </button>
 
-     <div id="toastNotif5" style="
+   <div id="toastNotif5" style="
   position:fixed;
   bottom:80px;
   left:50%;
   transform:translateX(-50%);
-  background:#e9e9e9;
-  color:#000;
+  background:rgb(101, 101, 101);
+  color:#ffffff;
   padding:10px 14px;
   border-radius:10px;
   display:none;
   align-items:center;
-  gap:8px;
+  gap:2px;
   font-size:13px;
   z-index:999999;
+  white-space:nowrap;
 ">
   <img src="512x512.png" style="width:18px; height:18px;">
   <span>Tidak dapat bertindak saat ini</span>
@@ -3770,20 +3880,23 @@ z-index:9999;
     <div class="popup-play-icons">
       <div class="popup-play-friends">
         <img src="indonesialogo.png" onclick="showToast2()" style="cursor:pointer;">
-        <div id="toastNotif2" style="
+        
+        
+ <div id="toastNotif2" style="
   position:fixed;
   bottom:80px;
   left:50%;
   transform:translateX(-50%);
-  background:#e9e9e9;
-  color:#000;
+  background:rgb(101 101 101);
+  color:#ffffff;
   padding:10px 14px;
   border-radius:10px;
   display:none;
   align-items:center;
-  gap:8px;
+  gap:2px;
   font-size:13px;
   z-index:999999;
+  white-space:nowrap;
 ">
   <img src="512x512.png" style="width:18px; height:18px;">
   <span>Tidak dapat bertindak saat ini</span>
@@ -3794,6 +3907,13 @@ z-index:9999;
   </div>
 
   <!-- CONTENT -->
+
+
+
+  <!-- LOADING -->
+<div id="loading" class="loading hidden">
+  <div class="spinner"></div>
+</div>
 
 <div id="pestaGrid" class="hidden">
   <div class="grid">
@@ -3926,10 +4046,7 @@ z-index:9999;
 
 
 
-<!-- LOADING -->
-<div id="loading" class="loading hidden">
-  <div class="spinner"></div>
-</div>
+
 
 
   <!-- MODAL -->
@@ -4006,6 +4123,39 @@ z-index:9999;
   <img src="default_pic_100.png">
   <img src="default_pic_100.png">
 </div>
+
+
+
+
+
+<div id="toastNotif7" style="
+  position:fixed;
+  bottom:80px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgb(101, 101, 101);
+  color:#ffffff;
+  padding:10px 14px;
+  border-radius:10px;
+  display:none;
+  align-items:center;
+  gap:2px;
+  font-size:13px;
+  z-index:999999;
+  white-space:nowrap;
+">
+  <img src="512x512.png" style="width:18px; height:18px;">
+  <span>Tidak dapat bertindak saat ini</span>
+</div>
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4199,20 +4349,21 @@ z-index:9999;
 </div>
 </div>
 
-<div id="toastNotif" style="
+ <div id="toastNotif" style="
   position:fixed;
   bottom:80px;
   left:50%;
   transform:translateX(-50%);
-  background:rgb(233 233 233);
-  color:#000;
+  background:rgb(101 101 101);
+  color:#ffffff;
   padding:10px 14px;
   border-radius:10px;
   display:none;
   align-items:center;
-  gap:8px;
+  gap:2px;
   font-size:13px;
-  z-index:9999;
+  z-index:999999;
+  white-space:nowrap;
 ">
   <img src="512x512.png" style="width:18px; height:18px;">
   <span>Tidak dapat bertindak saat ini</span>
@@ -4452,7 +4603,6 @@ z-index:9999;
   </div>
 
 </div>
-
 
 
 
@@ -5526,8 +5676,42 @@ Swal.fire({
 
 
 // ---------- POPUP EVENTS ----------
-offlineBtn.addEventListener("click", openHistoryPopup);
-offlineBtn2.addEventListener("click", openHistoryPopup); // 🔹 tambahan
+// fungsi loading
+function showLoading() {
+  const el = document.getElementById("loading");
+  if (el) el.classList.remove("hidden");
+}
+
+function hideLoading() {
+  const el = document.getElementById("loading");
+  if (el) el.classList.add("hidden");
+}
+
+// fungsi utama (dipakai semua tombol)
+function handleOpenHistory() {
+  showLoading();
+
+  // random 1 - 4 detik
+  const delay = Math.floor(Math.random() * 800) + 200;
+
+  setTimeout(() => {
+    hideLoading();
+    openHistoryPopup();
+  }, delay);
+}
+
+// pasang ke tombol (AMAN dari null)
+if (offlineBtn) {
+  offlineBtn.addEventListener("click", handleOpenHistory);
+}
+
+if (offlineBtn2) {
+  offlineBtn2.addEventListener("click", handleOpenHistory);
+}
+
+
+
+
 
 closePopup.addEventListener("click", () => {
   historyPopup.style.display = "none";
@@ -6109,19 +6293,37 @@ document.getElementById("imgCloseBank").addEventListener("click", () => {
 });
 
 
+// ambil element dengan aman
 const btnRedeem = document.getElementById("btnRedeem");
 const redeemPopup = document.getElementById("redeemPopup");
 const closeRedeem = document.getElementById("closeRedeem");
 
-btnRedeem.addEventListener("click", () => {
-  redeemPopup.style.display = "block";
-});
+// fungsi buka popup + loading
+function openRedeemWithLoading() {
+  if (!redeemPopup) return;
 
-closeRedeem.addEventListener("click", () => {
-  redeemPopup.style.display = "none";
-});
+  showLoading();
 
+  const delays = [500, 800];
+  const delay = delays[Math.floor(Math.random() * delays.length)];
 
+  setTimeout(() => {
+    hideLoading();
+    redeemPopup.style.display = "block";
+  }, delay);
+}
+
+// pasang event (aman dari null)
+if (btnRedeem) {
+  btnRedeem.addEventListener("click", openRedeemWithLoading);
+}
+
+// close popup
+if (closeRedeem && redeemPopup) {
+  closeRedeem.addEventListener("click", function () {
+    redeemPopup.style.display = "none";
+  });
+}
 
 
 
@@ -6720,28 +6922,6 @@ document.addEventListener("keydown", (e) => {
 document.addEventListener("gesturestart", (e) => {
   e.preventDefault();
 });
-
-
-
-const btnRedeemUret = document.getElementById("btnredeemuret");
-const redeemAlert = document.getElementById("redeemAlert");
-const closeRedeemAlert = document.getElementById("closeRedeemAlert");
-
-btnRedeemUret.addEventListener("click", (e) => {
-  e.preventDefault();
-  redeemAlert.style.display = "flex";
-});
-
-closeRedeemAlert.addEventListener("click", () => {
-  redeemAlert.style.display = "none";
-});
-
-redeemAlert.addEventListener("click", (e) => {
-  if (e.target === redeemAlert) {
-    redeemAlert.style.display = "none";
-  }
-});
-
 
 
 
@@ -7940,6 +8120,63 @@ window.showToast5 = function () {
 
 
 
+document.addEventListener("DOMContentLoaded", function () {
+
+  window.showNotif6 = function () {
+    const notif = document.getElementById("toastNotif6");
+    if (!notif) return;
+
+    notif.style.display = "flex";
+
+    setTimeout(() => {
+      notif.style.display = "none";
+    }, 20088880);
+  };
+
+});
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const ikan = document.getElementById("ikan-popup");
+
+  if (ikan) {
+    ikan.addEventListener("click", function () {
+      showNotif7();
+    });
+  }
+});
+
+function showNotif7() {
+  const notif = document.getElementById("toastNotif7");
+  if (!notif) return;
+
+  notif.style.display = "flex";
+
+  setTimeout(() => {
+    notif.style.display = "none";
+  }, 2000);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -7970,6 +8207,18 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
