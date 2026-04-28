@@ -381,6 +381,96 @@ input{
 }
 
 
+
+
+.post-text-box {
+  background: linear-gradient(180deg, #ffffff, #fafafa);
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  
+  margin: 10px 0;
+  transition: 0.2s;
+}
+
+/* efek hover biar hidup */
+.post-text-box:hover {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+}
+
+/* biar teks panjang rapi */
+.post-text-box {
+  word-break: break-word;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.views {
+  font-size: 12px;
+  color: #888;
+  white-space: nowrap;
+}
+
+
+.actions-box {
+  display: flex;
+  align-items: center;
+  gap: 14px; /* jarak antar item */
+
+  margin-top: 10px;
+  padding: 10px 14px;
+
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #eee;
+
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* item di dalam box */
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #444;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* hover effect */
+.action-item:hover {
+  opacity: 0.7;
+}
+
+/* khusus view */
+.views-item {
+  cursor: default;
+  color: #888;
+}
+
+
+.action-item img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+
+.view-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+
 </style>
 </head>
 
@@ -509,23 +599,121 @@ const names = [
 
 // ===== TOPIK =====
 const goodPosts = [
-"Coin masuk kurang dari 5 menit, agency nya mantap banget",
+"aPlikasi sangat oke, aman tidak bs merekam layar, pembayaran/withdraw mudah apabila tidak masuk ke akun payment kita, koin akan kembali ke akun tigo, tapi akhir2 ini suka susah untuk memulai klik awal",
 "Daftar host langsung diterima, proses cepat",
 "Video call di Tigo lancar tanpa lag",
-"Top up coin di Weelive aman banget",
+"Bagus sih apk nya membantu banget Minta di tingkatkan lagi klo match masuk seharus nya lgsng dapet coin gak usah nunggu 15 detik gtu gedek dan kesal aja match slalu pada di skip coin gk masuk jd gk dapet coin deh Usher pada pelit pada skip2 blm juga ngomong dah skip2",
 "Agency bantu sampai aktif, recommended",
-"Host langsung dapat viewer setelah aktif",
-"Proses withdraw juga cepat banget",
-"Coin langsung masuk tanpa pending"
+"apk nya sih bagus sebenarnya tp potongan gift nya terlalu besar ,, seperti 150 coin nyampe nya cuma 45 coin, dan kalau match ,, user bayar 15 coin sampe di kita cuma 4,5 ,klw bisa ditingkat kan LG coin ke host nya",
+"Buat pemula sih agak kaget ya, tapi ya masih oke karena bisa balik lagi",
+"Depositnya nggak kecil, tapi untungnya nggak nyangkut",
+"Gue sempet ragu, tapi akhirnya nyobain dan ternyata bener bisa ditarik",
+"Berat di awal, tapi setelah lihat hasilnya jadi lebih tenang",
+"Jujur agak keberatan, tapi karena bisa balik lagi jadi yaudah",
+"Walaupun ada keluhannya di nominal, tapi overall masih oke karena bisa ditarik lagi",
+"Buat first timer agak intimidating, tapi ternyata easy",
+"Top up-nya fast response, no drama",
+"Walaupun ada minus di harga, tapi process-nya smooth banget.",
+"Dulu banyak promo karena platform lagi ngejar user. Sekarang user udah banyak promo dikurangin",
+"Jujur gue ngerasa sekarang top up koin lewat agency tuh jauh lebih murah dibanding langsung di aplikasi Tigo, beda harganya lumayan kerasa. Cuma yang gue heran kenapa promo di aplikasinya sekarang makin jarang muncul ya, padahal dulu sering banget ada bonus.",
+"Setelah compare-compare, ternyata emang lebih worth it top up via agency daripada langsung di Tigo app. Tapi agak disayangkan sih sekarang promo koin di aplikasinya udah nggak sesering dulu.",
+"Gue baru ngeh kalau top up lewat agency bisa lebih hemat daripada langsung di aplikasi",
+"Honestly sekarang gue lebih prefer top up di agency karena lebih murah, beda sama di aplikasi Tigo yang harganya agak tinggi.",
+
+"Aplikasinya ringan dan tidak lemot",
+"Aku sudah pakai aplikasi ini kurang lebih 2 minggu, sejauh ini pengalaman cukup baik. Awalnya sempat ragu karena takut ribet saat withdraw, tapi ternyata prosesnya cukup cepat dan jelas. Cuma memang kadang di awal buka aplikasi agak lama loadingnya, mungkin karena jaringan juga, tapi overall masih oke banget dipakai",
+
+"Awal daftar sempat bingung, tapi setelah dibantu agency akhirnya bisa jalan juga. Sekarang sudah beberapa kali live dan dapat gift walaupun belum banyak. Yang penting aplikasinya stabil dan tidak terlalu sering error, jadi masih nyaman dipakai",
+
+"Menurut aku aplikasi ini cukup bagus untuk pemula yang ingin coba jadi host. Proses pendaftaran tidak terlalu ribet dan cukup cepat dibanding aplikasi lain. Kekurangannya mungkin di bagian koneksi yang kadang kurang stabil saat video call",
+
+"Sudah hampir 1 bulan pakai, dan sejauh ini belum pernah mengalami masalah serius. Withdraw selalu masuk walaupun kadang agak lama beberapa menit. Fitur-fiturnya juga cukup lengkap dan mudah dipahami",
+
+"Aku suka karena tampilannya simple dan tidak bikin bingung. Semua menu mudah diakses dan tidak berat di HP. Kadang memang ada sedikit bug, tapi tidak terlalu mengganggu aktivitas",
+
+"Pengalaman pakai aplikasi ini cukup memuaskan. Dari segi performa sudah lumayan stabil, jarang crash, dan tidak terlalu berat. Hanya saja kadang notifikasi telat masuk",
+
+"Menurut aku aplikasi ini masih perlu sedikit peningkatan di bagian server, karena kadang saat ramai suka ada delay. Tapi untuk penggunaan normal masih lancar",
+
+"Sudah coba beberapa aplikasi lain, dan yang ini menurut aku lebih ringan dan mudah digunakan. Proses withdraw juga cukup cepat jadi bikin lebih percaya",
+
+"Aplikasi ini cocok untuk yang baru mulai karena tidak terlalu ribet. Agency juga cukup membantu dari awal sampai bisa jalan sendiri",
+
+"Awalnya tidak terlalu berharap banyak, tapi ternyata cukup bagus. Sudah beberapa kali withdraw dan semuanya aman masuk ke akun",
+
+"Aplikasi cukup stabil digunakan sehari-hari. Tidak terlalu banyak bug, hanya sesekali saja. Semoga ke depannya lebih baik lagi",
+
+"Menurut aku sudah cukup bagus dibanding aplikasi sejenis. Tinggal ditingkatkan sedikit di bagian performa dan fitur tambahan",
+
+"Penggunaan cukup mudah dan tidak membingungkan. Semua fitur utama berjalan dengan baik",
+
+"Kadang ada sedikit lag saat VC, tapi masih bisa dimaklumi. Tidak terlalu mengganggu pengalaman",
+
+"Aplikasi ini lumayan membantu buat tambahan penghasilan. Kalau rajin live, hasilnya juga lumayan",
+
+"Sudah lama pakai dan sejauh ini masih aman. Tidak pernah mengalami kehilangan coin atau masalah serius",
+
+"Tampilan aplikasinya enak dilihat dan tidak terlalu ramai. Cocok buat yang suka simple",
+
+"Menurut aku sudah cukup bagus, hanya saja perlu peningkatan di bagian koneksi",
+
+"Pengalaman sejauh ini positif, walaupun ada beberapa kekurangan kecil",
+"Host baru cepat diterima kalau daftar lewat agency",
+"posisi di jepang gk bisa instal apk ini ya",
+"Aplikasi yang terbukti bener2 membayar ini Cocok untuk yg nyari penghasilan tambahan, nyari teman juga bisa, kalau dpt jodoh wow lagii... nyesel juga, knpa ga dri dulu aja yaa gue makai apk ini",
+"Tlong lah jan dilimit 20detik orang lagi enak2 ngobrol malah habis watu nya,udh gitu kalo pen lanjut chat harus bayar 10 overprice kalo bisa kasih lah waktu nya 1 menit atau 40 detik biar bisa mengobrol lebih lama",
+"Aplikasi lumayan . Tapi aku baru donload aplikasinya jadi host semoga bagus hasil besar kayak yang lain",
+"Awalnya ragu banget karena harus deposit 500rb buat aktifin akun host, tapi ternyata aman. Saldo bisa ditarik lagi dan masuk rekening kurang dari 10 menit.",
+"untung jelas, deposit 500rb buat aktivasi. Yang bikin lega, uangnya bisa ditarik lagi tanpa ribet.",
+"Sempat mikir dua kali karena harus top up dulu, tapi setelah dicoba ternyata proses penarikannya cepat banget.",
+"Awalnya takut scam, tapi ternyata setelah deposit dan coba tarik, uangnya benar-benar masuk rekening.",
+"Lumayan sih, depositnya memang wajib, tapi sistem penarikannya cepat jadi masih aman.",
+"di akun host saya kok 701rb depositnya, walupaun benar setelah aktif langsung bisa tarik lagi tanpa masalah tapi itu terlalu besar bagi yang pemula.",
+"Proses aktivasi cepat, dan penarikan juga tidak lama, cukup memuaskan sih.",
+"Walaupun harus deposit dulu, tapi karena bisa ditarik lagi jadi masih masuk akal.",
+
+"di akun saya deposit  400rb, dan semuanya berjalan lancar sampai penarikan.",
+"Kok tiap akun beda ya, saya dapat 701rb juga. Untungnya bisa balik lagi ke rekening",
+"Awalnya kaget karena diminta deposit lumayan besar, tapi setelah coba ternyata bisa ditarik lagi",
+"Deposit saya cukup tinggi juga, tapi untungnya setelah aktif dana bisa langsung kembali",
+"Masih perlu peningkatan performa",
+"apk ini bagus sekali loh apa lgi yg lgi butuh tmn bagus buat seringberbagai cerita",
+"Sudah beberapa kali WD aman",
+"Walaupun nominalnya beda-beda tiap akun, yang penting penarikannya lancar dan cepat",
+"Kak maaf, hari ini aplikasinya lagi perbaikan server ya? Jaringan stabil dari log in sampai random call, dan lancar2 aja... Yang masalah fitur WDnya...malah error... Mohon diperbaiki kak. Terima Kasih. Nanti aku tambah bintang kalau sudah normal",
+"Lumayan lah banyak gratisan, jangan lupa invite code ini biar dpt bonus nya VBx3MVQ",
+"User cukup banyak",
+"Kadang sepi susa cari match tapi kadang tergantung jam",
+"Bagus banget aplikasi Tigo, gak sia-sia download, semakin di update fitur-fitur ya semakin lebih baik dan lengkap jadi mudah mengeroperasikan nya",
+"masi aman sih digunakan,blum ada kendala sejauh ini",
+"bgus apk nya cuma buat penarikan terlalu byk biaya nya, 😌bisa ngk kurangin dikit"
 ];
 
 const badPosts = [
-"Coin belum masuk sudah 1 jam",
-"Daftar host masih pending terus",
-"Video call sering lag di aplikasi",
-"Agency lama responnya",
+"Awalnya gue selalu top up langsung di aplikasi Tigo, tapi setelah tau agency lebih murah jadi pindah. Cuma satu yang gue kangen, promo koin yang dulu sering ada sekarang hampir nggak pernah muncul.",
+"Gue ngerasa aplikasi Tigo sekarang kurang menarik karena promo koinnya jarang muncul, padahal di sisi lain top up via agency malah lebih murah.",
+"Dulu gue sering nunggu promo di aplikasi Tigo buat top up, tapi sekarang malah lebih sering beli di agency karena lebih murah",
+"Kalau soal harga, agency jelas lebih murah dibanding langsung di aplikasi Weelive",
+"Awalnya gue pikir sama aja, tapi ternyata top up di agency jauh lebih murah. Cuma agak kecewa promo koin di Tigo sekarang makin jarang.",
+"Sekarang strategi gue kalau mau top up ya lewat agency karena lebih hemat.",
+"Jujur gue sempet kapok top up lewat agency karena prosesnya nggak langsung masuk, bikin panik sendiri. Tapi untungnya setelah nunggu beberapa menit, koinnya tetap masuk ke akun juga.",
+"gue kira bakal instan, ternyata harus nunggu dulu dan sempet khawatir. Tapi ya akhirnya koinnya tetap masuk sih",
+"Dari segi harga emang murah, tapi pengalaman gue agak bikin deg-degan karena nggak langsung masuk. Untungnya tetap berhasil",
+"gue kira gagal. Tapi beberapa menit kemudian ternyata koinnya masuk juga.",
+"Agak kurang nyaman sih karena harus nunggu dan nggak real time",
+"Gue ngerasa kurang praktis karena harus nunggu, beda sama di aplikasi. Tapi tetap aja sih, koinnya akhirnya masuk juga.",
+"Walaupun prosesnya agak bikin khawatir dan nggak instan, tapi akhirnya tetap sukses dan koinnya masuk",
+"Gaji gue awalnya 11 juta, sekarang turun jadi 10 juta. Padahal gue ngerasa tetap aktif terus. Ada yang pernah ngalamin juga nggak sih?",
+"Dari 16jt sempet naik ke 20jt, tapi sekarang turun lagi. Nggak ngerti patokannya apa.",
+"Kok bisa ya gaji naik turun? Gue pernah 20jt, sekarang balik ke 16jt padahal sama aja kerjaannya.",
+"Awalnya 12jt sekarang jadi 10jt, lumayan beda dan bikin kepikiran juga apakah ada yang kelewat.",
+"Gue kena pelanggaran tiba-tiba dan saldo jadi ketahan, nggak bisa ditarik langsung. Katanya harus nunggu 5 jam dulu, jadi agak panik sih awalnya.",
+"Saldo gue tiba-tiba di-lock sementara karena pelanggaran. Nggak bisa WD dulu dan harus nunggu beberapa jam.",
+"Saldo aku ketahan dan nggak bisa diproses sementara. Katanya karena pelanggaran dan harus nunggu dulu.",
+"tolong dong kalo bisa matching langsung masuk koin soalnya banyak user suka matiin seenaknya. terus chat nya jangan di batas in ya min.",
+"aplikasi sudah ok, akan lebih baik kalau di kasih kolom Pencarian semoga di relisasikan, terimakasih",
 "Tigo bagus tapi pembelian token agak ribet menurut saya",
-"Verifikasi terlalu lama"
+"saya sebagai host di tigo merasa sangat kecewa banyak user baru yang mematikan telvon dengan sesuka hati saya meminta agar sistem tigo untuk pengguna baru bisa diperbaiki dengan cara user tidak bisa mematikan panggilan sebelum 15 detik saya meminta tolong untuk memperbaiki sistem"
 ];
 
 // ===== KOMENTAR VARIASI (ANTI SAMA) =====
@@ -544,20 +732,20 @@ function generateUniqueComment(i){
 
   const respon = [
     "lumayan cepat",
-    "agak lama",
-    "butuh perbaikan",
-    "cukup membantu",
-    "masih kurang stabil",
-    "sudah bagus"
+    "Bantu tambahin tombol pencarian dong min. Sama pesan suara kalo chat private bisa pesan suara. Terusss tambah pilih hapus chat biar ga satu2 ngapus chatnya. Sama tolong dong minn kalo sudah diblokir pengguna yang diblokirnya gabisa lagi buka akun kita/lihat foto2 kita.",
+    "Kenapa saya tidak bisa menerima panggilan, setiap ada yg call nggak bisa masuk, tolong dong min, apa ada perbaikan dari aplikasi? Saya sudah ganti wifi ke kartu paket tapi tetap juga",
+    "sebenarnya ini aplikasi yg bagus, tapi kenapa sekarang susah dapat user. itu pun keseringan d skip. tolong d perhatikan. udah susah dapat user d skip, harus nya 3 detik di awal langsung dapat poin.",
+    "Mohon dibetulkan sistemnya. Agar bisa mencari nama, karna sulit menemukan konsumen/langganan kalo model random gitu. Minimal ada opsi pencarian",
+    "apk rekomended terbaik ,apk tigo apk terkonsisten sampe tahun ini , aku host lama di apk ini , aku betah karna nyaman dan konsisten. terima kasih tigo."
   ];
 
   const saran = [
     "semoga kedepannya lebih baik",
-    "harusnya bisa lebih cepat lagi",
-    "mungkin perlu update sistem",
+    "harusnya minimal 16 detik baru bisa di matiin sama user jadii biar sama sama enak ini belum apa apa di skip jadinya buang buang waktu plis deh tigo jangan enak sendiri tolong dong buat kenyamanan juga buat para host biar semangat match!!!",
+    "Kenapa top up di akulaku dan shopee TDK bisa. Dan top up di rek bank harganya melonjak dri harga paling murah 22rb jadi 28 RB.. tolong infokan bos.",
     "semoga segera diperbaiki",
-    "overall masih aman digunakan",
-    "tidak terlalu masalah bagi saya"
+    "Ok ini akun walaupun tak ada saldo tiap hari ada bonus ngobrol gratis..wes ini aplikasi pokok e paling mantap Saya sering download aplikasi lainya setelah AQ trai AQ hapus di samping kuatoya mahal tak ada gratisannya klau aplikasi tigo ini aplikasi mantap pokok ya",
+    "Harapan saya jadi kenyataan, mengapa saya ngomong begitu? Karena saya sendiri sudah membuktikanya sendiri.. Dan saya sangat puas!!! Yuk biar akun kalian aktif?! Di tuliskan koeede undang ini -``DH"
   ];
 
   const app = apps[i % apps.length];
@@ -566,7 +754,8 @@ function generateUniqueComment(i){
   const s = saran[i % saran.length];
 
   // bikin unik pakai index
-  return `(${i+1}) Di aplikasi ${app}, pengalaman saya terkait ${m} itu ${r}, dan ${s}.`;
+
+return `(${i+1}) Kami sangat beruntung menerima pujian Anda dan berharap dapat terus memberikan layanan berkualitas kepada Anda. Jika Anda memiliki pertanyaan selama penggunaan, silakan beri tahu kami melalui layanan pelanggan.`;
 }
 
 // ===== WAKTU =====
@@ -626,8 +815,35 @@ function generatePosts(){
     // simpan
     window["profile_"+i] = {name,avatar,status,city,gift};
 
-    let like = Math.floor(Math.random()*300)+50;
-    let dislike = Math.floor(Math.random()*50)+5;
+
+function formatNumber(num){
+  if(num >= 1000){
+    return (num/1000).toFixed(1).replace(".0","") + "K";
+  }
+  return num;
+}
+
+function randomLike(){
+  return Math.floor(Math.random() * 7500) + 2500; 
+  // hasil: 2500 - 10000 (2.5K - 10K)
+}
+
+// ===== RANDOM VIEW =====
+function randomViews(){
+  const r = Math.random();
+
+  if(r < 0.6) return Math.floor(Math.random()*8000)+5000;   // 5K–13K
+  if(r < 0.9) return Math.floor(Math.random()*15000)+10000; // 10K–25K
+  return Math.floor(Math.random()*50000)+20000;             // viral
+}
+
+
+let views = randomViews();
+
+
+
+let like = randomLike();
+let dislike = Math.floor(Math.random()*500)+50;
 
     const id = "post_"+i;
 
@@ -660,16 +876,31 @@ function generatePosts(){
         </div>
       </div>
 
-      <div class="text">${text}</div>
+      <div class="post-text-box">
+  ${text}
+</div>
 
-      <div class="actions">
-        <div class="btn" onclick="like('${id}')">
-          <img src="cs_answer_up_pressed_icon.png"> <span id="like_${id}">${like}</span>
-        </div>
-        <div class="btn" onclick="dislike('${id}')">
-          <img src="cs_answer_down_pressed_icon.png"> <span id="dis_${id}">${dislike}</span>
-        </div>
-      </div>
+<div class="actions-box">
+
+  <!-- LIKE -->
+  <div class="action-item" onclick="like('${id}')">
+    <img id="like_icon_${id}" src="cs_answer_up_normal_icon.png">
+    <span id="like_${id}">${formatNumber(like)}</span>
+  </div>
+
+  <!-- DISLIKE -->
+  <div class="action-item" onclick="dislike('${id}')">
+    <img id="dis_icon_${id}" src="cs_answer_down_normal_icon.png">
+    <span id="dis_${id}">${dislike}</span>
+  </div>
+
+  <!-- VIEW -->
+<div class="action-item views-item">
+  <img src="global.png" class="view-icon">
+  ${formatNumber(views)}
+</div>
+
+</div>
 
       <div class="comment-box">
         <div class="view-more" onclick="showPopup()">
@@ -710,54 +941,166 @@ function generatePosts(){
 }
 
 // ===== LIKE =====
-function like(id){
-  let el = document.getElementById("like_"+id);
-  el.innerText = parseInt(el.innerText)+1;
+// ===== FORMAT ANGKA =====
+// ===== FORMAT =====
+function formatNumber(num){
+  if(num >= 1000){
+    return (num/1000).toFixed(1).replace(".0","") + "K";
+  }
+  return num;
 }
 
-function dislike(id){
-  let el = document.getElementById("dis_"+id);
-  el.innerText = parseInt(el.innerText)+1;
+// ===== PARSE =====
+function parseLike(text){
+  if(text.includes("K")){
+    return parseFloat(text) * 1000;
+  }
+  return parseInt(text) || 0;
 }
+
+// ===== LIKE =====
+function like(id){
+  const likeEl = document.getElementById("like_"+id);
+  const likeIcon = document.getElementById("like_icon_"+id);
+
+  const disEl = document.getElementById("dis_"+id);
+  const disIcon = document.getElementById("dis_icon_"+id);
+
+  if(!likeEl || !likeIcon) return;
+
+  let likeVal = parseLike(likeEl.innerText);
+  let disVal = parseLike(disEl.innerText);
+
+  const isActive = likeIcon.src.includes("pressed");
+
+  if(isActive){
+    // MATIKAN LIKE
+    likeIcon.src = "cs_answer_up_normal_icon.png";
+    likeVal -= 1;
+    localStorage.removeItem("like_active_"+id);
+  }else{
+    // AKTIFKAN LIKE
+    likeIcon.src = "cs_answer_up_pressed_icon.png";
+    likeVal += 1;
+    localStorage.setItem("like_active_"+id, "1");
+
+    // MATIKAN DISLIKE kalau aktif
+    if(disIcon.src.includes("pressed")){
+      disIcon.src = "cs_answer_down_normal_icon.png";
+      disVal -= 1;
+      localStorage.removeItem("dis_active_"+id);
+    }
+  }
+
+  likeEl.innerText = formatNumber(likeVal);
+  disEl.innerText = formatNumber(disVal);
+
+  // SIMPAN
+  localStorage.setItem("like_count_"+id, likeVal);
+  localStorage.setItem("dis_count_"+id, disVal);
+}
+
+// ===== DISLIKE =====
+function dislike(id){
+  const disEl = document.getElementById("dis_"+id);
+  const disIcon = document.getElementById("dis_icon_"+id);
+
+  const likeEl = document.getElementById("like_"+id);
+  const likeIcon = document.getElementById("like_icon_"+id);
+
+  if(!disEl || !disIcon) return;
+
+  let disVal = parseLike(disEl.innerText);
+  let likeVal = parseLike(likeEl.innerText);
+
+  const isActive = disIcon.src.includes("pressed");
+
+  if(isActive){
+    // MATIKAN DISLIKE
+    disIcon.src = "cs_answer_down_normal_icon.png";
+    disVal -= 1;
+    localStorage.removeItem("dis_active_"+id);
+  }else{
+    // AKTIFKAN DISLIKE
+    disIcon.src = "cs_answer_down_pressed_icon.png";
+    disVal += 1;
+    localStorage.setItem("dis_active_"+id, "1");
+
+    // MATIKAN LIKE kalau aktif
+    if(likeIcon.src.includes("pressed")){
+      likeIcon.src = "cs_answer_up_normal_icon.png";
+      likeVal -= 1;
+      localStorage.removeItem("like_active_"+id);
+    }
+  }
+
+  disEl.innerText = formatNumber(disVal);
+  likeEl.innerText = formatNumber(likeVal);
+
+  // SIMPAN
+  localStorage.setItem("dis_count_"+id, disVal);
+  localStorage.setItem("like_count_"+id, likeVal);
+}
+
+
+
+
+
+
+
 
 // ===== KOMENTAR =====
 function sendComment(e,id){
-  if(e.key==="Enter"){
-    const val = e.target.value;
+  if(e.key === "Enter"){
+    const val = e.target.value.trim();
     if(!val) return;
 
-    let data = JSON.parse(localStorage.getItem(id)) || [];
+    let data;
+    try {
+      data = JSON.parse(localStorage.getItem(id)) || [];
+    } catch {
+      data = [];
+    }
+
     data.push(val);
     localStorage.setItem(id, JSON.stringify(data));
 
     renderComment(id);
-    e.target.value="";
+    e.target.value = "";
   }
 }
 
 function renderComment(id){
   const box = document.getElementById("comment_"+id);
-  const data = JSON.parse(localStorage.getItem(id)) || [];
+  if(!box) return;
 
-box.innerHTML = data.map(d=>`
-  <div style="display:flex;gap:6px;margin-top:8px;">
-    
-    <img src="user_level_9_icon - Copy.png" 
-         style="width:14px;height:14px;margin-top:6px;">
+  let data;
+  try {
+    data = JSON.parse(localStorage.getItem(id)) || [];
+  } catch {
+    data = [];
+  }
 
-    <div style="
-      background:#f5f5f5;
-      padding:8px 10px;
-      border-radius:10px;
-      font-size:13px;
-      max-width:80%;
-      box-shadow:0 1px 3px rgba(0,0,0,0.1);
-    ">
-      ${d}
+  box.innerHTML = data.map(d => `
+    <div style="display:flex;gap:6px;margin-top:8px;">
+      
+      <img src="ic_launcher_circle.png" 
+           style="width:14px;height:14px;margin-top:6px;">
+
+      <div style="
+        background:#f5f5f5;
+        padding:8px 10px;
+        border-radius:10px;
+        font-size:13px;
+        max-width:80%;
+        box-shadow:0 1px 3px rgba(0,0,0,0.1);
+        word-break:break-word;
+      ">
+        ${d}
+      </div>
+
     </div>
-
-  </div>
-`).join("");
+  `).join("");
 }
 
 // ===== PROFILE POPUP =====
