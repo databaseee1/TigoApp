@@ -27,7 +27,7 @@ body{font-family:Arial;background:#f4f4f4;margin:0;}
   max-width:500px;
   margin:auto;
   padding:10px;
-  margin-top:70px; /* ini penting */
+  margin-top:10px; /* ini penting */
 }
 
 
@@ -200,7 +200,7 @@ input{
 .notif{
   position:fixed;
   top: 45px;
-  right: 15px;
+  right: 10px;
   background:#00c853;
   color:#fff;
   padding:6px 8px;
@@ -505,7 +505,7 @@ input{
 
 /* CONTENT */
 .container {
-    padding: 15px;
+    padding: 9px;
 }
 
 
@@ -521,6 +521,18 @@ input{
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     border-radius: 0 0 10px 10px;
     color: #fff;
+}
+
+
+
+
+#toastNotif9 {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {opacity:0; transform:translate(-50%,10px);}
+  to {opacity:1; transform:translate(-50%,0);}
 }
 
 </style>
@@ -596,6 +608,29 @@ input{
     </div>
     <button onclick="closePopup()">OK</button>
   </div>
+</div>
+
+
+
+<div id="toastNotif9" style="
+  position:fixed;
+  bottom:60px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgb(48, 48, 48);
+  color:#fff;
+  padding:10px 16px;
+  border-radius:10px;
+  display:none;
+  align-items:center;
+  gap:8px;
+  font-size:13px;
+  z-index:999999;
+
+  max-width:340px;  /* 🔥 diperlebar */
+">
+  <img src="512x512.png" style="width:18px;height:18px;">
+  <span>Tamu tidak dapat memberikan ulasan saat ini</span>
 </div>
 
 
@@ -966,8 +1001,18 @@ let dislike = Math.floor(Math.random()*500)+50;
         <div class="view-more" onclick="showPopup()">
   Lihat komentar lain
 </div>
-        <input placeholder="Tulis komentar..." onkeypress="sendComment(event,'${id}')">
-        <div id="comment_${id}"></div>
+
+
+<input 
+  placeholder="Tulis komentar..." 
+  readonly 
+  onclick="showNotif9()"
+>
+
+
+
+
+<div id="comment_${id}"></div>
       </div>
     `;
 
@@ -1371,7 +1416,19 @@ setTimeout(showNotif,2000);
 
 
 
+window.showNotif9 = function () {
+  const notif = document.getElementById("toastNotif9");
+  if (!notif) return;
 
+  notif.style.display = "flex";
+
+  // penting biar bisa dipencet berkali-kali
+  clearTimeout(window.notif9Timeout);
+
+  window.notif9Timeout = setTimeout(() => {
+    notif.style.display = "none";
+  }, 3000);
+};
 
 
 
