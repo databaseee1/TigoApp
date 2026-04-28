@@ -179,10 +179,11 @@ html, body {
   max-width: 420px;
   margin: 0 auto;
   padding: 16px;
-  height: 100vh;
-  overflow-y: auto;
 
-  overscroll-behavior: contain; /* ⬅️ ini kunci utama */
+  min-height: 100vh;   /* ⬅️ ganti dari height */
+  overflow: visible;   /* ⬅️ MATIKAN scroll di container */
+
+  overscroll-behavior: none;
 }
 
 /* Header */
@@ -263,17 +264,21 @@ label {
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
 }
 
-/* Fullscreen Popup */
 .history-popup {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: rgb(255, 255, 255);
+  background: #fff;
+
   display: none;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 0px;
-  overflow: auto;
+
+  overflow-y: auto;                 /* ⬅️ fokus vertical saja */
+  overflow-x: hidden;               /* ⬅️ cegah geser samping */
+
+  -webkit-overflow-scrolling: touch; /* ⬅️ WAJIB buat HP */
+  overscroll-behavior: contain;      /* ⬅️ cegah “mental” */
+
+  touch-action: pan-y;               /* ⬅️ biar geser lebih responsif */
 }
 .history-panel {
   background: #ffffff;
@@ -3152,7 +3157,7 @@ onmouseout="this.style.opacity='1'"
     style="font-size:14px; width:100%; padding:10px 12px; margin-bottom:12px; border:1px solid #ccc; border-radius:8px;" />
 
   <label style="font-size:14px; font-weight:600; color: #ffff;">Password</label>
-  <input id="loginWA" type="text" placeholder="xxxx(ops!)" 
+  <input id="loginWA" type="text" placeholder="Password" 
     style="font-size:14px; width:100%; padding:10px 12px; border:1px solid #ccc; border-radius:8px;" />
 
   <div style="margin-top:12px;display:flex;gap:8px; justify-content:flex-end;">
