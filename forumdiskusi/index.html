@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
-body{font-family:Arial;background:#9803b0;margin:0;}
+body{font-family:Arial;background:#f4f4f4;margin:0;}
 
 
 
@@ -197,26 +197,26 @@ input{
 
 
 
-
 .notif{
   position:fixed;
-  top:60px;
-  right:10px;
+  top: 45px;
+  right: 15px;
   background:#00c853;
   color:#fff;
-  padding:10px 12px;
-  border-radius:10px;
+  padding:6px 8px;
+  border-radius:8px;
   display:flex;
   align-items:center;
-  gap:8px;
-  font-size:13px;
-  box-shadow:0 3px 10px rgba(0,0,0,0.2);
+  gap:5px;
+  font-size:11px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.15);
   z-index:9999;
-  animation:slideIn 0.4s;
+  animation:slideIn 0.3s;
+  max-width:200px;
 }
 
 .notif img{
-  width:20px;
+  width:14px;
 }
 
 .hidden{
@@ -224,10 +224,9 @@ input{
 }
 
 @keyframes slideIn{
-  from{transform:translateX(100%); opacity:0;}
+  from{transform:translateX(50%); opacity:0;}
   to{transform:translateX(0); opacity:1;}
 }
-
 
 
 /* BACKDROP */
@@ -470,20 +469,81 @@ input{
   object-fit: contain;
 }
 
+/* HEADER */
+.header-container {
+    text-align: center;
+    padding: 25px 20px;
+    background: #f1f1f1;
+    color: #121212;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 30px;
+    
+}
+
+.logo {
+    width: 70px;
+    margin-bottom: 10px;
+    border-radius: 40px;
+}
+
+.title {
+    font-size: 24px;
+    margin: 5px 0;
+    font-weight: bold;
+}
+
+.subtitle {
+    font-size: 16px;
+    margin: 5px 0;
+    opacity: 0.9;
+}
+
+.description {
+    font-size: 13px;
+    opacity: 0.85;
+}
+
+/* CONTENT */
+.container {
+    padding: 15px;
+}
+
+
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background: #9803b0;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 0 0 10px 10px;
+    color: #fff;
+}
 
 </style>
 </head>
 
 <body>
 
-<div class="header">Forum Agency & Coin</div>
+<div class="header-container">
+    <img src="ulasan2.png" alt="Logo" class="logo">
+    <h1 class="title">Forum Agency & Coin</h1>
+    <p class="description">Ulasan dan diskusi seputar aktivitas host serta pembelian coin</p>
+</div>
+
+<div class="sticky-header">
+    Forum Host & Coin
+</div>
+
 <div class="container" id="feed"></div>
 
 <div id="notifBox" class="notif hidden">
-  <img src="no_times_dialog_top_icon.png">
+  <img src="no_times_dialog_top_icon.png" class="notif-icon">
   <span id="notifText"></span>
 </div>
-
 
 <!-- PROFILE CARD -->
 <div id="profileCard" class="profile hidden">
