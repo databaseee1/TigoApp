@@ -15,9 +15,29 @@
 <meta name="theme-color" content="#a722b1">
 
 <style>
-body{font-family:Arial;background:#f4f4f4;margin:0;}
 
+body{
+  font-family: Arial;
+  background: #f4f4f4;
+  margin: 0;
 
+  /* 🔥 tambahan */
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* IZINKAN INPUT & TEXTAREA */
+input, textarea {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
 
 .header{
   background:#9803b0;
@@ -134,30 +154,30 @@ body{font-family:Arial;background:#f4f4f4;margin:0;}
 }
 
 
-.popup{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.6);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 
 .hidden{
   display:none;
 }
 
-.popup-box{
-  background:#fff;
-  padding:20px;
-  border-radius:12px;
-  text-align:center;
-  width:260px;
-  animation:fadeIn 0.3s;
+.popup-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  width: 260px;
+  
 }
 
 .popup-logo{
@@ -1446,6 +1466,66 @@ window.showNotif9 = function () {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("contextmenu", function(e){
+  e.preventDefault();
+});
+
+// blok select teks
+document.addEventListener("selectstart", e => e.preventDefault());
+
+// blok copy
+document.addEventListener("copy", e => e.preventDefault());
+
+// blok drag gambar
+document.addEventListener("dragstart", e => e.preventDefault());
+
+document.addEventListener("keydown", function(e){
+  if(
+    e.ctrlKey && 
+    (e.key === "c" || e.key === "u" || e.key === "s" || e.key === "a")
+  ){
+    e.preventDefault();
+  }
+});
 
 </script>
 
