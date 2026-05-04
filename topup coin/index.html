@@ -1,0 +1,2744 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top Up App</title>
+
+<style>
+body {
+  margin:0;
+  font-family:Arial;
+  background:#f5f5f5;
+  padding-top:60px; /* sesuaikan tinggi header */
+}
+
+/* HEADER */
+.header {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  z-index:9999;
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 15px;
+  background:#ffffff;
+  font-weight:bold;
+  font-size:15px;
+
+  box-shadow:0 2px 6px rgba(0,0,0,0.05);
+}
+
+.logo {
+  width:32px;
+  height:32px;
+  object-fit:contain;
+}
+
+
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* HOVER */
+.card:hover {
+  background: #fff3ec;
+}
+
+/* ACTIVE (KETIKA DIPILIH) */
+.card.active {
+  background: #ffe6d9;
+  border-left: 4px solid #ff5a00;
+  padding-left: 8px;
+  box-shadow: 0 3px 10px rgba(255, 90, 0, 0.15);
+}
+
+.left {
+  width: 40px;
+}
+
+.logo {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.center {
+  flex: 1;
+  padding-left: 10px;
+}
+
+.name {
+  font-weight: 600;
+}
+
+.right {
+  text-align: right;
+}
+
+.price {
+  font-weight: 500;
+}
+
+.card.sold {
+  opacity: 0.5;
+}
+
+
+/* BANNER */
+.banner img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  object-position: center top;
+
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* efek hover biar lebih hidup */
+.banner img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+}
+
+/* responsive mobile */
+@media (max-width: 600px) {
+  .banner img {
+    height: 180px;
+    border-radius: 12px;
+  }
+}
+
+/* SLIDER */
+.slider {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  padding: 10px;
+
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+
+  scroll-snap-type: x mandatory; /* 🔥 penting */
+}
+
+/* sembunyikan scrollbar */
+.slider::-webkit-scrollbar {
+  display: none;
+}
+
+.slide {
+  flex: 0 0 100%;  /* 🔥 ganti dari min-width */
+  height: 120px;
+
+  border-radius: 12px;
+  overflow: hidden;
+
+  scroll-snap-align: center; /* 🔥 penting */
+}
+
+.slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slider::-webkit-scrollbar {
+  display:none;
+}
+
+
+
+/* APP WRAPPER */
+.apps-box {
+  background:#fff;
+  margin:10px;
+  border-radius:14px;
+  padding:15px 10px;
+  box-shadow:0 2px 8px rgb(158 158 158 / 61%);
+  overflow:hidden;
+}
+
+/* APP GRID SCROLL 2 BARIS */
+.apps {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, auto);
+  grid-auto-columns: minmax(70px, 1fr);
+  gap: 12px;
+
+  overflow-x: auto;
+  padding-bottom: 5px;
+  scroll-snap-type: x mandatory;
+}
+
+/* optional: biar halus */
+.apps::-webkit-scrollbar {
+  display: none;
+}
+
+/* ITEM */
+.app {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  cursor:pointer;
+  padding:6px;
+  border-radius:10px;
+  scroll-snap-align: start;
+}
+
+.app:hover { background:#f5f5f5; }
+
+.app img {
+  width:48px;
+  height:48px;
+  border-radius:12px;
+  margin-bottom:6px;
+}
+
+.app span {
+  font-size:12px;
+}
+
+.app.active {
+  background: linear-gradient(135deg, #fff3ec, #ffe1d1);
+  border: 1.5px solid #ff5a00;
+  box-shadow: 0 6px 18px rgba(255, 90, 0, 0.25);
+  transform: scale(0.98);
+}
+
+
+.app.active::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  background: #ff5a00;
+  border-radius: 50%;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+
+/* MODAL */
+.modal {
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.5);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:10000; /* 🔥 ini kuncinya */
+}
+
+
+
+.modal-box {
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  width:80%;
+  animation:pop 0.2s ease;
+}
+
+@keyframes pop {
+  from {
+    transform:scale(0.8);
+    opacity:0;
+  }
+  to {
+    transform:scale(1);
+    opacity:1;
+  }
+}
+
+/* POPUP FULL */
+.full-popup {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:#f5f5f5;
+  display:none;
+  flex-direction:column;
+  z-index:999;
+}
+
+.popup-header {
+  background:#fff;
+  padding:15px;
+  display:flex;
+  gap:10px;
+  border-bottom:1px solid #eee;
+}
+.back-btn { cursor:pointer; }
+
+.popup-content {
+    padding: 12px;
+    overflow-y: auto;
+    max-height: calc(100vh - 20px);
+    padding-bottom: 140px;
+
+    scrollbar-width: none; /* Firefox */
+}
+
+/* hide scrollbar Chrome */
+.popup-content::-webkit-scrollbar {
+    display: none;
+}
+
+.box {
+  background:#fff;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+
+
+
+
+.card.sold {
+  opacity:0.5;
+  cursor:not-allowed;
+  background:#eee;
+}
+
+
+
+
+.box{
+  background:#fff;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.05);
+}
+
+.payment-card{
+  background:#fff;
+  border-radius:14px;
+  padding:15px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.06);
+  font-size:14px;
+}
+
+/* header */
+.payment-top{
+  text-align:center;
+}
+.payment-top b{
+  font-size:15px;
+}
+.payment-top p{
+  margin:5px 0 0;
+  font-size:12px;
+  color:#666;
+}
+
+/* garis */
+.line{
+  border-top:1px dashed #ccc;
+  margin:12px 0;
+}
+
+/* row */
+.row{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:6px;
+}
+
+/* bank */
+.bank-box{
+  background:#fff;
+  border:1px solid #e5e5e5;
+  border-radius:12px;
+  padding:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+  margin-top:10px;
+}
+
+.bank-title{
+  font-size:14px;
+  margin-bottom:8px;
+  color:#333;
+}
+
+.bank-content .company{
+  font-weight:600;
+  margin:0;
+  font-size:14px;
+  color: #7e7e7e;
+}
+
+.divider{
+  height:1px;
+  background:#eee;
+  margin:10px 0;
+}
+
+.site{
+  font-size:13px;
+  margin:0;
+  color:#555;
+}
+
+.site a{
+  color:#007bff;
+  text-decoration:none;
+  font-weight:500;
+}
+
+.site a:hover{
+  text-decoration:underline;
+}
+
+/* QR */
+.qr-box{
+  text-align:center;
+}
+.qr{
+  width:200px;
+  margin:10px 0;
+}
+.qris-logo{
+  width:90px;
+  margin-bottom:10px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* status */
+.status-box{
+  background:#f7f7f7;
+  padding:12px;
+  border-radius:10px;
+  margin-top:10px;
+  font-size:14px;
+}
+
+.status{
+  color:orange;
+  font-weight:600;
+}
+
+
+
+
+
+/* HEADER */
+.header{
+  padding:10px;
+}
+
+.header h2{
+  margin:0;
+  font-size:22px;
+}
+
+.header p{
+  margin:5px 0;
+  color:#aaa;
+  font-size:14px;
+}
+
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  padding:15px;
+}
+
+/* CARD */
+.card{
+  border-radius:20px;
+  padding:15px;
+  position:relative;
+  overflow:hidden;
+  background: #ffffff;
+}
+
+/* BACKGROUND STYLE */
+.card.blue{
+  background:linear-gradient(135deg,#1f3b7a,#2c6ed5);
+}
+.card.gray{
+  background:linear-gradient(135deg, #2a2a2a, #ea8585);
+}
+.card.gold{
+  background:linear-gradient(135deg,#c7c2a3,#9c9675);
+  color:#000;
+}
+
+/* CONTENT */
+.card-content{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.card img{
+  width:50px;
+  height:50px;
+  border-radius:12px;
+}
+
+.title{
+  font-size:14px;
+  font-weight:bold;
+}
+
+.sub{
+  font-size:12px;
+  color:#ccc;
+}
+
+/* BADGE */
+.badge{
+  margin-top:10px;
+  display:inline-block;
+  background:#7ed321;
+  color:#ffffff;
+  padding:5px 10px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+/* DISCOUNT */
+.discount{
+  position:absolute;
+  bottom:30px;
+  right:15px;
+  font-weight:bold;
+  color: #f5f5f5;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* BOX */
+.box-apps-v2 {
+  background:#fff;
+  margin:12px;
+  padding:14px;
+  border-radius:16px;
+    overflow-x: auto;
+  padding: 10px 0;
+}
+
+.grid-apps-v2 {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, auto);
+  grid-auto-columns: 90px; /* lebar tiap item */
+  gap: 12px;
+  width: max-content;
+}
+
+.item-app-v2 {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:8px;
+  border-radius:12px;
+  cursor:pointer;
+  text-align: center;
+}
+
+/* sembunyikan scrollbar biar clean */
+.box-apps-v2::-webkit-scrollbar {
+  display: none;
+}
+
+.box-apps-v2 {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+}
+
+.item-app-v2:hover {
+  background:#f2f2f2;
+}
+
+.item-app-v2 img {
+  width:52px;
+  height:52px;
+  border-radius:14px;
+}
+
+/* POPUP */
+.popup-v2{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:#f5f5f5;
+  z-index:9000;
+  display:none;
+  flex-direction:column;
+}
+
+.header-v2{
+  background:#fff;
+  padding:15px;
+  display:flex;
+  gap:10px;
+}
+
+.content-v2{
+  padding:10px;
+  padding-bottom:80px;
+}
+
+
+.item-v2.sold-v2{
+  opacity: 0.5;
+  pointer-events: none;
+  filter: grayscale(1);
+}
+
+
+/* LIST */
+.item-v2{
+  background:#fff;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:8px;
+  display:flex;
+  justify-content:space-between;
+}
+
+.item-v2.active-v2{
+  border:2px solid #ff5a00;
+  background:#fff3ec;
+}
+
+/* FOOTER */
+.footer-v2{
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  background: #fff;
+  padding: 10px;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  z-index: 9100;
+
+  display: flex;
+  gap: 10px;               /* 🔥 jarak antar tombol */
+  justify-content: center;
+}
+
+.btn{
+  flex: 1;                 /* 🔥 biar 2 tombol seimbang */
+  max-width: 240px;
+
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+
+  background: #ff5a00;
+  color: #fff;
+
+  box-sizing: border-box;
+}
+
+.btn.cancel{
+  background: #ddd;
+  color: #333;
+}
+
+.parent-btn{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.btn-grey{
+  background:#ccc;
+  margin-top:5px;
+}
+
+
+.footer-list{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  padding:10px;
+  display:flex;
+  gap:10px;
+  background:#fff;
+
+  box-sizing:border-box; /* 🔥 WAJIB */
+}
+
+.footer-list .btn{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  font-weight:bold;
+}
+
+/* tombol kiri */
+.btn-grey{
+  background:#eee;
+  color:#333;
+}
+
+/* tombol kanan */
+.btn-primary{
+  background:#ff5a00;
+  color:#fff;
+}
+
+/* MODAL */
+.modal-v2{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.box-v2{
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  width:80%;
+}
+
+
+
+#popupPayment {
+  display:none;
+}
+
+
+
+
+.verify-popup{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.5);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+.verify-box{
+  background:#fff;
+  width:85%;
+  max-width:340px;
+  padding:20px;
+  border-radius:14px;
+  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+.verify-icon{
+  font-size:28px;
+  margin-bottom:10px;
+}
+
+.verify-box h3{
+  margin:10px 0;
+  font-size:16px;
+}
+
+.verify-box p{
+  font-size:13px;
+  color:#444;
+}
+
+.verify-box .small{
+  font-size:12px;
+  color:#777;
+}
+
+.btn-group{
+  display:flex;
+  gap:10px;
+  margin-top:15px;
+}
+
+.btn-cancel, .btn-continue{
+  flex:1;
+  padding:8px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.btn-cancel{
+  background:#eee;
+}
+
+.btn-continue{
+  background:#1aa34a;
+  color:#fff;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.form-box{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+
+  background:#ffffff;
+  padding:16px;
+  border-radius:14px;
+
+  border:1px solid #eaeaea;
+  box-shadow:0 6px 18px rgba(0,0,0,0.06);
+}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.form-group label{
+  font-size:12px;
+  color:#666;
+  font-weight:600;
+  letter-spacing:0.3px;
+}
+
+.form-group input{
+  padding:12px;
+  border:1px solid #e5e5e5;
+  border-radius:10px;
+  outline:none;
+  font-size:14px;
+  background:#fff;
+  transition:0.2s;
+}
+
+.form-group input:focus{
+  border-color:#1aa34a;
+  box-shadow:0 0 0 3px rgba(26,163,74,0.1);
+}
+
+.form-group input[readonly]{
+  background:#f5f5f5;
+  color:#666;
+}
+
+
+
+.form-warning{
+  margin-top:14px;
+  padding:14px;
+  border-radius:12px;
+
+  background:#fff7e6;
+  border:1px solid #ffe0a3;
+
+  font-size:13px;
+  line-height:1.5;
+}
+
+.warn-title{
+  font-weight:700;
+  color:#b26a00;
+  margin-bottom:6px;
+}
+
+.warn-text{
+  color:#6b4a00;
+  margin-top:6px;
+}
+
+
+
+
+
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 15px 10px;
+  color: #111;
+  letter-spacing: 0.5px;
+  position: relative;
+  padding-left: 12px;
+}
+
+/* garis kecil seperti aplikasi modern */
+.section-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 18px;
+  background: #ff4d4d;
+  border-radius: 2px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.footer {
+  background: #5b5b5b;
+  color: #ccc;
+  padding: 40px 20px;
+  font-family: sans-serif;
+  border-radius: 10px;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* Payment logos */
+.footer-payments {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.footer-payments img {
+  height: 30px;
+  background: #fff;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+/* Content */
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.footer-col {
+  min-width: 200px;
+}
+
+.footer-col h4 {
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.footer-col a {
+  display: block;
+  color: #aaa;
+  margin-bottom: 8px;
+  text-decoration: none;
+}
+
+.footer-col a:hover {
+  color: #fff;
+}
+
+/* Partner */
+.footer-partner {
+  margin-bottom: 20px;
+}
+
+/* Social */
+.footer-social {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.footer-social .icons i {
+  margin-left: 15px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* CTA */
+.footer-cta {
+  margin-top: 20px;
+}
+
+.cta-box {
+  display: flex;
+  align-items: center;
+  background: linear-gradient(90deg, #1da1f2, #3b82f6);
+  padding: 15px;
+  border-radius: 15px;
+  color: #fff;
+}
+
+.cta-box img {
+  width: 60px;
+  margin-right: 15px;
+  border-radius: 10px;
+}
+
+.cta-box h3 {
+  margin: 0;
+}
+
+.cta-box p {
+  margin: 0;
+  font-size: 14px;
+}
+
+
+
+
+
+
+
+
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <img src="agencylogo.png" class="logo">
+  <span>TIGOHOST INDONESIA</span>
+</div>
+
+<div class="banner">
+  <img src="5bafed0d-eb53-4a91-a86f-fdc2878e7838.png">
+</div>
+
+<div class="slider" id="slider">
+  <div class="slide"><img src="bnr.webp"></div>
+  <div class="slide"><img src="honkai20260423_w.webp"></div>
+  <div class="slide"><img src="1776673360_72b8e100d5e3117535d0.jpeg"></div>
+  <div class="slide"><img src="1775025967_0dd74d0b4b85f396cf9d.jpg"></div>
+  <div class="slide"><img src="DG_826213.jpeg"></div>
+  <div class="slide"><img src="Rainbow20260224_w.webp"></div>
+  <div class="slide"><img src="wwm20260423_w.webp"></div>
+  <div class="slide"><img src="ID_MLBB_Obsidia.jpg"></div>
+</div>
+
+
+
+<div class="section-title">
+  TOP UP APLIKASI POPULER
+</div>
+
+
+
+<div class="apps-box">
+  <div class="apps">
+
+    <div class="app" onclick="openApp('tigo')">
+      <img src="tigogambar.webp">
+      <span>Tigo</span>
+    </div>
+
+    <div class="app" onclick="openApp('weelive')">
+      <img src="weelivelogo.webp">
+      <span>Weelive</span>
+    </div>
+
+    <div class="app" onclick="openApp('ayar')">
+      <img src="ayarlogo.webp">
+      <span>Ayar</span>
+    </div>
+
+    <div class="app" onclick="openApp('bling')">
+      <img src="bling.webp">
+      <span>Bling</span>
+    </div>
+
+    <div class="app" onclick="openApp('tenderU')">
+      <img src="TenderUlogo.webp">
+      <span>TenderU</span>
+    </div>
+
+    <div class="app" onclick="openApp('meego')">
+      <img src="meegologo.webp">
+      <span>Meego</span>
+    </div>
+
+
+        <div class="app" onclick="openApp('mico')">
+      <img src="MICO.webp">
+      <span>Mico</span>
+    </div>
+
+        <div class="app" onclick="openApp('Chato')">
+      <img src="chatologo.webp">
+      <span>Chato</span>
+    </div>
+
+    <div class="app" onclick="openApp('live')">
+      <img src="17LIVE.webp">
+      <span>17LIVE</span>
+    </div>
+
+    <div class="app" onclick="openApp('dico')">
+      <img src="Dico.webp">
+      <span>Dico</span>
+    </div>
+
+    <div class="app" onclick="openApp('gogolive')">
+      <img src="GOGO LIVE.webp">
+      <span>GOGO LIVE</span>
+    </div>
+
+    <div class="app" onclick="openApp('kachi')">
+      <img src="Kachi.webp">
+      <span>Kachi</span>
+    </div>
+
+    <div class="app" onclick="openApp('poppoLive')">
+      <img src="Poppo Live.webp">
+      <span>Poppo Live</span>
+    </div>
+
+
+        <div class="app" onclick="openApp('PapayaLive')">
+      <img src="Papaya Live.webp">
+      <span>Papaya Live</span>
+    </div>
+
+
+            <div class="app" onclick="openApp('mako')">
+      <img src="makologo.webp">
+      <span>Mako</span>
+    </div>
+
+         <div class="app" onclick="openApp('chamet')">
+      <img src="Chamet.webp">
+      <span>Chamet</span>
+    </div>
+
+          <div class="app" onclick="openApp('Litgo')">
+      <img src="Litgo-Chat.webp">
+      <span>Litgo</span>
+    </div>
+
+
+       <div class="app" onclick="openApp('joylive')">
+      <img src="Litgo-Chat.webp">
+      <span>Joy Live</span>
+    </div>
+
+       <div class="app" onclick="openApp('guyapro')">
+      <img src="Guya Pro.webp">
+      <span>Guya Pro</span>
+    </div>
+
+           <div class="app" onclick="openApp('omega')">
+      <img src="Omega.webp">
+      <span>Omega</span>
+    </div>
+
+               <div class="app" onclick="openApp('migo')">
+      <img src="MIGO.webp">
+      <span>MIGO</span>
+    </div>
+
+       <div class="app" onclick="openApp('hala')">
+      <img src="MIGO.webp">
+      <span>Hala</span>
+    </div>
+
+           <div class="app" onclick="openApp('voneLive')">
+      <img src="Vone.webp">
+      <span>Vone:Live</span>
+    </div>
+
+               <div class="app" onclick="openApp('Chatspin')">
+      <img src="Chatspin.webp">
+      <span>Chatspin</span>
+    </div>
+
+
+
+
+
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="grid">
+
+  <!-- CARD 1 -->
+  <div class="card gold">
+    <div class="card-content">
+      <img src="2997.webp">
+      <div>
+        <div class="title">9999 + 400 Red Diamonds</div>
+        <div class="sub">Hero Clash Red Diamonds</div>
+      </div>
+    </div>
+    <div class="badge">Promo</div>
+    <div class="discount">-8.0%</div>
+  </div>
+
+  <!-- CARD 2 -->
+  <div class="card blue">
+    <div class="card-content">
+      <img src="525.webp">
+      <div>
+        <div class="title">PSN Card RM300 MY</div>
+        <div class="sub">PlayStation Network Card (MY)</div>
+      </div>
+    </div>
+    <div class="badge">Promo</div>
+    <div class="discount">-2.0%</div>
+  </div>
+
+  <!-- CARD 3 -->
+  <div class="card gray">
+    <div class="card-content">
+      <img src="2605.webp">
+      <div>
+        <div class="title">6000 + 1200 Silver</div>
+        <div class="sub">Destiny: Rising Top Up</div>
+      </div>
+    </div>
+    <div class="badge">Promo</div>
+    <div class="discount">-10.0%</div>
+  </div>
+
+  <!-- CARD 4 -->
+  <div class="card gray">
+    <div class="card-content">
+      <img src="2456.webp">
+      <div>
+        <div class="title">Roblox Gift Card (AE)</div>
+        <div class="sub">Roblox Gift Card (AE)</div>
+      </div>
+    </div>
+    <div class="badge">Promo</div>
+    <div class="discount">-5.0%</div>
+  </div>
+
+</div>
+
+
+<div class="slider-container" id="promoSlider">
+  <div class="slider-track" id="sliderTrack">
+    <div class="slide">
+      <img src="1776673360_72b8e100d5e3117535d0.jpeg">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<div class="section-title">
+  TOP UP GAME POPULER
+</div>
+
+<!-- BOX V2 -->
+<div class="box-apps-v2">
+  <div class="grid-apps-v2">
+
+    <div class="item-app-v2" onclick="launchAppV2('FreeFire')">
+      <img src="869.webp">
+      <p>Free Fire</p>
+    </div>
+
+    <div class="item-app-v2" onclick="launchAppV2('pubg')">
+      <img src="930 (1).webp">
+      <p>PUBG</p>
+    </div>
+
+    <div class="item-app-v2" onclick="launchAppV2('Roblox')">
+      <img src="204.webp">
+      <p>Roblox</p>
+    </div>
+
+        <div class="item-app-v2" onclick="launchAppV2('magicChess')">
+      <img src="2605 (1).webp">
+      <p>Magic Chess</p>
+    </div>
+
+            <div class="item-app-v2" onclick="launchAppV2('GarenaAOV')">
+      <img src="aov.png">
+      <p>Garena AOV</p>
+    </div>
+
+
+            <div class="item-app-v2" onclick="launchAppV2('MobileLegends')">
+      <img src="758.webp">
+      <p>Mobile Legends</p>
+    </div>
+
+
+            <div class="item-app-v2" onclick="launchAppV2('HiggsGameIsland')">
+      <img src="805.webp">
+      <p>HiggsGame Island</p>
+    </div>
+
+
+            <div class="item-app-v2" onclick="launchAppV2('GenshinImpact')">
+      <img src="3234.webp">
+      <p>Genshin Impact</p>
+    </div>
+
+        <div class="item-app-v2" onclick="launchAppV2('BallPool')">
+      <img src="1802.webp">
+      <p>8 Ball Pool</p>
+    </div>
+
+        <div class="item-app-v2" onclick="launchAppV2('RazerGoldIndonesia')">
+      <img src="5715.webp">
+      <p>Razer Gold Indonesia(IDR)</p>
+    </div>
+
+
+       <div class="item-app-v2" onclick="launchAppV2('Minecraft')">
+      <img src="4799.webp">
+      <p>Minecraft</p>
+    </div>
+
+
+      <div class="item-app-v2" onclick="launchAppV2('ClashofClans')">
+      <img src="1757.webp">
+      <p>Clash of Clans</p>
+    </div>
+
+
+
+
+  </div>
+</div>
+
+
+
+<!-- POPUP LIST -->
+<div class="popup-v2" id="popupHargaV2">
+
+  <div class="header-v2">
+    <span onclick="tutupHargaV2()">←</span>
+    <b id="judulV2"></b>
+  </div>
+
+  <div class="content-v2" id="listV2"></div>
+
+<div class="footer-v2">
+  <button onclick="tutupHargaV2()" class="btn cancel">Kembali</button>
+      <button onclick="confirmV2()" class="btn">Konfirmasi</button>
+
+</div>
+
+</div>
+
+
+
+<!-- MODAL KONFIRMASI -->
+<div class="modal-v2" id="modalV2">
+
+  <div class="box-v2">
+
+    <p id="textV2"></p>
+
+    <!-- ⚠️ FIX: HARUS KE FORM, BUKAN PAYMENT -->
+    <button onclick="bukaFormV2()" class="btn">Lanjut</button>
+
+    <button onclick="tutupModalV2()" class="btn btn-grey">Batal</button>
+
+  </div>
+
+</div>
+
+
+
+<!-- FORM PEMBELIAN V2 -->
+<div class="popup-v2" id="popupFormBuyV2" style="display:none;">
+
+  <div class="header-v2">
+    <span onclick="closeFormBuyV2()">←</span>
+    <b>Form Pembelian</b>
+  </div>
+
+  <div class="content-v2">
+
+    <div class="form-box">
+
+      <div class="form-group">
+        <label>ID AKUN</label>
+        <input type="text" id="idAkunV2">
+      </div>
+
+      <div class="form-group">
+        <label>NAMA REKENING</label>
+        <input type="text" id="namaRekeningV2">
+      </div>
+
+      <div class="form-group">
+        <label>PAKET</label>
+        <input type="text" id="paketV2" readonly>
+      </div>
+
+      <div class="form-group">
+        <label>APLIKASI</label>
+        <input type="text" id="aplikasiV2" readonly>
+      </div>
+
+    </div>
+
+    <div class="form-warning">
+
+  <div class="warn-title">
+    ⚠️ Peringatan Penting
+  </div>
+
+  <div class="warn-text">
+    Mohon pastikan data yang Anda isi benar dan sesuai dengan akun aplikasi.
+    Kesalahan pengisian dapat menyebabkan keterlambatan atau gagalnya proses top up.
+  </div>
+
+  <div class="warn-text">
+    Proses pengisian saldo Coin akan diproses secara otomatis dan cepat sesuai dengan
+    <b>ID Akun</b> yang Anda masukkan.
+  </div>
+
+</div>
+
+  </div>
+
+  <div class="footer-v2">
+    <button onclick="submitBuyV2()" class="btn">Beli Sekarang</button>
+    <button onclick="closeFormBuyV2()" class="btn btn-grey">Batal</button>
+  </div>
+
+</div>
+
+
+
+
+<!-- POPUP PAYMENT FINAL -->
+<div class="full-popup" id="popupPayment">
+
+  <div class="popup-header">
+    <span class="back-btn" onclick="closePayment()">←</span>
+    <p>ID Pembayaran: <span id="paymentIdTop"></span></p>
+  </div>
+
+  <div class="popup-content">
+
+    <div class="payment-card">
+
+      <!-- HEADER -->
+      <div class="payment-top">
+        <b>AGENCY TIGOHOST INDONESIA</b>
+        <p>Detail Pembayaran <span id="paymentId"></span></p>
+      </div>
+
+      <div class="line"></div>
+
+      <!-- DETAIL -->
+      <div class="row">
+        <span>Jenis Topup</span>
+        <span id="detail"></span>
+      </div>
+
+      <div class="row">
+        <span>Metode</span>
+        <span>QRIS</span>
+      </div>
+
+        <p><b>ID Akun :</b> <span id="idAkunShow"></span></p>
+
+      <div class="line"></div>
+
+      <!-- REKENING -->
+  <div class="bank-box">
+
+  <div class="bank-title">
+    <b>Rekening Resmi</b>
+  </div>
+
+  <div class="bank-content">
+    <p class="company">PT AGENCY TIGOHOST INDONESIA</p>
+
+    <div class="divider"></div>
+
+    <p class="site">
+      Situs resmi :
+      <a href="javascript:void(0)" onclick="showVerifyPopup()">
+  https://tigohost.id
+</a>
+    </p>
+
+
+
+    <div id="verifyPopup" class="verify-popup">
+  <div class="verify-box">
+
+    <div class="verify-icon">🔒</div>
+
+    <h3>Konfirmasi Keamanan</h3>
+
+    <p>
+      Anda akan membuka situs resmi:
+      <b>tigohost.id</b>
+    </p>
+
+    <p class="small">
+      Link ini aman dan menggunakan sistem enkripsi HTTPS.
+    </p>
+
+    <div class="btn-group">
+      <button class="btn-cancel" onclick="closeVerifyPopup()">Batal</button>
+      <button class="btn-continue" onclick="goToSite()">Lanjutkan</button>
+    </div>
+
+  </div>
+</div>
+
+
+  </div>
+
+</div>
+
+      <div class="line"></div>
+
+      <!-- QR -->
+      <div class="qr-box">
+        
+
+        <img class="qr" id="qrImage">
+
+        <p>Scan untuk menyelesaikan pembayaran</p>
+      </div>
+
+      <div class="line"></div>
+
+      <!-- STATUS -->
+<div class="status-box">
+  <div>
+    Status: <span class="status">Menunggu Pembayaran</span>
+  </div>
+
+  <div style="margin-top:6px;">
+    ID Pembayaran:
+    <span id="paymentIdBottom" style="font-weight:600;"></span>
+  </div>
+</div>
+
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+<!-- POPUP LIST -->
+<!-- POPUP LIST -->
+<div class="full-popup" id="popupList">
+  <div class="popup-header">
+    <span class="back-btn" onclick="closeList()">←</span>
+    <b id="titleApp"></b>
+  </div>
+
+  <div class="popup-content" id="listContent"></div>
+
+  <div class="footer-list">
+    <button class="btn btn-grey" onclick="closeList()">Batalkan</button>
+    <button class="btn btn-primary" onclick="confirmBuy()">Konfirmasi</button>
+  </div>
+</div>
+
+
+
+
+
+<div class="full-popup" id="popupFormBuy" style="display:none;">
+
+  <div class="popup-header">
+    <span class="back-btn" onclick="closeFormBuy()">←</span>
+    <b>Form Pembelian</b>
+  </div>
+
+  <div class="popup-content">
+
+<div class="form-box">
+
+  <div class="form-group">
+    <label>ID AKUN</label>
+    <input type="text" id="idAkun" placeholder="Masukkan ID akun">
+  </div>
+
+  <div class="form-group">
+    <label>NAMA REKENING</label>
+    <input type="text" id="namaRekening" placeholder="Nama sesuai rekening">
+  </div>
+
+  <div class="form-group">
+    <label>PAKET</label>
+    <input type="text" id="paket" readonly>
+  </div>
+
+  <div class="form-group">
+    <label>APLIKASI</label>
+    <input type="text" id="aplikasi" readonly>
+  </div>
+
+</div>
+
+
+
+<div class="form-warning">
+
+  <div class="warn-title">
+    ⚠️ Peringatan Penting
+  </div>
+
+  <div class="warn-text">
+    Mohon pastikan data yang Anda isi benar dan sesuai dengan akun aplikasi.
+    Kesalahan pengisian dapat menyebabkan keterlambatan atau gagalnya proses top up.
+  </div>
+
+  <div class="warn-text">
+    Proses pengisian saldo Coin akan diproses secara otomatis dan cepat sesuai dengan
+    <b>ID Akun</b> yang Anda masukkan.
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  <div class="footer-list">
+    <button class="btn btn-grey" onclick="closeFormBuy()">Batal</button>
+    <button class="btn btn-primary" onclick="submitBuy()">Beli Sekarang</button>
+  </div>
+
+</div>
+
+
+
+
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h3>Konfirmasi Pembelian</h3>
+    <p id="text"></p>
+
+    <div style="display:flex; gap:10px; margin-top:15px;">
+      <button class="btn btn-grey" onclick="closeModal()">Batalkan</button>
+      <button class="btn btn-primary" onclick="lanjut()">Lanjut</button>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP PAYMENT -->
+<div class="full-popup" id="popupPayment">
+
+  <div class="popup-header">
+    <span class="back-btn" onclick="closePayment()">←</span>
+    <b>Detail Pembayaran</b>
+  </div>
+
+  <div class="popup-content">
+
+<div class="box">
+  <p><b>Payment From :</b> AGENCY TIGOHOST INDONESIA</p>
+
+  <p><b>ID Akun :</b> <span id="idAkunShow"></span></p>
+
+  <p><b>Nomor Pembayaran :</b> <span id="paymentId"></span></p>
+</div>
+
+    <div class="box">
+      <b>Purchase Details</b>
+      <p id="detail"></p>
+    </div>
+
+    <div class="box">
+      <p><b>Paid With :</b> QRIS</p>
+    </div>
+
+    <div class="box">
+      <p><b>Rekening Bank</b></p>
+      <p>Pemegang Rekening : PT AGENCY TIGOHOST INDONESIA</p>
+      <p>Situs Resmi : https://tigohost.id</p>
+    </div>
+
+    <div class="box" style="text-align:center;">
+      <img class="qris-logo" src="qris.png">
+      <br><br>
+      <img class="qr" id="qrImage">
+      <p style="font-size:13px;">Scan QR untuk bayar</p>
+    </div>
+
+    <div class="box">
+      <p><b>Status Pembayaran :</b> 
+        <span class="status">Menunggu Pembayaran</span>
+      </p>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+<footer class="footer">
+  <div class="footer-container">
+    
+    <!-- Payment Logos -->
+    <div class="footer-payments">
+      <img src="qrssss.jpg" alt="QRIS">
+      <img src="bca.png" alt="BCA">
+      <img src="bank-bri-logo-png_.png" alt="BRI">
+      <img src="gopay.png" alt="GoPay">
+    </div>
+
+    <!-- Main Footer Content -->
+    <div class="footer-content">
+      
+      <div class="footer-col">
+        <h4>Tentang SEAGM</h4>
+        <a href="https://corp.seagm.com/">Tentang Kami</a>
+        <a href="https://news.seagm.com/">Berita SEAGM</a>
+        <a href="https://help.seagm.com/hc/en-us">Dukungan</a>
+        <a href="#">Hubungi Kami</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Belanja</h4>
+        <a href="#">Hadiah TIGOHOST STAR</a>
+        <a href="https://www.kaleoz.com/id/">KALEOZ</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Hukum</h4>
+        <a href="#">Syarat Penggunaan</a>
+        <a href="#">Syarat-syarat Penjualan</a>
+        <a href="#">Kebijakan Privasi</a>
+        <a href="#">Kebijakan Konten Terlarang</a>
+      </div>
+
+    </div>
+
+    <!-- Partner -->
+    <div class="footer-partner">
+      <h4>Rekan</h4>
+      <a href="https://www.seagm.com/id/page/index?view=partnership">Kerjasama mitra bisnis</a>
+    </div>
+
+    
+    <!-- CTA -->
+    <div class="footer-cta">
+      <div class="cta-box">
+        <img src="agencylogo.png" alt="Mascot">
+        <div>
+          <h3>TIGOHOST di hati Anda</h3>
+          <p>Dapatkan Aplikasi Sekarang!</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// DATA
+const data = {
+  tigo: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1000 Coin", price:135000, sold:true},
+    {name:"1950 Coin", price:255000},
+    {name:"5530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+  ],
+
+
+  weelive: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1000 Coin", price:135000, sold:true},
+    {name:"1950 Coin", price:255000},
+    {name:"5530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+  ],
+
+
+
+
+  ayar: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1000 Coin", price:135000, sold:true},
+    {name:"1950 Coin", price:255000},
+    {name:"5530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+  ],
+
+
+
+
+  bling: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1000 Coin", price:135000, sold:true},
+    {name:"1950 Coin", price:255000},
+    {name:"5530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+  ],
+
+
+  tenderU: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1000 Coin", price:135000, sold:true},
+    {name:"1950 Coin", price:255000},
+    {name:"5530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+  ],
+
+  meego: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1000 Coin", price:135000, sold:true},
+    {name:"1950 Coin", price:255000},
+    {name:"5530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+  ],
+
+
+
+    Voya: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+
+      Chato: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+
+        mico: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+  live: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+    dico: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+     gogolive: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+     kachi: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+
+  PapayaLive: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+    poppoLive: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+    mako: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+    chamet: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+  
+      Litgo: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+        joylive: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+  guyapro: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+    omega: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+      migo: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+      hala: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+
+        voneLive: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+        Chatspin: [
+{name:"350 Coin", price:25000, sold:true},
+{name:"500 Coin", price:55000, sold:true},
+    {name:"1400 Coin", price:145000, sold:true},
+    {name:"2050 Coin", price:255000},
+    {name:"6530 Coin", price:605000},
+    {name:"10000 Coin", price:1020000},
+    {name:"12000 Coin", price:1504000},
+    {name:"15000 Coin", price:2014000},
+
+  ],
+
+
+
+
+
+
+
+};
+
+
+
+
+// 2. MAPPING APLIKASI (INI LETAKNYA DI SINI)
+function getAppName(code){
+  const apps = {
+    tigo: "Tigo",
+    weelive: "Weelive",
+    ayar: "Ayar",
+    bling: "Bling",
+    tenderU: "TenderU",
+    meego: "Meego",
+    maco: "Maco"
+  };
+
+  return apps[code] || "Aplikasi Premium";
+}
+
+
+// DATA
+
+let selected = null;
+let selectedApp = "";
+
+// OPEN APP
+function openApp(app){
+  selected = null;
+  selectedApp = app;
+
+  const list = document.getElementById("listContent");
+  list.innerHTML = "";
+
+  document.getElementById("popupList").style.display = "flex";
+  document.getElementById("titleApp").innerText = app.toUpperCase();
+
+  data[app].forEach(item => {
+    const div = document.createElement("div");
+
+    div.className = item.sold ? "card sold" : "card";
+
+    div.innerHTML = `
+      <div class="left">
+        <img src="tokens_6.png" class="logo">
+      </div>
+
+      <div class="center">
+        <span class="name">${item.name}</span>
+      </div>
+
+      <div class="right">
+        <span class="price">
+          Rp ${item.price.toLocaleString('id-ID')}
+          ${item.sold ? '<br><small style="color:red;">Habis</small>' : ''}
+        </span>
+      </div>
+    `;
+
+    if(!item.sold){
+      div.onclick = () => {
+        document.querySelectorAll(".card").forEach(c => c.classList.remove("active"));
+        div.classList.add("active");
+        selected = item;
+      };
+    }
+
+    list.appendChild(div);
+  });
+}
+
+
+
+
+// CLOSE LIST
+function closeList(){
+  document.getElementById("popupList").style.display = "none";
+}
+
+// CONFIRM (ke form pembelian)
+function confirmBuy(){
+
+  if(!selected){
+    alert("Pilih paket terlebih dahulu!");
+    return;
+  }
+
+  document.getElementById("modal").style.display = "none";
+  document.getElementById("popupList").style.display = "none";
+
+  // buka form pembelian
+  document.getElementById("popupFormBuy").style.display = "flex";
+
+  // isi otomatis
+  document.getElementById("paket").value = selected.name;
+  document.getElementById("aplikasi").value = getAppName(selectedApp);
+}
+
+// CLOSE MODAL
+function closeModal(){
+  document.getElementById("modal").style.display = "none";
+}
+
+// CLOSE FORM BUY
+function closeFormBuy(){
+  document.getElementById("popupFormBuy").style.display = "none";
+}
+
+// SUBMIT BUY
+function submitBuy(){
+  const idAkun = document.getElementById("idAkun").value;
+  const namaRekening = document.getElementById("namaRekening").value;
+
+  if(!idAkun || !namaRekening){
+    alert("Lengkapi data terlebih dahulu!");
+    return;
+  }
+
+  // 🔥 SIMPAN KE PAYMENT BOX
+  document.getElementById("idAkunShow").innerText = idAkun;
+
+  closeFormBuy();
+  lanjut();
+}
+
+// GENERATE ID
+// fungsi generate ID pembayaran
+function generatePaymentId() {
+  const prefix = "TRX";
+  const time = Date.now().toString().slice(-6); // 6 digit dari timestamp
+  const random = Math.floor(1000 + Math.random() * 9000); // 4 digit random
+
+  return `${prefix}-${time}-${random}`;
+}
+
+// LANJUT KE PAYMENT
+function lanjut(){
+  closeModal();
+
+  document.getElementById("popupList").style.display = "none";
+  document.getElementById("popupPayment").style.display = "flex";
+
+  // isi detail
+  document.getElementById("detail").innerText =
+    "Jenis Topup : " + selected.name + " x 1";
+
+  // generate ID
+  const id = generatePaymentId();
+
+  // isi ke atas & bawah
+  document.getElementById("paymentIdTop").innerText = id;
+  document.getElementById("paymentIdBottom").innerText = id;
+
+  // QR PNG
+  document.getElementById("qrImage").src = "qris.jpg";
+}
+
+// CLOSE PAYMENT
+function closePayment(){
+  document.getElementById("popupPayment").style.display = "none";
+}
+
+
+
+
+
+
+function showVerifyPopup(){
+  document.getElementById("verifyPopup").style.display = "flex";
+}
+
+function closeVerifyPopup(){
+  document.getElementById("verifyPopup").style.display = "none";
+}
+
+function goToSite(){
+  window.open("https://tigohost.id", "_blank");
+  closeVerifyPopup();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// SLIDER
+window.onload = () => {
+  const slider = document.getElementById("slider");
+  const slides = document.querySelectorAll(".slide");
+  let index = 0;
+
+  setInterval(() => {
+
+    index++;
+
+    if (index >= slides.length) {
+      index = 0;
+
+      // 🔥 langsung balik ke awal TANPA animasi
+      slider.scrollTo({
+        left: 0,
+        behavior: "auto"
+      });
+
+      return;
+    }
+
+    slider.scrollTo({
+      left: slides[index].offsetLeft,
+      behavior: "smooth"
+    });
+
+  }, 3000);
+};
+
+
+
+
+
+
+
+
+
+
+// DATA VERSI 2
+
+const catalogV2 = {
+  FreeFire: [
+
+  {name:"2,860 Diamonds", price:443200},
+  {name:"5,600 Diamonds", price:702200},
+  {name:"11,500 Diamonds", price:1782500},
+  {name:"13,060 Diamonds", price:2024300},
+  {name:"14,060 Diamonds", price:2179300},
+  {name:"15,060 Diamonds", price:2834300},
+  {name:"26,060 Diamonds", price:3489300},
+  {name:"30,060 Diamonds", price:4644300},
+  {name:"45,180 Diamonds", price:5172900}
+  ],
+
+
+
+  pubg: [
+    {name:"510 + 60 UC", price:56800, sold:true},
+    {name:"910 + 60 UC", price:78200, sold:true},
+    {name:"2100 + 300 UC", price:391700},
+    {name:"4000 + 850 UC", price:783600},
+    {name:"7000 + 2100 UC", price:1567400},
+    {name:"14000 + 4200 UC", price:3134900},
+    {name:"20000 + 6300 UC", price:4702300},
+    {name:"26000 + 8400 UC", price:6269900},
+    {name:"32000 + 10500 UC", price:7837300},
+  ],
+  Roblox: [
+    {name:"Bundle Promo - Rbx Gift Card 190,000 + 800,000 IDR ID", price: 494400},
+    {name:"Rbx Gift Card 480,000 IDR ID", price: 413000},
+    {name:"Rbx Gift Card 620,000 IDR ID", price: 505000},
+    {name:"Rbx Gift Card 1,250,000 IDR ID", price: 1040000},
+
+  ],
+
+
+  magicChess: [
+    {name:"867 + 41 Diamonds", price:106800, sold:true},
+    {name:"2007 + 156 Diamonds", price:249500, sold:true},
+    {name:"4015 + 383 Diamonds", price: 499000},
+    {name:"7003 + 827 Diamonds", price: 1178100},
+    {name:"8035 + 1007 Diamonds", price: 1247500},
+    {name:"11488 + 1007 Diamonds", price: 1847500},
+
+  ],
+
+
+    GarenaAOV: [
+    {name:"430 Vouchers", price:48500, sold:true},
+    {name:"870 Vouchers + 56 ", price:97000, sold:true},
+    {name:"1830 Vouchers", price:  291000},
+    {name:"3390 Vouchers", price: 1178100},
+    {name:"2390 Vouchers", price: 485000},
+    {name:"10390 Vouchers", price: 554500},
+
+  ],
+
+
+      MobileLegends: [
+    {name:"50 Diamonds + 5 Bonus", price:15400, sold:true},
+    {name:"250 Diamonds + 15 Bonus", price:60500, sold:true},
+    {name:"804 Diamonds + 66 Bonus", price:158000, sold:true},
+    {name:"940 Diamonds + 144 Bonus", price:387900, sold:true},
+    {name:"1852 Diamonds + 194 Bonus", price:517300},
+    {name:"2515 Diamonds + 383 Bonus ", price: 631900},
+    {name:"3501 Diamonds + 475 Bonus ", price: 1037500},
+    {name:"8252 Diamonds + 1250 Bonus", price: 2588900},
+
+  ],
+
+
+
+        HiggsGameIsland: [
+
+    {name:"800M Koin Emas-D ", price: 60000, sold:true},
+    {name:"2,5B Koin Emas-D", price:250000},
+    {name:"4B Koin Emas-D ", price: 631900},
+    {name:"6B Koin Emas-D ", price: 552000},
+    {name:"10B Koin Emas-D ", price: 1252500},
+    {name:"20B Koin Emas-D ", price: 2363600},
+
+  ],
+
+
+
+        GenshinImpact: [
+
+    {name:"1280+110 Genesis Crystals", price: 255000, sold:true},
+    {name:"2980+260 Genesis Crystals", price:519000},
+    {name:"4280+600 Genesis Crystals ", price:815000},
+    {name:"7480+1600 Genesis Crystals", price: 1629000},
+    {name:"8480+1600 Chronal Nexus ", price: 1729000},
+     {name:"112280+5110 Genesis Crystals", price: 10154214, sold:true},
+    {name:"20B Koin Emas-D ", price: 2363600},
+
+  ],
+
+
+          BallPool: [
+
+    {name:"Razer Gold USD 15", price: 177400, sold:true},
+    {name:"Razer Gold USD 70", price:887100},
+    {name:"Razer Gold USD 120 ", price:1774100},
+    {name:"Razer Gold USD 250", price: 3548200},
+    {name:"Razer Gold USD 350 ", price:5322400},
+     {name:"Razer Gold USD 450", price: 7096500, sold:true},
+    {name:"Razer Gold USD 600 ", price: 8870600},
+
+  ],
+
+
+
+      RazerGoldIndonesia: [
+
+    {name:"Razer Gold IDR 30,000", price: 20000, sold:true},
+    {name:"Razer Gold IDR 320,000 ", price:205000},
+    {name:"Razer Gold IDR 530,000 ", price:505000},
+    {name:"Razer Gold IDR 650,000", price: 600000},
+    {name:"Razer Gold IDR 750,000 ", price:700000},
+     {name:"Razer Gold IDR 850,000", price: 800000, sold:true},
+    {name:"Razer Gold IDR 1,200,000", price: 1000000},
+
+  ],
+
+
+
+        Minecraft: [
+
+    {name:"Google Play Gift Card Rp 50,000 ID", price:  20700, sold:true},
+    {name:"Google Play Gift Card Rp 300,000 ID ", price:205000},
+    {name:"Google Play Gift Card Rp 429,000 ID ", price:349500},
+    {name:"Google Play Gift Card Rp 1,499,000 ID ", price: 1340200, sold:true},
+    {name:"Google Play Gift Card Rp 610,000 ID", price:  531000},
+    {name:"Google Play Gift Card Rp 799,000 ID ", price:715000},
+    {name:"Google Play Gift Card Rp 1,899,000 ID ", price: 1649600},
+
+  ],
+
+
+
+
+   ClashofClans: [
+
+    {name:"600 + 50 Gems", price:  85800, sold:true},
+    {name:"3500 + 250 Gems ", price: 347700},
+    {name:"7500 + 650 Gems ", price:869500},
+    {name:"100 + 8 Gems ", price: 17200, sold:true},
+    {name:"15000 + 1400 Gems", price:1739200},
+    {name:"Gold Pass ", price:21600},
+
+  ],
+
+};
+
+let selectedV2 = null;
+let selectedAppV2 = "";
+
+
+
+function launchAppV2(app){
+
+  if(!catalogV2[app]){
+    alert("Data tidak ada");
+    return;
+  }
+
+  selectedV2 = null;
+  selectedAppV2 = app;
+
+  document.getElementById("popupHargaV2").style.display = "flex";
+  document.getElementById("judulV2").innerText = app.toUpperCase();
+
+  const list = document.getElementById("listV2");
+  list.innerHTML = "";
+
+  catalogV2[app].forEach(item=>{
+    const div = document.createElement("div");
+    div.className = "item-v2";
+
+    // 🔥 kalau sold, kasih class + disable klik
+    if(item.sold){
+      div.classList.add("sold-v2");
+    }
+
+    div.innerHTML = `
+      <span>${item.name}</span>
+      <span style="color:#ff5a00">
+        Rp ${item.price.toLocaleString('id-ID')}
+        ${item.sold ? '<br><small style="color:red">Habis</small>' : ''}
+      </span>
+    `;
+
+    // 🔥 BLOCK CLICK kalau sold
+    if(!item.sold){
+      div.onclick = ()=>{
+
+        document.querySelectorAll(".item-v2")
+          .forEach(e=>e.classList.remove("active-v2"));
+
+        div.classList.add("active-v2");
+        selectedV2 = item;
+      };
+    }
+
+    list.appendChild(div);
+  });
+}
+
+
+
+
+
+// CLOSE LIST
+function tutupHargaV2(){
+  document.getElementById("popupHargaV2").style.display = "none";
+}
+
+
+
+// CONFIRM → MASUK FORM (FIX FLOW)
+function confirmV2(){
+
+  if(!selectedV2){
+    alert("Pilih dulu!");
+    return;
+  }
+
+  const popupHarga = document.getElementById("popupHargaV2");
+  const popupForm = document.getElementById("popupFormBuyV2");
+  const paket = document.getElementById("paketV2");
+  const aplikasi = document.getElementById("aplikasiV2");
+
+  // safety check (biar tidak error kalau element tidak ada)
+  if(!popupHarga || !popupForm || !paket || !aplikasi){
+    console.error("Element form tidak ditemukan!");
+    return;
+  }
+
+  // tutup popup harga
+  popupHarga.style.display = "none";
+
+  // buka form
+  popupForm.style.display = "flex";
+
+  // isi data otomatis
+  paket.value = selectedV2.name || "";
+  aplikasi.value = (selectedAppV2 || "").toUpperCase();
+
+}
+
+
+// 👉 INI YANG PENTING (LANJUT KE FORM)
+function bukaFormV2(){
+
+  if(!selectedV2){
+    alert("Pilih paket dulu!");
+    return;
+  }
+
+  document.getElementById("modalV2").style.display = "none";
+  document.getElementById("popupHargaV2").style.display = "none";
+
+  document.getElementById("popupFormBuyV2").style.display = "flex";
+
+  document.getElementById("paketV2").value = selectedV2.name;
+  document.getElementById("aplikasiV2").value = selectedAppV2.toUpperCase();
+}
+
+
+
+// CLOSE MODAL
+function tutupModalV2(){
+  document.getElementById("modalV2").style.display = "none";
+}
+
+
+
+// CLOSE FORM (WAJIB ADA)
+function closeFormBuyV2(){
+  document.getElementById("popupFormBuyV2").style.display = "none";
+}
+
+
+
+// SUBMIT FORM → PAYMENT
+function submitBuyV2(){
+
+  const idAkun = document.getElementById("idAkunV2").value;
+  const namaRekening = document.getElementById("namaRekeningV2").value;
+
+  if(!idAkun || !namaRekening){
+    alert("Lengkapi data!");
+    return;
+  }
+
+  // 🔥 SIMPAN KE PAYMENT / BOX
+  window.idAkunFinalV2 = idAkun;
+
+  closeFormBuyV2();
+  lanjutV2();
+}
+
+
+
+// PAYMENT
+function lanjutV2(){
+
+  if(!selectedV2){
+    alert("Data tidak valid!");
+    return;
+  }
+
+  document.getElementById("popupPayment").style.display = "flex";
+
+  document.getElementById("detail").innerText =
+    `${selectedV2.name} - Rp ${selectedV2.price.toLocaleString('id-ID')}`;
+
+  const id = generatePaymentId();
+
+  document.getElementById("paymentIdTop").innerText = id;
+  document.getElementById("paymentIdBottom").innerText = id;
+
+  // 🔥 INI YANG KAMU LUPA
+  document.getElementById("idAkunShow").innerText = window.idAkunFinalV2;
+
+  document.getElementById("qrImage").src = "qris.jpg";
+}
+
+
+// CLOSE PAYMENT
+function closePaymentV2(){
+  document.getElementById("popupPayment").style.display = "none";
+}
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>
