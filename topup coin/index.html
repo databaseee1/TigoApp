@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <!-- Warna status bar Android Chrome -->
 <meta name="theme-color" content="#1e90ff">
 
@@ -12,12 +13,28 @@
 <title>Top Up App</title>
 
 <style>
+
+body {
+  user-select: none;
+}
+
 body {
   margin:0;
   background-color: #1e90ff; /* dodgerblue */
   font-family:Arial;
   background:#f5f5f5;
   padding-top:60px; /* sesuaikan tinggi header */
+}
+
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none; /* opsional kalau gambar tidak perlu diklik */
 }
 
 /* HEADER */
@@ -3483,6 +3500,50 @@ function gxClose(){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("contextmenu", function(e) {
+  e.preventDefault();
+});
+
+document.addEventListener("keydown", function(e) {
+  if (e.key === "F12") e.preventDefault();
+  if (e.ctrlKey && e.shiftKey && e.key === "I") e.preventDefault();
+});
 </script>
 
 </body>
