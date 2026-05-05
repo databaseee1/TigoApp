@@ -1230,20 +1230,39 @@ img {
 
 /* GRID */
 .np-wrapper {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
   gap: 14px;
+
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
   padding: 0 16px 20px;
+  scroll-padding-left: 16px; /* bikin awal scroll tidak nempel */
+}
+
+/* kasih ruang awal item pertama */
+.np-wrapper::before {
+  content: "";
+  flex: 0 0 16px;
+}
+
+/* sembunyikan scrollbar */
+.np-wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 /* CARD */
 .np-item {
+  flex: 0 0 calc(50% - 7px); /* tampil 2 item per layar */
   background: #fff;
   border-radius: 18px;
   overflow: hidden;
   cursor: pointer;
   transition: all 0.25s ease;
   box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+
+  scroll-snap-align: start;
 }
 
 .np-item:hover {
@@ -1579,6 +1598,81 @@ img {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+.brand-wrapper {
+  display: flex;
+  gap: 1px;
+  padding: 1px 12px; /* lebih aman kiri kanan */
+  padding-left: 24px;
+  padding-right: 24px;
+  background: #aeedff;
+
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* sembunyikan scrollbar */
+.brand-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+/* CARD lebih kecil */
+.brand-item {
+  flex: 0 0 calc(25% - 12px);
+  background: #bcbcbc; /* lebih soft dari abu tua */
+  border-radius: 10px;
+
+  text-align: center;
+  padding: 5px; /* lebih kecil lagi */
+
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+
+  scroll-snap-align: start;
+  transition: 0.2s;
+
+  transform: scale(0.80); /* bikin lebih kecil visual */
+}
+
+/* ICON lebih kecil */
+.brand-item img {
+  width: 52px;   /* dari 45 → kecil */
+  height: 52px;
+  object-fit: contain;
+  margin-bottom: 4px;
+  border-radius: 10px;
+}
+
+/* TEXT lebih halus */
+.brand-item p {
+  font-size: 10px;  /* lebih kecil */
+  margin: 0;
+  font-weight: 500;
+  color: #707070;
+
+}
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 
@@ -2354,6 +2448,18 @@ img {
     <div class="np-text">Honor of Kings x Attack on Titan Event Starts May 1st</div>
   </div>
 
+
+    <div class="np-item" onclick="showDetail(2)">
+    <img src="ID-55100-PicName-Free-Coupon-Codes_MLBB_Article_1200x675-1.webp">
+    <div class="np-text">Mei 2026 MLBB Redeem Free Coupon – TIGOHOST News</div>
+  </div>
+
+  <div class="np-item" onclick="showDetail(3)">
+    <img src="ID-58001-PicName-Identity-V-35_-Discount-Coupon_Article_1200x675.webp">
+    <div class="np-text">Get 35% Off this Identity V Season 42 Essence 1</div>
+  </div>
+
+
 </div>
 
 <!-- FULLSCREEN DETAIL -->
@@ -2373,6 +2479,66 @@ img {
 
 </div>
 
+
+<div class="section-title">
+  TOP UP HIBURAN POPULER
+</div>
+
+<div class="box-apps-v2">
+  <div class="grid-apps-v2">
+
+ <div class="item-app-v2" onclick="launchAppV2('TikTok_Coin')">
+  <img src="3111.webp">
+  <p>TikTok Coin</p>
+</div>
+
+<div class="item-app-v2" onclick="launchAppV2('tantan')">
+  <img src="tantanlogo.webp">
+  <p>Tantan</p>
+</div>
+
+
+<div class="item-app-v2" onclick="launchAppV2('veeka')">
+  <img src="veekalogo.webp">
+  <p>Veeka</p>
+</div>
+
+
+<div class="item-app-v2" onclick="launchAppV2('hago')">
+  <img src="HAGO.webp">
+  <p>HAGO</p>
+</div>
+
+<div class="item-app-v2" onclick="launchAppV2('hot51')">
+  <img src="hot51.png">
+  <p>HOT51</p>
+</div>
+
+
+<div class="item-app-v2" onclick="launchAppV2('snackvideo')">
+  <img src="snack.webp">
+  <p>SnackVideo</p>
+</div>
+
+
+<div class="item-app-v2" onclick="launchAppV2('starmaker')">
+  <img src="starmaker-icon20260120032937661.jpg">
+  <p>StarMaker</p>
+</div>
+
+
+<div class="item-app-v2" onclick="launchAppV2('mico')">
+  <img src="MICO.webp">
+  <p>MICO</p>
+</div>
+
+
+
+  </div>
+</div>
+
+
+<div class="brand-wrapper" id="brandWrapper"></div>
 
 
 
@@ -3203,6 +3369,137 @@ const catalogV2 = {
 
   ],
 
+     TikTok_Coin: [
+
+    {name:"1100 + 99 Coin", price:  141700, sold:true},
+    {name:"1,900 Coin ", price: 283300, sold:true},
+    {name:"4,500 + 650 Coin ", price:708300},
+    {name:"8,500 + 8 Coin ", price: 1416500},
+    {name:"20500 + 1400 Coin", price:3541100},
+    {name:"40,000 + 2000Coin", price:6070392},
+    {name:"70,000 + 5000Coin", price:10117320},
+
+  ],
+
+
+       tantan: [
+
+    {name:"12,000 Diamonds", price:  173900, sold:true},
+    {name:"20,000 Diamonds ", price: 347800, sold:true},
+    {name:"30,000 Diamonds ", price:521700},
+    {name:"50,000+1000 Diamonds ", price: 869500},
+    {name:"100,000+2000 Diamonds", price:1739000},
+    {name:"490,000+5000 Diamonds", price:8695000},
+    {name:"1,000,000 + 10,000 Diamonds", price:17389900},
+    {name:"2,500,000 + 15,000 Diamonds ", price: 28481000, sold:true},
+
+  ],
+
+
+       veeka: [
+
+    {name:"2530", price:  88000, sold:true},
+    {name:"4520 ", price: 150000, sold:true},
+    {name:"26800", price:850000},
+    {name:"49500 ", price: 1800000},
+    {name:"90000", price:2900000},
+    {name:"100000", price:3520000},
+    {name:"120000 + 5000", price:3970070},
+    
+
+  ],
+
+
+  
+       hago: [
+
+    {name:"90.000 Diamond", price:  130500, sold:true},
+    {name:"120.000 Diamond ", price: 244600, sold:true},
+    {name:"290.000 Diamond", price:407700},
+    {name:"420.000 Diamond ", price: 652200},
+    {name:"550000 Diamond", price:815300},
+    {name:"780000 Diamond", price:1141400},
+    {name:"850.000 Diamond + 5000 Diamond", price:1304400},
+    {name:"1.000.000 Diamond + 10.000 Diamond", price:1467500},
+    {name:"1.200.000 Diamond", price:1630500},
+    
+
+  ],
+
+
+ hot51: [
+
+    {name:"Dep 600.000", price:  500000},
+    {name:"Dep 1.000.000", price: 900000},
+    {name:"Dep 1.500.000", price:1400000},
+    {name:"Dep 2.000.000 ", price: 1800000},
+    {name:"Dep 2.500.000", price:2300000},
+    {name:"Dep 3.000.000", price:2800000},
+    {name:"Dep 3.500.000", price:3400000},
+    {name:"Dep 4.000.000", price:3800000},
+    {name:"Dep 5.000.000", price:4800000},
+    
+
+  ],
+
+
+ snackvideo: [
+
+    {name:"2.300 Diamond", price:  240000},
+    {name:"4.000 Diamond", price: 500000},
+    {name:"10.000 Diamond", price:1124000},
+    {name:"20.000 Diamond", price: 2248000},
+    {name:"100.000 Diamond", price:11242000},
+    {name:"130.000 Diamond", price:20000000},
+    {name:"200.000 Diamond", price:34000000},
+    {name:"280.000 Diamond", price:40000000},
+    {name:"400.000 Diamond", price:60800000,sold:true},
+    
+
+  ],
+
+
+
+   starmaker: [
+
+    {name:"2567 Coins", price:403181},
+    {name:"4134 Coins", price: 806015},
+    {name:"5738 Coins", price:1218763},
+    {name:"8895 Coins ", price: 2030865},
+    {name:"16915 Coins", price:4093734},
+    {name:"48830 Coins", price:8187468},
+    {name:"67746 Coins", price:12281376},
+    {name:"58000 Diamonds", price:10643604},
+    
+    
+
+  ],
+
+
+     mico: [
+
+    {name:"4300 Coins", price:511000},
+    {name:"6134 Coins", price: 569447},
+    {name:"10738 Coins", price:922547},
+    {name:"13100 Coins ", price: 1132000},
+    {name:"25000 Coins", price:2265000},
+    {name:"56500 Coins", price:6000000},
+        {name:"120 Coins", price:  13000, sold:true},
+    {name:"300 Coins ", price: 20000, sold:true},
+
+    
+    
+
+  ],
+
+
+
+
+
+
+
+
+
 };
 
 let selectedV2 = null;
@@ -3235,13 +3532,53 @@ function launchAppV2(app){
       div.classList.add("sold-v2");
     }
 
-    div.innerHTML = `
-      <span>${item.name}</span>
-      <span style="color:#ff5a00">
-        Rp ${item.price.toLocaleString('id-ID')}
-        ${item.sold ? '<br><small style="color:red">Habis</small>' : ''}
-      </span>
-    `;
+  const showLogo = selectedAppV2 === "TikTok_Coin";
+
+const logoMap = {
+  TikTok_Coin: "png-transparent-tiktok-coin-with-blink-star-tiktok-coin-brand-name-social-media-icon-symbol-social-logo-3d-icon-thumbnail.png",
+  FreeFire: "diamond20250218085933214.png",
+  MobileLegends: "820241218072540808.png",
+  tantan: "ttnc.png",
+  veeka: "recharge_bean_right.38a4.png",
+  hago: "2_Hago_Diamonds.png",
+  hot51: "hot51.png",
+  snackvideo: "pngtree-blue-shiny-clear-diamond-realistic-illustration-png-image_4029162.png",
+  starmaker: "starmaker-diamond20260116082455516.png",
+  holek: "starmaker-diamond20260116082455516.png",
+  Roblox: "Roblox-Icon20250508075949539.jpg",
+  GenshinImpact: "7e27ce14e412a591c9a7e49c5aa1a02b.png",
+  magicChess: "2d5bab70628c4ddc9a74e7a8c6114195.png",
+  GarenaAOV: "AOV_Vouchers.png",
+  pubg: "660_PUBG_UC.png",
+  BallPool: "8ballpool-coins-3.png",
+  ClashofClans: "01JPHPHPFYA7CVGHHF9FAQDY59.webp",
+  mico: "MICO.webp",
+
+
+};
+
+
+
+
+
+
+div.innerHTML = `
+  <div style="display:flex;align-items:center;gap:10px;">
+
+    ${logoMap[selectedAppV2] 
+      ? `<img src="${logoMap[selectedAppV2]}" style="width:22px;height:22px;object-fit:contain;">`
+      : ""
+    }
+
+    <span style="flex:1;">${item.name}</span>
+
+    <span style="color:#ff5a00;text-align:right;">
+      Rp ${item.price.toLocaleString('id-ID')}
+      ${item.sold ? '<br><small style="color:red">Habis</small>' : ''}
+    </span>
+
+  </div>
+`;
 
     // 🔥 BLOCK CLICK kalau sold
     if(!item.sold){
@@ -3490,7 +3827,65 @@ const newsData = [
 
   "Jangan lewatkan kesempatan Anda untuk menjadi yang pertama melangkah ke petualangan baru ini. Daftar sekarang dan bersiaplah untuk melayang di atas awan!"
     ]
-  }
+  },
+
+
+{
+  img: "ID-55100-PicName-Free-Coupon-Codes_MLBB_Article_1200x675-1.webp",
+  title: "Mei 2026 MLBB Redeem Free Coupon – TIGOHOST News",
+  time: "Updated 2026-04-10 10:00",
+desc: [
+  "Alpha test resmi dibuka untuk pemain PC.",
+  "Jelajahi dunia baru Honor of Kings World.",
+  "Event eksklusif terbatas untuk region tertentu.",
+
+  "Looking to score some freebies in Mobile Legends: Bang Bang? Here is a 50% Discount Coupon capped at 500 TIGOHOST Credits with no minimum spend for MLBB Diamonds, your golden ticket to unlocking exclusive rewards like Skins, Hero Fragments, and more.",
+
+  "Coupons ini dirilis oleh TIGOHOST melalui newsletter resmi untuk pemain agar bisa mendapatkan Diamond dengan harga lebih murah untuk reward in-game.",
+
+  "TIGOHOST coupons sering dibagikan saat event, kolaborasi, atau promo spesial. Pastikan selalu cek update terbaru agar tidak ketinggalan reward."
+]
+},
+
+
+
+{
+  img: "ID-58001-PicName-Identity-V-35_-Discount-Coupon_Article_1200x675.webp",
+  title: "Get 35% Off this Identity V Season 42 Essence 1",
+  time: "Updated 2026-04-10 09:00",
+  desc: [
+  "What you Need to Know about the Promotion",
+
+  "The Discount coupon will be available from 22nd April (12AM) GMT+8 until 3rd May 2026 (11:59PM) GMT+8.",
+
+  "Discount Details: Get 35% off on Echoes (capped at 500 TIGOHOST Credits) to enjoy the benefit.",
+
+  "Eligibility: This coupon applies to ALL new and existing TIGOHOST users.",
+
+  "How to Claim: Log in or create an account at TIGOHOST, then go to the main page to claim the coupon. Redeemed coupons are valid until 3rd May 2026 11:59PM (GMT+8).",
+
+  "Additional Perks: TIGOHOST provides fast delivery, 24/7 customer support. Contact support anytime if needed.",
+
+  "Terms and Conditions:",
+  "Campaign period: 22nd April 2026 (0000 GMT+8) until 3rd May 2026 (2359 GMT+8).",
+  "Coupon offers 35% discount capped at 500 TIGOHOST Credits and applies to all denominations and payment methods.",
+  "Available for both new and existing users on a first come first serve basis.",
+  "Each user is entitled to one (1) coupon only.",
+  "Once quota is reached, the promotion ends even before deadline.",
+  "Coupons are not exchangeable for cash and cannot be combined with other promotions.",
+  "TIGOHOST reserves the right to modify or cancel any promotion at any time.",
+
+  "Why Choose TIGOHOST:",
+  "⚡ Instant Top-Ups – fast and hassle-free",
+  "💳 Flexible Payments – cards, e-wallets, or local options",
+  "🔒 Secure & Reliable – safe transactions",
+  "🎁 Exclusive Perks – bonuses, deals, and rewards"
+]
+}
+
+
+
+  
 ];
 
 
@@ -3729,13 +4124,41 @@ window.addEventListener("scroll", function() {
 
 
 
+const brands = [
+  { id: "seagm", name: "SEAGM - Games Topup, Gift Card", logo: "seagm.webp", url: "https://seagm.com" },
+  { id: "kaleoz", name: " 2026 KALEOZ.com", logo: "logo_icon_text-1194d007.svg", url: "https://kaleoz.com" },
+  { id: "itemku", name: "itemku - Gaming Marketplace", logo: "itemku.webp", url: "https://itemku.com" },
+  { id: "speedcash", name: "SpeedCash: Transfer & Ewallet", logo: "speed.webp", url: "https://speedcash.co.id" },
+  { id: "unipin", name: "UniPin Best Game Credit Deals", logo: "unipin-logo-white.svg", url: "https://www.unipin.com" },
+  { id: "vocagame", name: "VocaGame Top up Game & Voucher Game termurah", logo: "logo-vocagame.webp", url: "https://vocagame.com" },
+  { id: "codashop", name: "Codashop Top Up Games & App Vouchers", logo: "codashop-logo-new-3a.png", url: "https://www.codashop.com" },
+  { id: "duniagames", name: "Dunia Games Terbaru & Toko Top Up", logo: "optimize-image.webp", url: "https://duniagames.co.id" },
+  { id: "fastpay", name: "Fastpay Agen Pulsa & Reservasi Tiket", logo: "logo-sentra-bisnis-fastpay-white-new.png", url: "https://fastpay.co.id" },
+  { id: "upoint", name: "Upoint Top Up What's On Join Reseller.", logo: "img-upoint-red.png", url: "https://upoint.id" },
+
+  
+];
 
 
+const wrapper = document.getElementById("brandWrapper");
 
+brands.forEach(b => {
+  const div = document.createElement("div");
+  div.className = "brand-item";
 
+  div.onclick = () => {
+    if (b.url) {
+      window.location.href = b.url; // atau window.open(b.url, "_blank")
+    }
+  };
 
+  div.innerHTML = `
+    <img src="${b.logo}">
+    <p>${b.name}</p>
+  `;
 
-
+  wrapper.appendChild(div);
+});
 
 
 
