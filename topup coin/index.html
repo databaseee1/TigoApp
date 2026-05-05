@@ -3,11 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Warna status bar Android Chrome -->
+<meta name="theme-color" content="#1e90ff">
+
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Top Up App</title>
 
 <style>
 body {
   margin:0;
+  background-color: #1e90ff; /* dodgerblue */
   font-family:Arial;
   background:#f5f5f5;
   padding-top:60px; /* sesuaikan tinggi header */
@@ -95,20 +102,24 @@ body {
 
 
 /* BANNER */
-.banner img {
-  width: 100%;
-  height: 250px;
-  object-fit: cover;
-  object-position: center top;
-
-  border-radius: 14px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+.banner {
+  padding: 0 16px;
 }
 
-/* efek hover biar lebih hidup */
+.banner img {
+  width: 100%;
+  height: auto; /* ❗ mengikuti rasio asli gambar */
+
+  border-radius: 16px;
+  display: block;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* HOVER EFFECT HALUS */
 .banner img:hover {
-  transform: scale(1.02);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+  transform: scale(1.015);
+  box-shadow: 0 14px 35px rgba(0,0,0,0.12);
 }
 
 /* responsive mobile */
@@ -1055,12 +1066,320 @@ body {
 }
 
 
+.btn.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.btn.loading::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 10px;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+/* HEADER */
+.np-header {
+  font-size: 20px;
+  font-weight: 700;
+  padding: 16px;
+}
+
+/* GRID */
+.np-wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  padding: 0 16px 20px;
+}
+
+/* CARD */
+.np-item {
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.np-item:hover {
+  transform: translateY(-3px);
+}
+
+/* IMAGE */
+.np-item img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+
+/* TEXT */
+.np-text {
+  padding: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ================= FULLSCREEN ================= */
+.np-overlay {
+  position: fixed;
+  inset: 0;
+  background: #ffffff;
+  z-index: 9999;
+  overflow-y: auto;
+
+  transform: translateY(100%);
+  opacity: 0;
+  transition: all 0.35s ease;
+}
+
+.np-overlay.active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* TOPBAR */
+.np-topbar {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+}
+
+.np-topbar button {
+  background: rgba(0,0,0,0.4);
+  border: none;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+/* IMAGE FULL */
+#npImage {
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+}
+
+/* BODY */
+.np-body {
+  padding: 16px;
+}
+
+/* TITLE */
+.np-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+/* TIME */
+.np-time {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 14px;
+}
+
+/* DESC */
+.np-desc {
+  line-height: 1.6;
+  color: #333;
+  font-size: 14px;
+}
+
+
+.np-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.np-desc-box {
+  background: linear-gradient(135deg, #ffffff, #f3f6ff);
+  padding: 14px;
+  border-radius: 14px;
+
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+
+  border-left: 4px solid #1e90ff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+
+
+/* RESPONSIVE */
+@media(max-width: 600px){
+  .np-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.gx-grid {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.gx-card {
+  position: relative;
+  border-radius: 16px;
+  padding: 12px;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.gx-card:hover {
+  transform: scale(1.02);
+}
+
+/* warna */
+.gx-gold { background: linear-gradient(135deg,#f6b73c,#ff7c00); }
+.gx-blue { background: linear-gradient(135deg,#4facfe,#00f2fe); }
+.gx-gray { background: linear-gradient(135deg,#667eea,#764ba2); }
+
+/* row */
+.gx-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.gx-row img {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+}
+
+/* text */
+.gx-title { font-weight: 700; font-size: 14px; }
+.gx-sub { font-size: 12px; opacity: 0.9; }
+
+/* badge */
+.gx-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: gold;
+  color: #000;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+/* discount */
+.gx-disc {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 13px;
+}
+
+/* ================= FULL ================= */
+.gx-full {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  z-index: 9999;
+  overflow-y: auto;
+
+  transform: translateY(100%);
+  opacity: 0;
+  transition: 0.35s;
+}
+
+.gx-full.active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.gx-top {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+}
+
+.gx-top button {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+
+/* image */
+#gxImg {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+/* body */
+.gx-body {
+  padding: 16px;
+}
+
+.gx-bigtitle {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.gx-small {
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.gx-desc {
+  white-space: pre-line; /* ⬅️ ini kunci utama */
+  line-height: 1.7;
+  font-size: 14px;
+}
 
 </style>
 </head>
@@ -1078,6 +1397,9 @@ body {
 
 <div class="slider" id="slider">
   <div class="slide"><img src="bnr.webp"></div>
+  <div class="slide"><img src="wave20260430.jpg!webp"></div>
+  <div class="slide"><img src="wwe20260430.jpg!webp"></div>
+  <div class="slide"><img src="mlbb20260401.jpg!webp"></div>
   <div class="slide"><img src="honkai20260423_w.webp"></div>
   <div class="slide"><img src="1776673360_72b8e100d5e3117535d0.jpeg"></div>
   <div class="slide"><img src="1775025967_0dd74d0b4b85f396cf9d.jpg"></div>
@@ -1240,58 +1562,71 @@ body {
 
 
 
-<div class="grid">
+<div class="gx-grid">
 
-  <!-- CARD 1 -->
-  <div class="card gold">
-    <div class="card-content">
+  <div class="gx-card gx-gold" onclick="gxOpen(0)">
+    <div class="gx-row">
       <img src="2997.webp">
       <div>
-        <div class="title">9999 + 400 Red Diamonds</div>
-        <div class="sub">Hero Clash Red Diamonds</div>
+        <div class="gx-title">9999 + 400 Red Diamonds</div>
+        <div class="gx-sub">Hero Clash Red Diamonds</div>
       </div>
     </div>
-    <div class="badge">Promo</div>
-    <div class="discount">-8.0%</div>
+    <div class="gx-badge">Promo</div>
+    <div class="gx-disc">-8.0%</div>
   </div>
 
-  <!-- CARD 2 -->
-  <div class="card blue">
-    <div class="card-content">
+  <div class="gx-card gx-blue" onclick="gxOpen(1)">
+    <div class="gx-row">
       <img src="525.webp">
       <div>
-        <div class="title">PSN Card RM300 MY</div>
-        <div class="sub">PlayStation Network Card (MY)</div>
+        <div class="gx-title">PSN Card RM300 MY</div>
+        <div class="gx-sub">PlayStation Network Card (MY)</div>
       </div>
     </div>
-    <div class="badge">Promo</div>
-    <div class="discount">-2.0%</div>
+    <div class="gx-badge">Promo</div>
+    <div class="gx-disc">-2.0%</div>
   </div>
 
-  <!-- CARD 3 -->
-  <div class="card gray">
-    <div class="card-content">
+  <div class="gx-card gx-gray" onclick="gxOpen(2)">
+    <div class="gx-row">
       <img src="2605.webp">
       <div>
-        <div class="title">6000 + 1200 Silver</div>
-        <div class="sub">Destiny: Rising Top Up</div>
+        <div class="gx-title">6000 + 1200 Silver</div>
+        <div class="gx-sub">Destiny: Rising Top Up</div>
       </div>
     </div>
-    <div class="badge">Promo</div>
-    <div class="discount">-10.0%</div>
+    <div class="gx-badge">Promo</div>
+    <div class="gx-disc">-10.0%</div>
   </div>
 
-  <!-- CARD 4 -->
-  <div class="card gray">
-    <div class="card-content">
+  <div class="gx-card gx-gray" onclick="gxOpen(3)">
+    <div class="gx-row">
       <img src="2456.webp">
       <div>
-        <div class="title">Roblox Gift Card (AE)</div>
-        <div class="sub">Roblox Gift Card (AE)</div>
+        <div class="gx-title">Roblox Gift Card (AE)</div>
+        <div class="gx-sub">Roblox Gift Card (AE)</div>
       </div>
     </div>
-    <div class="badge">Promo</div>
-    <div class="discount">-5.0%</div>
+    <div class="gx-badge">Promo</div>
+    <div class="gx-disc">-5.0%</div>
+  </div>
+
+</div>
+
+<!-- FULLSCREEN -->
+<div class="gx-full" id="gxFull">
+
+  <div class="gx-top">
+    <button onclick="gxClose()">←</button>
+  </div>
+
+  <img id="gxImg">
+
+  <div class="gx-body">
+    <div class="gx-bigtitle" id="gxTitle"></div>
+    <div class="gx-small" id="gxSub"></div>
+    <div class="gx-desc" id="gxDesc"></div>
   </div>
 
 </div>
@@ -1483,7 +1818,7 @@ body {
   </div>
 
   <div class="footer-v2">
-    <button onclick="submitBuyV2()" class="btn">Beli Sekarang</button>
+    <button onclick="APP.handleBuyV2(this)" class="btn">Beli Sekarang</button>
     <button onclick="closeFormBuyV2()" class="btn btn-grey">Batal</button>
   </div>
 
@@ -1692,7 +2027,7 @@ body {
 
   <div class="footer-list">
     <button class="btn btn-grey" onclick="closeFormBuy()">Batal</button>
-    <button class="btn btn-primary" onclick="submitBuy()">Beli Sekarang</button>
+<button id="btnBuy" onclick="APP.handleBuy()" class="btn">Beli Sekarang</button>
   </div>
 
 </div>
@@ -1762,6 +2097,60 @@ body {
 
   </div>
 </div>
+
+
+
+
+
+
+
+<div class="section-title">
+  News & Promotion
+</div>
+
+<div class="np-wrapper">
+
+  <div class="np-item" onclick="showDetail(0)">
+    <img src="oss-d0d89db6204c36b6e92bb540bc61978e.jpg!webp">
+    <div class="np-text">Honor of Kings: World PC Alpha Test – Step Into the Vastness of Primaera</div>
+  </div>
+
+  <div class="np-item" onclick="showDetail(1)">
+    <img src="oss-eb58b1d9392d0774a5216056470210c1.jpg!webp">
+    <div class="np-text">Honor of Kings x Attack on Titan Event Starts May 1st</div>
+  </div>
+
+</div>
+
+<!-- FULLSCREEN DETAIL -->
+<div class="np-overlay" id="npOverlay">
+
+  <div class="np-topbar">
+    <button onclick="hideDetail()">←</button>
+  </div>
+
+  <img id="npImage">
+
+  <div class="np-body">
+    <div class="np-title" id="npTitle"></div>
+    <div class="np-time" id="npTime"></div>
+    <div class="np-desc" id="npDesc"></div>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2731,6 +3120,325 @@ function closePaymentV2(){
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+window.APP = window.APP || {};
+
+// versi 1 (pakai ID)
+APP.handleBuy = function() {
+  const btn = document.getElementById("btnBuy");
+
+  btn.classList.add("loading");
+  btn.innerText = "Memproses";
+
+  setTimeout(() => {
+    btn.classList.remove("loading");
+    btn.innerText = "Beli Sekarang";
+
+    if (typeof window.submitBuy === "function") {
+  window.submitBuy();
+}
+  }, 2000);
+};
+
+// versi 2 (pakai this)
+APP.handleBuyV2 = function(btn) {
+  const textLama = btn.innerText;
+
+  btn.classList.add("loading");
+  btn.innerText = "Memproses";
+
+  setTimeout(() => {
+    btn.classList.remove("loading");
+    btn.innerText = textLama;
+
+    if (typeof window.submitBuyV2 === "function") {
+  window.submitBuyV2();
+}
+  }, 2000);
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const newsData = [
+  {
+    img: "oss-d0d89db6204c36b6e92bb540bc61978e.jpg!webp",
+    title: "Honor of Kings x Attack on Titan Event",
+    time: "Updated 2026-04-10 13:58",
+    desc: [
+      "Penantian hampir berakhir. Salah satu acara kolaborasi paling dinantikan tahun ini akan segera tiba di Rift — membawa keberanian dan intensitas Survey Corps ke hero favorit Anda. Mulai 1 Mei 2026, pemain dapat mengubah hero mereka dan mendominasi medan perang dengan skin ikonik yang terinspirasi oleh seri anime legendaris ini..",
+      "Bagi pemain, ini bukan hanya soal kosmetik baru. Ini tentang perpaduan unik gameplay taktis Honor of Kings dengan dunia Attack on Titan yang penuh aksi dan berisiko tinggi. Baik Anda bermain sebagai Eren yang bisa berubah menjadi titan atau Levi yang jenius taktis, skin ini bertujuan untuk menangkap semangat materi aslinya sambil menjaga standar kualitas tinggi di Rift HoK..",
+      "Kolaborasi ini memperkenalkan empat skin berbeda, menata ulang hero Honor of Kings dengan gaya Attack on Titan."
+    ]
+  },
+  {
+    img: "oss-eb58b1d9392d0774a5216056470210c1.jpg!webp",
+    title: "Event Honor of Kings x Attack on Titan Dimulai 1 Mei",
+    time: "Updated 2026-04-10 11:13",
+    desc: [
+      "Cakrawala IP Honor of Kings terus berkembang. Pemain terkemuka secara resmi diundang untuk mendaftar PC Alpha Test dari action RPG multipemain yang sangat dinanti, Honor of Kings: World. Dikembangkan dengan Unreal Engine yang tangguh, judul ini menjanjikan pengalaman fantasi Tiongkok memukau yang melampaui batas-batas franchise.",
+      "Berlatar di dunia Jixia yang luas dan dinamis, pemain diberikan kebebasan untuk menjelajahi benua yang penuh keajaiban. Baik Anda melayang di langit dengan kapal udara yang megah, menyelam ke arus laut yang dalam, atau bertualang jauh ke dalam hutan untuk mengungkap misteri legendaris – benua Primaera siap untuk Anda jelajahi.",
+      "Setiap sudut dunia ini dirancang untuk menyembunyikan misteri legendaris yang menunggu untuk ditemukan oleh seorang \"Flowborn\".",
+      "Honor of Kings: World menawarkan pengalaman serbaguna yang disesuaikan dengan gaya bermain Anda:.",
+       "Cara Bergabung dengan Alpha Test",
+
+  "Fase pengujian eksklusif ini dirancang untuk mengumpulkan masukan dari komunitas guna menyempurnakan perjalanan ke depannya.",
+
+  "Platform: Hanya PC",
+  "Wilayah yang Memenuhi Syarat: Amerika Utara, Eropa, dan Asia Tenggara",
+  "Peran Anda: Sebagai Flowborn, Anda akan bertualang bersama pahlawan yang sudah dikenal dari alam semesta Honor of Kings.",
+
+  "Jangan lewatkan kesempatan Anda untuk menjadi yang pertama melangkah ke petualangan baru ini. Daftar sekarang dan bersiaplah untuk melayang di atas awan!"
+    ]
+  }
+];
+
+
+
+
+
+function showDetail(i){
+  document.getElementById("npOverlay").classList.add("active");
+
+  document.getElementById("npImage").src = newsData[i].img;
+  document.getElementById("npTitle").innerText = newsData[i].title;
+  document.getElementById("npTime").innerText = newsData[i].time;
+
+  const descContainer = document.getElementById("npDesc");
+  descContainer.innerHTML = "";
+
+newsData[i].desc.forEach((text, index) => {
+  const box = document.createElement("div");
+  box.className = "np-desc-box";
+  box.innerText = text;
+
+  box.style.opacity = "0";
+  box.style.transform = "translateY(20px)";
+
+  setTimeout(() => {
+    box.style.transition = "0.5s ease";
+    box.style.opacity = "1";
+    box.style.transform = "translateY(0)";
+  }, index * 250); // ⬅️ lebih lambat (250ms)
+
+  descContainer.appendChild(box);
+});
+}
+
+function hideDetail(){
+  document.getElementById("npOverlay").classList.remove("active");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const gxData = [
+  {
+    img: "2997.webp",
+    title: "About Lineage 2",
+    sub: "Lineage 2 Ncoin Online Store",
+    desc: `Enter the World of Lineage II
+Step into the role of a legendary warrior seeking to find his place in the midst of battle! Lineage II brings you into an expansive MMORPG experience where you create your own destiny in the realm of Aden. Prepare yourself for an adventure as you engage in colossal PvP siege battles, join epic raid encounters, build your own clan of allies, or raise your own stable of pets and mounts to traverse the epic Lineage II world!
+
+Live the Story
+In a war-torn land spanning two continents, three kingdoms vie for power as they engage in a battle for ultimate supremacy. As a lone warrior in this conflict, you must choose an allegiance and confront enemies from all sides as you strive to overcome conflict against the mightiest of challengers. It is your time to step into the light and enforce your will upon the realm. Seize your destiny and allow your own hand to write the history that will be remembered in Lineage II.
+
+Shape your journey in Lineage II by creating a unique avatar from a selection of 7 unique races (Human, Elf, Dark Elf, Orc, Dwarf, Kamael, and Ertheia), each with their own unique characteristics and traits that lead you down the path of more than 30 potential classes you can evolve into. Whether you take the path of a Warrior to become a Dreadnought or grow from a Wizard to an Archmage, the choice is yours to make!`
+  },
+
+
+
+
+  {
+    img: "525.webp",
+    title: "PSN Card RM300 MY",
+    sub: "Important note: PlayStation™Store Gift Card (ID) sold by SEA Gamer Mall is for Indonesia account ONLY. All purchases are NON-REFUNDABLE and NON-RETURNABLE.",
+    desc: `Tentang Kartu Jaringan Playstation (PSN)
+PlayStation™Store Gift Card.
+
+Hadiah untuk para gamer. Dunia dengan penuh kemungkinan.
+Semua yang ingin anda mainkan.
+
+Tukarkan dengan item apa pun di PlayStation™Store: game, add-on, langganan dan lain-lain.
+Pesan terlebih dahulu. Muat terlebih dahulu. Mainkan.
+
+Temukan penawaran eksklusif untuk game-game terbaik.
+Unduh pembelian dari jarak jauh dan mulai bermain lebih cepat.
+
+Syarat dan Ketentuan:
+Kode hanya berlaku untuk menambah saldo akun.
+Berlaku 36 bulan dari tanggal aktivasi.
+Tidak dapat ditukar dengan uang tunai.
+
+Cara membeli:
+- Masuk ke PlayStation Network
+- Buka PlayStation Store
+- Pilih Redeem Code
+- Masukkan kode dan selesai
+
+Keanggotaan PlayStation Plus:
+Essential – Multiplayer & game bulanan
+Extra – Ratusan game
+Deluxe – Akses penuh + trial game
+
+Nikmati semua manfaat inti PlayStation Plus dan tingkatkan pengalaman bermain Anda.`
+  },
+
+
+
+  {
+    img: "2605.webp",
+    title: "Destiny Rising NetEase Games",
+    sub: "Destiny: Rising",
+    desc: `Destiny: Rising adalah game RPG tembak-menembak fiksi ilmiah epik gratis yang dikembangkan oleh NetEase Games, berlatar di dalam Semesta Destiny.
+
+Game ini menampilkan aksi tembak-menembak orang pertama (FPP) dan orang ketiga (TPP) dengan beragam karakter pahlawan yang dapat dimainkan.
+
+Pemain akan memulai petualangan untuk mempertahankan Bumi di masa depan dan merebut kembali takdir umat manusia melalui pertempuran sengit, strategi mendalam, dan alur cerita yang imersif.
+
+Bergabunglah sekarang untuk merasakan perpaduan unik antara gameplay taktis, kustomisasi pahlawan, dan dunia bersama yang menarik.
+
+
+About Destiny Rising
+Destiny: Rising is an epic free-to-play mobile sci-fi RPG shooter developed by NetEase Games, set within the Destiny Universe. The game features both first-person (FPP) and third-person (TPP) shooting action with a diverse cast of playable heroes.
+
+Where to top up Destiny Rising?
+Want to top up Destiny Rising easily? Get it at TIGOHOST - trusted by gamers globally! We provide many payment options like Visa/MasterCard, Online Banking, ATM Transfer, and more.
+
+Top up now at TIGOHOST and make your Destiny Rising experience even better!
+
+Why Choose TIGOHOST for Destiny Rising Silver Top Up?
+- Fast and Hassle-Free
+- Flexible Payment Options
+- Instant and Secure Delivery
+- Exciting Offers and Promotions
+
+Top Up Destiny Rising Silver with TIGOHOST
+Sign in to your TIGOHOST account to enjoy top up offers. If you're new, register today! Our 24/7 support team is always ready to assist you.
+
+Panduan
+How to top up Destiny: Rising Silver?
+- Select the Silver denomination
+- Enter your User ID and Server
+- Complete payment
+- Your Silver will be credited shortly
+
+How to find Destiny: Rising User ID and Server?
+- Log in to the game
+- Server appears on login screen
+- Tap Menu (top right)
+- Open Profile (top left)
+- Your User ID will be displayed there`
+  },
+
+
+
+
+
+  {
+    img: "2456.webp",
+    title: "Roblox",
+    sub: "Roblox Corporation",
+    desc: `Tentang Roblox
+Roblox adalah alam semesta virtual ultimate yang memungkinkan Anda bermain, menciptakan, dan menjadi apa saja yang Anda bayangkan. Bergabunglah dengan jutaan pemain dan temukan berbagai dunia imersif yang tak terbatas yang dibuat oleh komunitas global.
+
+Tukarkan kartu hadiah Roblox untuk menerima item virtual. Gunakan Robux Anda untuk aksesoris karakter dan manfaat gaming tambahan. Bermainlah dengan teman di komputer, ponsel, tablet, konsol Xbox One, atau perangkat VR.
+
+Roblox bukan sekadar game, melainkan platform tempat pengguna mengakses dan membuat game sendiri. Hingga saat ini, lebih dari 20 juta game telah dibuat oleh komunitas pengguna di seluruh dunia.
+
+Pengguna dapat membuat avatar dengan berbagai pilihan aksesori, pakaian, dan item menarik menggunakan Robux. Platform ini juga berfungsi sebagai jejaring sosial yang memungkinkan pemain berinteraksi, berkomunikasi, dan berkolaborasi.
+
+Apa itu Kartu Hadiah Roblox?
+Dengan Kartu Hadiah Roblox, Anda dapat membeli Robux atau keanggotaan Premium. Kode PIN pada kartu dapat ditukarkan di situs resmi Roblox untuk menambahkan saldo ke akun Anda.
+
+Saldo tersebut dapat digunakan untuk membeli item dalam game, akses premium, atau produk khusus tertentu. Nilai kartu akan otomatis masuk ke akun setelah ditukarkan.
+
+Beli Kartu Hadiah Roblox Hari Ini
+Beli Kartu Hadiah Roblox dari TIGOHOST untuk mengisi saldo Robux atau berlangganan Premium dengan mudah dan aman.
+
+Jutaan Dunia untuk Dieksplorasi
+Selalu ada dunia baru untuk dijelajahi setiap hari, mulai dari petualangan epik hingga game santai bersama teman.
+
+Main Kapan Saja, Di Mana Saja
+Roblox mendukung lintas platform, sehingga Anda bisa bermain bersama teman di berbagai perangkat.
+
+Jadi Apa Saja yang Anda Bayangkan
+Ekspresikan kreativitas Anda dengan menyesuaikan avatar menggunakan berbagai item unik.
+
+Obrolan dengan Teman
+Terhubung dengan teman melalui fitur chat dan komunikasi dalam game untuk pengalaman bermain yang lebih seru.`
+  }
+];
+
+function gxOpen(i){
+  document.getElementById("gxFull").classList.add("active");
+
+  document.getElementById("gxImg").src = gxData[i].img;
+  document.getElementById("gxTitle").innerText = gxData[i].title;
+  document.getElementById("gxSub").innerText = gxData[i].sub;
+  document.getElementById("gxDesc").innerText = gxData[i].desc;
+}
+
+function gxClose(){
+  document.getElementById("gxFull").classList.remove("active");
+}
 
 
 
