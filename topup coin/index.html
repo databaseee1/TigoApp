@@ -44,11 +44,11 @@ img {
   position: fixed;
   top: 0;
   left: 0;
-  width: 96%;
+  width: 96%; /* ganti dari 96% */
   z-index: 9999;
 
   display: flex;
-  justify-content: space-between; /* kiri - kanan */
+  justify-content: space-between;
   align-items: center;
 
   padding: 12px 15px;
@@ -58,6 +58,57 @@ img {
 
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
+
+
+/* MENU DI BAWAH HEADER */
+.menu-scroll {
+  position: fixed;
+  top: 50px; /* tepat di bawah header */
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  font-weight: 200;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  font-size: 12px;
+
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: 0.3s;
+  z-index: 999;
+}
+
+.menu-scroll.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  text-decoration: none; /* hilangin garis link */
+  color: #000; /* warna teks */
+}
+
+.menu-item img {
+  width: 18px;
+  height: 18px;
+}
+
+/* efek klik */
+.menu-item:active {
+  transform: scale(0.95);
+}
+
+
+
+
+
+
 
 /* bagian kiri (logo + teks) */
 .left {
@@ -1043,18 +1094,20 @@ img {
   margin: auto;
 }
 
-/* Payment logos */
 .footer-payments {
   display: flex;
+  flex-wrap: wrap; /* ini penting */
   gap: 15px;
   margin-bottom: 30px;
 }
 
 .footer-payments img {
+  width: calc(10.33% - 10px); /* 3 kolom */
   height: 30px;
   background: #fff;
   padding: 5px;
   border-radius: 5px;
+  object-fit: contain;
 }
 
 /* Content */
@@ -1513,6 +1566,14 @@ img {
   z-index: 99999;
 }
 
+
+.footer-accept {
+  color: #424242;
+  font-weight: 200;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
 /* saat muncul */
 #toast.show {
   opacity: 1;
@@ -1533,6 +1594,33 @@ img {
     <span>IDN</span>
     <img src="indonesialogo.png">
   </div>
+</div>
+
+<!-- MENU SCROLL -->
+<div class="menu-scroll" id="menuScroll">
+  
+  <a href="https://databaseee1.github.io/TigoApp/topup%20coin/" class="menu-item">
+    <img src="global3.png">
+    <span>Beranda</span>
+  </a>
+
+  <a href="https://isipulsa.web.id/#paket_kuota" class="menu-item">
+    <img src="ss.svg">
+    <span>Kuota</span>
+  </a>
+
+  <a href="https://isipulsa.web.id/" class="menu-item">
+    <img src="c9hg4g25y7w4.svg">
+    <span>Pulsa</span>
+  </a>
+
+  <a href="https://www.hotelmurah.com/pulsa/pln" class="menu-item">
+    <img src="id-50009109-4f6225c6af9676bb98b6ef90b5eea2c1@resize_w90_nl.webp">
+    <span>Tagihan</span>
+  </a>
+
+</div>
+</div>
 
   <div id="toast">Anda hanya dapat membuka server indonesia sesuai wilayah anda</div>
 </div>
@@ -2303,13 +2391,40 @@ img {
 
 <footer class="footer">
   <div class="footer-container">
-    
+    <div class="footer-accept"> Metode Pembayaran By :</div>
     <!-- Payment Logos -->
     <div class="footer-payments">
       <img src="qrssss.jpg" alt="QRIS">
       <img src="bca.png" alt="BCA">
       <img src="bank-bri-logo-png_.png" alt="BRI">
       <img src="gopay.png" alt="GoPay">
+      <img src="bank-bni-logo-png.png" alt="BNI">
+      <img src="bankmandiri.png" alt="mandiri">
+      <img src="dana.png" alt="dana">
+      <img src="bankjago.png" alt="Bankjago">
+      <img src="ICBC_Bank_logo.png" alt="ICBC">
+      <img src="i.Saku.webp" alt="isaku">
+      <img src="OCBC Business.webp" alt="OCBC_Business">
+      <img src="GoogleWallet.webp" alt="googlewwallet">
+      <img src="Cards.webp" alt="Cards">
+            <img src="ShopeePay.png" alt="ShopeePay">
+      <img src="cimbniaga.jpg" alt="cimbniaga">
+      <img src="octo by cimb.webp" alt="octob">
+      <img src="OCBC HK.webp" alt="OCBChk">
+      <img src="OCBC MALAYSIA.webp" alt="octomalay">
+      <img src="OCBC Singapore.webp" alt="Singapore">
+      <img src="DOKU.png" alt="DOKU">
+           <img src="Kredipo.webp" alt="kredipo">
+      <img src="maybank logo.jpg" alt="maybank">
+      <img src="MobilePanin.webp" alt="MobilePanin">
+      <img src="Neobank.webp" alt="Neobank">
+      <img src="Paypal.webp" alt="Paypal">
+      <img src="permata-bank-logo-png.png" alt="permata">
+           <img src="SantrenPay.webp" alt="SantrenPay">
+      <img src="sokuku.webp" alt="sokuku">
+      <img src="UOB TMRW.webp" alt="UOBTMRW">
+      <img src="permata.webp" alt="permata">
+      
     </div>
 
     <!-- Main Footer Content -->
@@ -3597,7 +3712,15 @@ function gxClose(){
 
 
 
+window.addEventListener("scroll", function() {
+  const menu = document.getElementById("menuScroll");
 
+  if (window.scrollY > 80) {
+    menu.classList.add("show");
+  } else {
+    menu.classList.remove("show");
+  }
+});
 
 
 
