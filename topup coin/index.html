@@ -1495,6 +1495,29 @@ img {
   font-size: 14px;
 }
 
+
+#toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  
+  background: #000;
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 13px;
+
+  opacity: 0;
+  transition: 0.3s;
+  z-index: 99999;
+}
+
+/* saat muncul */
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
 </style>
 </head>
 
@@ -1510,6 +1533,8 @@ img {
     <span>IDN</span>
     <img src="indonesialogo.png">
   </div>
+
+  <div id="toast">Anda hanya dapat membuka server indonesia sesuai wilayah anda</div>
 </div>
 
 <div class="banner">
@@ -2319,6 +2344,9 @@ img {
       <h4>Rekan</h4>
       <a href="https://www.seagm.com/id/page/index?view=partnership">Kerjasama mitra bisnis</a>
     </div>
+   <a style="color:#919191;">
+  © 2026 Tigohost Gamer Mall Sdn Bhd (842657016348) (1951537-K)
+</a>
 
     
     <!-- CTA -->
@@ -3601,7 +3629,16 @@ function gxClose(){
 
 
 
+const idnBtn = document.querySelector(".right-idn");
+const toast = document.getElementById("toast");
 
+idnBtn.addEventListener("click", () => {
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 2500);
+});
 
 document.addEventListener("contextmenu", function(e) {
   e.preventDefault();
