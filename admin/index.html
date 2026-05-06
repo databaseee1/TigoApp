@@ -43,6 +43,177 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const depositRef = collection(db, "deposit");
+
+
+
+
+
+
+
+
+
+
+// contoh kalau sudah login / punya userId
+const userId = localStorage.getItem("userId");
+
+if (userId) {
+  updateDoc(doc(db, "users", userId), {
+    lastSeen: serverTimestamp()
+  });
+}
+
+
+
+
+// ================= REALTIME LOAD =================
+onSnapshot(depositRef, (snapshot) => {
+
+  const container = document.getElementById("depositList");
+
+  let rows = [];
+
+  snapshot.forEach((docSnap) => {
+    rows.push({ id: docSnap.id, ...docSnap.data() });
+  });
+
+  // 🔥 SORT TERBARU
+  rows.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+  let html = `
+  <div style="overflow:auto;">
+  <table style="
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+    background:#fff;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 6px 20px rgba(0,0,0,0.06);
+  ">
+
+  <thead>
+    <tr style="background:linear-gradient(135deg,#111,#333);color:#fff;">
+      <th style="padding:12px;">Nama</th>
+      <th>Bank</th>
+      <th>CODE REF</th>
+      <th>Nominal</th>
+      <th>Waktu Deposit</th>
+      <th>Last Seen</th>
+      <th>Status</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  `;
+
+  rows.forEach(d => {
+
+    let statusColor = "#999";
+    if (d.status === "pending") statusColor = "#ff9800";
+    if (d.status === "approved") statusColor = "#2ecc71";
+    if (d.status === "rejected") statusColor = "#e74c3c";
+
+    const created = d.createdAt?.toDate
+      ? d.createdAt.toDate().toLocaleString()
+      : "-";
+
+    const lastSeen = d.lastSeen?.toDate
+      ? d.lastSeen.toDate().toLocaleString()
+      : "belum login";
+
+    html += `
+      <tr style="border-bottom:1px solid #eee;">
+
+        <td style="padding:10px;font-weight:600;">
+          ${d.nama || "-"}
+        </td>
+
+        <td>${d.bank || "-"}</td>
+
+        <td>
+          ${d.codeRef
+            ? `<span style="padding:4px 8px;background:#f1f1f1;border-radius:6px;">
+                ${d.codeRef}
+              </span>`
+            : "-"}
+        </td>
+
+        <td>Rp ${Number(d.nominal || 0).toLocaleString()}</td>
+
+        <td>${created}</td>
+
+        <td>${lastSeen}</td>
+
+        <td>
+          <span style="padding:4px 8px;border-radius:6px;background:${statusColor};color:#fff;font-size:11px;">
+            ${d.status || "-"}
+          </span>
+        </td>
+
+        <td style="white-space:nowrap; display:flex; gap:4px; flex-wrap:wrap;">
+
+          <button onclick="updateStatus('${d.id}','approved')" style="font-size:11px;padding:4px 6px;">Approve</button>
+
+          <button onclick="updateStatus('${d.id}','pending')" style="font-size:11px;padding:4px 6px;">Pending</button>
+
+          <button onclick="updateStatus('${d.id}','rejected')" style="font-size:11px;padding:4px 6px;">Tolak</button>
+
+          <button onclick="deleteDeposit('${d.id}')"
+            style="font-size:11px;background:red;color:#fff;border:none;border-radius:5px;padding:4px 6px;">
+            Hapus
+          </button>
+
+        </td>
+
+      </tr>
+    `;
+  });
+
+  html += `
+  </tbody>
+  </table>
+  </div>
+  `;
+
+  container.innerHTML = html;
+});
+
+
+
+window.updateStatus = async function(id, status){
+  await updateDoc(doc(db,"deposit",id),{
+    status: status
+  });
+};
+
+window.updateStatus2 = async function(id, status){
+  await updateDoc(doc(db,"deposit",id),{
+    status: status
+  });
+};
+
+window.deleteDeposit = async function(id){
+  await deleteDoc(doc(db,"deposit",id));
+};
+
+window.deleteDeposit2 = async function(id){
+  await deleteDoc(doc(db,"deposit",id));
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -231,6 +402,7 @@ function loadUserDpo() {
 
   onSnapshot(collection(db, "pendaftaran"), async (usersSnap) => {
     tbody.innerHTML = "";
+
     let grandTotal = 0;
 
     if (usersSnap.empty) {
@@ -242,34 +414,61 @@ function loadUserDpo() {
     const withDeposit = [];
     const noDeposit = [];
 
-    for (const userDoc of usersSnap.docs) {
+    // ==========================
+    // 🔥 FIX UTAMA: PARALLEL QUERY (TIDAK HAPUS FITUR APAPUN)
+    // ==========================
+    const tasks = usersSnap.docs.map(async (userDoc) => {
       const user = userDoc.data();
       const uid = userDoc.id;
 
       const nama = user.namaLengkap || user.nama || "-";
       const email = user.email || user.userEmail || "-";
       const wa = user.whatsapp || user.wa || "-";
-      const userStatus = user.statusAkun || "active"; // konsisten pakai statusAkun
+      const userStatus = user.statusAkun || "active";
 
       const q = query(collection(db, "historydeposit"), where("uid", "==", uid));
       const depositsSnap = await getDocs(q);
 
-      if (!depositsSnap.empty) {
-        depositsSnap.forEach((depDoc) => {
-          const data = depDoc.data();
-          const nominal = Number(data.nominal || 0);
-          grandTotal += nominal;
+      let userDeposits = [];
 
-          withDeposit.push({ uid, nama, email, wa, userStatus, depId: depDoc.id, data });
+      depositsSnap.forEach((depDoc) => {
+        const data = depDoc.data();
+        const nominal = Number(data.nominal || 0);
+        grandTotal += nominal;
+
+        userDeposits.push({
+          uid,
+          nama,
+          email,
+          wa,
+          userStatus,
+          depId: depDoc.id,
+          data
         });
-      } else {
-        noDeposit.push({ uid, nama, email, wa, userStatus });
-      }
-    }
+      });
 
+      return {
+        userDeposits,
+        emptyUser: { uid, nama, email, wa, userStatus }
+      };
+    });
+
+    const results = await Promise.all(tasks);
+
+    results.forEach((r) => {
+      if (r.userDeposits.length > 0) {
+        withDeposit.push(...r.userDeposits);
+      } else {
+        noDeposit.push(r.emptyUser);
+      }
+    });
+
+    // ==========================
+    // SORT (tetap sama seperti kamu)
+    // ==========================
     withDeposit.sort((a, b) => {
-      const tA = a.data.timestamp?.toDate ? a.data.timestamp.toDate().getTime() : 0;
-      const tB = b.data.timestamp?.toDate ? b.data.timestamp.toDate().getTime() : 0;
+      const tA = a.data.timestamp?.toDate?.() || 0;
+      const tB = b.data.timestamp?.toDate?.() || 0;
       return tB - tA;
     });
 
@@ -280,7 +479,9 @@ function loadUserDpo() {
       return "<span style='color:green;font-weight:bold;'>Active</span>";
     }
 
-    // render user dengan deposit
+    // ==========================
+    // 🔥 RENDER WITH DEPOSIT (SEMUA TOMBOL TETAP ADA)
+    // ==========================
     withDeposit.forEach(({ uid, nama, email, wa, userStatus, depId, data }) => {
       let statusColor = "";
       if (data.status === "approve") statusColor = "style='color:green;font-weight:bold;'";
@@ -298,21 +499,28 @@ function loadUserDpo() {
         <td>${renderUserStatus(userStatus)}</td>
         <td>
           <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px;">
-            <button onclick="updateDepositStatus('${depId}','${uid}','${data.subId}','approve')" style="background:green;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Approve</button>
-            <button onclick="updateDepositStatus('${depId}','${uid}','${data.subId}','pending')" style="background:orange;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Pending</button>
-            <button onclick="updateDepositStatus('${depId}','${uid}','${data.subId}','tolak')" style="background:red;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Tolak</button>
-            <button onclick="hapusDeposit('${depId}','${uid}','${data.subId}')" style="background:gray;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Hapus</button>
 
-            <button onclick="updateUserStatus('${uid}','active')" style="background:#00a898;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Aktifkan</button>
-            <button onclick="updateUserStatus('${uid}','suspended')" style="background:#000;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Suspend</button>
-            <button onclick="updateUserStatus('${uid}','banned')" style="background:#66;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Maintenance</button>
-            <button onclick="updateUserStatus('${uid}','deleted')" style="background:#c00;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Bann User</button>
+            <!-- ✔ TOMBOL DEPOSIT (TETAP ADA) -->
+            <button onclick="updateDepositStatus('${depId}','${uid}','${data.subId}','approve')" style="background:green;color:#fff;padding:5px;">Approve</button>
+            <button onclick="updateDepositStatus('${depId}','${uid}','${data.subId}','pending')" style="background:orange;color:#fff;padding:5px;">Pending</button>
+            <button onclick="updateDepositStatus('${depId}','${uid}','${data.subId}','tolak')" style="background:red;color:#fff;padding:5px;">Tolak</button>
+            <button onclick="hapusDeposit('${depId}','${uid}','${data.subId}')" style="background:gray;color:#fff;padding:5px;">Hapus</button>
+
+            <!-- ✔ TOMBOL USER STATUS (TETAP ADA) -->
+            <button onclick="updateUserStatus('${uid}','active')" style="background:#00a898;color:#fff;padding:5px;">Aktifkan</button>
+            <button onclick="updateUserStatus('${uid}','suspended')" style="background:#000;color:#fff;padding:5px;">Suspend</button>
+            <button onclick="updateUserStatus('${uid}','banned')" style="background:#444;color:#fff;padding:5px;">Maintenance</button>
+            <button onclick="updateUserStatus('${uid}','deleted')" style="background:#c00;color:#fff;padding:5px;">Bann User</button>
+
           </div>
-        </td>`;
+        </td>
+      `;
       tbody.appendChild(tr);
     });
 
-    // render user tanpa deposit
+    // ==========================
+    // RENDER USER TANPA DEPOSIT (TETAP ADA TOMBOL)
+    // ==========================
     noDeposit.forEach(({ uid, nama, email, wa, userStatus }) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -325,18 +533,43 @@ function loadUserDpo() {
         <td>${renderUserStatus(userStatus)}</td>
         <td>
           <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px;">
-            <button onclick="updateUserStatus('${uid}','active')" style="background:#00a898;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Aktifkan</button>
-            <button onclick="updateUserStatus('${uid}','suspended')" style="background:#000;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Suspend</button>
-            <button onclick="updateUserStatus('${uid}','banned')" style="background:#c00;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Abaikan</button>
-            <button onclick="updateUserStatus('${uid}','deleted')" style="background:#666;color:#fff;padding:5px;border:none;border-radius:5px;cursor:pointer;">Bann</button>
+            <button onclick="updateUserStatus('${uid}','active')" style="background:#00a898;color:#fff;padding:5px;">Aktifkan</button>
+            <button onclick="updateUserStatus('${uid}','suspended')" style="background:#000;color:#fff;padding:5px;">Suspend</button>
+            <button onclick="updateUserStatus('${uid}','banned')" style="background:#c00;color:#fff;padding:5px;">Abaikan</button>
+            <button onclick="updateUserStatus('${uid}','deleted')" style="background:#666;color:#fff;padding:5px;">Bann</button>
           </div>
-        </td>`;
+        </td>
+      `;
       tbody.appendChild(tr);
     });
 
-    grandTotalEl.innerText = "Total Semua Deposit: Rp " + grandTotal.toLocaleString("id-ID");
+    grandTotalEl.innerText =
+      "Total Semua Deposit: Rp " + grandTotal.toLocaleString("id-ID");
   });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ---------- UPDATE LAST ACTIVE ----------
 async function updateLastActive(uid) {
@@ -2285,7 +2518,7 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
         <a href="#" onclick="showPage('saldoHostAdmin'); toggleDropdown();">Saldo Host</a>
         <a href="#" onclick="showPage('userdpo'); toggleDropdown();">Request Withdraw</a>
         <a href="#" onclick="showPage('updateTagihan'); toggleDropdown();">Tagihan</a>
-      
+        <a href="#" onclick="showPage('requestDepositAdmin'); toggleDropdown();">Request Deposit</a>
         <a href="#" onclick="showPage('tambahCreditSection'); toggleDropdown(); openTambahCredit();">Tambah Credit</a>
         <a href="#" onclick="showPage('kelolaCoin'); toggleDropdown();">Kelola Coin</a>
 <a href="#" onclick="showPage('chatControl'); loadChatControl(); toggleDropdown();"> Kontrol Chat</a>
@@ -2327,6 +2560,27 @@ button {padding:4px 8px;  border-radius: 10px;   background: #4356d4;
     </tbody>
   </table>
 </div>
+
+
+
+
+
+
+
+<div id="requestDepositAdmin" class="page">
+
+  <h3>REQUEST DEPOSIT</h3>
+
+  <div id="depositList">Loading...</div>
+
+</div>
+
+
+
+
+
+
+
 
 
 

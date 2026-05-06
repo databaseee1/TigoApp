@@ -17,7 +17,7 @@
 body{
   margin:0;
   font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  background:#f2f4f7;
+  background:#ffffff;
   color:#222;
   padding-bottom: 90px; /* ruang untuk tombol */
 }
@@ -25,6 +25,7 @@ body{
 /* ===== CONTAINER ===== */
 .container{
   padding:18px;
+  background: #ffffff;
 }
 
 /* ===== FORM CARD ===== */
@@ -32,7 +33,7 @@ body{
   background:#fff;
   padding:20px;
   border-radius:16px;
-  box-shadow:0 8px 25px rgba(0,0,0,0.06);
+  
 }
 
 label{
@@ -167,7 +168,6 @@ input:focus, select:focus{
   text-align:center;
   font-weight:700;
   font-size:17px;
-  border-bottom:1px solid #eee;
   background:#fff;
 
   position:sticky;
@@ -581,18 +581,329 @@ input:focus, select:focus{
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+#logoDeposit {
+  position: absolute;
+  top: 15px;
+  right: 9px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: 0.2s;
+}
+
+#logoDeposit:hover {
+  transform: scale(1.1);
+}
+
+
+
+
+#depositModal {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  z-index: 99999;
+  display: none;
+  overflow-y: auto;
+    animation: slideIn 0.2s ease;
+
+  
+}
+#depositBox {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-radius: 0;
+  overflow-y: auto;
+  box-shadow: none;
+    animation: slideUp 0.25s ease;
+
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+#depositList div {
+  border-radius: 10px;
+}
+
+#depositList {
+  max-height: calc(100vh - 50px);
+  overflow-y: auto;
+  padding-bottom: 100px;
+}
+
+#depositModal .form-box {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 0;
+}
+
+
+
+
+
+
+@keyframes slideIn {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+
+
+
+
+#trxPopup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 99999;
+}
+
+#trxBox {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 18px 18px 0 0;
+  padding: 15px;
+  animation: up 0.25s ease;
+  font-family: sans-serif;
+}
+
+@keyframes up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.trxRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin: 6px 0;
+}
+
+.trxLine {
+  border-top: 1px dashed #aaa;
+  margin: 8px 0;
+}
+
+
+
+
 </style>
 
 </head>
 
 <body>
 
+
+
+
+<!-- /----BUKA LOGIN----- -->
+<!-- /----BUKA LOGIN----- -->
+<!-- /----BUKA LOGIN----- -->
+<!-- ================= PIN GATE ================= -->
+<!-- ================= WA LOGIN GATE ================= -->
+<div id="waModal" style="
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:99999;
+">
+
+<div style="
+  width:90%;
+  max-width:360px;
+  background:#fff;
+  padding:22px;
+  border-radius:14px;
+  box-shadow:0 12px 35px rgba(0,0,0,0.25);
+  text-align:center;
+  font-family:sans-serif;
+">
+
+  <!-- LOGO -->
+  <img src="servant_icon.png" style="
+    width:60px;
+    height:60px;
+    object-fit:contain;
+    margin-bottom:10px;
+  " />
+
+  <!-- TITLE -->
+  <h3 style="
+    margin:0 0 8px 0;
+    font-size:16px;
+    font-weight:600;
+    color:#111;
+  ">
+    Verifikasi Keamanan Transaksi
+  </h3>
+
+  <!-- SUBTITLE -->
+  <p style="
+    font-size:12.5px;
+    color:#666;
+    margin-bottom:18px;
+    line-height:1.4;
+  ">
+    Untuk melindungi akun Anda, kami perlu memastikan bahwa ini benar Anda sebelum melanjutkan deposit.
+  </p>
+
+    <input id="waInput" type="text" placeholder="Password"
+      style="
+        width:90%;
+        padding:12px;
+        border:1px solid #ddd;
+        border-radius:8px;
+        outline:none;
+        font-size:14px;
+      ">
+
+    <button onclick="cekWA()" style="
+      width:100%;
+      margin-top:12px;
+      padding:12px;
+      border:none;
+      border-radius:8px;
+      background:linear-gradient(135deg,#ff6a00,#ff3d00);
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+    ">
+      Masuk
+    </button>
+
+    <p id="waError" style="
+      display:none;
+      color:red;
+      font-size:12px;
+      margin-top:10px;
+    ">
+      Password salah
+    </p>
+
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div id="depositForm" style="display:none;">
+
+
+
 <div class="container">
 
-  <div class="form-box">
+  <!-- 🔥 LOGO TOP RIGHT -->
+  <img src="order-history.png" id="logoDeposit" onclick="openDeposit()" />
 
-```
-<h3>FORM DEPOSIT</h3>
+
+
+
+
+
+<div id="depositModal" style="display:none;">
+  <div id="depositBox">
+    
+    <div style="
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px;
+  
+  position:sticky;
+  top:0;
+  background:#fff;
+  z-index:10;
+">
+  <b>Riwayat Deposit</b>
+  <button onclick="closeDeposit()" style="
+    background:#b4b4b4;
+    color:#fff;
+    border:none;
+    padding:6px 10px;
+    border-radius:6px;
+  ">✕</button>
+</div>
+
+    <div id="depositList" style="
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  padding-bottom: 100px;
+  box-sizing: border-box;
+">
+  Memuat data...
+</div>
+
+
+
+  </div>
+</div>
+
+
+
+<div id="trxPopup" style="display:none;">
+  <div id="trxBox">
+
+    <div style="text-align:center;font-weight:bold;margin-bottom:10px;">
+      STRUK TRANSAKSI
+    </div>
+
+    <div id="trxContent"></div>
+
+    <div style="text-align:center;margin-top:10px;">
+      <button onclick="closeTrx()" style="background:red;color:#fff;border:none;padding:6px 15px;border-radius:8px;">
+        Tutup
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+  <div class="form-box">
+    <h3>FORM DEPOSIT</h3>
 
 <label>BANK / E-WALLET</label>
 <select id="bank">
@@ -639,10 +950,72 @@ input:focus, select:focus{
 
 
 
+<div class="min-deposit-info" style="
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+  font-family: sans-serif;
+">
+
+  <!-- LEFT -->
+  <div style="flex:1;">
+    <div style="
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 3px;
+    ">
+      Nominal Deposit
+    </div>
+
+    <div style="
+      font-size: 15px;
+      color: #777;
+    ">
+      Minimal transaksi pada akun anda
+    </div>
+  </div>
+
+  <!-- VERTICAL LINE -->
+  <div style="
+    width:1px;
+    height:40px;
+    background:#e0e0e0;
+    margin:0 12px;
+  "></div>
+
+  <!-- RIGHT -->
+  <div style="text-align:right; flex:1;">
+    <div style="
+      font-size: 16px;
+      font-weight: bold;
+      color: #1a73e8;
+    ">
+      Rp <span id="minDepositText">505.000</span>
+    </div>
+
+    <div style="
+      font-size: 15px;
+      color: #999;
+    ">
+      tercatat otomatis di sistem
+    </div>
+  </div>
+
+
+  
+
+</div>
+
  <div style="
   margin-top:6px;
   padding:10px 12px;
-  font-size:12px;
+  font-size:16px;
   color:#000000;
   background:#ffffff;
   border:1px solid #f50000;
@@ -651,13 +1024,6 @@ input:focus, select:focus{
 ">
   Deposit ini hanya sebagai syarat aktivasi akun. Dana yang Anda depositkan akan masuk ke saldo host Anda dan dapat ditarik kembali ketika akun anda sudah aktif.
 </div>
-<div class="min-deposit-info">
-  <div class="title">Nominal Deposit</div>
-  <div class="subtitle">
-    Minimal Rp <span id="minDepositText">505.000</span>
-  </div>
-</div>
-
 
 
 
@@ -686,8 +1052,12 @@ input:focus, select:focus{
   ⏳ Menunggu pembayaran...
 </div>
 
-<div class="qris-timer">
-  Waktu tersisa: <span id="timer">10:00</span>
+<div class="qris-timer" style="
+  font-size:12px;
+  font-weight:500;
+  color:#111;
+">Waktu tersisa:
+  <span id="timer">10:00</span>
 </div>
 
     <div class="qris-line">---------------------</div>
@@ -704,7 +1074,7 @@ input:focus, select:focus{
 
   <div class="link-row">
     <b>Link Resmi :</b>
-    <span>https://tigohost.com</span>
+    <span>https://tigohost.asia</span>
   </div>
 
 <div class="status-card">
@@ -712,7 +1082,7 @@ input:focus, select:focus{
 
   <div class="status-row">
     <span class="dot"></span>
-    <span class="status-text">Menunggu pembayaran</span>
+    <span class="status-text" id="statusText">Pending</span>
   </div>
 </div>
 
@@ -769,249 +1139,804 @@ input:focus, select:focus{
   <div id="loadingText">Memproses...</div>
 </div>
 
-<script>
 
 
 
+
+
+
+<!-- /----TUTUP LOGIN----- -->
+</div>
+<!-- /----TUTUP LOGIN----- -->
+
+
+
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  updateDoc,
+  serverTimestamp,
+  query,
+  where,
+  getDocs,
+  doc,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ================= FIREBASE =================
+const firebaseConfig = {
+  apiKey: "AIzaSy....",
+  authDomain: "users-96dc5.firebaseapp.com",
+  projectId: "users-96dc5",
+  storageBucket: "users-96dc5.appspot.com",
+  messagingSenderId: "483322415863",
+  appId: "1:483322415863:web:xxxxxx"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ================= GLOBAL =================
 let timerInterval;
 const DURATION = 500;
 
-function bayar(){
+// ================= SESSION =================
+window.tempDeposit = null;
+window.userSession = null;
+
+// ================= CODE =================
+window.generateResi = function () {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let code = "DEP-";
+  for (let i = 0; i < 8; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return code;
+};
+
+/* =========================================================
+   LOGIN WA
+========================================================= */
+window.cekWA = async function () {
+
+  const waInput = document.getElementById("waInput");
+  const error = document.getElementById("waError");
+
+  const wa = waInput ? waInput.value.trim() : "";
+
+  if (!wa) return;
+
+  try {
+
+    const q = query(
+      collection(db, "pendaftaran"),
+      where("wa", "==", wa)
+    );
+
+    const snap = await getDocs(q);
+
+    if (error) error.style.display = "none";
+
+    if (snap.empty) {
+      if (error) error.style.display = "block";
+      return;
+    }
+
+    // ================= SESSION USER =================
+    window.userSession = snap.docs[0].data();
+
+// 🔥 SIMPAN ID DOC (PENTING)
+window.userSession.id = snap.docs[0].id;
+
+// 🔥 START PRESENCE SYSTEM
+setUserOnline();
+
+    const modal = document.getElementById("waModal");
+    if (modal) modal.style.display = "none";
+
+    const form = document.getElementById("depositForm");
+    if (form) form.style.display = "block";
+
+    // 🔥 WAJIB: START PRESENCE TRACKING SETELAH LOGIN
+    setUserPresence();
+
+  } catch (e) {
+    console.log("cekWA ERROR:", e);
+  }
+};
+
+
+// ================= USER PRESENCE (REALTIME FIX FINAL) =================
+// ================= USER PRESENCE FIX FINAL =================
+function setUserOnline() {
+
+  const id = window.userSession?.id;
+  if (!id) return;
+
+  const userRef = doc(db, "pendaftaran", id);
+
+  // helper update
+  const setStatus = (data) => {
+    updateDoc(userRef, data).catch(() => {});
+  };
+
+  // login
+  setStatus({
+    online: true,
+    status: "online",
+    lastSeen: serverTimestamp()
+  });
+
+  // heartbeat
+  setInterval(() => {
+    setStatus({
+      online: true,
+      status: "online",
+      lastSeen: serverTimestamp()
+    });
+  }, 10000);
+
+  // tab visibility
+  document.addEventListener("visibilitychange", () => {
+    setStatus({
+      online: !document.hidden,
+      status: document.hidden ? "idle" : "online",
+      lastSeen: serverTimestamp()
+    });
+  });
+
+  // keluar tab
+  window.addEventListener("beforeunload", () => {
+    setStatus({
+      online: false,
+      status: "offline",
+      lastSeen: serverTimestamp()
+    });
+  });
+}
+
+
+/* =========================================================
+   BAYAR (FINAL FIX CODE REF RANDOM BENAR)
+========================================================= */
+window.bayar = async function () {
+
+  if (!window.userSession) {
+    alert("Silakan login WA terlebih dahulu");
+    return;
+  }
 
   const bank = document.getElementById("bank").value;
   const nama = document.getElementById("nama").value;
   const rek = document.getElementById("rek").value;
   const nominal = Number(document.getElementById("nominal").value);
 
-  if(!bank || !nama || !rek){
-    return;
-  }
-
-  if(nominal < 500000){
-    return;
-  }
+  if (!bank || !nama || !rek) return;
+  if (nominal < 500000) return;
 
   const trxId = "trx_" + Date.now();
-  localStorage.setItem("current_trx", trxId);
+
+  // ================= REF RANDOM STABIL =================
+  let codeRef = "REF-" + Math.random().toString(36).substring(2, 10).toUpperCase();
+
+  try {
+
+    // ambil PIN TERAKHIR user (optional fallback)
+    const q = query(
+      collection(db, "deposit"),
+      where("wa", "==", window.userSession.wa)
+    );
+
+    const snap = await getDocs(q);
+
+    if (!snap.empty) {
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
+
+        // kalau mau pakai pin lama tetap aman
+        if (data.pin && !codeRef) {
+          codeRef = data.pin;
+        }
+      });
+    }
+
+  } catch (e) {
+    console.log("Ambil REF error:", e);
+  }
+
+ const resi = generateResi();
+
+try {
+
+  await addDoc(collection(db, "deposit"), {
+
+    trxId,
+    codeRef, // selalu random
+
+    bank,
+    nama,
+    rekening: rek,
+    nominal,
+
+    wa: window.userSession.wa || "",
+
+    status: "pending",
+
+    resi,
+    pin: resi,
+
+    userName: window.userSession.nama || "",
+    userEmail: window.userSession.email || "",
+
+    createdAt: serverTimestamp(),
+    timerStart: serverTimestamp(),
+    timerLimit: 600,
+
+    // 🔥 FIX: MASUK KE FIREBASE
+    expiredAt: Date.now() + (10 * 60 * 1000)
+
+  });
+
+} catch (e) {
+  console.log("Firebase deposit error:", e);
+}
+
+  startQRIS(bank, nama, rek, nominal, codeRef, trxId);
+};
+
+
+
+
+
+/* =========================================================
+   QRIS DISPLAY (SAFE + LOADING RANDOM)
+========================================================= */
+function startQRIS(bank, nama, rek, nominal, codeRef, trxId) {
 
   const loading = document.getElementById("loading");
-  const loadingText = document.getElementById("loadingText");
+  if (loading) loading.classList.add("active");
 
-  loading.classList.add("active");
-  loadingText.innerText = "Memproses pembayaran...";
-
-  let prosesTime = Math.floor(Math.random() * 4000) + 1000;
+  // 🔥 RANDOM LOADING 1 - 3 DETIK
+  const delay = Math.floor(Math.random() * 2000) + 1000;
 
   setTimeout(() => {
 
-    loadingText.innerText = "Menyiapkan QRIS...";
+    if (loading) loading.classList.remove("active");
 
-    let qrisTime = Math.floor(Math.random() * 1000) + 500;
+    let logo = "";
 
-    setTimeout(() => {
+    if (bank === "DANA") logo = "dana.png";
+    if (bank === "OVO") logo = "ovo.png";
+    if (bank === "BCA") logo = "bca.png";
+    if (bank === "GOPAY") logo = "gopay.png";
+    if (bank === "BNI") logo = "bank-bni-logo-png.png";
+    if (bank === "BRI") logo = "bank-bri-logo-png_.png";
+    if (bank === "SHOPEEPAY") logo = "ShopeePay.png";
+    if (bank === "LINKAJA") logo = "link-aja-logo.png";
+    if (bank === "QRIS") logo = "qrssss.jpg";
 
-      loading.classList.remove("active");
+    const set = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.innerText = val;
+    };
 
-      let logo = "";
-      if(bank==="DANA") logo="dana.png";
-      if(bank==="OVO") logo="ovo.png";
-      if(bank==="BCA") logo="bca.png";
-      if(bank==="GOPAY") logo="gopay.png";
-      if(bank==="BNI") logo="bank-bni-logo-png.png";
-      if(bank==="SHOPEEPAY") logo="ShopeePay.png";
-      if(bank==="LINKAJA") logo="link-aja-logo.png";
-      if(bank==="BRI") logo="bank-bri-logo-png_.png";
-      if(bank==="BANKDKI") logo="bankdki.webp";
-      if(bank==="QRIS") logo="qrssss.jpg";
-      if(bank==="MANDIRI") logo="bankmandiri.png";
-      if(bank==="BANKBSN") logo="Bank Simpanan Nasional (BSN) Logo vector (_cdr).jpg";
-      if(bank==="BANKJAGO") logo="bankjago.png";
-      if(bank === "OCBC_SINGAPORE") logo = "ocbc-singapore.webp";
-if(bank === "OCBC_MALAYSIA") logo = "ocbc-malaysia.webp";
- if(bank === "OCBC_BUSINESS") logo = "ocbc-business.webp";
- if(bank === "OCBC_HK") logo = "ocbc-hk.webp";
+    const img = document.getElementById("logo");
+    if (img) img.src = logo;
 
- if(bank === "BANK_OF_CHINA") logo = "bank-of-china.png";
- if(bank === "CCB") logo = "ccb.jpg";
- if(bank === "ICBC") logo = "icbc.png";
+    set("bankShow", bank);
+    set("namaShow", nama);
+    set("rekShow", rek);
+    set("nominalShow", "IDR " + nominal.toLocaleString());
+    set("codeRef", codeRef);
 
+    const qris = document.getElementById("qrisPage");
+    if (qris) qris.classList.add("active");
 
+    startPaymentTimerFirebase(trxId);
 
-
-
-
-
-
-
-
-      document.getElementById("logo").src = logo;
-      document.getElementById("bankShow").innerText = bank;
-      document.getElementById("namaShow").innerText = nama;
-      document.getElementById("rekShow").innerText = rek;
-      document.getElementById("nominalShow").innerText =
-        "IDR " + nominal.toLocaleString();
-
-      document.getElementById("qrisPage").classList.add("active");
-
-      startPaymentTimer(trxId);
-
-    }, qrisTime);
-
-  }, prosesTime);
+  }, delay);
 }
 
 
-
-
-
-
-
-
-function cekNominal(){
-
-  const nominal = Number(document.getElementById("nominal").value);
-  const warning = document.getElementById("nominalWarning");
-  const btn = document.getElementById("btnBayar");
-
-  if(nominal < 500000){
-    warning.style.display = "block";
-    btn.disabled = true;
-    btn.style.opacity = "0.5";
-  } else {
-    warning.style.display = "none";
-    btn.disabled = false;
-    btn.style.opacity = "1";
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-// =========================
-// TIMER QRIS (ANTI REFRESH)
-// =========================
-function startPaymentTimer(trxId){
+/* =========================================================
+   FIREBASE TIMER (10 MENIT REALTIME)
+========================================================= */
+window.startPaymentTimerFirebase = function (trxId) {
 
   const timerEl = document.getElementById("timer");
   const statusEl = document.getElementById("statusText");
 
-  const key = "qris_start_time_" + trxId;
+  const key = "qris_timer_" + trxId;
 
+  // ================= CEK START TIME =================
   let startTime = localStorage.getItem(key);
 
-  if(!startTime){
+  if (!startTime) {
     startTime = Date.now();
     localStorage.setItem(key, startTime);
   }
 
-  clearInterval(timerInterval);
+  const LIMIT = 600; // 10 MENIT
 
-  function update(){
+  function updateTimer() {
 
-    let now = Date.now();
-    let elapsed = Math.floor((now - startTime) / 1000);
-    let timeLeft = DURATION - elapsed;
+    const now = Date.now();
+    const elapsed = Math.floor((now - startTime) / 1000);
+    let left = LIMIT - elapsed;
 
-    if(timeLeft <= 0){
+    if (left <= 0) {
 
-      clearInterval(timerInterval);
+      if (timerEl) timerEl.innerText = "00:00";
 
-      localStorage.removeItem(key);
-      localStorage.removeItem("current_trx");
+      if (statusEl) {
+        statusEl.innerText = "❌ Waktu habis";
+        statusEl.style.color = "red";
+      }
 
-      statusEl.innerText = "❌ Waktu habis";
-      statusEl.style.color = "red";
-
+      // AUTO LOGOUT
       setTimeout(() => {
-        document.getElementById("qrisPage").classList.remove("active");
-      }, 1200);
+        localStorage.removeItem(key);
+        location.reload();
+      }, 1500);
+
+      clearInterval(window.qrisInterval);
+      return;
+    }
+
+    let m = Math.floor(left / 60);
+    let s = left % 60;
+
+    if (timerEl) {
+      timerEl.innerText =
+        `${m.toString().padStart(2,"0")}:${s.toString().padStart(2,"0")}`;
+    }
+
+    if (statusEl) {
+      statusEl.innerText = "⏳ Menunggu pembayaran...";
+    }
+  }
+
+  updateTimer();
+  clearInterval(window.qrisInterval);
+  window.qrisInterval = setInterval(updateTimer, 1000);
+};
+
+
+/* =========================================================
+   CHECK NOMINAL
+========================================================= */
+window.cekNominal = function () {
+  const nominal = Number(document.getElementById("nominal").value);
+  const warn = document.getElementById("nominalWarning");
+  if (warn) warn.style.display = nominal < 500000 ? "block" : "none";
+};
+
+
+
+
+
+
+window.confirmCloseQris = function () {
+
+  const el = document.getElementById("closeConfirm");
+
+  if (el) {
+    el.style.display = "flex";
+  }
+};
+
+window.cancelCloseQris = function () {
+
+  const el = document.getElementById("closeConfirm");
+
+  if (el) {
+    el.style.display = "none";
+  }
+};
+
+window.forceCloseQris = function () {
+
+  // 🔥 tutup QRIS page
+  const qris = document.getElementById("qrisPage");
+  if (qris) qris.classList.remove("active");
+
+  // 🔥 tutup popup confirm
+  const el = document.getElementById("closeConfirm");
+  if (el) el.style.display = "none";
+
+  // 🔥 hapus timer localStorage
+  for (let key in localStorage) {
+    if (key.startsWith("qris_timer_")) {
+      localStorage.removeItem(key);
+    }
+  }
+
+  // 🔥 stop interval kalau ada
+  if (window.qrisInterval) {
+    clearInterval(window.qrisInterval);
+  }
+
+  // 🔥 REFRESH HALAMAN (SESUAI REQUEST KAMU)
+  location.reload();
+};
+
+/* =========================================================
+   SOUND
+========================================================= */
+window.playSuccessSound = function () {
+  new Audio("https://www.myinstants.com/media/sounds/cash-register.mp3").play();
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+window.loadDepositHistory = function () {
+  const list = document.getElementById("depositList");
+  list.innerHTML = "Memuat data...";
+
+  if (!window.userSession?.wa) {
+    list.innerHTML = "<p>Silakan login dulu</p>";
+    return;
+  }
+
+  const q = query(
+    collection(db, "deposit"),
+    where("wa", "==", window.userSession.wa)
+  );
+
+  onSnapshot(q, (snap) => {
+
+    list.innerHTML = "";
+
+    if (snap.empty) {
+      
+list.innerHTML = `
+  <div style="
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    height:200px;
+    width:100%;
+    color:#999;
+    font-size:13px;
+    text-align:center;
+  ">
+
+    <img src="page_empty_icon.png" alt="empty" style="
+      width:90px;
+      height:90px;
+      object-fit:contain;
+      margin-bottom:10px;
+      opacity:0.8;
+    ">
+
+    <div>Tidak ada riwayat deposit</div>
+
+  </div>
+`;
+
+
 
       return;
     }
 
-    let menit = Math.floor(timeLeft / 60);
-    let detik = timeLeft % 60;
+    let total = 0;
 
-    timerEl.innerText =
-      `${menit.toString().padStart(2,'0')}:${detik.toString().padStart(2,'0')}`;
+    // ================= SORT TERBARU DI ATAS =================
+    const dataList = [];
 
-    statusEl.innerText = "⏳ Menunggu pembayaran...";
-    statusEl.style.color = "#ff7a00";
+    snap.forEach((docSnap) => {
+      const d = docSnap.data();
+      d._id = docSnap.id;
+      dataList.push(d);
+    });
+
+    dataList.sort((a, b) => {
+      const tA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
+      const tB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
+      return tB - tA; // TERBARU DI ATAS
+    });
+
+    dataList.forEach((d) => {
+
+      total += Number(d.nominal || 0);
+
+      // ================= AUTO EXPIRED CHECK (8 DETIK) =================
+      if (d.status === "pending" && d.expiredAt) {
+        const now = Date.now();
+
+        if (now > d.expiredAt) {
+          // update status realtime
+          updateDoc(doc(db, "deposit", d._id), {
+            status: "expired"
+          }).catch(() => {});
+        }
+      }
+
+      // ================= ITEM =================
+      const item = document.createElement("div");
+      item.style = `
+        padding:12px;
+        border-bottom:1px solid #eee;
+        cursor:pointer;
+        font-size:13px;
+        transition:0.2s;
+      `;
+
+      item.onmouseover = () => item.style.background = "#f5f5f5";
+      item.onmouseout = () => item.style.background = "#fff";
+
+      item.innerHTML = `
+        <div style="display:flex;justify-content:space-between;">
+          <b>Rp ${Number(d.nominal || 0).toLocaleString("id-ID")}</b>
+          <span style="
+            color:
+              ${d.status === 'pending' ? 'orange' :
+                d.status === 'expired' ? '#d9534f' : 'red'};
+            font-weight:bold;
+          ">
+            ${d.status === 'expired' ? 'Pembayaran Kadaluarsa' : (d.status || 'pending')}
+          </span>
+        </div>
+
+        <div style="color:#666;font-size:12px;margin-top:3px;">
+          ${d.bank || "-"} • ${d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString("id-ID") : "-"}
+        </div>
+
+        <div style="font-size:11px;color:#999;margin-top:3px;">
+          Klik untuk lihat detail
+        </div>
+      `;
+
+      // ================= POPUP DETAIL =================
+      item.onclick = () => {
+        openTrx(d);
+      };
+
+      list.appendChild(item);
+    });
+
+    // ================= TOTAL =================
+const footer = document.createElement("div");
+footer.style = `
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding:10px;
+  font-weight:bold;
+  border-top:1px solid #ddd;
+  background:#fff;
+  color:#525252;
+  z-index:9999;
+`;
+footer.innerText = "Total: Rp " + total.toLocaleString("id-ID");
+
+list.appendChild(footer);
+
+  });
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+window.openTrx = function (d) {
+
+  const box = document.getElementById("trxPopup");
+  const content = document.getElementById("trxContent");
+
+  // reset content dulu biar tidak double listener
+  content.innerHTML = `
+    <div style="text-align:center;padding:10px;">Memuat...</div>
+  `;
+
+  box.style.display = "block";
+
+  // ================= STATUS DEFAULT =================
+  let statusText = d.status || "pending";
+  let statusColor = "orange";
+
+  if (d.status === "expired") {
+    statusText = "Pembayaran Kadaluarsa";
+    statusColor = "red";
+  } else if (d.status === "approve") {
+    statusText = "Berhasil";
+    statusColor = "green";
   }
 
-  update();
-  timerInterval = setInterval(update, 1000);
-}
+  // ================= RENDER UI =================
+  content.innerHTML = `
+    <div style="font-family:sans-serif;font-size:13px;color:#333;">
+
+      <!-- ================= QRIS ================= -->
+      <div style="text-align:center;margin-bottom:12px;">
+        <img id="qrisImg" src="c3f4854b-1df1-415b-a155-d5e6b1853499.jpg"
+          style="width:170px;height:170px;object-fit:contain;border-radius:10px;">
+
+        <div id="qrisStatus" style="margin-top:5px;font-size:12px;color:orange;">
+          Menunggu pembayaran...
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;">
+        <span>Bank</span><b>${d.bank || "-"}</b>
+      </div>
+
+      <div style="border-top:1px dashed #ddd;margin:10px 0;"></div>
+
+      <div style="display:flex;justify-content:space-between;">
+        <span>Nama</span><b>${d.nama || "-"}</b>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;">
+        <span>Rekening</span><b>${d.rekening || "-"}</b>
+      </div>
+
+      <div style="border-top:1px dashed #ddd;margin:10px 0;"></div>
+
+      <div style="display:flex;justify-content:space-between;">
+        <span>Nominal</span>
+        <b>Rp ${Number(d.nominal || 0).toLocaleString("id-ID")}</b>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;margin-top:5px;">
+        <span>Status</span>
+        <b id="trxStatus" style="color:${statusColor};">
+          ${statusText}
+        </b>
+      </div>
+
+      <div style="border-top:1px dashed #ddd;margin:10px 0;"></div>
+
+      <div style="display:flex;justify-content:space-between;">
+        <span>Code Ref</span><b>${d.codeRef || "-"}</b>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;">
+        <span>Resi</span><b>${d.resi || "-"}</b>
+      </div>
+
+      <div style="border-top:1px dashed #ddd;margin:10px 0;"></div>
+
+      <div style="display:flex;justify-content:space-between;">
+        <span>Waktu</span>
+        <b>${d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString("id-ID") : "-"}</b>
+      </div>
+
+    </div>
+  `;
+
+  // ================= REALTIME SYNC FIREBASE =================
+  const ref = doc(db, "deposit", d._id || d.id);
+
+  onSnapshot(ref, (snap) => {
+    if (!snap.exists()) return;
+
+    const data = snap.data();
+
+    const img = document.getElementById("qrisImg");
+    const qrisStatus = document.getElementById("qrisStatus");
+    const trxStatus = document.getElementById("trxStatus");
+
+    let status = data.status || "pending";
+
+    // ================= HANDLE STATUS =================
+    if (status === "pending") {
+
+      if (qrisStatus) {
+        qrisStatus.innerText = "Menunggu pembayaran...";
+        qrisStatus.style.color = "orange";
+      }
+
+      if (trxStatus) {
+        trxStatus.innerText = "pending";
+        trxStatus.style.color = "orange";
+      }
+
+      if (img) {
+        img.src = "c3f4854b-1df1-415b-a155-d5e6b1853499.jpg";
+      }
+
+    }
+
+    else if (status === "expired") {
+
+      if (qrisStatus) {
+        qrisStatus.innerText = "Pembayaran kadaluarsa";
+        qrisStatus.style.color = "red";
+      }
+
+      if (trxStatus) {
+        trxStatus.innerText = "Pembayaran Kadaluarsa";
+        trxStatus.style.color = "red";
+      }
+
+      if (img) {
+        img.src = "qrisexpired.jpg";
+      }
+    }
+
+    else if (status === "approve") {
+
+      if (qrisStatus) {
+        qrisStatus.innerText = "Pembayaran berhasil";
+        qrisStatus.style.color = "green";
+      }
+
+      if (trxStatus) {
+        trxStatus.innerText = "Berhasil";
+        trxStatus.style.color = "green";
+      }
+    }
+
+  });
+
+};
+
+window.closeTrx = function () {
+  document.getElementById("trxPopup").style.display = "none";
+};
 
 
-// =========================
-// CONFIRM TUTUP QRIS
-// =========================
-function confirmCloseQris(){
-  document.getElementById("closeConfirm").style.display = "flex";
-}
 
-function cancelCloseQris(){
-  document.getElementById("closeConfirm").style.display = "none";
-}
+/* =========================================================
+   buka tutup modal deposit dan load history 
+========================================================= */
 
-function forceCloseQris(){
+window.openDeposit = function () {
+  const modal = document.getElementById("depositModal");
+  if (modal) modal.style.display = "block";
 
-  document.getElementById("qrisPage").classList.remove("active");
-  document.getElementById("closeConfirm").style.display = "none";
+  loadDepositHistory();
+};
 
-  clearInterval(timerInterval);
-
-  const trxId = localStorage.getItem("current_trx");
-
-  if(trxId){
-    localStorage.removeItem("qris_start_time_" + trxId);
-    localStorage.removeItem("current_trx");
-  }
-
-  document.getElementById("statusText").innerText = "⏳ Menunggu pembayaran...";
-  document.getElementById("statusText").style.color = "#ff7a00";
-}
-
-
-const codeRef = generateCodeRef();
-document.getElementById("codeRef").innerText = codeRef;
-
-const minimalDeposit = 505000; // nanti bisa beda tiap akun
-
-document.getElementById("minDepositText").innerText =
-  minimalDeposit.toLocaleString();
+window.closeDeposit = function () {
+  const modal = document.getElementById("depositModal");
+  if (modal) modal.style.display = "none";
+};
 
 
 
 
 
-function generateCodeRef(){
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let code = "TRX";
-
-  for(let i=0;i<8;i++){
-    code += chars[Math.floor(Math.random() * chars.length)];
-  }
-
-  return code;
-}
-
-
- 
-
-/* SUARA TING TING */
-function playSuccessSound(){
-  const audio = new Audio("https://www.myinstants.com/media/sounds/cash-register.mp3");
-  audio.play();
-}
 </script>
 
 </body>
