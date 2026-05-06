@@ -1,8 +1,8 @@
 {
   "name": "Tigoapp",
   "short_name": "Tigo",
-  "start_url": "/TigoApp/Penarikandeposit/",
-  "scope": "/TigoApp/Penarikandeposit/",
+  "start_url": "/Penarikandeposit/",
+  "scope": "/Penarikandeposit/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#7636ff",
