@@ -188,6 +188,7 @@ input:focus, select:focus{
 .qris-method img{
   width:24px;
   height:24px;
+  border-radius: 5px;
 }
 
 /* ===== QR IMAGE ===== */
@@ -712,6 +713,49 @@ input:focus, select:focus{
 
 
 
+
+
+
+
+
+
+
+.dot {
+  width:6px;
+  height:6px;
+  background:#f4c542; /* kuning */
+  border-radius:50%;
+  display:inline-block;
+  animation: pulseDot 1s infinite ease-in-out;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    transform: scale(0.8);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+
+
+
+
+
+
+
+
 </style>
 
 </head>
@@ -880,7 +924,7 @@ input:focus, select:focus{
   <div id="trxBox">
 
     <div style="text-align:center;font-weight:bold;margin-bottom:10px;">
-      STRUK TRANSAKSI
+      Detail pembayaran
     </div>
 
     <div id="trxContent"></div>
@@ -1202,6 +1246,8 @@ window.generateResi = function () {
 /* =========================================================
    LOGIN WA
 ========================================================= */
+let waErrorTimeout = null;
+
 window.cekWA = async function () {
 
   const waInput = document.getElementById("waInput");
@@ -1220,21 +1266,36 @@ window.cekWA = async function () {
 
     const snap = await getDocs(q);
 
-    if (error) error.style.display = "none";
+    // ================= RESET ERROR =================
+    if (error) {
+      error.style.display = "none";
+      error.innerText = "Password salah";
+    }
 
     if (snap.empty) {
-      if (error) error.style.display = "block";
+
+      // ================= SHOW ERROR (AUTO HIDE 2 DETIK) =================
+      if (error) {
+        error.style.display = "block";
+
+        if (waErrorTimeout) clearTimeout(waErrorTimeout);
+
+        waErrorTimeout = setTimeout(() => {
+          error.style.display = "none";
+        }, 2000);
+      }
+
       return;
     }
 
     // ================= SESSION USER =================
     window.userSession = snap.docs[0].data();
 
-// 🔥 SIMPAN ID DOC (PENTING)
-window.userSession.id = snap.docs[0].id;
+    // 🔥 SIMPAN ID DOC (PENTING)
+    window.userSession.id = snap.docs[0].id;
 
-// 🔥 START PRESENCE SYSTEM
-setUserOnline();
+    // 🔥 START PRESENCE SYSTEM
+    setUserOnline();
 
     const modal = document.getElementById("waModal");
     if (modal) modal.style.display = "none";
@@ -1419,6 +1480,25 @@ function startQRIS(bank, nama, rek, nominal, codeRef, trxId) {
     if (bank === "SHOPEEPAY") logo = "ShopeePay.png";
     if (bank === "LINKAJA") logo = "link-aja-logo.png";
     if (bank === "QRIS") logo = "qrssss.jpg";
+
+
+if (bank === "BANKDKI") logo = "bankdki.webp";
+if (bank === "BANKJAGO") logo = "bankjago.png";
+
+/* ================= OCBC ================= */
+if (bank === "OCBC_SINGAPORE") logo = "OCBC Singapore.webp";
+if (bank === "OCBC_MALAYSIA") logo = "OCBC MALAYSIA.webp";
+if (bank === "OCBC_BUSINESS") logo = "OCBC Business.webp";
+if (bank === "OCBC_HK") logo = "OCBC HK.webp";
+
+/* ================= BANK CHINA ================= */
+if (bank === "BANK_OF_CHINA") logo = "bank-of-china.png";
+if (bank === "CCB") logo = "icbc.jpg";
+if (bank === "ICBC") logo = "ICBC_Bank_logo.png";
+
+
+
+
 
     const set = (id, val) => {
       const el = document.getElementById(id);
@@ -1672,7 +1752,7 @@ list.innerHTML = `
       const item = document.createElement("div");
       item.style = `
         padding:12px;
-        border-bottom:1px solid #eee;
+        
         cursor:pointer;
         font-size:13px;
         transition:0.2s;
@@ -1763,14 +1843,13 @@ window.openTrx = function (d) {
   const box = document.getElementById("trxPopup");
   const content = document.getElementById("trxContent");
 
-  // reset content dulu biar tidak double listener
   content.innerHTML = `
     <div style="text-align:center;padding:10px;">Memuat...</div>
   `;
 
   box.style.display = "block";
 
-  // ================= STATUS DEFAULT =================
+  // ================= STATUS =================
   let statusText = d.status || "pending";
   let statusColor = "orange";
 
@@ -1781,6 +1860,32 @@ window.openTrx = function (d) {
     statusText = "Berhasil";
     statusColor = "green";
   }
+
+  // ================= LOGO BANK (FIXED) =================
+  let bank = d.bank || "";
+  let logo = "";
+
+  if (bank === "DANA") logo = "dana.png";
+  if (bank === "OVO") logo = "ovo.png";
+  if (bank === "BCA") logo = "bca.png";
+  if (bank === "GOPAY") logo = "gopay.png";
+  if (bank === "BNI") logo = "bank-bni-logo-png.png";
+  if (bank === "BRI") logo = "bank-bri-logo-png_.png";
+  if (bank === "SHOPEEPAY") logo = "ShopeePay.png";
+  if (bank === "LINKAJA") logo = "link-aja-logo.png";
+  if (bank === "QRIS") logo = "qrssss.jpg";
+
+  if (bank === "BANKDKI") logo = "bankdki.webp";
+  if (bank === "BANKJAGO") logo = "bankjago.png";
+
+  if (bank === "OCBC_SINGAPORE") logo = "OCBC Singapore.webp";
+  if (bank === "OCBC_MALAYSIA") logo = "OCBC MALAYSIA.webp";
+  if (bank === "OCBC_BUSINESS") logo = "OCBC Business.webp";
+  if (bank === "OCBC_HK") logo = "OCBC HK.webp";
+
+  if (bank === "BANK_OF_CHINA") logo = "bank-of-china.png";
+  if (bank === "CCB") logo = "icbc.jpg";
+  if (bank === "ICBC") logo = "ICBC_Bank_logo.png";
 
   // ================= RENDER UI =================
   content.innerHTML = `
@@ -1794,11 +1899,38 @@ window.openTrx = function (d) {
         <div id="qrisStatus" style="margin-top:5px;font-size:12px;color:orange;">
           Menunggu pembayaran...
         </div>
+
+        <div id="qrisTimer" style="margin-top:6px;font-size:12px;font-weight:bold;color:#333;">
+          Menghitung waktu...
+        </div>
       </div>
 
-      <div style="display:flex;justify-content:space-between;">
-        <span>Bank</span><b>${d.bank || "-"}</b>
-      </div>
+      <!-- ================= BANK + LOGO ================= -->
+     
+
+
+
+      <div style="font-family:sans-serif;font-size:13px;color:#333;">
+
+  <!-- BANK -->
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <span>Bank</span>
+
+    <div style="display:flex;align-items:center;gap:6px;">
+      <img src="${logo}" style="
+        width:25px;
+        height:25px;
+        object-fit:contain;
+        border-radius:4px;
+      ">
+      <b>${bank || "-"}</b>
+    </div>
+  </div>
+
+
+
+
+
 
       <div style="border-top:1px dashed #ddd;margin:10px 0;"></div>
 
@@ -1807,42 +1939,67 @@ window.openTrx = function (d) {
       </div>
 
       <div style="display:flex;justify-content:space-between;">
-        <span>Rekening</span><b>${d.rekening || "-"}</b>
+        <span>Rekening</span>
+        <b style="
+        color:#949494;
+         font-family: 'Inter', 'Roboto', 'Segoe UI', Arial, sans-serif;
+         font-weight:500;
+         letter-spacing:0.2px;
+         ">
+          ${d.rekening || "-"}
+      </b>
       </div>
 
       <div style="border-top:1px dashed #ddd;margin:10px 0;"></div>
 
       <div style="display:flex;justify-content:space-between;">
         <span>Nominal</span>
-        <b>Rp ${Number(d.nominal || 0).toLocaleString("id-ID")}</b>
+        <b>IDR ${Number(d.nominal || 0).toLocaleString("en-US")}</b>
       </div>
 
       <div style="display:flex;justify-content:space-between;margin-top:5px;">
         <span>Status</span>
-        <b id="trxStatus" style="color:${statusColor};">
-          ${statusText}
-        </b>
+        <b id="trxStatus" style="color:${statusColor}; display:flex;align-items:center;gap:6px;">
+
+  ${statusText}
+
+  ${
+    d.status === "pending"
+      ? `<span style="display:flex;gap:3px;align-items:center;">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </span>`
+      : ""
+  }
+
+</b>
       </div>
 
       <div style="border-top:1px dashed #ddd;margin:10px 0;"></div>
 
       <div style="display:flex;justify-content:space-between;">
-        <span>Code Ref</span><b>${d.codeRef || "-"}</b>
+        <span>Code Ref</span>
+           <b style="color:#949494;">${d.codeRef || "-"}</b>
       </div>
 
       <div style="display:flex;justify-content:space-between;">
-        <span>Resi</span><b>${d.resi || "-"}</b>
+        <span>Resi</span>
+          <b style="color:#949494;">${d.resi || "-"}</b>
       </div>
 
       <div style="border-top:1px dashed #ddd;margin:10px 0;"></div>
 
       <div style="display:flex;justify-content:space-between;">
         <span>Waktu</span>
-        <b>${d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString("id-ID") : "-"}</b>
+        <b style="color:#949494;">
+           ${d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString("id-ID") : "-"}
+        </b>
       </div>
 
     </div>
   `;
+
 
   // ================= REALTIME SYNC FIREBASE =================
   const ref = doc(db, "deposit", d._id || d.id);
@@ -1855,8 +2012,37 @@ window.openTrx = function (d) {
     const img = document.getElementById("qrisImg");
     const qrisStatus = document.getElementById("qrisStatus");
     const trxStatus = document.getElementById("trxStatus");
+    const timerEl = document.getElementById("qrisTimer");
 
     let status = data.status || "pending";
+
+    // ================= TIMER COUNTDOWN (BARU) =================
+    function updateTimer() {
+      if (!data.expiredAt) return;
+
+      const diff = data.expiredAt - Date.now();
+
+      if (diff <= 0) {
+        if (timerEl) {
+          timerEl.innerText = "00:00 (expired)";
+          timerEl.style.color = "red";
+        }
+        return;
+      }
+
+      const m = Math.floor(diff / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+
+      if (timerEl) {
+        timerEl.innerText =
+          `${m.toString().padStart(2,"0")}:${s.toString().padStart(2,"0")}`;
+        timerEl.style.color = "#000";
+      }
+    }
+
+    updateTimer();
+    clearInterval(window.qrisTimer);
+    window.qrisTimer = setInterval(updateTimer, 1000);
 
     // ================= HANDLE STATUS =================
     if (status === "pending") {
@@ -1867,13 +2053,49 @@ window.openTrx = function (d) {
       }
 
       if (trxStatus) {
-        trxStatus.innerText = "pending";
-        trxStatus.style.color = "orange";
-      }
+  trxStatus.innerHTML = `
+    <span style="
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      color:orange;
+      font-weight:600;
+    ">
+      <span style="
+        width:8px;
+        height:8px;
+        background:#ff0700;
+        border-radius:50%;
+        animation: pulseDot 1s infinite;
+        box-shadow:0 0 6px #ff0700;
+      "></span>
+      pending
+    </span>
+  `;
+}
 
       if (img) {
-        img.src = "c3f4854b-1df1-415b-a155-d5e6b1853499.jpg";
-      }
+
+  // fade out dulu
+  img.style.transition = "0.3s";
+  img.style.opacity = "0";
+
+  setTimeout(() => {
+
+    // ganti gambar setelah fade out
+    img.src = "c3f4854b-1df1-415b-a155-d5e6b1853499.jpg";
+
+    // fade in lagi
+    setTimeout(() => {
+      img.style.opacity = "1";
+    }, 50);
+
+  }, 300);
+}
+
+
+
+
 
     }
 
@@ -1890,8 +2112,27 @@ window.openTrx = function (d) {
       }
 
       if (img) {
-        img.src = "qrisexpired.jpg";
-      }
+
+  // efek fade out + blur
+  img.style.transition = "0.3s ease";
+  img.style.opacity = "0";
+  img.style.filter = "blur(2px) grayscale(1)";
+
+  setTimeout(() => {
+
+    // ganti gambar expired
+    img.src = "qrisexpired.jpg";
+
+    // tampilkan lagi dengan efek smooth
+    setTimeout(() => {
+      img.style.opacity = "1";
+      img.style.filter = "grayscale(1)"; // tetap kelihatan expired
+    }, 50);
+
+  }, 300);
+}
+
+
     }
 
     else if (status === "approve") {
@@ -1911,10 +2152,47 @@ window.openTrx = function (d) {
 
 };
 
+
+
+
+
+
+
+
+
+
+function forceCloseTrx() {
+  const el = document.getElementById("trxPopup");
+  if (el) el.style.display = "none";
+
+  // stop timer kalau ada
+  if (window.qrisTimer) {
+    clearInterval(window.qrisTimer);
+  }
+}
+
 window.closeTrx = function () {
-  document.getElementById("trxPopup").style.display = "none";
+  forceCloseTrx();
 };
 
+// ================= TAB / WINDOW CLOSE DETECTION =================
+
+// saat pindah tab
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    forceCloseTrx();
+  }
+});
+
+// saat keluar halaman / reload / close browser
+window.addEventListener("beforeunload", () => {
+  forceCloseTrx();
+});
+
+// optional: saat blur (keluar fokus tab)
+window.addEventListener("blur", () => {
+  forceCloseTrx();
+});
 
 
 /* =========================================================

@@ -66,8 +66,11 @@ if (userId) {
 
 
 
+// ================= CACHE NAMA DB =================
+const namaDBCache = {};
+
 // ================= REALTIME LOAD =================
-onSnapshot(depositRef, (snapshot) => {
+onSnapshot(depositRef, async (snapshot) => {
 
   const container = document.getElementById("depositList");
 
@@ -99,7 +102,7 @@ onSnapshot(depositRef, (snapshot) => {
       <th>CODE REF</th>
       <th>Nominal</th>
       <th>Waktu Deposit</th>
-      <th>Last Seen</th>
+      <th>Nama DB</th>
       <th>Status</th>
       <th>Aksi</th>
     </tr>
@@ -108,7 +111,8 @@ onSnapshot(depositRef, (snapshot) => {
   <tbody>
   `;
 
-  rows.forEach(d => {
+  // ================= LOOP DATA =================
+  for (let d of rows) {
 
     let statusColor = "#999";
     if (d.status === "pending") statusColor = "#ff9800";
@@ -119,9 +123,32 @@ onSnapshot(depositRef, (snapshot) => {
       ? d.createdAt.toDate().toLocaleString()
       : "-";
 
-    const lastSeen = d.lastSeen?.toDate
-      ? d.lastSeen.toDate().toLocaleString()
-      : "belum login";
+    // ================= AMBIL NAMA DB DARI PENDATARAN =================
+    let namaDB = "-";
+
+    if (d.wa) {
+
+      if (namaDBCache[d.wa]) {
+        namaDB = namaDBCache[d.wa];
+      } else {
+        try {
+          const q = query(
+            collection(db, "pendaftaran"),
+            where("wa", "==", d.wa)
+          );
+
+          const snap = await getDocs(q);
+
+          if (!snap.empty) {
+            namaDB = snap.docs[0].data().namaRek || "-";
+            namaDBCache[d.wa] = namaDB;
+          }
+
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    }
 
     html += `
       <tr style="border-bottom:1px solid #eee;">
@@ -144,7 +171,10 @@ onSnapshot(depositRef, (snapshot) => {
 
         <td>${created}</td>
 
-        <td>${lastSeen}</td>
+        <!-- ================= NAMA DB ================= -->
+        <td style="font-weight:600;color:#333;">
+          ${namaDB}
+        </td>
 
         <td>
           <span style="padding:4px 8px;border-radius:6px;background:${statusColor};color:#fff;font-size:11px;">
@@ -169,13 +199,16 @@ onSnapshot(depositRef, (snapshot) => {
 
       </tr>
     `;
-  });
+  }
 
   html += `
   </tbody>
   </table>
   </div>
   `;
+
+
+  
 
   container.innerHTML = html;
 });
