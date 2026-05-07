@@ -1706,6 +1706,347 @@ img {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ANIMASI */
+@keyframes pulseCoupon{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.01);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+
+}
+
+/* GRID */
+.coupon-wrapper{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:14px;
+
+    max-width:900px;
+    margin:auto;
+
+    margin-top:25px;
+    margin-bottom:25px;
+}
+
+/* KUPON */
+.coupon{
+    position:relative;
+    width:100%;
+    height:125px;
+
+    border-radius:14px;
+    overflow:hidden;
+
+    background:linear-gradient(
+        180deg,
+        #ff5d69 0%,
+        #ff2d4f 60%,
+        #ff2346 100%
+    );
+
+    box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    0 5px 12px rgba(0,0,0,0.12);
+
+    animation:pulseCoupon 3s ease-in-out infinite;
+}
+
+/* lubang kiri besar */
+.coupon::before{
+    content:"";
+    position:absolute;
+    left:-12px;
+    top:50%;
+    transform:translateY(-50%);
+    width:24px;
+    height:45px;
+    background:#ffffff;
+    border-radius:50px;
+}
+
+/* lubang kanan besar */
+.coupon::after{
+    content:"";
+    position:absolute;
+    right:-12px;
+    top:50%;
+    transform:translateY(-50%);
+    width:24px;
+    height:45px;
+    background:#ffffff;
+    border-radius:50px;
+}
+
+/* lubang kecil */
+.left-top,
+.left-bottom,
+.right-top,
+.right-bottom{
+    position:absolute;
+    width:18px;
+    height:18px;
+    background:#d2d2d2;
+    border-radius:50%;
+}
+
+.left-top{
+    left:-9px;
+    top:14px;
+}
+
+.left-bottom{
+    left:-9px;
+    bottom:14px;
+}
+
+.right-top{
+    right:-9px;
+    top:14px;
+}
+
+.right-bottom{
+    right:-9px;
+    bottom:14px;
+}
+
+/* garis tengah */
+.line{
+    position:absolute;
+    top:50%;
+    left:0;
+    width:100%;
+    height:2px;
+    background:rgba(255,255,255,0.18);
+}
+
+/* icon info */
+.info{
+    position:absolute;
+    top:8px;
+    right:8px;
+
+    width:28px;
+    height:28px;
+
+    border:2px solid white;
+    border-radius:50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:white;
+    font-size:15px;
+    font-weight:bold;
+}
+
+/* atas */
+.top{
+    height:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:white;
+    font-size:28px;
+    font-weight:800;
+}
+
+/* bawah */
+.bottom{
+    height:50%;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    color:white;
+}
+
+.claim{
+    font-size:15px;
+    font-weight:bold;
+    letter-spacing:1px;
+}
+
+/* bintang */
+.star-line{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-top:4px;
+}
+
+.star-line::before,
+.star-line::after{
+    content:"";
+    width:35px;
+    height:2px;
+    background:rgba(255,255,255,0.25);
+}
+
+.star{
+    color:#ffd35c;
+    font-size:11px;
+}
+
+/* MOBILE */
+@media(max-width:700px){
+
+    .coupon-wrapper{
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+    }
+
+    .coupon{
+        height:90px;
+        border-radius:10px;
+    }
+
+    .top{
+        font-size:18px;
+    }
+
+    .claim{
+        font-size:11px;
+    }
+
+    .info{
+        width:20px;
+        height:20px;
+        font-size:10px;
+        border:2px solid white;
+    }
+
+    .star-line{
+        margin-top:2px;
+    }
+
+    .star-line::before,
+    .star-line::after{
+        width:20px;
+    }
+
+    .left-top,
+    .left-bottom,
+    .right-top,
+    .right-bottom{
+        width:12px;
+        height:12px;
+    }
+
+    .left-top,
+    .left-bottom{
+        left:-6px;
+    }
+
+    .right-top,
+    .right-bottom{
+        right:-6px;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+/* notif */
+#customNotif{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%) scale(0.8);
+
+    background:#ffffff;
+    color:#111;
+
+    width:260px;
+
+    padding:20px;
+    border-radius:18px;
+
+    text-align:center;
+
+    z-index:9999;
+
+    opacity:0;
+    visibility:hidden;
+
+    transition:0.3s;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* tampil */
+#customNotif.show{
+    opacity:1;
+    visibility:visible;
+    transform:translate(-50%,-50%) scale(1);
+}
+
+/* logo */
+.notif-logo{
+    width:65px;
+    height:65px;
+    object-fit:cover;
+
+    margin-bottom:12px;
+}
+
+/* title */
+.notif-title{
+    font-size:16px;
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+/* desc */
+.notif-desc{
+    font-size:13px;
+    color:#666;
+    line-height:1.5;
+}
+
+/* warna jika sudah diklaim */
+.coupon.claimed{
+    background:linear-gradient(
+        180deg,
+        #8d8d8d 0%,
+        #666666 100%
+    );
+}
+
+.coupon.claimed .claim{
+    color:#ffffff;
+}
+
 </style>
 </head>
 
@@ -2566,12 +2907,182 @@ img {
 </div>
 
 
+<div class="item-app-v2" onclick="launchAppV2('Aoda')">
+  <img src="Aoda.webp">
+  <p>Aoda</p>
+</div>
+
+<div class="item-app-v2" onclick="launchAppV2('WooLive')">
+  <img src="Woo-Live.webp">
+  <p>Woo Live</p>
+</div>
+
+
 
   </div>
 </div>
 
 
 <div class="brand-wrapper" id="brandWrapper"></div>
+
+
+
+
+
+
+
+
+
+<div class="coupon-wrapper">
+
+    <!-- 1 -->
+    <div class="coupon" onclick="claimCoupon(this,'coupon1')">
+
+        <div class="left-top"></div>
+        <div class="left-bottom"></div>
+
+        <div class="right-top"></div>
+        <div class="right-bottom"></div>
+
+        <div class="line"></div>
+
+        <div class="info">i</div>
+
+        <div class="top">
+            12% OFF
+        </div>
+
+        <div class="bottom">
+
+            <div class="claim">
+                KLAIM
+            </div>
+
+            <div class="star-line">
+                <div class="star">★</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 2 -->
+    <div class="coupon" onclick="claimCoupon(this,'coupon2')">
+
+        <div class="left-top"></div>
+        <div class="left-bottom"></div>
+
+        <div class="right-top"></div>
+        <div class="right-bottom"></div>
+
+        <div class="line"></div>
+
+        <div class="info">i</div>
+
+        <div class="top">
+            6% OFF
+        </div>
+
+        <div class="bottom">
+
+            <div class="claim">
+                KLAIM
+            </div>
+
+            <div class="star-line">
+                <div class="star">★</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 3 -->
+    <div class="coupon" onclick="claimCoupon(this,'coupon3')">
+
+        <div class="left-top"></div>
+        <div class="left-bottom"></div>
+
+        <div class="right-top"></div>
+        <div class="right-bottom"></div>
+
+        <div class="line"></div>
+
+        <div class="info">i</div>
+
+        <div class="top">
+            $200-12
+        </div>
+
+        <div class="bottom">
+
+            <div class="claim">
+                KLAIM
+            </div>
+
+            <div class="star-line">
+                <div class="star">★</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- 4 -->
+    <div class="coupon" onclick="claimCoupon(this,'coupon4')">
+
+        <div class="left-top"></div>
+        <div class="left-bottom"></div>
+
+        <div class="right-top"></div>
+        <div class="right-bottom"></div>
+
+        <div class="line"></div>
+
+        <div class="info">i</div>
+
+        <div class="top">
+            3% OFF
+        </div>
+
+        <div class="bottom">
+
+            <div class="claim">
+                KLAIM
+            </div>
+
+            <div class="star-line">
+                <div class="star">★</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- NOTIF CUSTOM -->
+<div id="customNotif">
+
+    <img src="img-add-desktop-01.5uTv0TIj.webp" class="notif-logo">
+
+    <div class="notif-title">
+        Kupon Diskon berhasil diklaim
+    </div>
+
+    <div class="notif-desc">
+        Lakukan pembelian sebelum Kupon kadaluarsa
+    </div>
+
+</div>
+
+
+
+
+
+
 
 
 
@@ -3527,6 +4038,45 @@ const catalogV2 = {
 
 
 
+ Aoda: [
+
+
+    {name:"7505195 Coins", price:250000},
+    {name:"9766234 Coins", price: 300000},
+    {name:"16149351 Coins", price:450000},
+    {name:"19610390 Coins ", price: 500000},
+    {name:"29410170 Coins", price:1000000},
+    {name:"59410170 Coins", price:2500000},
+
+        {name:"3922078  Coins", price:  90000, sold:true},
+    {name:"2629870 Coins ", price: 50000, sold:true},
+
+    
+    
+
+  ],
+
+
+
+
+
+ WooLive: [
+
+    {name:"4300 Coins", price:511000},
+    {name:"6134 Coins", price: 569447},
+    {name:"10738 Coins", price:922547},
+    {name:"13100 Coins ", price: 1132000},
+    {name:"25000 Coins", price:2265000},
+    {name:"56500 Coins", price:6000000},
+        {name:"120 Coins", price:  13000, sold:true},
+    {name:"300 Coins ", price: 20000, sold:true},
+
+    
+    
+
+  ],
+
+
 
 
 
@@ -3586,6 +4136,8 @@ const logoMap = {
   BallPool: "8ballpool-coins-3.png",
   ClashofClans: "01JPHPHPFYA7CVGHHF9FAQDY59.webp",
   mico: "MICO.webp",
+  Aoda: "aoda_coins (1).webp",
+  WooLive: "Woo-Live.webp",
 
 
 };
@@ -4205,9 +4757,103 @@ brands.forEach(b => {
 
 
 
+function showNotif(text){
+
+    const notif = document.getElementById("customNotif");
+
+    notif.innerText = text;
+
+    notif.classList.add("show");
+
+    setTimeout(()=>{
+
+        notif.classList.remove("show");
+
+    },2000);
+
+}
+
+function claimCoupon(el,id){
+
+    const claimText = el.querySelector(".claim");
+
+    // jika sudah diklaim
+    if(localStorage.getItem(id) === "claimed"){
+
+        showNotif("Kupon sudah diklaim");
+        return;
+
+    }
+
+    // simpan
+    localStorage.setItem(id,"claimed");
+
+    // ubah text
+    claimText.innerText = "SUDAH DIKLAIM";
+
+    // ubah warna
+    el.classList.add("claimed");
+
+    // notif
+    showNotif("Diskon berhasil diklaim");
+
+}
+
+/* load status */
+window.onload = function(){
+
+    document.querySelectorAll(".coupon").forEach((coupon,index)=>{
+
+        const id = "coupon" + (index + 1);
+
+        const claimText = coupon.querySelector(".claim");
+
+        if(localStorage.getItem(id) === "claimed"){
+
+            claimText.innerText = "SUDAH DIKLAIM";
+
+            coupon.classList.add("claimed");
+
+        }
+
+    });
+
+};
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function showNotif(){
+
+    const notif = document.getElementById("customNotif");
+
+    notif.classList.add("show");
+
+    // hilang 3 detik
+    setTimeout(()=>{
+
+        notif.classList.remove("show");
+
+    },3000);
+
+}
 
 
 const idnBtn = document.querySelector(".right-idn");
