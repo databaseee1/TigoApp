@@ -778,7 +778,9 @@ img {
 
 
 
-
+.content-v2 {
+  padding-bottom: calc(90px + env(safe-area-inset-bottom));
+}
 
 /* BOX */
 .box-apps-v2 {
@@ -2233,6 +2235,66 @@ img {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+.content-v2 {
+  padding-bottom: 0px; /* penting: ruang untuk nav bawah */
+  overflow-y: auto;
+}
+
+.tags-box {
+  margin-top: 15px;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* HEADER */
+.tags-title {
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #111;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* LIST */
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* TAG STYLE */
+.tags-list a {
+  font-size: 11px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  color: #111;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+/* HOVER */
+.tags-list a:hover {
+  background: #e0f2fe;
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+}
 </style>
 </head>
 
@@ -2625,6 +2687,25 @@ img {
   </div>
 
   <div class="content-v2" id="listV2"></div>
+
+
+  <!-- TAG SECTION -->
+<div class="tags-v2">
+  <div class="tags-title">
+    <span>🏷️ Tags</span>
+  </div>
+
+  <div class="tags-list">
+    <a href="#">#coinmurah</a>
+    <a href="#">#cointigo</a>
+    <a href="#">#coingams</a>
+    <a href="#">#coinweelive</a>
+    <a href="#">#seagame</a>
+    <a href="#">#tigosea</a>
+    <a href="#">#cointigoindonesia</a>
+
+  </div>
+</div>
 
 <div class="footer-v2">
   <button onclick="tutupHargaV2()" class="btn cancel">Kembali</button>
