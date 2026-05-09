@@ -393,6 +393,77 @@ img {
   right: 6px;
 }
 
+
+
+
+
+.styltags-popup {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: none;
+  z-index: 99999;
+}
+
+.styltags-box {
+  width: 100%;
+  height: 100%;
+  background: #0f0f0f;
+  display: flex;
+  flex-direction: column;
+  animation: styltagsUp .25s ease;
+}
+
+.styltags-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  color: #fff;
+  font-weight: bold;
+  background: #1a1a1a;
+  border-bottom: 1px solid #333;
+}
+
+.styltags-header button {
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.styltags-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.styltags-body a {
+  font-size: 12px;
+  padding: 8px 10px;
+  border-radius: 20px;
+  background: #222;
+  color: #fff;
+  text-decoration: none;
+  border: 1px solid #333;
+}
+
+.styltags-body a:active {
+  transform: scale(0.95);
+  background: #333;
+}
+
+@keyframes styltagsUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+
+
 /* MODAL */
 .modal {
   position:fixed;
@@ -2047,6 +2118,78 @@ img {
     color:#ffffff;
 }
 
+
+
+
+
+.seo-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  z-index: 9999;
+  backdrop-filter: blur(6px);
+}
+
+/* BOX */
+.seo-modal-content {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER */
+.seo-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: linear-gradient(90deg, #1da1f2, #3b82f6);
+  color: #fff;
+  border-radius: 0 0 10px;
+}
+
+.seo-modal-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* CLOSE */
+.seo-modal-header .close {
+  font-size: 26px;
+  cursor: pointer;
+}
+
+/* TAG AREA */
+.seo-tags {
+  padding: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+/* TAG STYLE */
+.seo-tags a {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  font-size: 12px;
+  color: #111;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.seo-tags a:hover {
+  background: #e0f2fe;
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+}
+
+
 </style>
 </head>
 
@@ -3149,7 +3292,50 @@ img {
         <a href="https://news.seagm.com/">Berita TIGOHOST</a>
         <a href="https://help.seagm.com/hc/en-us">Dukungan</a>
         <a href="https://www.tigohost.asia/topup-coin/">Hubungi Kami</a>
-        <a>Seo TAG</a>
+        <a href="https://www.tigohost.asia/tags">Seo Tag</a>
+       <a href="#" onclick="showSeoTag(event)">Halaman Tag</a>
+
+<div id="seoModal" class="seo-modal">
+  <div class="seo-modal-content">
+
+    <!-- HEADER -->
+    <div class="seo-modal-header">
+      <h3>SEO Tags TigoHost</h3>
+      <span class="close" onclick="closeSeoTag()">&times;</span>
+    </div>
+
+    <!-- TAG LIST -->
+    <div class="seo-tags">
+      <a href="https://www.tigohost.asia/">Tigo Host</a>
+      <a href="https://www.tigohost.asia/">Daftar Agency TigoHost</a>
+      <a href="https://www.tigohost.asia/">Server Agency Indonesia</a>
+      <a href="https://www.tigohost.asia/">Pusat Agency Hosting</a>
+      <a href="https://www.tigohost.asia/">PT Agency TigoHost Indonesia</a>
+
+      <a href="https://www.tigohost.asia/">Hosting Murah Indonesia</a>
+      <a href="https://www.tigohost.asia/">Domain Murah Cepat</a>
+      <a href="https://www.tigohost.asia/">Jasa Hosting Terpercaya</a>
+      <a href="https://www.tigohost.asia/">Top Up TigoHost</a>
+      <a href="https://www.tigohost.asia/">Aplikasi Tigo Host</a>
+      <a href="https://www.tigohost.asia/">top up tigo host</a>
+      <a href="https://www.tigohost.asia/">top up tigo</a>
+      <a href="https://www.tigohost.asia/">top up aplikasi tigo</a>
+      <a href="https://www.tigohost.asia/">top up coin aplikasi tigo</a>
+      <a href="https://www.tigohost.asia/">agencny tigo</a>
+
+      <a href="https://www.tigohost.asia/">Cloud Hosting Indonesia</a>
+      <a href="https://www.tigohost.asia/">VPS Murah Indonesia</a>
+      <a href="https://www.tigohost.asia/">Website Hosting Cepat</a>
+      <a href="https://www.tigohost.asia/">Server Stabil 24 Jam</a>
+      <a href="https://www.tigohost.asia/">Panel Hosting Modern</a>
+    </div>
+
+  </div>
+</div>
+
+
+
+
       </div>
 
       <div class="footer-col">
@@ -4879,6 +5065,33 @@ document.addEventListener("keydown", function(e) {
   if (e.key === "F12") e.preventDefault();
   if (e.ctrlKey && e.shiftKey && e.key === "I") e.preventDefault();
 });
+
+
+
+
+
+
+
+
+
+
+
+function showSeoTag(e) {
+  e.preventDefault();
+  document.getElementById("seoModal").style.display = "block";
+}
+
+function closeSeoTag() {
+  document.getElementById("seoModal").style.display = "none";
+}
+
+// klik luar modal untuk tutup
+window.onclick = function(event) {
+  let modal = document.getElementById("seoModal");
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
 </script>
 
 </body>
