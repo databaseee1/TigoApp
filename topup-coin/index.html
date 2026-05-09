@@ -2122,6 +2122,15 @@ img {
 
 
 
+
+
+
+
+
+
+
+
+
 .seo-modal {
   position: fixed;
   inset: 0;
@@ -2131,6 +2140,14 @@ img {
   backdrop-filter: blur(6px);
 }
 
+/* ACTIVE STATE */
+.seo-modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeBg 0.2s ease;
+}
+
 /* BOX */
 .seo-modal-content {
   width: 100%;
@@ -2138,6 +2155,30 @@ img {
   background: #fff;
   display: flex;
   flex-direction: column;
+
+  /* FIX ANIMASI */
+  transform: translateY(30px) scale(0.95);
+  opacity: 0;
+
+  animation: popUp 0.25s ease forwards;
+}
+
+/* BACKDROP FADE */
+@keyframes fadeBg {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* MODAL POP ANIMATION (FIXED) */
+@keyframes popUp {
+  from {
+    transform: translateY(30px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
 /* HEADER */
@@ -2148,9 +2189,9 @@ img {
   padding: 14px 16px;
   background: linear-gradient(90deg, #1da1f2, #3b82f6);
   color: #fff;
-  border-radius: 0 0 10px;
 }
 
+/* FIX RADIUS (biar tidak aneh di full screen) */
 .seo-modal-header h3 {
   margin: 0;
   font-size: 16px;
@@ -2164,6 +2205,7 @@ img {
 
 /* TAG AREA */
 .seo-tags {
+  flex: 1;
   padding: 12px;
   display: flex;
   flex-wrap: wrap;
@@ -2183,6 +2225,7 @@ img {
   transition: 0.2s;
 }
 
+/* HOVER */
 .seo-tags a:hover {
   background: #e0f2fe;
   border-color: #3b82f6;
@@ -5078,20 +5121,24 @@ document.addEventListener("keydown", function(e) {
 
 function showSeoTag(e) {
   e.preventDefault();
-  document.getElementById("seoModal").style.display = "block";
+
+  const modal = document.getElementById("seoModal");
+  modal.classList.add("active");
 }
 
 function closeSeoTag() {
-  document.getElementById("seoModal").style.display = "none";
+  const modal = document.getElementById("seoModal");
+  modal.classList.remove("active");
 }
 
 // klik luar modal untuk tutup
-window.onclick = function(event) {
-  let modal = document.getElementById("seoModal");
-  if (event.target == modal) {
-    modal.style.display = "none";
+window.addEventListener("click", function(event) {
+  const modal = document.getElementById("seoModal");
+
+  if (event.target === modal) {
+    modal.classList.remove("active");
   }
-}
+});
 </script>
 
 </body>
